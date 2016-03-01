@@ -19,6 +19,7 @@ trait MicroService {
   lazy val playSettings : Seq[Setting[_]] = Seq.empty
 
   lazy val scoverageSettings = {
+  import scoverage.ScoverageKeys
     Seq(
       ScoverageKeys.coverageExcludedPackages :=  "<empty>;Reverse.*;app.Routes.*;models/.data/..*;views.*;uk.gov.hmrc.*;prod.*;cc.*;config.*;.*Service.*;connectors.*;connectors.*;service.keystore.*;.*assets.*;",
       ScoverageKeys.coverageMinimum := 90,
