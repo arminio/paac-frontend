@@ -10,6 +10,7 @@ trait MicroService {
   import uk.gov.hmrc.DefaultBuildSettings._
   import TestPhases._
   import uk.gov.hmrc.SbtAutoBuildPlugin
+  import scoverage.ScoverageSbtPlugin._
 
   val appName: String
 
@@ -17,9 +18,19 @@ trait MicroService {
   lazy val plugins : Seq[Plugins] = Seq(play.PlayScala)
   lazy val playSettings : Seq[Setting[_]] = Seq.empty
 
+  lazy val scoverageSettings = {
+    Seq(
+      ScoverageKeys.coverageExcludedPackages :=  "<empty>;Reverse.*;app.Routes.*;models/.data/..*;views.*;uk.gov.hmrc.*;prod.*;cc.*;config.*;.*Service.*;connectors.*;connectors.*;service.keystore.*;.*assets.*;",
+      ScoverageKeys.coverageMinimum := 90,
+      ScoverageKeys.coverageFailOnMinimum := true,
+      ScoverageKeys.coverageHighlighting := true,
+      parallelExecution in Test := false
+    )
+  }
+
   lazy val microservice = Project(appName, file("."))
     .enablePlugins(plugins : _*)
-    .settings(playSettings : _*)
+    .settings(playSettings ++ scoverageSettings : _*)
     .settings(scalaSettings: _*)
     .settings(publishingSettings: _*)
     .settings(defaultSettings(): _*)

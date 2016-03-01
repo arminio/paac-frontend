@@ -19,6 +19,12 @@ private object AppDependencies {
   private val playPartialsVersion = "4.2.0"
   private val playAuthorisedFrontendVersion = "4.5.0"
   private val playConfigVersion = "2.0.1"
+  private val httpCachingClientVersion ="5.2.0"
+  private val scalaTestVersion = "2.2.2"
+  private val jSoupVersion = "1.7.3"
+  private val mockitoVersion = "1.10.19"
+  private val hmrcTestVersion = "1.4.0"
+  private val pegDownVersion = "1.4.2"
   
   val compile = Seq(
     ws,
@@ -40,10 +46,13 @@ private object AppDependencies {
   object Test {
     def apply() = new TestDependencies {
       override lazy val test = Seq(
-        "org.scalatest" %% "scalatest" % "2.2.2" % scope,
-        "org.pegdown" % "pegdown" % "1.4.2" % scope,
-        "org.jsoup" % "jsoup" % "1.7.3" % scope,
-        "com.typesafe.play" %% "play-test" % PlayVersion.current % scope
+        "uk.gov.hmrc" %% "http-caching-client" % httpCachingClientVersion,
+        "uk.gov.hmrc" %% "hmrctest" % hmrcTestVersion % scope,
+        "org.scalatest" %% "scalatest" % scalaTestVersion % scope,
+        "com.typesafe.play" %% "play-test" % PlayVersion.current % scope,
+        "org.mockito" % "mockito-all" % mockitoVersion % scope,
+        "org.jsoup" % "jsoup" % jSoupVersion % scope,
+        "org.pegdown" % "pegdown" % pegDownVersion % scope
       )
     }.test
   }
