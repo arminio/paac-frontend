@@ -19,6 +19,6 @@ addSbtPlugin("uk.gov.hmrc" % "sbt-git-versioning" % "0.8.0")
 
 addSbtPlugin("uk.gov.hmrc" % "sbt-distributables" % "0.9.0")
 
-addSbtPlugin("org.scoverage" % "sbt-scoverage" % "1.0.4")
+addSbtPlugin("org.scoverage" % "sbt-scoverage" % "1.3.5")
 
-addSbtPlugin("org.scalastyle" %% "scalastyle-sbt-plugin" % "0.6.0")
+addSbtPlugin("org.scalastyle" %% "scalastyle-sbt-plugin" % "0.8.0")
