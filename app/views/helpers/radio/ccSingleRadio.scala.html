@@ -1,0 +1,26 @@
+@(field: play.api.data.Field, args: (Symbol,Any)*)(implicit lang: play.api.i18n.Lang)
+
+@import play.api.i18n._
+@import views.html.helper._
+@import uk.gov.hmrc.play.views.html._
+
+@checkCondition = @{ Some(elements.args.get('_value)).getOrElse("") }
+
+@elements = @{ new FieldElements(field.id, field, null, args.toMap, lang) }
+@parentField = @{args.toMap.get('parentField).asInstanceOf[Option[Field]]}
+@parentElements = @{parentField.map(pf => new FieldElements(pf.id, pf, null, Map(), lang) )}
+
+<label for="@elements.args.get('_id)" class="@if( elements.args.get('_labelClass) ){ @elements.args.get('_labelClass) }" @if(elements.args.contains('_labelDataAttributes)){@elements.args.get('_labelDataAttributes)}>
+
+        @elements.errors(elements.lang).map { error =>
+        @helpers.errorInline({elements.field.name.replaceAll("""[\.\[\]]""", "-")}, Messages(error))
+        }
+
+        <input @if(elements.args.get('_id)) { id="@elements.args.get('_id)" }
+                @if(elements.args.get('_name)) { name="@elements.args.get('_name)" }
+                @if(elements.args.get('_value)) { value="@elements.args.get('_value)" }
+                type="radio"
+                @if(field.value.toString==checkCondition.toString) { checked }
+        />
+        @(elements.args.get('_label))
+</label>

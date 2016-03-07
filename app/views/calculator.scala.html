@@ -1,0 +1,35 @@
+@(form : Form[Option[String]])(implicit request:Request[_])
+
+@import play.api.i18n._
+@import uk.gov.hmrc.play.views.html._
+@import views.html.helpers._
+
+@common.ccMain(
+    pageTitle = Messages("cc.how.many.children.heading"),
+    heading = Messages("cc.how.many.children.heading")
+) {
+    @helpers.form(
+        action = controllers.routes.CalculatorController.onSubmit,
+        args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
+
+        <p id="numberOfChildren-lede">@Messages("cc.how.many.children.lede.text")</p>
+
+        <label>2014/15: </label> @ccInput(
+            field = form("numberOfChildren"),
+            args = '_inputClass -> "input--xxsmall",
+            '_label -> Messages("cc.how.many.children.heading"),
+            '_labelTextClass -> "visuallyhidden",
+            '_labelDataAttributes -> "aria-hidden=false",
+            '_errorDataAttributes -> "data-input-name=numberOfChildren",
+            '_error_id -> "numberOfChildren-error-summary",
+            '_autoComplete -> "off")
+
+        @buttons.nextButton(
+            title = Messages("childcare.button.continue"),
+            label = Some(Messages("childcare.button.continue")),
+            hrefMethod = Some(Call("GET", Messages("cc.how.many.children.back.url")))
+        )
+
+    }
+}
+

@@ -1,0 +1,54 @@
+@(formItem:Form[_], fieldName: String, label: Html, isNested: Boolean, args: (Symbol,Any)*)(implicit lang: play.api.i18n.Lang)
+
+@import uk.gov.hmrc.play.validators._
+@import play.api.i18n._
+@import uk.gov.hmrc.play.views.html._
+@import uk.gov.hmrc.play.mappers.DateFormatSymbols._
+@import uk.gov.hmrc.play.mappers.DateFields._
+@import views.html.helper._
+
+@elements = @{ new FieldElements(formItem(fieldName).id, formItem(fieldName), null, args.toMap, lang) }
+
+<fieldset id="@elements.args.get('_idName)" class="validate form-group @elements.args.get('_groupClass) @if(elements.hasErrors) { @if(isNested) { form-field--error } else {error} }" data-validation-name="dateOfBirthDate" data-validation-type="fieldset" data-validation-rules="allNonEmpty" data-validation-children="day month year">
+    <legend>@label</legend>
+
+    @if(elements.args.get('_hintText).isDefined) {
+        <span class="form-hint">@elements.args.get('_hintText)</span>
+    }
+
+    @elements.errors(elements.lang).map { error =>
+    @helpers.errorInline({elements.field.name.replaceAll("""[\.\[\]]""", "-")}, Messages(error))
+    }
+
+    <div class='date-of-birth'>
+        @isOptional = {@if(elements.args.contains('_isRequired)) @{ if(elements.args.get('_isRequired).get == true) {true} else {false}} else {false}}
+
+        @dayElem = @{fieldName + "." + day}
+
+        @dateField(
+        formItem(dayElem),
+        '_label -> Messages("date.fields.day"),
+        '_inputClass -> "text day validate",
+        '_divClass -> "form-group day form-field--inline",
+        '_emptyValueText -> " ",
+        '_type -> "number",
+        '_validationName -> "day",
+        '_isRequired -> isOptional,
+        '_dataAttributes -> "pattern=[0-9]*"
+        )
+
+        @monthElem = @{fieldName + "." + month}
+        @dateField(
+        formItem(monthElem),
+        '_label -> Messages("date.fields.month"),
+        '_inputClass -> "text month validate",
+        '_divClass -> "form-group month form-field--inline",
+        '_emptyValueText -> " ",
+        '_type -> "text",
+        '_validationName -> "month",
+        '_isRequired -> isOptional,
+        '_dataAttributes -> "pattern=[0-9]*"
+        )
+        <!--<div class="clearfix"></div>-->
+    </div>
+</fieldset>

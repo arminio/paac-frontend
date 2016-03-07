@@ -1,0 +1,22 @@
+@(hideBackButton: Option[Boolean] = None, hrefMethod: Option[Call]= None, title: String, label: Option[String] = None, id: Option[String] = None, back: Option[String] = None)(implicit lang: play.api.i18n.Lang)
+@import play.api.i18n._
+@import views.html.helper._
+
+<div>
+    <div class="form-field">
+        <input type="submit"
+                class="button"
+                title="@title"
+                id="@if(id.isDefined) {@id.getOrElse("next-button")} else {next-button}"
+                value="@if(label.isDefined){@label.getOrElse("").trim}else{@Messages("childcare.button.next").toString.trim}"/>
+    </div>
+
+    <div class="form-field">
+        @hideBackButton match {
+            case Some(true) => {}
+            case _ => {
+            <a id="back-button" href="@if(hrefMethod.isDefined) {@hrefMethod} else { controllers.routes.CCController.onPageLoad }">@if(back.isDefined) { @back.get } else {@Messages("childcare.button.back")}</a>
+            }
+        }
+    </div>
+</div>

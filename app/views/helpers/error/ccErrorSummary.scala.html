@@ -1,0 +1,19 @@
+@(form: Form[_])(implicit request : Request[AnyRef])
+
+@* We should be using the play-ui version of the template *@
+
+@if(form.hasErrors) {
+    <div id="errors" tabindex="-1" role="group" aria-labelledby="error-heading" class="validation-summary">
+        <h2 id="error-heading" class="heading-small">@Messages("cc.error.title")</h2>
+        <ul>
+            @form.errors.map { error =>
+            <li class="validation-message" id='@error.key.replaceAll("""[\.\[\]]""", "-")-error'>
+                <a href='#@error.key.replaceAll("""[\.\[\]]""", "-")'>
+                    @Messages(error.message, error.args : _*)
+                </a>
+            </li>
+            }
+        </ul>
+        <!--<div class="clearfix"></div>-->
+    </div>
+}

@@ -2,9 +2,26 @@ import sbt._
 
 object FrontendBuild extends Build with MicroService {
 
+  import com.typesafe.sbt.web.SbtWeb.autoImport._
+  import play.PlayImport.PlayKeys._
+  import sbt.Keys._
+
   val appName = "paac-frontend"
 
   override lazy val appDependencies: Seq[ModuleID] = AppDependencies()
+
+  // play settings
+  override lazy val playSettings : Seq[Setting[_]] = Seq(
+    routesImport ++= Seq("uk.gov.hmrc.domain._"),
+    // Turn off play's internal less compiler
+    lessEntryPoints := Nil,
+    // Turn off play's internal javascript compiler
+    javascriptEntryPoints := Nil,
+    // Add the views to the dist
+    unmanagedResourceDirectories in Assets += baseDirectory.value / "app" / "assets",
+    // Dont include the source assets in the dist package (public folder)
+    excludeFilter in Assets := "js*" || "sass*" || "img*"
+  )
 }
 
 private object AppDependencies {

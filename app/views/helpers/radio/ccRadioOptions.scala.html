@@ -1,0 +1,86 @@
+@(field: Field, radioOptions: Seq[(String, String)], args: (Symbol, Any)*)(implicit lang: play.api.i18n.Lang)
+
+@import play.api.i18n._
+@import views.html.helper._
+@import uk.gov.hmrc.play.views.html._
+
+@*Helpers*@
+@elements = @{new FieldElements(field.id, field, null, args.toMap, lang) }
+@fieldsetClass = {@elements.args.get('_groupClass)@if(elements.hasErrors){ form-field--error}}
+@labelAfter = @{ elements.args.get('_labelAfter).getOrElse(false).asInstanceOf[Boolean] }
+@toggleBoolean = @{ elements.args.get('_jsToggleOn) }
+
+@* Markup *@
+<fieldset class="@fieldsetClass" id="@elements.field.id"
+@if(elements.args.get('_fieldsetAttributes).isDefined) {@elements.args.get('_fieldsetAttributes)}>
+
+
+@if(elements.args.get('_legend).isDefined) {
+    <legend @if(elements.args.get('_legendClass).isDefined) {class="@elements.args.get('_legendClass)"}>
+        @elements.args.get('_legend)
+    </legend>
+}
+
+@if(elements.args.get('_formHint).isDefined) {
+    <span class="form-hint">
+    @elements.args.get('_formHint)
+    </span>
+}
+
+
+@elements.errors(elements.lang).map { error =>
+@helpers.errorInline({elements.field.name.replaceAll("""[\.\[\]]""", "-")}, Messages(error))
+}
+
+@radioOptions.map { case (value, label) =>
+    @defining(s"${elements.field.name}-${value.toLowerCase.replace(" ","_")}")  { inputId =>
+        <label for="@inputId"
+            @elements.args.get('_labelClass).map{labelClass => class="@labelClass@field.value.filter( _ == value).map{_ => selected}"}>
+
+        @if(!labelAfter) {
+            @if(elements.args.get('_stackedLabel)) {
+                @if(label.split(" ").length < 2) {
+                    <br>@label
+                } else {
+                    @for( (l, index) <- label.split(" ").zipWithIndex) {
+                        @if(index != 0) {<br>}@l
+                    }
+                }
+            } else { @label }
+        }
+<input
+        type="radio"
+        id="@inputId"
+        name="@elements.field.name"
+        value="@value"
+@elements.args.get('_inputClass).map{inputClass => class="form-control @inputClass"}
+
+@if(elements.args.contains('_dataAttributes) ){ @elements.args.get('_dataAttributes)}
+@field.value.filter( _ == value).map{_ => checked="checked"}
+
+data-dynamic-fields="@elements.args.get('_jsToggleTarget)"
+@elements.args.get('_jsShowNestedOn).map { toggle =>
+            data-dynamic-fields-hide="@if(toggle.toString==value.toString) {true} else {false}"
+        }
+/>
+    @if(labelAfter) {
+        @if(elements.args.get('_stackedLabel)) {
+            @if(label.split(" ").length < 2) {
+                <br>@label
+            } else {
+                @for( (l, index) <- label.split(" ").zipWithIndex) {
+                    @if(index != 0) {<br>}@l
+                }
+            }
+        } else { @label }
+    }
+</label>
+}
+}
+
+@*Nested content, js panel indent *@
+@if(elements.args.get('_nestedContent)) {
+    @elements.args.get('_nestedContent)
+}
+
+</fieldset>
