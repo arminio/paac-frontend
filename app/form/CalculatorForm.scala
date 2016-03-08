@@ -23,9 +23,6 @@ import play.api.data.Form
 import play.api.data.Forms._
 import play.api.i18n.Messages
 
-/**
- * Created by adamconder on 04/02/2016.
- */
 trait HowManyChildrenKeys {
   val numberOfChildren =  "numberOfChildren"
 }

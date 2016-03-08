@@ -24,9 +24,6 @@ import form.CalculatorForm
 object CalculatorController extends CalculatorController
 
 trait CalculatorController  extends FrontendController{
-  val calculate = Action.async { implicit request =>
-    Future.successful(Ok(views.html.calculator(CalculatorForm.form)))
-  }
 
   val onPageLoad = Action.async { implicit request =>
     Future.successful(Ok(views.html.calculator(CalculatorForm.form)))

@@ -1,9 +1,17 @@
 ## Calculator Home Page
-cc.nav.title = Pensions AA Calculator
-cc.how.many.children.heading = Pendions AA Calculator
-cc.error.title = Check your information, you need to:
-cc.how.many.children.lede.text = AA Limit for 2014/15 Tax Year is £40000.00.
-cc.how.many.children.back.url = http://www.gov.uk
-childcare.button.continue = Calculate
-childcare.button.calculate = Calculate
-childcare.button.back = Back
+paac.nav.title = Pensions AA Calculator
+paac.calculator.homepage.heading = PAAC
+paac.error.title = Check your information, you need to:
+paac.1415.aa.limit.text = AA Limit for 2014/15 Tax Year is £40000.00.
+paac.calculator.back.url = http://www.gov.uk
+paac.calculator.button.continue = Calculate
+paac.calculator.button.calculate = Calculate
+paac.calculator.button.back = Back
+
+
+
+## PAAC TaxYear Text
+paac.1213.taxyear.text = 2012/13
+paac.1314.taxyear.text = 2013/14
+paac.1415.taxyear.text = 2014/15
+paac.1516.taxyear.text = 2015/16

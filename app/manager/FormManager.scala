@@ -19,10 +19,6 @@ package manager
 import play.api.Logger
 import play.api.data.{Form, FormError}
 
-/**
- * Created by adamconder on 12/02/2016.
- */
-
 trait FormManager {
 
   val formService = new FormService

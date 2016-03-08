@@ -5,19 +5,29 @@
 @import views.html.helpers._
 
 @common.ccMain(
-    pageTitle = Messages("cc.how.many.children.heading"),
-    heading = Messages("cc.how.many.children.heading")
+    pageTitle = Messages("paac.calculator.homepage.heading"),
+    heading = Messages("paac.calculator.homepage.heading")
 ) {
     @helpers.form(
         action = controllers.routes.CalculatorController.onSubmit,
         args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
 
-        <p id="numberOfChildren-lede">@Messages("cc.how.many.children.lede.text")</p>
+        <p id="numberOfChildren-lede">@Messages("paac.1415.aa.limit.text")</p>
 
-        <label>2014/15: </label> @ccInput(
+        <label>@Messages("paac.1415.taxyear.text")</label> @paacInput(
             field = form("numberOfChildren"),
             args = '_inputClass -> "input--xxsmall",
-            '_label -> Messages("cc.how.many.children.heading"),
+            '_label -> Messages("paac.calculator.homepage.heading"),
+            '_labelTextClass -> "visuallyhidden",
+            '_labelDataAttributes -> "aria-hidden=false",
+            '_errorDataAttributes -> "data-input-name=numberOfChildren",
+            '_error_id -> "numberOfChildren-error-summary",
+            '_autoComplete -> "off")
+
+        <label>@Messages("paac.1516.taxyear.text")</label> @paacInput(
+            field = form("numberOfChildren"),
+            args = '_inputClass -> "input--xxsmall",
+            '_label -> Messages("paac.calculator.homepage.heading"),
             '_labelTextClass -> "visuallyhidden",
             '_labelDataAttributes -> "aria-hidden=false",
             '_errorDataAttributes -> "data-input-name=numberOfChildren",
@@ -25,11 +35,10 @@
             '_autoComplete -> "off")
 
         @buttons.nextButton(
-            title = Messages("childcare.button.continue"),
-            label = Some(Messages("childcare.button.continue")),
-            hrefMethod = Some(Call("GET", Messages("cc.how.many.children.back.url")))
+            title = Messages("paac.calculator.button.continue"),
+            label = Some(Messages("paac.calculator.button.continue")),
+            hrefMethod = Some(Call("GET", Messages("paac.calculator.back.url")))
         )
-
     }
 }
 

@@ -14,7 +14,7 @@
     <div class="form-field">
       @hideBackButton match {
         case Some(true) => {}
-        case _ => { <p class="text"><a id="back-button" href="@if(backHref.isDefined) {@backHref} else {controllers.routes.CCController.onPageLoad}">@if(backLabel.isDefined) { @backLabel.get } else {@Messages("childcare.button.back")}</a></p> }
+        case _ => { <p class="text"><a id="back-button" href="@if(backHref.isDefined) {@backHref} else {controllers.routes.CCController.onPageLoad}">@if(backLabel.isDefined) { @backLabel.get } else {@Messages("paac.calculator.button.back")}</a></p> }
       }
     </div>
 </div>
