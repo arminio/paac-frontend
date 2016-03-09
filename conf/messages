@@ -11,6 +11,10 @@ paac.calculator.button.back = Back
 
 
 ## PAAC TaxYear Text
+paac.0809.taxyear.text = 2008/09
+paac.0910.taxyear.text = 2009/10
+paac.1011.taxyear.text = 2010/11
+paac.1112.taxyear.text = 2011/12
 paac.1213.taxyear.text = 2012/13
 paac.1314.taxyear.text = 2013/14
 paac.1415.taxyear.text = 2014/15

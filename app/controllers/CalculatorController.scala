@@ -16,6 +16,8 @@
 
 package controllers
 
+import models.PensionInput
+import play.api.data.Form
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import play.api.mvc._
 import scala.concurrent.Future
@@ -30,6 +32,6 @@ trait CalculatorController  extends FrontendController{
   }
 
   val onSubmit = Action.async { implicit request =>
-    Future.successful(Ok(views.html.calculator(CalculatorForm.form)))
+    Future.successful(Ok(views.html.results("Results Page")))
   }
 }

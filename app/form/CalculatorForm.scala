@@ -16,49 +16,20 @@
 
 package form
 
-import config.FrontendAppConfig
-import manager.FormManager
-import play.api.Logger
+import models.PensionInput
 import play.api.data.Form
 import play.api.data.Forms._
-import play.api.i18n.Messages
 
-trait HowManyChildrenKeys {
-  val numberOfChildren =  "numberOfChildren"
-}
 
-object CalculatorForm extends HowManyChildrenKeys with FormManager {
+object CalculatorForm {
 
-  val regex = "([0-9 ]{1,})".r
-
-  type CalculatorFormType = Option[String]
+  type CalculatorFormType = PensionInput
 
   val form = Form[CalculatorFormType](
     mapping(
-      numberOfChildren -> optional(text)
-        .verifying(Messages("cc.how.many.children.error.required"), x => x.isDefined && x.nonEmpty)
-        .verifying(Messages("cc.how.many.children.error.not.a.number"), x => x match {
-        case Some(v) =>
-          if (v.matches(regex.toString())) {
-            val lengthCheck = FrontendAppConfig.numberOfChildrenMaxLength
-            val maximumNumber = FrontendAppConfig.maximumNumberOfChildren
-            val minimumNumber = FrontendAppConfig.minimumNumberOfChildren
-
-            val modified = formService.removeLeadingZero(v)
-
-            try {
-              // regex still allows two spaces so therefore have to catch the exception of .toInt
-              modified.trim.length < lengthCheck && modified.trim.toInt > minimumNumber && modified.trim.toInt < maximumNumber
-            } catch {
-              case e : Exception =>
-                false
-            }
-          } else {
-            false
-          }
-        case None => true
-      })
-    )((numberOfChildren) => numberOfChildren)((numberOfChildren : CalculatorFormType) => Some(numberOfChildren))
+      "taxYear" -> text,
+      "pensionInputAmount" -> bigDecimal
+    )(PensionInput.apply)(PensionInput.unapply)
   )
 
 }

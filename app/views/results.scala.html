@@ -1,0 +1,12 @@
+@(results: String)(implicit request:Request[_])
+
+
+@common.paacMain(
+pageTitle = Messages("paac.calculator.homepage.heading"),
+heading = Messages("paac.calculator.homepage.heading")
+) {
+
+   @results
+
+}
+

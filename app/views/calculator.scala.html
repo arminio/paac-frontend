@@ -1,44 +1,99 @@
-@(form : Form[Option[String]])(implicit request:Request[_])
+@(paacForm : Form[models.PensionInput])(implicit request:Request[_])
 
-@import play.api.i18n._
-@import uk.gov.hmrc.play.views.html._
-@import views.html.helpers._
+@import uk.gov.hmrc.play.views.html.helpers._
 
 @common.paacMain(
-    pageTitle = Messages("paac.calculator.homepage.heading"),
-    heading = Messages("paac.calculator.homepage.heading")
+pageTitle = Messages("paac.calculator.homepage.heading"),
+heading = Messages("paac.calculator.homepage.heading")
 ) {
-    @helpers.form(
+
+    @form(
         action = controllers.routes.CalculatorController.onSubmit,
         args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
 
-        <p id="numberOfChildren-lede">@Messages("paac.1415.aa.limit.text")</p>
+        <fieldset class="form-field-group">
+            <label class="form-element-bold label--full-length" for="taxYear">
+                @Messages("paac.0809.taxyear.text")
+                <input type="text"
+                       name="taxYear"
+                       id="taxYear"
+                       value="@paacForm("taxYear").value"/>
+            </label>
+        </fieldset>
 
-        @paacInput(
-            field = form("numberOfChildren"),
-            args = '_inputClass -> "input--xxsmall",
-            '_label -> Messages("paac.1415.taxyear.text"),
-            '_labelClass -> "label--inline",
-            '_labelDataAttributes -> "aria-hidden=false",
-            '_errorDataAttributes -> "data-input-name=numberOfChildren",
-            '_error_id -> "numberOfChildren-error-summary",
-            '_autoComplete -> "off")
+        <fieldset class="form-field-group">
+            <label class="form-element-bold label--full-length" for="taxYear">
+                @Messages("paac.0910.taxyear.text")
+                <input type="text"
+                       name="taxYear"
+                       id="taxYear"
+                       value="@paacForm("taxYear").value"/>
+            </label>
+        </fieldset>
 
-        @paacInput(
-            field = form("numberOfChildren"),
-            args = '_inputClass -> "input--xxsmall",
-            '_label -> Messages("paac.1516.taxyear.text"),
-            '_labelClass -> "label--inline",
-            '_labelDataAttributes -> "aria-hidden=false",
-            '_errorDataAttributes -> "data-input-name=numberOfChildren",
-            '_error_id -> "numberOfChildren-error-summary",
-            '_autoComplete -> "off")
+        <fieldset class="form-field-group">
+            <label class="form-element-bold label--full-length" for="taxYear">
+                @Messages("paac.1011.taxyear.text")
+                <input type="text"
+                       name="taxYear"
+                       id="taxYear"
+                       value="@paacForm("taxYear").value"/>
+            </label>
+        </fieldset>
 
-        @buttons.nextButton(
-            title = Messages("paac.calculator.button.continue"),
-            label = Some(Messages("paac.calculator.button.continue")),
-            hrefMethod = Some(Call("GET", Messages("paac.calculator.back.url")))
-        )
+        <fieldset class="form-field-group">
+            <label class="form-element-bold label--full-length" for="taxYear">
+                @Messages("paac.1112.taxyear.text")
+                <input type="text"
+                       name="taxYear"
+                       id="taxYear"
+                       value="@paacForm("taxYear").value"/>
+            </label>
+        </fieldset>
+
+        <fieldset class="form-field-group">
+            <label class="form-element-bold label--full-length" for="taxYear">
+                @Messages("paac.1213.taxyear.text")
+                <input type="text"
+                       name="taxYear"
+                       id="taxYear"
+                       value="@paacForm("taxYear").value"/>
+            </label>
+        </fieldset>
+
+        <fieldset class="form-field-group">
+            <label class="form-element-bold label--full-length" for="taxYear">
+                @Messages("paac.1314.taxyear.text")
+                <input type="text"
+                       name="taxYear"
+                       id="taxYear"
+                       value="@paacForm("taxYear").value"/>
+            </label>
+        </fieldset>
+
+        <fieldset class="form-field-group">
+            <label class="form-element-bold label--full-length" for="taxYear">
+                @Messages("paac.1415.taxyear.text")
+                <input type="text"
+                       name="taxYear"
+                       id="taxYear"
+                       value="@paacForm("taxYear").value"/>
+            </label>
+        </fieldset>
+
+        <fieldset class="form-field-group">
+            <label class="form-element-bold label--full-length" for="taxYear">
+                @Messages("paac.1516.taxyear.text")
+                <input type="text"
+                       name="taxYear"
+                       id="taxYear"
+                       value="@paacForm("taxYear").value"/>
+            </label>
+        </fieldset>
+
+        <button id="submit" type="submit" class="button" value="Continue">@Messages("paac.calculator.button.continue")</button>
+
     }
+
 }
 
