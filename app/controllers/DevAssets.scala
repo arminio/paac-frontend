@@ -16,10 +16,6 @@
 
 package controllers
 
-/**
- * Created by adamconder on 18/06/15.
- */
-
 import java.io.File
 
 import play.Logger
