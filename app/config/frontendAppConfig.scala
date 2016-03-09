@@ -16,6 +16,7 @@
 
 package config
 
+import play.api.Play
 import play.api.Play.{configuration, current}
 import uk.gov.hmrc.play.config.ServicesConfig
 
@@ -28,12 +29,17 @@ trait AppConfig {
   val useMinifiedAssets: Boolean
   val betaFeedbackUnauthenticatedUrl: String
   val betaFeedbackUrl: String
+  val assetsUrl: String
 }
 
 object FrontendAppConfig extends AppConfig with ServicesConfig {
 
+  private def stringConfig(key: String) = Play.configuration.getString(key).getOrElse(throw new RuntimeException(s"Missing key: $key"))
+
   private def loadConfig(key: String) = configuration.getString(key).getOrElse(throw new Exception(s"Missing configuration key: $key"))
   private def loadInteger(key : String) = configuration.getInt(key).getOrElse(throw new Exception(s"Missing key: $key"))
+
+  override lazy val assetsUrl = stringConfig(s"govuk-tax.assets.url") + stringConfig(s"govuk-tax.assets.version")
 
   private val contactHost = configuration.getString(s"contact-frontend.host").getOrElse("")
   private val contactFormServiceIdentifier = "MyService"
