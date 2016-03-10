@@ -1,0 +1,38 @@
+@(pageTitle: String,
+    heading: String,
+    mainClass : String = "main")(mainContent: Html)(implicit request:Request[_])
+
+@import uk.gov.hmrc.play.views.html.layouts
+
+@linkElement = {
+    <meta name="robots" content="noindex">
+    <meta name="googlebot" content="noindex">
+    <meta name="format-detection" content="telephone=no">
+
+}
+
+@scriptElement = {
+    @if(config.FrontendAppConfig.useMinifiedAssets) {
+
+    } else {
+        @*
+        <script type="text/javascript" src="@routes.DevAssets.at("js/bower_components/tota11y/index.js")"></script>
+        *@
+    }
+}
+
+@contentHeader = {
+    @helpers.pageHeading(heading)
+}
+
+@title = {
+    @Html(pageTitle) - @Messages("paac.nav.title")
+}
+
+@main(
+    title = title.toString,
+    mainClass = Some(mainClass),
+    contentHeader = Some(contentHeader),
+    mainContent = layouts.article(mainContent),
+    linkElement = Some(linkElement),
+    scriptElement = Some(scriptElement))

@@ -1,0 +1,7 @@
+# microservice specific routes
+
+GET         /calculate                                  controllers.CalculatorController.onPageLoad
+POST        /calculate                                  controllers.CalculatorController.onSubmit
+
+GET         /public/assets/*file                        controllers.Public.at(path="/public", file)
+GET         /assets/*file                               controllers.DevAssets.at(path="app/assets", file)
