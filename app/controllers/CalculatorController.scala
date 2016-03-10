@@ -16,6 +16,7 @@
 
 package controllers
 
+import connector.CalculatorConnector
 import models.PensionInput
 import play.api.data.Form
 import uk.gov.hmrc.play.frontend.controller.FrontendController
@@ -23,15 +24,22 @@ import play.api.mvc._
 import scala.concurrent.Future
 import form.CalculatorForm
 
-object CalculatorController extends CalculatorController
+object CalculatorController extends CalculatorController{
+  override val connector: CalculatorConnector = CalculatorConnector
+
+}
 
 trait CalculatorController  extends FrontendController{
+  val connector: CalculatorConnector
 
   val onPageLoad = Action.async { implicit request =>
     Future.successful(Ok(views.html.calculator(CalculatorForm.form)))
   }
 
   val onSubmit = Action.async { implicit request =>
-    Future.successful(Ok(views.html.results("Results Page")))
+    connector.connectToGetPersonDetails().map(
+      response =>
+      Ok(views.html.results(response))
+    )
   }
 }

@@ -9,46 +9,6 @@
     <meta name="googlebot" content="noindex">
     <meta name="format-detection" content="telephone=no">
 
-    @if(config.FrontendAppConfig.useMinifiedAssets) {
-        <!--[if IE 6]>
-        <link rel='stylesheet' media="screen" type="text/css" href='@routes.Public.at("stylesheets/cc-ie6.min.css")' />
-        <![endif]-->
-
-        <!--[if IE 7]>
-        <link rel='stylesheet' media="screen" type="text/css" href='@routes.Public.at("stylesheets/cc-ie7.min.css")' />
-        <![endif]-->
-
-        <!--[if IE 8]>
-        <link rel='stylesheet' media="screen" type="text/css" href='@routes.Public.at("stylesheets/cc-ie8.min.css")' />
-        <![endif]-->
-
-        <!--[if !IE]><!-->
-        <link rel='stylesheet' media="screen" type="text/css" href='@routes.Public.at("stylesheets/cc.min.css")' />
-        <!--<![endif]-->
-
-        <link rel='stylesheet' media="print" type="text/css" href='@routes.Public.at("stylesheets/cc-print.min.css")' />
-
-    } else {
-
-        <!--[if IE 6]>
-        <link rel='stylesheet' media="screen" type="text/css" href='@routes.Public.at("stylesheets/cc-ie6.css")' />
-        <![endif]-->
-
-        <!--[if IE 7]>
-        <link rel='stylesheet' media="screen" type="text/css" href='@routes.Public.at("stylesheets/cc-ie7.css")' />
-        <![endif]-->
-
-        <!--[if IE 8]>
-        <link rel='stylesheet' media="screen" type="text/css" href='@routes.Public.at("stylesheets/cc-ie8.css")' />
-        <![endif]-->
-
-        <!--[if !IE]><!-->
-        <link rel='stylesheet' media="screen" type="text/css" href='@routes.Public.at("stylesheets/cc.css")' />
-        <!--<![endif]-->
-
-        <link rel='stylesheet' media="print" type="text/css" href='@routes.Public.at("stylesheets/cc-print.css")' />
-    }
-        
 }
 
 @scriptElement = {

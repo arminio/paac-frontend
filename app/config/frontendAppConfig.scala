@@ -39,7 +39,7 @@ object FrontendAppConfig extends AppConfig with ServicesConfig {
   private def loadConfig(key: String) = configuration.getString(key).getOrElse(throw new Exception(s"Missing configuration key: $key"))
   private def loadInteger(key : String) = configuration.getInt(key).getOrElse(throw new Exception(s"Missing key: $key"))
 
-  override lazy val assetsUrl = stringConfig(s"govuk-tax.assets.url") + stringConfig(s"govuk-tax.assets.version")
+  override lazy val assetsUrl = stringConfig(s"assets.url") + stringConfig(s"assets.version")
 
   private val contactHost = configuration.getString(s"contact-frontend.host").getOrElse("")
   private val contactFormServiceIdentifier = "MyService"

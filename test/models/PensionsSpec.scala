@@ -24,7 +24,6 @@ object PensionsSpec extends UnitSpec {
 
   "PensionsSpec" should {
 
-
     val json = Json.toJson[models.PensionInput]
     json shouldBe Json.parse(
       """
