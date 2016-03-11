@@ -20,16 +20,16 @@ import play.api.libs.functional.syntax._
 import play.api.libs.json.{Reads, JsPath, Writes}
 
 
-case class PensionInput(taxYear:String, pensionInputAmount:BigDecimal)
+case class PensionInput(taxYear:String, pensionInputAmount:Long)
 
 object PensionInput {
   implicit val pensionWrites: Writes[PensionInput] = (
     (JsPath \ "taxYear").write[String] and
-      (JsPath \ "pensionInputAmount").write[BigDecimal]
+      (JsPath \ "pensionInputAmount").write[Long]
     ) (unlift(PensionInput.unapply))
 
   implicit val pensionReads: Reads[PensionInput] = (
     (JsPath \ "taxYear").read[String] and
-      (JsPath \ "pensionInputAmount").read[BigDecimal]
+      (JsPath \ "pensionInputAmount").read[Long]
     ) (PensionInput.apply _)
 }

@@ -28,7 +28,7 @@ object CalculatorForm {
   val form = Form[CalculatorFormType](
     mapping(
       "taxYear" -> text,
-      "pensionInputAmount" -> bigDecimal
+      "pensionInputAmount" -> longNumber
     )(PensionInput.apply)(PensionInput.unapply)
   )
 

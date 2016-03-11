@@ -34,7 +34,7 @@ trait CalculatorConnector {
   def serviceUrl: String
 
   def connectToGetPersonDetails()(implicit hc: HeaderCarrier): Future[String] = {
-    val jsonRequest = Json.toJson(PensionInput("2014/15", 100.00))
+    val jsonRequest = Json.toJson(PensionInput("2014/15", 10000L))
     httpPostRequest.POST[JsValue, HttpResponse](s"$serviceUrl/paac/calculate", jsonRequest).map {
       _.body
     }
