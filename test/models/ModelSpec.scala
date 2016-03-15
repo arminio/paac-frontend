@@ -17,20 +17,7 @@
 package models
 
 import uk.gov.hmrc.play.test.UnitSpec
-import play.api.libs.json._
 
-object PensionsSpec extends UnitSpec {
+class ModelSpec extends UnitSpec {
 
-
-  "PensionsSpec" should {
-
-    val json = Json.toJson[models.PensionInput]
-    json shouldBe Json.parse(
-      """
-      {
-        | "taxYear":"2012",
-        | "pensionInputAmout":"100.000"
-      }
-      """.stripMargin)
-  }
 }
