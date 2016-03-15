@@ -54,9 +54,4 @@ object FrontendAppConfig extends AppConfig with ServicesConfig {
 
   override lazy val useMinifiedAssets = configuration.getBoolean(s"govuk-tax.cc-frontend.assets.minified").getOrElse(true)
   override lazy val betaFeedbackUnauthenticatedUrl = s"$contactHost/contact/beta-feedback-unauthenticated"
-
-  lazy val numberOfChildrenMaxLength = loadInteger("variables.service.number.of.children.max.length")
-  lazy val minimumNumberOfChildren = configuration.getInt("variables.service.minimum.number.of.children").fold(0)( x => x )
-  lazy val maximumNumberOfChildren = configuration.getInt("variables.service.maximum.number.of.children").fold(20)( x => x )
-
 }
