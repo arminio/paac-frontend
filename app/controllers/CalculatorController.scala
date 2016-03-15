@@ -17,7 +17,7 @@
 package controllers
 
 import connector.CalculatorConnector
-import models.PensionInput
+import models._
 import play.api.data.Form
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import play.api.mvc._

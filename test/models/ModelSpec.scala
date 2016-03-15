@@ -16,20 +16,8 @@
 
 package models
 
-import play.api.libs.functional.syntax._
-import play.api.libs.json.{Reads, JsPath, Writes}
+import uk.gov.hmrc.play.test.UnitSpec
 
+class ModelSpec extends UnitSpec {
 
-case class PensionInput(taxYear:String, pensionInputAmount:BigDecimal)
-
-object PensionInput {
-  implicit val pensionWrites: Writes[PensionInput] = (
-    (JsPath \ "taxYear").write[String] and
-      (JsPath \ "pensionInputAmount").write[BigDecimal]
-    ) (unlift(PensionInput.unapply))
-
-  implicit val pensionReads: Reads[PensionInput] = (
-    (JsPath \ "taxYear").read[String] and
-      (JsPath \ "pensionInputAmount").read[BigDecimal]
-    ) (PensionInput.apply _)
 }
