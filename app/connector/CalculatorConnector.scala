@@ -17,14 +17,14 @@
 package connector
 
 import config.WSHttp
-import models.PensionInput
+import models._
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.play.config.ServicesConfig
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpPost, HttpResponse}
-import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 import scala.concurrent.Future
+import play.api.libs.concurrent.Execution.Implicits._
 
-object CalculatorConnector extends CalculatorConnector  with ServicesConfig {
+object CalculatorConnector extends CalculatorConnector with ServicesConfig {
   override def httpPostRequest = WSHttp
   override val serviceUrl = baseUrl("paac")
 }
@@ -34,7 +34,7 @@ trait CalculatorConnector {
   def serviceUrl: String
 
   def connectToGetPersonDetails()(implicit hc: HeaderCarrier): Future[String] = {
-    val jsonRequest = Json.toJson(PensionInput("2014/15", 10000L))
+    val jsonRequest = Json.toJson(Seq(Contribution(2015, InputAmounts(10000L,10000L))))
     httpPostRequest.POST[JsValue, HttpResponse](s"$serviceUrl/paac/calculate", jsonRequest).map {
       _.body
     }
