@@ -1,5 +1,5 @@
 # Add all the application routes to the paac.routes file
-->         /paac-frontend              paac.Routes
+->         /paac             paac.Routes
 ->         /                           health.Routes
 ->     	   /template                   template.Routes
 
