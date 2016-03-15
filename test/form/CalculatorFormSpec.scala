@@ -26,10 +26,32 @@ object CalculatorFormSpec extends UnitSpec{
 
     "throw validation error when form not filled" in {
       CalculatorForm.form.bind(Map(
-        "" -> ""
+        "pensionInputAmount" -> ""
       )).fold(
         errors =>
           errors.errors.head.message shouldBe Messages(""),
+        success =>
+          success should not be Some("")
+      )
+    }
+
+    "throw validation error when providing a value less than 0" in {
+      CalculatorForm.form.bind(Map(
+        "pensionInputAmount" -> "-0.01"
+      )).fold(
+        errors =>
+          errors.errors.head.message shouldBe Messages("cc.childcare.cost.error.not.a.number"),
+        success =>
+          success should not be Some(-0.01)
+      )
+    }
+
+    "throw validation error when form not filled" in {
+      CalculatorForm.form.bind(Map(
+        "pensionInputAmount" -> ""
+      )).fold(
+        errors =>
+          errors.errors.head.message shouldBe Messages("cc.childcare.cost.error.required"),
         success =>
           success should not be Some("")
       )
