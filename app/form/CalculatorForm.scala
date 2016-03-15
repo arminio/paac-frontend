@@ -16,19 +16,30 @@
 
 package form
 
-
-import models._
+import models.{TaxPeriod, Contribution,InputAmounts}
 import play.api.data.Form
 import play.api.data.Forms._
-
 
 object CalculatorForm {
 
   type CalculatorFormType = Seq[Contribution]
 
-  val form = Form[CalculatorFormType](
-    mapping(
+  val form: Form[CalculatorFormType] = Form(
+    seq(
+      mapping(
+        "taxPeriodStart" -> mapping("year" -> number,
+          "month" -> number,
+          "day" -> number)
+        (TaxPeriod.apply)(TaxPeriod.unapply),
+        "taxPeriodEnd" -> mapping("year" -> number,
+          "month" -> number,
+          "day" -> number)
+        (TaxPeriod.apply)(TaxPeriod.unapply),
+        "amounts" -> mapping("definedBenefit" -> longNumber,
+          "moneyPurchase" -> longNumber)
+        (InputAmounts.apply)(InputAmounts.unapply)
 
+      )(Contribution.apply)(Contribution.unapply)
     )
-  )(CalculatorForm.apply)(CalculatorForm.unapply)
+  )
 }
