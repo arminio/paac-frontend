@@ -16,20 +16,19 @@
 
 package form
 
-import models.PensionInput
+
+import models._
 import play.api.data.Form
 import play.api.data.Forms._
 
 
 object CalculatorForm {
 
-  type CalculatorFormType = PensionInput
+  type CalculatorFormType = Seq[Contribution]
 
   val form = Form[CalculatorFormType](
     mapping(
-      "taxYear" -> text,
-      "pensionInputAmount" -> longNumber
-    )(PensionInput.apply)(PensionInput.unapply)
-  )
 
+    )
+  )(CalculatorForm.apply)(CalculatorForm.unapply)
 }
