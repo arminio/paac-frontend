@@ -1,5 +1,5 @@
 ## Calculator Home Page
-paac.nav.title = Pensions AA Calculator
+paac.nav.title = Pension AA Calculator
 paac.calculator.homepage.heading = PAAC
 paac.error.title = Check your information, you need to:
 paac.1415.aa.limit.text = AA Limit for 2014/15 Tax Year is £40000.00.
@@ -7,6 +7,7 @@ paac.calculator.back.url = http://www.gov.uk
 paac.calculator.button.continue = Calculate
 paac.calculator.button.calculate = Calculate
 paac.calculator.button.back = Back
+paac.calculator.results.heading = Tax Year Results
 
 
 
