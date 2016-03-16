@@ -6,7 +6,38 @@ pageTitle = Messages("paac.calculator.homepage.heading"),
 heading = Messages("paac.calculator.homepage.heading")
 ) {
 
-   @results
+   @results.map { result =>
+    <table>
+       <thead>
+       <tr>
+         <td>TaxYear</td>
+         <td>DB Amount</td>
+         <td>MP Amount</td>
+         <td>Chargable Amount</td>
+         <td>Exceeding AA Amount</td>
+         <td>Available Allowance</td>
+         <td>Unused Allowance</td>
+         <td>Available AA WithCF</td>
+         <td>Available AA WithCCF</td>
+       </tr>
+       </thead>
+       <tbody>
+       <tr>
+          <td>@result.input.taxYearLabel</td>
+          <td>@result.input.amounts.definedBenefit</td>
+          <td>@result.input.amounts.moneyPurchase</td>
+          <td>@result.summaryResult.chargableAmount</td>
+          <td>@result.summaryResult.exceedingAAAmount</td>
+          <td>@result.summaryResult.availableAllowance</td>
+          <td>@result.summaryResult.unusedAllowance</td>
+          <td>@result.summaryResult.availableAAWithCF</td>
+          <td>@result.summaryResult.availableAAWithCCF</td>
+       </tr>
+
+       </tbody>
+    </table>
+
+   }
 
 }
 
