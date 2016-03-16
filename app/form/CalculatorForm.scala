@@ -20,16 +20,36 @@ import models.{TaxPeriod, Contribution,InputAmounts}
 import play.api.data.Form
 import play.api.data.Forms._
 
-case class SimpleContribution(year:Int, amount:Long)
-object SimpleContribution
-object CalculatorForm {
+/* Really horrible to have repeated fields however this will change shortly due to mini-tax years and tax periods. */
+case class CalculatorFormFields(amount2008:Long=0,
+                                amount2009:Long=0,
+                                amount2010:Long=0,
+                                amount2011:Long=0,
+                                amount2012:Long=0,
+                                amount2013:Long=0) {
+  def toContributions():List[Contribution] = {
+    List(Contribution(2008,amount2008),
+         Contribution(2009,amount2009),
+         Contribution(2010,amount2010),
+         Contribution(2011,amount2011),
+         Contribution(2012,amount2012),
+         Contribution(2013,amount2013)
+         )
+  }
+}
+object CalculatorFormFields
 
-  type CalculatorFormType = SimpleContribution
+object CalculatorForm {
+  type CalculatorFormType = CalculatorFormFields
 
   val form: Form[CalculatorFormType] = Form(
-      mapping(
-        "year" -> number,
-        "definedBenefit" -> longNumber
-      )(SimpleContribution.apply)(SimpleContribution.unapply)
+    mapping(
+      "definedBenefit_2008" -> longNumber,
+      "definedBenefit_2009" -> longNumber,
+      "definedBenefit_2010" -> longNumber,
+      "definedBenefit_2011" -> longNumber,
+      "definedBenefit_2012" -> longNumber,
+      "definedBenefit_2013" -> longNumber
+    )(CalculatorFormFields.apply)(CalculatorFormFields.unapply)
   )
 }

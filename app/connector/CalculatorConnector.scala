@@ -33,12 +33,7 @@ trait CalculatorConnector {
   def httpPostRequest: HttpPost
   def serviceUrl: String
 
-  def connectToPAACService(contribution:Contribution)(implicit hc: HeaderCarrier): Future[List[TaxYearResults]] = {
-    val jsonRequest = Json.toJson(Seq(contribution))
-    httpPostRequest.POST[JsValue, HttpResponse](s"$serviceUrl/paac/calculate", jsonRequest).map {
-      (response:HttpResponse)=>
-      val json : JsValue= response.json
-      (json \ "results").as[List[TaxYearResults]]
-    }
+  def connectToPAACService(contributions:List[Contribution])(implicit hc: HeaderCarrier): Future[List[TaxYearResults]] = {
+    httpPostRequest.POST[JsValue, HttpResponse](s"$serviceUrl/paac/calculate", Json.toJson(contributions)).map((response)=>(response.json \ "results").as[List[TaxYearResults]])
   }
 }

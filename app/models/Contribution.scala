@@ -25,57 +25,63 @@ sealed trait PensionCalculatorValue
 
 case class InputAmounts(definedBenefit: Long = 0, moneyPurchase: Long = 0) extends PensionCalculatorValue
 case class TaxPeriod(year: Int, month: Int, day: Int)
-case class Contribution(taxPeriodStart: TaxPeriod, taxPeriodEnd: TaxPeriod, amounts: InputAmounts) extends CalculationParam{
-  def taxYearLabel() : String = s"${taxPeriodStart.year}/${taxPeriodEnd.year-2000}"
+case class Contribution(taxPeriodStart: TaxPeriod, taxPeriodEnd: TaxPeriod, amounts: InputAmounts) extends CalculationParam {
+  def taxYearLabel() : String = s"${taxPeriodStart.year}/${taxPeriodEnd.year.toString().drop(2)}"
 }
 
 object TaxPeriod {
   val EARLIEST_YEAR_SUPPORTED:Int = 2008
+  val LATEST_YEAR_SUPPORTED:Int = 2016
   val MIN_VALUE:Int = 0
   val MIN_DAY_VALUE:Int = 1
   implicit val taxPeriodWrites: Writes[TaxPeriod] = (
     (JsPath \ "year").write[Int] and
-      (JsPath \ "month").write[Int] and
-      (JsPath \ "day").write[Int]
-    )(unlift(TaxPeriod.unapply))
+    (JsPath \ "month").write[Int] and
+    (JsPath \ "day").write[Int]
+  )(unlift(TaxPeriod.unapply))
 
   implicit val taxPeriodReads: Reads[TaxPeriod] = (
     (JsPath \ "year").read[Int](min(EARLIEST_YEAR_SUPPORTED)) and
-      (JsPath \ "month").read[Int](min(MIN_VALUE)) and
-      (JsPath \ "day").read[Int](min(MIN_DAY_VALUE))
-    )(TaxPeriod.apply _)
+    (JsPath \ "month").read[Int](min(MIN_VALUE)) and
+    (JsPath \ "day").read[Int](min(MIN_DAY_VALUE))
+  )(TaxPeriod.apply _)
 }
 
 object InputAmounts {
   implicit val inputAmountsWrites: Writes[InputAmounts] = (
     (JsPath \ "definedBenefit").write[Long] and
-      (JsPath \ "moneyPurchase").write[Long]
-    )(unlift(InputAmounts.unapply))
+    (JsPath \ "moneyPurchase").write[Long]
+  )(unlift(InputAmounts.unapply))
 
   implicit val inputAmountsReads: Reads[InputAmounts] = (
     (JsPath \ "definedBenefit").read[Long](min(0L)) and
-      (JsPath \ "moneyPurchase").read[Long](min(0L))
-    )(InputAmounts.apply _)
+    (JsPath \ "moneyPurchase").read[Long](min(0L))
+  )(InputAmounts.apply _)
 }
 
 object Contribution {
   implicit val contributionWrites: Writes[Contribution] = (
     (JsPath \ "taxPeriodStart").write[TaxPeriod] and
-      (JsPath \ "taxPeriodEnd").write[TaxPeriod] and
-      (JsPath \ "amounts").write[InputAmounts]
-    )(unlift(Contribution.unapply))
+    (JsPath \ "taxPeriodEnd").write[TaxPeriod] and
+    (JsPath \ "amounts").write[InputAmounts]
+  )(unlift(Contribution.unapply))
 
   implicit val contributionReads: Reads[Contribution] = (
     (JsPath \ "taxPeriodStart").read[TaxPeriod] and
-      (JsPath \ "taxPeriodEnd").read[TaxPeriod] and
-      (JsPath \ "amounts").read[InputAmounts]
-    )(Contribution.apply(_:TaxPeriod, _:TaxPeriod, _:InputAmounts))
+    (JsPath \ "taxPeriodEnd").read[TaxPeriod] and
+    (JsPath \ "amounts").read[InputAmounts]
+  )(Contribution.apply(_:TaxPeriod, _:TaxPeriod, _:InputAmounts))
 
   def apply(year: Int, definedBenefit: Long) : Contribution = {
     Contribution(TaxPeriod(year, 4, 6), TaxPeriod(year+1, 4, 5), InputAmounts(definedBenefit=definedBenefit))
   }
 
+  def unapplyPair(contribution:Contribution) : Option[(Int,Long)] = {
+    if (contribution == null) None
+    else Some((contribution.taxPeriodStart.year, contribution.amounts.definedBenefit))
+  }
+
   def unapplySimple(contribution:Contribution) : Option[(Int,Long)] = {
-    Some((contribution.taxPeriodStart.year, contribution.amounts.definedBenefit))
+    unapplyPair(contribution)
   }
 }

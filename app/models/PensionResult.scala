@@ -17,7 +17,8 @@
 package models
 
 import play.api.libs.functional.syntax._
-import play.api.libs.json.{Reads, JsPath, Writes}
+import play.api.libs.json.Reads._
+import play.api.libs.json._
 
 sealed trait PensionResult
 sealed trait PensionCalculationResult extends PensionResult
@@ -34,31 +35,31 @@ case class SummaryResult(chargableAmount: Long = 0,
 object SummaryResult {
   implicit val summaryResultWrites: Writes[SummaryResult] = (
     (JsPath \ "chargableAmount").write[Long] and
-      (JsPath \ "exceedingAAAmount").write[Long] and
-      (JsPath \ "availableAllowance").write[Long] and
-      (JsPath \ "unusedAllowance").write[Long] and
-      (JsPath \ "availableAAWithCF").write[Long] and
-      (JsPath \ "availableAAWithCCF").write[Long]
-    )(unlift(SummaryResult.unapply))
+    (JsPath \ "exceedingAAAmount").write[Long] and 
+    (JsPath \ "availableAllowance").write[Long] and
+    (JsPath \ "unusedAllowance").write[Long] and 
+    (JsPath \ "availableAAWithCF").write[Long] and
+    (JsPath \ "availableAAWithCCF").write[Long]
+  )(unlift(SummaryResult.unapply))
 
   implicit val summaryResultReads: Reads[SummaryResult] = (
     (JsPath \ "chargableAmount").read[Long] and
-      (JsPath \ "exceedingAAAmount").read[Long] and
-      (JsPath \ "availableAllowance").read[Long] and
-      (JsPath \ "unusedAllowance").read[Long] and
-      (JsPath \ "availableAAWithCF").read[Long] and
-      (JsPath \ "availableAAWithCCF").read[Long]
-    )(SummaryResult.apply _)
+    (JsPath \ "exceedingAAAmount").read[Long] and
+    (JsPath \ "availableAllowance").read[Long] and
+    (JsPath \ "unusedAllowance").read[Long] and
+    (JsPath \ "availableAAWithCF").read[Long] and
+    (JsPath \ "availableAAWithCCF").read[Long]
+  )(SummaryResult.apply _)
 }
 
 object TaxYearResults {
   implicit val summaryWrites: Writes[TaxYearResults] = (
     (JsPath \ "input").write[Contribution] and
-      (JsPath \ "summaryResult").write[SummaryResult]
-    )(unlift(TaxYearResults.unapply))
+    (JsPath \ "summaryResult").write[SummaryResult]
+  )(unlift(TaxYearResults.unapply))
 
   implicit val summaryReads: Reads[TaxYearResults] = (
     (JsPath \ "input").read[Contribution] and
-      (JsPath \ "summaryResult").read[SummaryResult]
-    )(TaxYearResults.apply _)
+    (JsPath \ "summaryResult").read[SummaryResult]
+  )(TaxYearResults.apply _)
 }
