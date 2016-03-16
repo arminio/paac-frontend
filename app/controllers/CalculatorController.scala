@@ -18,7 +18,6 @@ package controllers
 
 import connector.CalculatorConnector
 import models._
-import play.api.data.Form
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import play.api.mvc._
 import scala.concurrent.Future
@@ -37,9 +36,17 @@ trait CalculatorController  extends FrontendController{
   }
 
   val onSubmit = Action.async { implicit request =>
-    connector.connectToGetPersonDetails().map(
-      response =>
-      Ok(views.html.results(response))
+    CalculatorForm.form.bindFromRequest().fold(
+      formWithErrors => {Future.successful(BadRequest)},
+      input => {
+        connector.connectToPAACService(Contribution(input.year, input.amount)).map {
+          response =>
+            Ok(views.html.results(response))
+        }
+      }
     )
   }
 }
+
+
+
