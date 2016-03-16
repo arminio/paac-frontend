@@ -1,4 +1,4 @@
-@(paacForm : Form[Seq[models.Contribution]])(implicit request:Request[_])
+@(paacForm : Form[form.CalculatorFormFields])(implicit request:Request[_])
 
 @import uk.gov.hmrc.play.views.html.helpers._
 
@@ -11,89 +11,27 @@ heading = Messages("paac.calculator.homepage.heading")
         action = controllers.routes.CalculatorController.onSubmit,
         args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
 
-        <fieldset class="form-field-group">
-            <label class="form-element-bold label--full-length" for="taxYear">
-                @Messages("paac.0809.taxyear.text")
-                <input type="text"
-                       name="taxYear"
-                       id="taxYear"
-                       value="@paacForm("taxYear").value"/>
-            </label>
-        </fieldset>
-
-        <fieldset class="form-field-group">
-            <label class="form-element-bold label--full-length" for="taxYear">
-                @Messages("paac.0910.taxyear.text")
-                <input type="text"
-                       name="taxYear"
-                       id="taxYear"
-                       value="@paacForm("taxYear").value"/>
-            </label>
-        </fieldset>
-
-        <fieldset class="form-field-group">
-            <label class="form-element-bold label--full-length" for="taxYear">
-                @Messages("paac.1011.taxyear.text")
-                <input type="text"
-                       name="taxYear"
-                       id="taxYear"
-                       value="@paacForm("taxYear").value"/>
-            </label>
-        </fieldset>
-
-        <fieldset class="form-field-group">
-            <label class="form-element-bold label--full-length" for="taxYear">
-                @Messages("paac.1112.taxyear.text")
-                <input type="text"
-                       name="taxYear"
-                       id="taxYear"
-                       value="@paacForm("taxYear").value"/>
-            </label>
-        </fieldset>
-
-        <fieldset class="form-field-group">
-            <label class="form-element-bold label--full-length" for="taxYear">
-                @Messages("paac.1213.taxyear.text")
-                <input type="text"
-                       name="taxYear"
-                       id="taxYear"
-                       value="@paacForm("taxYear").value"/>
-            </label>
-        </fieldset>
-
-        <fieldset class="form-field-group">
-            <label class="form-element-bold label--full-length" for="taxYear">
-                @Messages("paac.1314.taxyear.text")
-                <input type="text"
-                       name="taxYear"
-                       id="taxYear"
-                       value="@paacForm("taxYear").value"/>
-            </label>
-        </fieldset>
-
-        <fieldset class="form-field-group">
-            <label class="form-element-bold label--full-length" for="taxYear">
-                @Messages("paac.1415.taxyear.text")
-                <input type="text"
-                       name="taxYear"
-                       id="taxYear"
-                       value="@paacForm("taxYear").value"/>
-            </label>
-        </fieldset>
-
-        <fieldset class="form-field-group">
-            <label class="form-element-bold label--full-length" for="taxYear">
-                @Messages("paac.1516.taxyear.text")
-                <input type="text"
-                       name="taxYear"
-                       id="taxYear"
-                       value="@paacForm("taxYear").value"/>
-            </label>
-        </fieldset>
-
+        @for(i <- List(2008, 2009, 2010, 2011, 2012, 2013)) {
+          <fieldset class="form-field-group">
+              <label class="form-element-bold label--full-length" for="definedBenefit">
+                  @i match {
+                      case 2008 => {@Messages("paac.0809.taxyear.text")}
+                      case 2009 => {@Messages("paac.0910.taxyear.text")}
+                      case 2010 => {@Messages("paac.1011.taxyear.text")}
+                      case 2011 => {@Messages("paac.1112.taxyear.text")}
+                      case 2012 => {@Messages("paac.1213.taxyear.text")}
+                      case 2013 => {@Messages("paac.1314.taxyear.text")}
+                      case 2014 => {@Messages("paac.1415.taxyear.text")}
+                      case 2015 => {@Messages("paac.1516.taxyear.text")}
+                      case _ => {@Messages("paac.0809.taxyear.text")}
+                  }
+                  <input type="text"
+                         name="definedBenefit_@i"
+                         id="definedBenefit"
+                         value='0'/>
+              </label>
+          </fieldset>
+        }
         <button id="submit" type="submit" class="button" value="Continue">@Messages("paac.calculator.button.continue")</button>
-
     }
-
 }
-
