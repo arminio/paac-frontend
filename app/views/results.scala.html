@@ -6,38 +6,34 @@ pageTitle = Messages("paac.calculator.homepage.heading"),
 heading = Messages("paac.calculator.results.heading")
 ) {
 
-   @results.map { result =>
     <table>
        <thead>
        <tr>
-         <td>TaxYear</td>
-         <td>DB Amount</td>
-         <td>MP Amount</td>
-         <td>Chargable Amount</td>
-         <td>Exceeding AA Amount</td>
-         <td>Available Allowance</td>
-         <td>Unused Allowance</td>
-         <td>Available AA WithCF</td>
-         <td>Available AA WithCCF</td>
+         <td style="width:250px;" align="right">TaxYear</td>
+         <td style="width:250px;" align="right">DB Amount</td>
+         <td style="width:250px;" align="right">MP Amount</td>
+         <td style="width:250px;" align="right">Amount Exceeding the AA</td>
+         <td style="width:250px;" align="right">Available Annual Allowance (Incl. Carry Fwd)</td>
+         <td style="width:250px;" align="right">Contributions Liable to a Tax Charge</td>
+         <td style="width:250px;" align="right">Unused AA Carried Forward to Next Year</td>
+         <td style="width:250px;" align="right">Cumulative Carry Forward (3 Years)</td>
        </tr>
        </thead>
        <tbody>
+   @results.map { result =>
        <tr>
-          <td>@result.input.taxYearLabel</td>
-          <td>@result.input.amounts.definedBenefit</td>
-          <td>@result.input.amounts.moneyPurchase</td>
-          <td>@result.summaryResult.chargableAmount</td>
-          <td>@result.summaryResult.exceedingAAAmount</td>
-          <td>@result.summaryResult.availableAllowance</td>
-          <td>@result.summaryResult.unusedAllowance</td>
-          <td>@result.summaryResult.availableAAWithCF</td>
-          <td>@result.summaryResult.availableAAWithCCF</td>
+          <td align="right">@result.input.taxYearLabel</td>
+          <td align="right">@(java.text.NumberFormat.getCurrencyInstance().format(result.input.amounts.definedBenefit/100.00))</td>
+          <td align="right">@(java.text.NumberFormat.getCurrencyInstance().format(result.input.amounts.moneyPurchase/100.00))</td>
+          <td align="right">@(java.text.NumberFormat.getCurrencyInstance().format(result.summaryResult.exceedingAAAmount/100.00))</td>
+          <td align="right">@(java.text.NumberFormat.getCurrencyInstance().format(result.summaryResult.availableAAWithCF/100.00))</td>
+          <td align="right">@(java.text.NumberFormat.getCurrencyInstance().format(result.summaryResult.chargableAmount/100.00))</td>
+          <td align="right">@(java.text.NumberFormat.getCurrencyInstance().format(result.summaryResult.unusedAllowance/100.00))</td>
+          <td align="right">@(java.text.NumberFormat.getCurrencyInstance().format(result.summaryResult.availableAAWithCCF/100.00))</td>
        </tr>
+   }
 
        </tbody>
     </table>
-
-   }
-
 }
 

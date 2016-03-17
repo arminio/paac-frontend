@@ -19,21 +19,22 @@ package form
 import models.{TaxPeriod, Contribution,InputAmounts}
 import play.api.data.Form
 import play.api.data.Forms._
+import scala.math._
 
 /* Really horrible to have repeated fields however this will change shortly due to mini-tax years and tax periods. */
-case class CalculatorFormFields(amount2008:Long=0,
-                                amount2009:Long=0,
-                                amount2010:Long=0,
-                                amount2011:Long=0,
-                                amount2012:Long=0,
-                                amount2013:Long=0) {
+case class CalculatorFormFields(amount2008:BigDecimal=0,
+                                amount2009:BigDecimal=0,
+                                amount2010:BigDecimal=0,
+                                amount2011:BigDecimal=0,
+                                amount2012:BigDecimal=0,
+                                amount2013:BigDecimal=0) {
   def toContributions():List[Contribution] = {
-    List(Contribution(2008,amount2008),
-         Contribution(2009,amount2009),
-         Contribution(2010,amount2010),
-         Contribution(2011,amount2011),
-         Contribution(2012,amount2012),
-         Contribution(2013,amount2013)
+    List(Contribution(2008,(amount2008*100).intValue),
+         Contribution(2009,(amount2009*100).intValue),
+         Contribution(2010,(amount2010*100).intValue),
+         Contribution(2011,(amount2011*100).intValue),
+         Contribution(2012,(amount2012*100).intValue),
+         Contribution(2013,(amount2013*100).intValue)
          )
   }
 }
@@ -44,12 +45,12 @@ object CalculatorForm {
 
   val form: Form[CalculatorFormType] = Form(
     mapping(
-      "definedBenefit_2008" -> longNumber,
-      "definedBenefit_2009" -> longNumber,
-      "definedBenefit_2010" -> longNumber,
-      "definedBenefit_2011" -> longNumber,
-      "definedBenefit_2012" -> longNumber,
-      "definedBenefit_2013" -> longNumber
+      "definedBenefit_2008" -> bigDecimal,
+      "definedBenefit_2009" -> bigDecimal,
+      "definedBenefit_2010" -> bigDecimal,
+      "definedBenefit_2011" -> bigDecimal,
+      "definedBenefit_2012" -> bigDecimal,
+      "definedBenefit_2013" -> bigDecimal
     )(CalculatorFormFields.apply)(CalculatorFormFields.unapply)
   )
 }
