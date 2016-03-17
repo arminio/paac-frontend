@@ -25,10 +25,12 @@ heading = Messages("paac.calculator.results.heading")
                       case 2015 => {@Messages("paac.1516.taxyear.text")}
                       case _ => {@Messages("paac.0809.taxyear.text")}
                   }
-                  <input type="text"
+                  <input type="number"
                          name="definedBenefit_@i"
                          id="definedBenefit"
-                         value='0'/>
+                         min="0.01" 
+                         step="0.01" 
+                         value="00000.00" />
               </label>
           </fieldset>
         }
