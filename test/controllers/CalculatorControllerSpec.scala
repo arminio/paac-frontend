@@ -42,9 +42,17 @@ class CalculatorControllerSpec extends UnitSpec with BeforeAndAfterAll{
 
     "CalculatorController" should {
       "not return result NOT_FOUND" in {
-        val result : Option[Future[Result]] = route(FakeRequest(POST, "/paac/calculate"))
+        val result : Option[Future[Result]] = route(FakeRequest(GET, "/paac/calculate"))
         result.isDefined shouldBe true
         status(result.get) should not be NOT_FOUND
       }
+      "not return NOT_FOUND" in {
+        val result : Option[Future[Result]] = route(FakeRequest(GET, "/paac/calculate"))
+        status(result.get) shouldBe 200
+      }
+       "return error if no JSON supplied" in {
+          val result : Option[Future[Result]] = route(FakeRequest(POST, "/paac/calculate"))
+         status(result.get) should not be 200
+        }
     }
 }
