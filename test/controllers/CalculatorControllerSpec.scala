@@ -16,22 +16,35 @@
 
 package controllers
 
+import org.scalatest.BeforeAndAfterAll
+import play.api.Play
+import play.api.mvc.Result
 import play.api.test.Helpers._
 import play.api.test.{FakeRequest, FakeApplication}
 import uk.gov.hmrc.play.test.UnitSpec
 
+import scala.concurrent.Future
 
-trait CalculatorControllerSpec extends FakeApplication {
-  class CalculatorControllerSpec extends UnitSpec {
 
+class CalculatorControllerSpec extends UnitSpec with BeforeAndAfterAll{
+  val app = FakeApplication()
+  override def beforeAll() {
+    Play.start(app)
+    super.beforeAll() // To be stackable, must call super.beforeEach
+  }
+
+  override def afterAll() {
+    try {
+      super.afterAll()
+    } finally Play.stop()
+  }
     implicit val request = FakeRequest()
 
     "CalculatorController" should {
       "not return result NOT_FOUND" in {
-        val result = route(FakeRequest(GET, "/paac-frontend/calculate"))
+        val result : Option[Future[Result]] = route(FakeRequest(POST, "/paac/calculate"))
         result.isDefined shouldBe true
         status(result.get) should not be NOT_FOUND
       }
     }
-  }
 }
