@@ -16,38 +16,175 @@
 
 package models
 
-import play.api.libs.functional.syntax._
-import play.api.libs.json.Reads._
+import play.api.test.Helpers._
+import play.api.test._
 import play.api.libs.json._
 
-sealed trait Result
-sealed trait PensionCalculationResult extends Result
+import org.scalatest._
+import org.scalatest.Matchers._
 
-case class TaxYearResults(input: Contribution,
-                          summaryResult: SummaryResult) extends PensionCalculationResult
-case class SummaryResult(chargableAmount: Long = 0,
-                         exceedingAAAmount: Long = 0) extends PensionCalculationResult
+class PensionResultSpec extends ModelSpec {
+  "SummaryResult" can {
+    "have default value of 0 for all fields" in {
+      // do it
+      val summaryResult = SummaryResult()
 
-object SummaryResult {
-  implicit val summaryResultWrites: Writes[SummaryResult] = (
-    (JsPath \ "chargableAmount").write[Long] and
-      (JsPath \ "exceedingAAAmount").write[Long]
-    )(unlift(SummaryResult.unapply))
+      // check
+      summaryResult.chargableAmount shouldBe 0
+      summaryResult.exceedingAAAmount shouldBe 0
+      summaryResult.availableAllowance shouldBe 0
+      summaryResult.unusedAllowance shouldBe 0
+    }
 
-  implicit val summaryResultReads: Reads[SummaryResult] = (
-    (JsPath \ "chargableAmount").read[Long] and
-      (JsPath \ "exceedingAAAmount").read[Long]
-    )(SummaryResult.apply _)
-}
+    "have chargable amount in pounds" in {
+      // setup
+      val chargableAmount = 13492
 
-object TaxYearResults {
-  implicit val summaryWrites: Writes[TaxYearResults] = (
-    (JsPath \ "input").write[Contribution] and
-      (JsPath \ "summaryResult").write[SummaryResult]
-    )(unlift(TaxYearResults.unapply))
+      // do it
+      val summaryResult = SummaryResult(chargableAmount=chargableAmount)
 
-  implicit val summaryReads: Reads[TaxYearResults] = (
-    (JsPath \ "input").read[Contribution] and
-      (JsPath \ "summaryResult").read[SummaryResult]
-    )(TaxYearResults.apply _)
+      // check
+      summaryResult.chargableAmount shouldBe chargableAmount
+    }
+
+    "have exceeding Annual Allowance Amount" in {
+      // setup
+      val exceedingAAAmount = 13492
+
+      // do it
+      val summaryResult = SummaryResult(exceedingAAAmount=exceedingAAAmount)
+
+      // check
+      summaryResult.exceedingAAAmount shouldBe exceedingAAAmount
+    }
+
+    "have available Allowance Amount" in {
+      // setup
+      val availableAllowanceAmount = 13492
+
+      // do it
+      val summaryResult = SummaryResult(availableAllowance=availableAllowanceAmount)
+
+      // check
+      summaryResult.availableAllowance shouldBe availableAllowanceAmount
+    }
+
+    "have unused Allowance Amount" in {
+      // setup
+      val unusedAllowanceAmount = 13492
+
+      // do it
+      val summaryResult = SummaryResult(unusedAllowance=unusedAllowanceAmount)
+
+      // check
+      summaryResult.unusedAllowance shouldBe unusedAllowanceAmount
+    }
+
+    "have available Allowance with Carry Forward Amount" in {
+      // setup
+      val availableAllowanceWithCFAmount = 13492
+
+      // do it
+      val summaryResult = SummaryResult(availableAAWithCF=availableAllowanceWithCFAmount)
+
+      // check
+      summaryResult.availableAAWithCF shouldBe availableAllowanceWithCFAmount
+    }
+
+    "have available Allowance with Cumulative Carry Forward Amount" in {
+      // setup
+      val availableAllowanceWithCCFAmount = 13492
+
+      // do it
+      val summaryResult = SummaryResult(availableAAWithCCF=availableAllowanceWithCCFAmount)
+
+      // check
+      summaryResult.availableAAWithCCF shouldBe availableAllowanceWithCCFAmount
+    }
+
+    "marshall to JSON" in {
+      // setup
+      val chargableAmount : Long = 2468
+      val exceedingAAAmount : Long = 13579
+      val summaryResult = SummaryResult(chargableAmount, exceedingAAAmount)
+
+      // do it
+      val json = Json.toJson(summaryResult)
+
+      // check
+      val jsonChargableAmount = json \ "chargableAmount"
+      jsonChargableAmount.as[Long] shouldBe chargableAmount
+      val jsonExceedingAAAmount = json \ "exceedingAAAmount"
+      jsonExceedingAAAmount.as[Long] shouldBe exceedingAAAmount
+      val jsonAvailableAllowance = json \ "availableAllowance"
+      jsonAvailableAllowance.as[Long] shouldBe 0
+      val jsonUnusedAllowance = json \ "unusedAllowance"
+      jsonUnusedAllowance.as[Long] shouldBe 0
+      val jsonAvailableAllowanceWithCF = json \ "availableAAWithCF"
+      jsonAvailableAllowanceWithCF.as[Long] shouldBe 0
+      val jsonAvailableAllowanceWithCCF = json \ "availableAAWithCCF"
+      jsonAvailableAllowanceWithCCF.as[Long] shouldBe 0
+    }
+
+    "unmarshall from JSON" in {
+      // setup
+      val json = Json.parse("""{"chargableAmount": 12345, "exceedingAAAmount": 67890, "availableAllowance":0, "unusedAllowance": 0, "availableAAWithCF": 0, "availableAAWithCCF":0}""")
+
+      // do it
+      val summaryResultOption : Option[SummaryResult] = json.validate[SummaryResult].fold(invalid = { _ => None }, valid = { obj => Some(obj)})
+
+      summaryResultOption shouldBe Some(SummaryResult(12345, 67890))
+    }
+  }
+
+  "TaxYearResults" can {
+    "have tax year and input amounts as a contibution" in {
+      // setup
+      val contribution = Contribution(TaxPeriod(2011, 0, 1), TaxPeriod(2011, 3, 31), InputAmounts(1, 2))
+
+      // do it
+      val results = TaxYearResults(contribution, SummaryResult())
+
+      // check
+      results.input shouldBe contribution
+    }
+
+    "have summary results as a SummaryResult" in {
+      // setup
+      val summary = SummaryResult(12345, 67890)
+
+      // do it
+      val results = TaxYearResults(Contribution(TaxPeriod(2011, 0, 1), TaxPeriod(2011, 3, 31), InputAmounts()), summary)
+
+      // check
+      results.summaryResult shouldBe summary
+    }
+
+    "marshall to JSON" in {
+      // setup
+      val taxYear:Short = 2013
+      val dbAmountInPounds = 39342
+      val mpAmountInPounds = 6789234
+      val contribution = Contribution(TaxPeriod(taxYear, 0, 1), TaxPeriod(taxYear, 3, 31), InputAmounts(dbAmountInPounds,mpAmountInPounds))
+
+      val chargableAmount : Long = 2468
+      val exceedingAAAmount : Long = 13579
+      val summaryResult = SummaryResult(chargableAmount, exceedingAAAmount)
+
+      // do it
+      val json = Json.toJson(TaxYearResults(contribution, summaryResult))
+
+      // check
+      val jsonTaxYear = json \ "input" \ "taxPeriodStart" \ "year"
+      jsonTaxYear.as[Short] shouldBe taxYear
+      val jsonDefinedBenfitInPounds = json \ "input" \ "amounts" \ "definedBenefit"
+      jsonDefinedBenfitInPounds.as[Long] shouldBe dbAmountInPounds
+      val jsonMoneyPurchaseInPounds = json \ "input" \ "amounts" \ "moneyPurchase"
+      jsonMoneyPurchaseInPounds.as[Long] shouldBe mpAmountInPounds
+      val jsonChargableAmount = json \ "summaryResult" \ "chargableAmount"
+      jsonChargableAmount.as[Long] shouldBe chargableAmount
+      val jsonExceedingAAAmount = json \ "summaryResult" \ "exceedingAAAmount"
+      jsonExceedingAAAmount.as[Long] shouldBe exceedingAAAmount
+    }
+  }
 }
