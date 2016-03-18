@@ -4,14 +4,14 @@
 
 @common.paacMain(
 pageTitle = Messages("paac.calculator.homepage.heading"),
-heading = Messages("paac.calculator.results.heading")
+heading = Messages("paac.calculator.homepage.pagetitle")
 ) {
 
     @form(
         action = controllers.routes.CalculatorController.onSubmit,
         args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
 
-        @for(i <- List(2008, 2009, 2010, 2011, 2012, 2013)) {
+        @for(i <- List(2008, 2009, 2010, 2011, 2012, 2013, 2014)) {
           <fieldset class="form-field-group">
               <label class="form-element-bold label--full-length" for="definedBenefit">
                   @i match {
@@ -28,9 +28,7 @@ heading = Messages("paac.calculator.results.heading")
                   <input type="number"
                          name="definedBenefit_@i"
                          id="definedBenefit"
-                         min="0.01" 
-                         step="0.01" 
-                         value="00000.00" />
+                         value="00.00" />
               </label>
           </fieldset>
         }
