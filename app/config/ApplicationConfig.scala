@@ -32,7 +32,7 @@ trait AppConfig {
   val assetsUrl: String
 }
 
-object FrontendAppConfig extends AppConfig with ServicesConfig {
+object ApplicationConfig extends AppConfig with ServicesConfig {
 
   private def stringConfig(key: String) = Play.configuration.getString(key).getOrElse(throw new RuntimeException(s"Missing key: $key"))
 
