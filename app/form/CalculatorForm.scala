@@ -30,13 +30,13 @@ case class CalculatorFormFields(amount2008:BigDecimal=0,
                                 amount2013:BigDecimal=0,
                                 amount2014:BigDecimal=0) {
   def toContributions():List[Contribution] = {
-    List(Contribution(2008,(amount2008*100).intValue),
-         Contribution(2009,(amount2009*100).intValue),
-         Contribution(2010,(amount2010*100).intValue),
-         Contribution(2011,(amount2011*100).intValue),
-         Contribution(2012,(amount2012*100).intValue),
-         Contribution(2013,(amount2013*100).intValue),
-         Contribution(2014,(amount2014*100).intValue)
+    List(Contribution(2008,(amount2008*100).longValue),
+         Contribution(2009,(amount2009*100).longValue),
+         Contribution(2010,(amount2010*100).longValue),
+         Contribution(2011,(amount2011*100).longValue),
+         Contribution(2012,(amount2012*100).longValue),
+         Contribution(2013,(amount2013*100).longValue),
+         Contribution(2014,(amount2014*100).longValue)
          )
   }
 }
