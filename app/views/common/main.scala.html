@@ -15,7 +15,7 @@
 
 @head = {
     @layouts.head(
-        FrontendAppConfig.assetsPrefix,
+        ApplicationConfig.assetsPrefix,
         linkElem = linkElement,
         headScripts = None)
 }
@@ -34,8 +34,8 @@
 @betaBanner = {
     @layouts.betaBanner(
         userLoggedIn = false,
-        betaFeedbackUrl = FrontendAppConfig.betaFeedbackUrl,
-        betaFeedbackUnauthenticatedUrl = FrontendAppConfig.betaFeedbackUnauthenticatedUrl,
+        betaFeedbackUrl = ApplicationConfig.betaFeedbackUrl,
+        betaFeedbackUnauthenticatedUrl = ApplicationConfig.betaFeedbackUnauthenticatedUrl,
         showFeedbackLinkInBetaBanner = true)
 }
 
@@ -58,7 +58,7 @@
 }
 
 
-@getHelpForm = @{uiHelpers.reportAProblemLink(FrontendAppConfig.reportAProblemPartialUrl, FrontendAppConfig.reportAProblemNonJSUrl)}
+@getHelpForm = @{uiHelpers.reportAProblemLink(ApplicationConfig.reportAProblemPartialUrl, ApplicationConfig.reportAProblemNonJSUrl)}
 
 @content = {
     @layouts.main_content(
@@ -73,9 +73,9 @@
 
 @bodyEnd = {
     @layouts.footer(
-        analyticsToken = FrontendAppConfig.analyticsToken,
-        analyticsHost = FrontendAppConfig.analyticsHost,
-        assetsPrefix = FrontendAppConfig.assetsPrefix,
+        analyticsToken = ApplicationConfig.analyticsToken,
+        analyticsHost = ApplicationConfig.analyticsHost,
+        assetsPrefix = ApplicationConfig.assetsPrefix,
         ssoUrl = None,
         scriptElem = scriptElement,
         gaCalls = None)
