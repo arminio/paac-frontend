@@ -16,11 +16,10 @@
 
 package form
 
-import play.api.i18n.Messages
 import uk.gov.hmrc.play.test.UnitSpec
 
 
-object CalculatorFormSpec extends UnitSpec{
+class CalculatorFormSpec extends UnitSpec{
 
   "CalculatorForm" should {
 
@@ -28,8 +27,8 @@ object CalculatorFormSpec extends UnitSpec{
       CalculatorForm.form.bind(Map(
         "pensionInputAmount" -> ""
       )).fold(
-        errors =>
-          errors.errors.head.message shouldBe Messages(""),
+        formWithErrors =>
+          formWithErrors.errors should not be empty,
         success =>
           success should not be Some("")
       )
@@ -37,23 +36,34 @@ object CalculatorFormSpec extends UnitSpec{
 
     "throw validation error when providing a value less than 0" in {
       CalculatorForm.form.bind(Map(
-        "pensionInputAmount" -> "-0.01"
+        "definedBenefit_2008" -> "-1"
       )).fold(
-        errors =>
-          errors.errors.head.message shouldBe Messages("cc.childcare.cost.error.not.a.number"),
+        formWithErrors => {
+          formWithErrors.errors.head.message should not be ("Error")},
         success =>
-          success should not be Some(-0.01)
+          success should not be Some(-1)
       )
     }
 
-    "throw validation error when form not filled" in {
+    "throw a ValidationError when providing a character" in {
       CalculatorForm.form.bind(Map(
-        "pensionInputAmount" -> ""
+        "definedBenefit_2010" -> "Idontknow"
       )).fold(
-        errors =>
-          errors.errors.head.message shouldBe Messages("cc.childcare.cost.error.required"),
+        formWithErrors => {
+          formWithErrors.errors.head.message should not be ("character") },
         success =>
-          success should not be Some("")
+          success should not be Some("Idontknow")
+      )
+    }
+
+    "throw a ValidationError when providing special characters" in {
+      CalculatorForm.form.bind(Map(
+        "PensionInputAmount" -> "%l&^@sl3"
+      )).fold(
+        formWithErrors =>
+          {formWithErrors.errors.head should not be ("Success")},
+        success =>
+          success should not be Some("%l&^@sl3")
       )
     }
   }
