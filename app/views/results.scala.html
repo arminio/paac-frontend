@@ -9,42 +9,41 @@ heading = Messages("paac.calculator.results.pagetitle")
     <table>
        <thead>
        <tr>
-         <td style="width:250px;" align="right">TaxYear</td>
-         <td style="width:250px;" align="right">DB Amount</td>
-         <td style="width:250px;" align="right">MP Amount</td>
-         <td style="width:250px;" align="right">Amount Exceeding the AA</td>
-         <td style="width:250px;" align="right">Available Annual Allowance (Incl. Carry Fwd)</td>
-         <td style="width:250px;" align="right">Contributions Liable to a Tax Charge</td>
-         <td style="width:250px;" align="right">Unused AA Carried Forward to Next Year</td>
-         <td style="width:250px;" align="right">Cumulative Carry Forward (3 Years)</td>
+         <th class="numeric" scope="col">Tax Year</th>
+         <th class="numeric" scope="col" style="text-align: right">DB Amount</th>
+         <th class="numeric" scope="col" style="text-align: right">MP Amount</th>
+         <th class="numeric" scope="col" style="text-align: right">Amount Exceeding the AA</th>
+         <th class="numeric" scope="col" style="text-align: right">Available Annual Allowance (Incl. Carry Fwd)</th>
+         <th class="numeric" scope="col" style="text-align: right">Contributions Liable to a Tax Charge</th>
+         <th class="numeric" scope="col" style="text-align: right">Unused AA Carried Forward to Next Year</th>
+         <th class="numeric" scope="col" style="text-align: right">Cumulative Carry Forward (3 Years)</th>
        </tr>
        </thead>
        <tbody>
    @results.map { result =>
        <tr>
-          <td align="right">@result.input.taxYearLabel</td>
-          <td align="right">@(java.text.NumberFormat.getCurrencyInstance(java.util.Locale.UK).format(result.input.amounts.definedBenefit/100.00))</td>
-          <td align="right">
+          <td>@result.input.taxYearLabel</td>
+          <td class="numeric" style="text-align:right;min-width: 7em">@(java.text.NumberFormat.getCurrencyInstance().format(result.input.amounts.definedBenefit/100.00))</td>
+          <td class="numeric" style="text-align:right;min-width: 7em">
           @if(result.input.taxPeriodStart.year<2015) {
             N/A
           } else {
             @(java.text.NumberFormat.getCurrencyInstance(java.util.Locale.UK).format(result.input.amounts.moneyPurchase/100.00))
           }
           </td>
-          <td align="right">@(java.text.NumberFormat.getCurrencyInstance(java.util.Locale.UK).format(result.summaryResult.exceedingAAAmount/100.00))</td>
-          <td align="right">@(java.text.NumberFormat.getCurrencyInstance(java.util.Locale.UK).format(result.summaryResult.availableAAWithCF/100.00))</td>
-          <td align="right">
+          <td class="numeric" style="text-align:right;min-width: 7em">@(java.text.NumberFormat.getCurrencyInstance().format(result.summaryResult.exceedingAAAmount/100.00))</td>
+          <td class="numeric" style="text-align:right;min-width: 7em">@(java.text.NumberFormat.getCurrencyInstance().format(result.summaryResult.availableAAWithCF/100.00))</td>
+          <td class="numeric" style="text-align:right;min-width: 7em">
           @if(result.summaryResult.chargableAmount<0) {
             N/A
           } else {
             @(java.text.NumberFormat.getCurrencyInstance(java.util.Locale.UK).format(result.summaryResult.chargableAmount/100.00))
           }
           </td>
-          <td align="right">@(java.text.NumberFormat.getCurrencyInstance(java.util.Locale.UK).format(result.summaryResult.unusedAllowance/100.00))</td>
-          <td align="right">@(java.text.NumberFormat.getCurrencyInstance(java.util.Locale.UK).format(result.summaryResult.availableAAWithCCF/100.00))</td>
+          <td class="numeric" style="text-align:right;min-width: 7em">@(java.text.NumberFormat.getCurrencyInstance().format(result.summaryResult.unusedAllowance/100.00))</td>
+          <td class="numeric" style="text-align:right;min-width: 7em">@(java.text.NumberFormat.getCurrencyInstance().format(result.summaryResult.availableAAWithCCF/100.00))</td>
        </tr>
    }
-
        </tbody>
     </table>
 }
