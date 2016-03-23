@@ -21,3 +21,7 @@ paac.1213.taxyear.text = 2012/13
 paac.1314.taxyear.text = 2013/14
 paac.1415.taxyear.text = 2014/15
 paac.1516.taxyear.text = 2015/16
+
+paac.calculator.form.error = This field is required
+paac.calculator.error.number=Use whole numbers only, not decimals or characters
+paac.calculator.error.number.zero= Enter a number greater than 0
