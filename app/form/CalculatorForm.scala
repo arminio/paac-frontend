@@ -33,7 +33,6 @@ case class CalculatorFormFields(amount2008:BigDecimal=0,
                                 amount2013:BigDecimal=0,
                                 amount2014:BigDecimal=0) {
   def toContributions():List[Contribution] = {
-    println(s"*******amount2008=${amount2008}")
     List(Contribution(2008,(amount2008*100).longValue),
          Contribution(2009,(amount2009*100).longValue),
          Contribution(2010,(amount2010*100).longValue),
