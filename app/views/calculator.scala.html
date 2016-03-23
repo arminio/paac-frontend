@@ -12,23 +12,9 @@ heading = Messages("paac.calculator.homepage.pagetitle")
         args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
 
         @for(i <- List(2008, 2009, 2010, 2011, 2012, 2013, 2014)) {
-          <fieldset class="form-field-group">
-              <label class="form-element-bold label--full-length" for="definedBenefit">
-                  @i match {
-                      case 2008 => {@Messages("paac.0809.taxyear.text")}
-                      case 2009 => {@Messages("paac.0910.taxyear.text")}
-                      case 2010 => {@Messages("paac.1011.taxyear.text")}
-                      case 2011 => {@Messages("paac.1112.taxyear.text")}
-                      case 2012 => {@Messages("paac.1213.taxyear.text")}
-                      case 2013 => {@Messages("paac.1314.taxyear.text")}
-                      case 2014 => {@Messages("paac.1415.taxyear.text")}
-                      case 2015 => {@Messages("paac.1516.taxyear.text")}
-                      case _ => {@Messages("paac.0809.taxyear.text")}
-                  }
-                  <input type="number"
-                         name="definedBenefit_@i"
-                         id="definedBenefit"
-                         value="0.00" />
+          <fieldset class="form-field-group" style="max-width:12.35em;">
+              <label class="form-element-bold label--full-length numeric" for="definedBenefit_@i" style="width:150%;display: inline-block;">@(Contribution(i,0).taxYearLabel())&nbsp;
+                <span style="float:right">£&nbsp;<input type="number" name="definedBenefit_@i" id="definedBenefit" min="0" value="0.00"/></span>
               </label>
           </fieldset>
         }
