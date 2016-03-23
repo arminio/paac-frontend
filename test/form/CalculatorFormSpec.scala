@@ -17,7 +17,7 @@
 package form
 
 import uk.gov.hmrc.play.test.UnitSpec
-
+import models._
 
 class CalculatorFormSpec extends UnitSpec{
 
@@ -39,7 +39,8 @@ class CalculatorFormSpec extends UnitSpec{
         "definedBenefit_2008" -> "-1"
       )).fold(
         formWithErrors => {
-          formWithErrors.errors.head.message should not be ("Error")},
+          formWithErrors.errors.find(_.key == "definedBenefit_2008") should not be None
+        },
         success =>
           success should not be Some(-1)
       )
@@ -65,6 +66,25 @@ class CalculatorFormSpec extends UnitSpec{
         success =>
           success should not be Some("%l&^@sl3")
       )
+    }
+  }
+
+  "CalculatorFormFields" should {
+    "convert to list of contributions with pence amounts" in {
+      // set up
+      val input = CalculatorFormFields(100.50,200.50,300.50,400.50,500.50,600.50,700.50)
+
+      // test
+      val contributions = input.toContributions()
+
+      // check
+      contributions shouldBe List(Contribution(2008, 10050),
+                                  Contribution(2009, 20050),
+                                  Contribution(2010, 30050),
+                                  Contribution(2011, 40050),
+                                  Contribution(2012, 50050),
+                                  Contribution(2013, 60050),
+                                  Contribution(2014, 70050))
     }
   }
 }

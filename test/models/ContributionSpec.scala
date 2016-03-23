@@ -208,7 +208,7 @@ class ContributionSpec extends ModelSpec {
       // set up
       val c = Contribution(2008, 0)
 
-      // do it
+      // do it 
       val label = c.taxYearLabel
 
       // check
@@ -292,7 +292,7 @@ class ContributionSpec extends ModelSpec {
     "marshall to JSON" in new ContributionFixture {
       // setup
       val contributions = Seq(contribution,
-        contribution)
+                              contribution)
       val expectedJSON = "[" + getExpectedContributionJson()+","+getExpectedContributionJson() + "]"
 
       // do it
