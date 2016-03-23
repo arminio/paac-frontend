@@ -49,7 +49,7 @@ object CalculatorForm {
 
   val form: Form[CalculatorFormType] = Form(
     mapping(
-      "definedBenefit_2008" -> bigDecimal(10,2),
+      "definedBenefit_2008" -> bigDecimal,
       "definedBenefit_2009" -> bigDecimal,
       "definedBenefit_2010" -> bigDecimal,
       "definedBenefit_2011" -> bigDecimal,
