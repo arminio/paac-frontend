@@ -19,7 +19,9 @@ package form
 import models.{TaxPeriod, Contribution,InputAmounts}
 import play.api.data.Form
 import play.api.data.Forms._
+import play.api.data.validation.Constraint
 import scala.math._
+import play.api.i18n.Messages
 
 /* Really horrible to have repeated fields however this will change shortly due to mini-tax years and tax periods. */
 case class CalculatorFormFields(amount2008:BigDecimal=0,
@@ -47,7 +49,7 @@ object CalculatorForm {
 
   val form: Form[CalculatorFormType] = Form(
     mapping(
-      "definedBenefit_2008" -> bigDecimal,
+      "definedBenefit_2008" -> bigDecimal(10,2),
       "definedBenefit_2009" -> bigDecimal,
       "definedBenefit_2010" -> bigDecimal,
       "definedBenefit_2011" -> bigDecimal,
