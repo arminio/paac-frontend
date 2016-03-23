@@ -7,6 +7,24 @@ pageTitle = Messages("paac.calculator.homepage.heading"),
 heading = Messages("paac.calculator.homepage.pagetitle")
 ) {
 
+    @if(paacForm.hasErrors) {
+      <div class="error-summary" role="group" aria-labelledby="error-summary-heading-example-1" tabindex="-1" style="border: 5px solid #b10e1e;padding: 20px;padding-top: 0px;margin-top: 30px;margin-bottom: 30px;">
+
+        <h1 class="heading-medium error-summary-heading" id="error-summary-heading-example-1">
+          There was a problem with the amounts you reported to us
+        </h1>
+
+        <p>
+          One or more amounts may be been too small or too large.
+        </p>
+
+        <ul class="error-summary-list">
+          @for(error <- paacForm.errors) {
+          <li>@Messages(error.message, error.key.drop(15))</li>
+          }
+        </ul>
+      </div>
+    }
     @form(
         action = controllers.routes.CalculatorController.onSubmit,
         args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
@@ -14,7 +32,13 @@ heading = Messages("paac.calculator.homepage.pagetitle")
         @for(i <- List(2008, 2009, 2010, 2011, 2012, 2013, 2014)) {
           <fieldset class="form-field-group" style="max-width:12.35em;">
               <label class="form-element-bold label--full-length numeric" for="definedBenefit_@i" style="width:150%;display: inline-block;">@(Contribution(i,0).taxYearLabel())&nbsp;
-                <span style="float:right">£&nbsp;<input type="number" name="definedBenefit_@i" id="definedBenefit" min="0" value="0.00"/></span>
+                <span style="float:right">£&nbsp;
+                @if(paacForm.data.contains("definedBenefit_"+i)) {
+                <input type="number" name="definedBenefit_@i" id="definedBenefit" min="0" value='@paacForm.data("definedBenefit_"+i)'/>
+                } else {
+                <input type="number" name="definedBenefit_@i" id="definedBenefit" min="0" value='0.00'/>
+                }
+                </span>
               </label>
           </fieldset>
         }
