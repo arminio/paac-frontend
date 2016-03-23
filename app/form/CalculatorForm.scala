@@ -20,6 +20,7 @@ import models.{TaxPeriod, Contribution,InputAmounts}
 import play.api.data.Form
 import play.api.data.Forms._
 import scala.math._
+import play.api.data.validation._
 
 /* Really horrible to have repeated fields however this will change shortly due to mini-tax years and tax periods. */
 case class CalculatorFormFields(amount2008:BigDecimal=0,
@@ -47,13 +48,13 @@ object CalculatorForm {
 
   val form: Form[CalculatorFormType] = Form(
     mapping(
-      "definedBenefit_2008" -> bigDecimal,
-      "definedBenefit_2009" -> bigDecimal,
-      "definedBenefit_2010" -> bigDecimal,
-      "definedBenefit_2011" -> bigDecimal,
-      "definedBenefit_2012" -> bigDecimal,
-      "definedBenefit_2013" -> bigDecimal,
-      "definedBenefit_2014" -> bigDecimal
+      "definedBenefit_2008" -> bigDecimal(10,2).verifying(Constraints.min[BigDecimal](0)),
+      "definedBenefit_2009" -> bigDecimal(10,2).verifying(Constraints.min[BigDecimal](0)),
+      "definedBenefit_2010" -> bigDecimal(10,2).verifying(Constraints.min[BigDecimal](0)),
+      "definedBenefit_2011" -> bigDecimal(10,2).verifying(Constraints.min[BigDecimal](0)),
+      "definedBenefit_2012" -> bigDecimal(10,2).verifying(Constraints.min[BigDecimal](0)),
+      "definedBenefit_2013" -> bigDecimal(10,2).verifying(Constraints.min[BigDecimal](0)),
+      "definedBenefit_2014" -> bigDecimal(10,2).verifying(Constraints.min[BigDecimal](0))
     )(CalculatorFormFields.apply)(CalculatorFormFields.unapply)
   )
 }

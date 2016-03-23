@@ -37,7 +37,7 @@ trait CalculatorController  extends FrontendController{
 
   val onSubmit = Action.async { implicit request =>
     CalculatorForm.form.bindFromRequest().fold(
-      formWithErrors => { Future.successful(BadRequest) },
+      formWithErrors => { Future.successful(Ok(views.html.calculator(formWithErrors))) },
       input => { connector.connectToPAACService(input.toContributions()).map(response => Ok(views.html.results(response))) }
     )
   }

@@ -10,7 +10,7 @@ paac.calculator.button.calculate = Calculate
 paac.calculator.button.back = Back
 paac.calculator.results.pagetitle = Tax Year Results
 paac.calculator.homepage.pagetitle = Pension AA Calculator
-
+error.min={0} amount was too small and must be either £0.00 or greater.
 
 ## PAAC TaxYear Text
 paac.0809.taxyear.text = 2008/09
