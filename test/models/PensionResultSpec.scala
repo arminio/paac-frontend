@@ -55,7 +55,7 @@ class PensionResultSpec extends ModelSpec {
       val summaryResult = SummaryResult(exceedingAAAmount=exceedingAAAmount)
 
       // check
-      summaryResult.exceedingAAAmount shouldBe exceedingAAAmount
+      summaryResult.exceedingAAAmount shouldBe exceedingAAAmount 
     }
 
     "have available Allowance Amount" in {
@@ -66,7 +66,7 @@ class PensionResultSpec extends ModelSpec {
       val summaryResult = SummaryResult(availableAllowance=availableAllowanceAmount)
 
       // check
-      summaryResult.availableAllowance shouldBe availableAllowanceAmount
+      summaryResult.availableAllowance shouldBe availableAllowanceAmount 
     }
 
     "have unused Allowance Amount" in {
@@ -77,7 +77,7 @@ class PensionResultSpec extends ModelSpec {
       val summaryResult = SummaryResult(unusedAllowance=unusedAllowanceAmount)
 
       // check
-      summaryResult.unusedAllowance shouldBe unusedAllowanceAmount
+      summaryResult.unusedAllowance shouldBe unusedAllowanceAmount 
     }
 
     "have available Allowance with Carry Forward Amount" in {
@@ -88,7 +88,7 @@ class PensionResultSpec extends ModelSpec {
       val summaryResult = SummaryResult(availableAAWithCF=availableAllowanceWithCFAmount)
 
       // check
-      summaryResult.availableAAWithCF shouldBe availableAllowanceWithCFAmount
+      summaryResult.availableAAWithCF shouldBe availableAllowanceWithCFAmount 
     }
 
     "have available Allowance with Cumulative Carry Forward Amount" in {
@@ -99,7 +99,7 @@ class PensionResultSpec extends ModelSpec {
       val summaryResult = SummaryResult(availableAAWithCCF=availableAllowanceWithCCFAmount)
 
       // check
-      summaryResult.availableAAWithCCF shouldBe availableAllowanceWithCCFAmount
+      summaryResult.availableAAWithCCF shouldBe availableAllowanceWithCCFAmount 
     }
 
     "marshall to JSON" in {
@@ -128,7 +128,7 @@ class PensionResultSpec extends ModelSpec {
 
     "unmarshall from JSON" in {
       // setup
-      val json = Json.parse("""{"chargableAmount": 12345, "exceedingAAAmount": 67890, "availableAllowance":0, "unusedAllowance": 0, "availableAAWithCF": 0, "availableAAWithCCF":0}""")
+      val json = Json.parse("""{"chargableAmount": 12345, "exceedingAAAmount": 67890, "availableAllowance":0, "unusedAllowance": 0, "availableAAWithCF": 0, "availableAAWithCCF":0, "unusedAllowanceCF":0}""")
 
       // do it
       val summaryResultOption : Option[SummaryResult] = json.validate[SummaryResult].fold(invalid = { _ => None }, valid = { obj => Some(obj)})
@@ -185,6 +185,17 @@ class PensionResultSpec extends ModelSpec {
       jsonChargableAmount.as[Long] shouldBe chargableAmount
       val jsonExceedingAAAmount = json \ "summaryResult" \ "exceedingAAAmount"
       jsonExceedingAAAmount.as[Long] shouldBe exceedingAAAmount
+    }    
+
+    "unmarshall from JSON" in {
+      // setup
+      val json = Json.parse("""{"input": {"taxPeriodStart": {"year":2008, "month" : 2, "day" : 11}, "taxPeriodEnd": {"year":2008, "month" : 8, "day" : 12}, "amounts": {"definedBenefit": 12345, "moneyPurchase": 67890}}, "summaryResult":{"chargableAmount": 12345, "exceedingAAAmount": 67890, "availableAllowance":0, "unusedAllowance": 0, "availableAAWithCF": 0, "availableAAWithCCF":0, "unusedAllowanceCF":0}}""")
+
+      // do it
+      val taxYearResultsOption : Option[TaxYearResults] = json.validate[TaxYearResults].fold(invalid = { _ => None }, valid = { obj => Some(obj)})
+
+      taxYearResultsOption.get.input.taxPeriodStart.year shouldBe 2008
+      taxYearResultsOption.get.summaryResult.chargableAmount shouldBe 12345
     }
-  }
+  }  
 }

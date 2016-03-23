@@ -14,13 +14,19 @@ heading = Messages("paac.calculator.homepage.pagetitle")
           There was a problem with the amounts you reported to us
         </h1>
 
-        <p>
-          One or more amounts may be been too small or too large.
-        </p>
+        @if(paacForm.hasGlobalErrors) {
+          <ul>
+          @for(error <- paacForm.globalErrors) {
+            <li>@error.message</li>
+          }
+          </ul>
+        }
 
         <ul class="error-summary-list">
           @for(error <- paacForm.errors) {
-          <li>@Messages(error.message, error.key.drop(15))</li>
+            @defining(Seq(models.Contribution(error.key.drop(15).toInt,0).taxYearLabel())++error.args) { args =>
+              <li>@Messages(error.message, args:_*)</li>
+            }
           }
         </ul>
       </div>
