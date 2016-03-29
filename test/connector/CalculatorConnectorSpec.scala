@@ -30,6 +30,7 @@ import org.mockito.Mockito._
 import org.scalatest.mock.MockitoSugar
 import uk.gov.hmrc.play.http.HeaderCarrier._
 import play.api.libs.concurrent.Execution.Implicits._
+import play.api.test.{FakeRequest, FakeApplication}
 
 import config.WSHttp
 import models._
@@ -39,7 +40,19 @@ import uk.gov.hmrc.play.http.{HeaderCarrier, HttpPost, HttpResponse}
 import scala.concurrent.Future
 import play.api.libs.concurrent.Execution.Implicits._
 
-class CalculatorConnectorSpec extends UnitSpec with MockitoSugar {
+class CalculatorConnectorSpec extends UnitSpec with MockitoSugar with BeforeAndAfterAll {
+  val app = FakeApplication()
+  override def beforeAll() {
+    Play.start(app)
+    super.beforeAll() // To be stackable, must call super.beforeEach
+  }
+
+  override def afterAll() {
+    try {
+      super.afterAll()
+    } finally Play.stop()
+  }
+
   "Calculator connector" should {
     "convert contributions to json" in {
       // set up
