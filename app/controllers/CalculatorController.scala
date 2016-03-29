@@ -23,12 +23,12 @@ import play.api.mvc._
 import scala.concurrent.Future
 import form.CalculatorForm
 
-object CalculatorController extends CalculatorController{
+object CalculatorController extends CalculatorController {
   override val connector: CalculatorConnector = CalculatorConnector
 
 }
 
-trait CalculatorController  extends FrontendController{
+trait CalculatorController  extends FrontendController {
   val connector: CalculatorConnector
 
   val onPageLoad = Action.async { implicit request =>

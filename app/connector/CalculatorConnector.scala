@@ -23,6 +23,7 @@ import uk.gov.hmrc.play.config.ServicesConfig
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpPost, HttpResponse}
 import scala.concurrent.Future
 import play.api.libs.concurrent.Execution.Implicits._
+import play.api.Play
 
 object CalculatorConnector extends CalculatorConnector with ServicesConfig {
   override def httpPostRequest = WSHttp
@@ -34,6 +35,7 @@ trait CalculatorConnector {
   def serviceUrl: String
 
   def connectToPAACService(contributions:List[Contribution])(implicit hc: HeaderCarrier): Future[List[TaxYearResults]] = {
-    httpPostRequest.POST[JsValue, HttpResponse](s"$serviceUrl/paac/calculate", Json.toJson(contributions)).map((response)=>(response.json \ "results").as[List[TaxYearResults]])
+    val endpoint = Play.current.configuration.getString("microservice.services.paac.endpoints.calculate").getOrElse("/paac/calculate")
+    httpPostRequest.POST[JsValue, HttpResponse](s"${serviceUrl}${endpoint}", Json.toJson(contributions)).map((response)=>(response.json \ "results").as[List[TaxYearResults]])
   }
 }
