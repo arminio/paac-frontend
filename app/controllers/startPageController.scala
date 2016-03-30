@@ -17,6 +17,7 @@
 package controllers
 
 import connector.CalculatorConnector
+import form.EligibilityForm
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import play.api.mvc._
 import scala.concurrent.Future
@@ -30,5 +31,13 @@ object startPageController extends startPageController{
 
     val startPage = Action.async { implicit request =>
       Future.successful(Ok(views.html.startPage("")))
+    }
+
+    val onPageLoad:Action[AnyContent] = Action.async { implicit request =>
+      Future.successful(Ok(views.html.startPage("")))
+    }
+
+    val onSubmit:Action[AnyContent] = Action.async { implicit request =>
+      Future.successful(Ok(views.html.eligibility(EligibilityForm.form)))
     }
   }

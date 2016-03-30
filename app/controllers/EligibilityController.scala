@@ -37,7 +37,7 @@ trait EligibilityController  extends FrontendController {
     Future.successful(Ok(views.html.eligibility(EligibilityForm.form)))
   }
 
-  val onPrevious:Action[AnyContent] = Action.async {implicit request =>
+  val onBack:Action[AnyContent] = Action.async { implicit request =>
     Future.successful(Ok(views.html.startPage("")))
   }
 
