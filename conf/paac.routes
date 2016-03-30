@@ -1,5 +1,7 @@
 # microservice specific routes
 
+GET         /                                           controllers.startPageController.startPage
+
 GET         /calculate                                  controllers.CalculatorController.onPageLoad
 POST        /calculate                                  controllers.CalculatorController.onSubmit
 
