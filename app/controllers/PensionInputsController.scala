@@ -16,28 +16,28 @@
 
 package controllers
 
+import connector.CalculatorConnector
 import models._
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import play.api.mvc._
 import scala.concurrent.Future
-import form.{PensionInputForm, SelectSchemeForm}
+import form.PensionInputForm
 
-object SelectSchemeController extends SelectSchemeController {
-  override val connector: SelectSchemeController = SelectSchemeController
+object PensionInputsController extends PensionInputsController {
+  override val connector: PensionInputsController = PensionInputsController
 
 }
 
-trait SelectSchemeController  extends FrontendController {
-  val connector: SelectSchemeController
+trait PensionInputsController  extends FrontendController {
+  val connector: PensionInputsController
 
-  val onPageLoad:Action[AnyContent] = Action.async { implicit request =>
-    Future.successful(Ok(views.html.selectScheme(SelectSchemeForm.form)))
-  }
-
-  val onSubmit:Action[AnyContent] = Action.async { implicit request =>
+  val onPageLoad = Action.async { implicit request =>
     Future.successful(Ok(views.html.pensionInputs(PensionInputForm.form)))
   }
 
+  val onSubmit = Action.async { implicit request =>
+    Future.successful(Ok(views.html.pensionInputs(PensionInputForm.form)))
+  }
 }
 
 

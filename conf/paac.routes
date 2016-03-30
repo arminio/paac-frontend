@@ -6,6 +6,10 @@ POST        /calculate                                  controllers.CalculatorCo
 GET         /public/assets/*file                        controllers.Public.at(path="/public", file)
 GET         /assets/*file                               controllers.DevAssets.at(path="app/assets", file)
 
-## Scheme Selection Page: DB or Both(DB or MP)
+## Scheme Selection Page
 GET         /scheme                                     controllers.SelectSchemeController.onPageLoad
 POST        /scheme                                     controllers.SelectSchemeController.onSubmit
+
+## Pension Input Page
+GET         /pensionInputs                              controllers.PensionInputsController.onPageLoad
+POST        /pensionInputs                              controllers.PensionInputsController.onSubmit
