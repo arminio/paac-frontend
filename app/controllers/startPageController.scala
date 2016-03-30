@@ -31,6 +31,4 @@ object startPageController extends startPageController{
     val startPage = Action.async { implicit request =>
       Future.successful(Ok(views.html.startPage("")))
     }
-
-
   }
