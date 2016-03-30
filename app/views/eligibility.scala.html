@@ -1,0 +1,35 @@
+@(paacForm : Form[form.Eligibility])(implicit request:Request[_])
+
+@import uk.gov.hmrc.play.views.html.helpers._
+
+@common.paacMain(
+pageTitle = Messages("paac.calculator.eligibility.pagetitle"),
+heading = Messages("")
+) {
+
+<button id="back" type="back" class="button" value="Back">@Messages("paac.calculator.button.back")</button>
+
+@form(
+action = controllers.routes.EligibilityController.onSubmit,
+args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
+
+
+<p class="lede text">@Messages("paac.calculator.eligibility.question")</p>
+
+<div class='form-group'>
+
+    <fieldset class="inline">
+        <label for="scheme-type" class="block-label add-focus selected">
+            <input id="scheme-type" type="radio" name="yes" value="Yes" checked >
+            @Messages("yes")
+        </label><BR/><BR/><BR/>
+        <label for="scheme-type" class="block-label">
+            <input id="scheme-type" type="radio" name="No" value="No" >
+            @Messages("no")
+        </label><BR/><BR/><BR/>
+    </fieldset>
+
+</div>
+<button id="submit" type="submit" class="button" value="Continue">@Messages("paac.calculator.button.continue")</button>
+}
+}
