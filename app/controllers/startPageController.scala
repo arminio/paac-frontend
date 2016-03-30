@@ -20,7 +20,6 @@ import connector.CalculatorConnector
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import play.api.mvc._
 import scala.concurrent.Future
-import views.html._
 
 object startPageController extends startPageController{
     override val connector: CalculatorConnector = CalculatorConnector
