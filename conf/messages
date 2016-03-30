@@ -26,3 +26,5 @@ paac.calculator.error.number=Use whole numbers only, not decimals or characters
 paac.calculator.error.number.zero= Enter a number greater than 0
 error.min={0} amount was too small and must be either £0.00 or greater.
 error.real.precision={0} amount must be not be empty. (Amount must have no more than {1} numbers, including {2} decimal places, that is it should be £0.00 or greater.)
+
+paac.review-amounts.button.continue=Confirm and calculate allowances
