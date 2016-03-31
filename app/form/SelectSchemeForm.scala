@@ -24,17 +24,17 @@ import scala.math._
 import play.api.data.validation._
 import play.api.i18n.Messages
 
+trait SelectScheme{
+  val schemeType = "schemeType"
+}
 
-case class Scheme(schemeType: String)
+object SelectSchemeForm extends SelectScheme {
 
-object Scheme
-
-object SelectSchemeForm {
-  type SelectSchemeFormType = Scheme
+  type SelectSchemeFormType = String
 
   val form: Form[SelectSchemeFormType] = Form(
     mapping(
       "schemeType" -> text
-    )(Scheme.apply)(Scheme.unapply)
-  )
+    )((schemeType) => schemeType)((schemeType: SelectSchemeFormType) => Some(schemeType))
+)
 }

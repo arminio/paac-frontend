@@ -1,4 +1,4 @@
-@(paacForm : Form[form.Scheme])(implicit request:Request[_])
+@(paacForm : Form[String])(implicit request:Request[_])
 
 @import uk.gov.hmrc.play.views.html.helpers._
 
@@ -20,7 +20,7 @@ heading = Messages("paac.scheme.selection.heading")
                 @Messages("paac.scheme.db.label")
             </label><BR/><BR/><BR/>
             <label for="scheme-type" class="block-label">
-                <input id="scheme-type" type="radio" name="schemeType" value="db-mp" >
+                <input id="scheme-type" type="radio" name="schemeType" value="mp" >
                 @Messages("paac.scheme.mp.label")
             </label><BR/><BR/><BR/>
             <label for="scheme-type" class="block-label">
