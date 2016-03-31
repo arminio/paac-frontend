@@ -16,21 +16,19 @@
 
 package form
 
-import models.{TaxPeriod, Contribution,InputAmounts}
 import play.api.data.Form
 import play.api.data.Forms._
-import play.api.data.validation.Constraint
-import scala.math._
-import play.api.data.validation._
-import play.api.i18n.Messages
 
-case class Eligibility(eligibility: String)
+trait Eligibility{
+  val Eligibility = "Eligibility"
+}
 
-object EligibilityForm {
-    type SelectEligibilityFormType = Eligibility
-    val form: Form[SelectEligibilityFormType] = Form(
-      mapping(
-        "schemeType" -> text
-      )(Eligibility.apply)(Eligibility.unapply)
-    )
+object EligibilityForm extends Eligibility {
+  type EligibilityFormType = String
+
+  val form: Form[EligibilityFormType] = Form(
+    mapping(
+      "Eligibility" -> text
+    )((Eligibility) => Eligibility)((schemeType: EligibilityFormType) => Some(Eligibility))
+  )
 }

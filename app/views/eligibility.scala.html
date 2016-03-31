@@ -1,4 +1,4 @@
-@(paacForm : Form[form.Eligibility])(implicit request:Request[_])
+@(paacForm : Form[String])(implicit request:Request[_])
 
 @import uk.gov.hmrc.play.views.html.helpers._
 
@@ -6,10 +6,6 @@
 pageTitle = Messages("paac.calculator.eligibility.pagetitle"),
 heading = Messages("paac.calculator.eligibility.pagetitle")
 ) {
-
-
-
-
 <button id="back" type="back" class="button" value="Back">@Messages("paac.calculator.button.back")</button>
 
 @form(
