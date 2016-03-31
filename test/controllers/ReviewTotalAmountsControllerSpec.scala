@@ -77,7 +77,15 @@ class ReviewTotalAmountsControllerSpec extends UnitSpec with BeforeAndAfterAll {
 
   trait MockKeystoreFixture {
     object MockKeystore extends KeystoreService {
-      val map = Map("definedBenefit_2014" -> "500000",
+      val map = Map("definedBenefit_2006" -> "500000",
+                    "definedBenefit_2007" -> "500000",
+                    "definedBenefit_2008" -> "500000",
+                    "definedBenefit_2009" -> "500000",
+                    "definedBenefit_2010" -> "500000",
+                    "definedBenefit_2011" -> "500000",
+                    "definedBenefit_2012" -> "500000",
+                    "definedBenefit_2013" -> "500000",
+                    "definedBenefit_2014" -> "500000",
                     SessionKeys.sessionId -> SESSION_ID)
       override def store[T](data: T, key: String)
                   (implicit hc: HeaderCarrier, 
@@ -98,29 +106,20 @@ class ReviewTotalAmountsControllerSpec extends UnitSpec with BeforeAndAfterAll {
   }
 
   "ReviewTotalAmountsController" should {
-    /*"display list of amounts" in new MockKeystoreFixture {
+    "display list of amounts previously provided by user" in new MockCalculatorConnectorFixture with MockKeystoreFixture {
       // set up
+      object MockedReviewTotalAmountsController extends ReviewTotalAmountsController { 
+        override val connector: CalculatorConnector = MockCalculatorConnector 
+        override val keystore: KeystoreService = MockKeystore
+      }
       val endpoint = "/paac/review"
 
       // test
-      val result : Option[Future[Result]] = route(FakeRequest(GET, endpoint).withSession {(SessionKeys.sessionId,SESSION_ID)})
+      val result : Future[Result] = MockedReviewTotalAmountsController.onSubmit()(FakeRequest(GET, endpoint).withSession {(SessionKeys.sessionId,SESSION_ID)})
 
       // check
-      result.isDefined shouldBe true
-      status(result.get) shouldBe 200
+      status(result) shouldBe 200
     }
-
-    "display list of amounts previously provided by user" in {
-      // set up
-      val endpoint = "/paac/review"
-
-      // test
-      val result : Option[Future[Result]] = route(FakeRequest(GET, endpoint).withSession {(SessionKeys.sessionId,SESSION_ID)})
-
-      // check
-      result.isDefined shouldBe true
-      status(result.get) shouldBe 200
-    }*/
 
     "should return calculation results from amounts stored in keystore" in new MockCalculatorConnectorFixture with MockKeystoreFixture {
       // set up

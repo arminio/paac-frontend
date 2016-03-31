@@ -23,7 +23,6 @@ import play.api.mvc._
 import scala.concurrent.Future
 import form._
 import service._
-import controllers.routes
 import connector.CalculatorConnector
 
 object ReviewTotalAmountsController extends ReviewTotalAmountsController {
