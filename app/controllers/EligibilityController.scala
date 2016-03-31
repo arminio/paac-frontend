@@ -35,13 +35,12 @@ trait EligibilityController  extends BaseFrontendController {
     Future.successful(Ok(views.html.eligibility(EligibilityForm.form)))
   }
 
-  // TODO: Change it. It should redirect to Select Scheme form
   val onSubmit:Action[AnyContent] = withSession { implicit request =>
     EligibilityForm.form.bindFromRequest().fold(
       formWithErros => { Future.successful(Ok(views.html.eligibility(EligibilityForm.form))) },
       input => {
         keystore.store[String](input, EligibilityForm.Eligibility)
-        Future.successful(Ok(views.html.eligibility(EligibilityForm.form)))
+        Future.successful(Ok(views.html.selectScheme(SelectSchemeForm.form)))
       }
     )
   }
