@@ -26,18 +26,14 @@ object startPageController extends startPageController{
     override val connector: CalculatorConnector = CalculatorConnector
   }
 
-  trait startPageController  extends FrontendController {
+  trait startPageController  extends BaseFrontendController {
     val connector: CalculatorConnector
 
     val startPage = Action.async { implicit request =>
       Future.successful(Ok(views.html.startPage("")))
     }
 
-    val onPageLoad:Action[AnyContent] = Action.async { implicit request =>
-      Future.successful(Ok(views.html.startPage("")))
-    }
-
-    val onSubmit:Action[AnyContent] = Action.async { implicit request =>
+    val onSubmit = Action.async { implicit request =>
       Future.successful(Ok(views.html.eligibility(EligibilityForm.form)))
     }
   }

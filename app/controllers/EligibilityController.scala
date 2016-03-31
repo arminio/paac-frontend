@@ -18,7 +18,6 @@ package controllers
 
 import connector.CalculatorConnector
 import form.EligibilityForm
-import uk.gov.hmrc.play.frontend.controller.FrontendController
 import play.api.mvc._
 import scala.concurrent.Future
 
@@ -26,13 +25,14 @@ object EligibilityController extends EligibilityController{
   override val connector: CalculatorConnector = CalculatorConnector
 }
 
-trait EligibilityController  extends FrontendController {
+trait EligibilityController  extends BaseFrontendController {
   val connector: CalculatorConnector
 
   val onPageLoad:Action[AnyContent] = Action.async { implicit request =>
     Future.successful(Ok(views.html.eligibility(EligibilityForm.form)))
   }
 
+  // TODO: Change it. It should redirect to Select Scheme form
   val onSubmit:Action[AnyContent] = Action.async { implicit request =>
     Future.successful(Ok(views.html.eligibility(EligibilityForm.form)))
   }
