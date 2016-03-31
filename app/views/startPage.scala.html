@@ -1,5 +1,6 @@
 @(content: String)(implicit request: Request[_])
 
+@import uk.gov.hmrc.play.views.html.helpers._
 
 @common.paacMain(
 pageTitle = Messages("paac.calculator.homepage.pagetitle"),
@@ -8,7 +9,10 @@ heading = Messages("paac.calculator.startpage.heading")){
 <p class="lede text">@Messages("paac.calculator.startpage.p1")</p>
 <p class="lede text">@Messages("paac.calculator.startpage.p2")</p>
 
+@form(
+action = controllers.routes.startPageController.onSubmit,
+args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
 <button id="Start" class="button" value="Continue">@Messages("paac.calculator.startpage.button")</button>
 
-
+}
 }
