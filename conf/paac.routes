@@ -1,7 +1,7 @@
 # microservice specific routes
 
-GET         /                                           controllers.startPageController.startPage
-POST        /                                           controllers.startPageController.onSubmit
+GET         /                                           controllers.StartPageController.startPage
+POST        /                                           controllers.StartPageController.onSubmit
 
 GET         /eligibility                                controllers.EligibilityController.onPageLoad
 POST        /eligibility                                controllers.EligibilityController.onSubmit
