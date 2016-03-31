@@ -1,0 +1,35 @@
+@(paacForm : Form[String])(implicit request:Request[_])
+
+@import uk.gov.hmrc.play.views.html.helpers._
+
+@common.paacMain(
+pageTitle = Messages("paac.scheme.selection.pagetitle"),
+heading = Messages("paac.scheme.selection.heading")
+) {
+    @form(
+        action = controllers.routes.SelectSchemeController.onSubmit,
+        args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
+
+    <p class="lede text">@Messages("paac.scheme.selection.question")</p>
+
+    <div class='form-group'>
+
+        <fieldset class="inline">
+            <label for="scheme-type" class="block-label add-focus selected">
+                <input id="scheme-type" type="radio" name="schemeType" value="db" checked >
+                @Messages("paac.scheme.db.label")
+            </label><BR/><BR/><BR/>
+            <label for="scheme-type" class="block-label">
+                <input id="scheme-type" type="radio" name="schemeType" value="mp" >
+                @Messages("paac.scheme.mp.label")
+            </label><BR/><BR/><BR/>
+            <label for="scheme-type" class="block-label">
+                <input id="scheme-type" type="radio" name="schemeType" value="db-mp" >
+                @Messages("paac.scheme.dbmp.label")
+            </label>
+        </fieldset>
+
+    </div>
+        <button id="submit" type="submit" class="button" value="Continue">@Messages("paac.calculator.button.continue")</button>
+    }
+}
