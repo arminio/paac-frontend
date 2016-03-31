@@ -20,30 +20,33 @@ heading = Messages("paac.calculator.results.pagetitle")
        </tr>
        </thead>
        <tbody>
-   @results.map { result =>
+  @results.map { result =>
+    @defining(java.text.NumberFormat.getCurrencyInstance(java.util.Locale.UK)) { currencyFormatter =>
+
        <tr>
           <td>@result.input.taxYearLabel</td>
-          <td class="numeric" style="text-align:right;min-width: 7em">@(java.text.NumberFormat.getCurrencyInstance().format(result.input.amounts.definedBenefit/100.00))</td>
+          <td class="numeric" style="text-align:right;min-width: 7em">@(currencyFormatter.format(result.input.amounts.definedBenefit/100.00))</td>
           <td class="numeric" style="text-align:right;min-width: 7em">
           @if(result.input.taxPeriodStart.year<2015) {
             N/A
           } else {
-            @(java.text.NumberFormat.getCurrencyInstance(java.util.Locale.UK).format(result.input.amounts.moneyPurchase/100.00))
+            @(currencyFormatter.format(result.input.amounts.moneyPurchase/100.00))
           }
           </td>
-          <td class="numeric" style="text-align:right;min-width: 7em">@(java.text.NumberFormat.getCurrencyInstance().format(result.summaryResult.exceedingAAAmount/100.00))</td>
-          <td class="numeric" style="text-align:right;min-width: 7em">@(java.text.NumberFormat.getCurrencyInstance().format(result.summaryResult.availableAAWithCF/100.00))</td>
+          <td class="numeric" style="text-align:right;min-width: 7em">@(currencyFormatter.format(result.summaryResult.exceedingAAAmount/100.00))</td>
+          <td class="numeric" style="text-align:right;min-width: 7em">@(currencyFormatter.format(result.summaryResult.availableAAWithCF/100.00))</td>
           <td class="numeric" style="text-align:right;min-width: 7em">
           @if(result.summaryResult.chargableAmount<0) {
             N/A
           } else {
-            @(java.text.NumberFormat.getCurrencyInstance(java.util.Locale.UK).format(result.summaryResult.chargableAmount/100.00))
+            @(currencyFormatter.format(result.summaryResult.chargableAmount/100.00))
           }
           </td>
-          <td class="numeric" style="text-align:right;min-width: 7em">@(java.text.NumberFormat.getCurrencyInstance().format(result.summaryResult.unusedAllowance/100.00))</td>
-          <td class="numeric" style="text-align:right;min-width: 7em">@(java.text.NumberFormat.getCurrencyInstance().format(result.summaryResult.availableAAWithCCF/100.00))</td>
+          <td class="numeric" style="text-align:right;min-width: 7em">@(currencyFormatter.format(result.summaryResult.unusedAllowance/100.00))</td>
+          <td class="numeric" style="text-align:right;min-width: 7em">@(currencyFormatter.format(result.summaryResult.availableAAWithCCF/100.00))</td>
        </tr>
-   }
+    }
+  }
        </tbody>
     </table>
 }
