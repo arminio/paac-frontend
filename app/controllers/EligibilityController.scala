@@ -18,22 +18,28 @@ package controllers
 
 import connector.CalculatorConnector
 import form.EligibilityForm
-import uk.gov.hmrc.play.frontend.controller.FrontendController
 import play.api.mvc._
 import scala.concurrent.Future
 
-object startPageController extends startPageController{
-    override val connector: CalculatorConnector = CalculatorConnector
+object EligibilityController extends EligibilityController{
+  override val connector: CalculatorConnector = CalculatorConnector
+}
+
+trait EligibilityController  extends BaseFrontendController {
+  val connector: CalculatorConnector
+
+  val onPageLoad:Action[AnyContent] = Action.async { implicit request =>
+    Future.successful(Ok(views.html.eligibility(EligibilityForm.form)))
   }
 
-  trait startPageController  extends BaseFrontendController {
-    val connector: CalculatorConnector
-
-    val startPage = Action.async { implicit request =>
-      Future.successful(Ok(views.html.startPage("")))
-    }
-
-    val onSubmit = Action.async { implicit request =>
-      Future.successful(Ok(views.html.eligibility(EligibilityForm.form)))
-    }
+  // TODO: Change it. It should redirect to Select Scheme form
+  val onSubmit:Action[AnyContent] = Action.async { implicit request =>
+    Future.successful(Ok(views.html.eligibility(EligibilityForm.form)))
   }
+
+  val onBack:Action[AnyContent] = Action.async { implicit request =>
+    Future.successful(Ok(views.html.startPage("")))
+  }
+
+}
+
