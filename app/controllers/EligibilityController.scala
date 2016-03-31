@@ -20,26 +20,32 @@ import connector.CalculatorConnector
 import form.EligibilityForm
 import play.api.mvc._
 import scala.concurrent.Future
+import service.KeystoreService
 
 object EligibilityController extends EligibilityController{
   override val connector: CalculatorConnector = CalculatorConnector
+  override val keystore: KeystoreService = KeystoreService
 }
 
 trait EligibilityController  extends BaseFrontendController {
   val connector: CalculatorConnector
+  val keystore: KeystoreService
 
-  val onPageLoad:Action[AnyContent] = Action.async { implicit request =>
+  val onPageLoad:Action[AnyContent] = withSession { implicit request =>
     Future.successful(Ok(views.html.eligibility(EligibilityForm.form)))
   }
 
   // TODO: Change it. It should redirect to Select Scheme form
-  val onSubmit:Action[AnyContent] = Action.async { implicit request =>
-    Future.successful(Ok(views.html.eligibility(EligibilityForm.form)))
+  val onSubmit:Action[AnyContent] = withSession { implicit request =>
+    EligibilityForm.form.bindFromRequest().fold(
+      formWithErros => { Future.successful(Ok(views.html.eligibility(EligibilityForm.form))) },
+      input => {
+        keystore.store[String](input, EligibilityForm.Eligibility)
+        Future.successful(Ok(views.html.eligibility(EligibilityForm.form)))
+      }
+    )
   }
-
   val onBack:Action[AnyContent] = Action.async { implicit request =>
     Future.successful(Ok(views.html.startPage("")))
   }
-
 }
-

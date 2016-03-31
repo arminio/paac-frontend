@@ -18,15 +18,14 @@ package controllers
 
 import connector.CalculatorConnector
 import form.EligibilityForm
-import uk.gov.hmrc.play.frontend.controller.FrontendController
 import play.api.mvc._
 import scala.concurrent.Future
 
-object startPageController extends startPageController{
+object StartPageController extends StartPageController{
     override val connector: CalculatorConnector = CalculatorConnector
   }
 
-  trait startPageController  extends BaseFrontendController {
+  trait StartPageController  extends BaseFrontendController {
     val connector: CalculatorConnector
 
     val startPage = Action.async { implicit request =>

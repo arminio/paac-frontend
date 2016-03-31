@@ -14,21 +14,19 @@
  * limitations under the License.
  */
 
-package form
+package controllers
 
-import play.api.data.Form
-import play.api.data.Forms._
+import play.api.test.Helpers._
+import play.api.test.{FakeRequest}
+import uk.gov.hmrc.play.test.UnitSpec
 
-trait Eligibility{
-  val Eligibility = "Eligibility"
-}
+class BaseFrontendControllerSpec extends UnitSpec {
+  "BaseFrontendController" should {
+    "get session id should return None if keystore not present" in {
+      // set up
+      val request = FakeRequest()
 
-object EligibilityForm extends Eligibility {
-  type EligibilityFormType = String
-
-  val form: Form[EligibilityFormType] = Form(
-    mapping(
-      "Eligibility" -> text
-    )((Eligibility) => Eligibility)((schemeType: EligibilityFormType) => Some(Eligibility))
-  )
+      // test
+    }
+  }
 }
