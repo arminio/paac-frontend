@@ -1,17 +1,13 @@
 @(content: String)(implicit request: Request[_])
 
-@import uk.gov.hmrc.play.views.html.layouts
-@import uk.gov.hmrc.play.views.html.{helpers => uiHelpers}
-@import config._
-
-@import uk.gov.hmrc.play.views.html.helpers._
 
 @common.paacMain(
 pageTitle = Messages("paac.calculator.homepage.pagetitle"),
-heading = Messages("")){
+heading = Messages("paac.calculator.startpage.heading")){
 
-<p class="lede text">Lorem Ipsum, Lorem Ipsum, Lorem Ipsum, more Lorem Ipsum, even more Lorem Ipsum</p>
-<p class="lede text">In order to use this service, you need to Lorem Ipsum</p>
+<p class="lede text">@Messages("paac.calculator.startpage.p1")</p>
+<p class="lede text">@Messages("paac.calculator.startpage.p2")</p>
+
 <button id="Start" type="submit" class="button" value="Continue">@Messages("paac.calculator.startpage.button")</button>
 
 }
