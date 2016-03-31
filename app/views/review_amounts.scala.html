@@ -4,102 +4,76 @@
 @import java.math.BigDecimal
 
 @common.paacMain(
-pageTitle = Messages("paac.calculator.homepage.heading"),
-heading = Messages("paac.calculator.homepage.pagetitle")
+pageTitle = Messages("paac.review-amounts.page.heading"),
+heading = Messages("paac.review-amounts.page.title")
 ) {
-
-    @if(!reviewForm.get.hasValues()) {
-      <h1 class="heading-medium error-summary-heading" style="border: 5px solid #b10e1e;padding: 20px;margin-bottom: 30px;">
-        Internal Error: amounts are not stored in keystore or have wrong key value?<br><code>sm --start "MONGO" -f</code><br><code>sm --start "KEYSTORE" -f</code>
-      </h1>
-    }
-
-    @if(reviewForm.hasErrors) {
-      <div class="error-summary" role="group" tabindex="-1" style="border: 5px solid #b10e1e;padding: 20px;padding-top: 0px;margin-bottom: 30px;">
-
-        @if(reviewForm.hasGlobalErrors) {
-          <h1 class="heading-medium error-summary-heading">
-            There was a problem with the amounts you reported to us
-          </h1>
-        }
-
-        @if(reviewForm.hasGlobalErrors) {
-          <ul>
-          @for(error <- reviewForm.globalErrors) {
-            <li>@error.message</li>
-          }
-          </ul>
-        }
-
-        <ul class="error-summary-list">
-          @for(error <- reviewForm.errors) {
-            @defining(error.key.drop(15).toInt) { year =>
-              @defining(Seq(models.Contribution(year,0).taxYearLabel())++error.args) { args =>
-                <li><a href="#input_@year" style="color:#b10e1e;font-weight: bold;">@Messages(error.message, args:_*)</a></li>
-              }
-            }
-          }
-        </ul>
-      </div>
-    }
     @form(
         action = controllers.routes.ReviewTotalAmountsController.onSubmit,
         args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
-        <p class="lede text">Please review pension total contribution amounts below.</p>
+        <p class="lede text">@Messages("paac.review-amounts.paragraph")</p>
         <table style="width:100%">
           <thead>
             <tr>
-              <th colspan="3">Pension total contribution amounts</th>
+              <th>@Messages("paac.review-amounts.heading.period")</th>
+              <th>@Messages("paac.review-amounts.heading.db")</th>
+              <th>@Messages("paac.review-amounts.heading.mp")</th>
+              <th>@Messages("paac.review-amounts.heading.ta")</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
-        @for(i <- List.range(2006, 2050)) {
-          @if(reviewForm.data.contains("definedBenefit_"+i)){
-            @defining(new BigDecimal(reviewForm.data("definedBenefit_"+i))) { amountBigDecimal =>
-              @if(amountBigDecimal.intValue == 0) {
-              } else {
-              <tr style="font-size:16px;line-height:1.25;">
-                <td class="numeric">@(Contribution(i,0).taxYearLabel())</td>
-                <td>
-                  <fieldset>
-                    <label class="label numeric" for="definedBenefit_@i" style="font-size:16px;line-height:1.25;width:25em;display: inline-block;@if(reviewForm.errors.find(_.key == "definedBenefit_"+i)) {color:#b10e1e;}">Total Defined Benefit&nbsp;
-                      <span style="float:right">£&nbsp;
-                      <input type="number" 
-                             name="definedBenefit_@i" 
-                             id="definedBenefit_@i" 
-                             min="0" 
-                             value='@if(reviewForm.data.contains("definedBenefit_"+i)){@reviewForm.data("definedBenefit_"+i)}else{0.0}' 
-                             style="position:relative;top:-0.25em;font-size:16px;line-height:1.25;@if(reviewForm.errors.find(_.key == "definedBenefit_"+i)) {color:#b10e1e;}"
-                             readonly/>
-                      </span>
-                    </label>
-                    @if(i > 2015) {
-                    <label class="label numeric" for="moneyPurchase_@i" style="font-size:16px;line-height:1.25;width:25em;display: inline-block;@if(reviewForm.errors.find(_.key == "moneyPurchase_"+i)) {color:#b10e1e;}">Total Money Purchase&nbsp;
-                      <span style="float:right">£&nbsp;
-                      <input type="number" 
-                             name="moneyPurchase_@i" 
-                             id="moneyPurchase_@i" 
-                             min="0" 
-                             value='@if(reviewForm.data.contains("moneyPurchase_"+i)){@reviewForm.data("moneyPurchase_"+i)}else{0.0}' 
-                             style="font-size:16px;line-height:1.25;@if(reviewForm.errors.find(_.key == "moneyPurchase_"+i)) {color:#b10e1e;}"
-                             readonly/>
-                      </span>
-                    </label>
-                    }
-                  </fieldset>
-                </td>
-                <td style="width:5em;text-align: right;white-space: nowrap;">
-                  <a href="#">Edit <span class="visuallyhidden">@(Contribution(i,0).taxYearLabel()) Amount</span></a>
-                  <!--&nbsp;&nbsp;&nbsp;&nbsp;
-                  <a href="#">Delete <span class="visuallyhidden">@(Contribution(i,0).taxYearLabel()) Amount</span></a>-->
-                </td>
-              </tr>
-              }
-            }
+@defining(java.text.NumberFormat.getCurrencyInstance()) { currencyFormatter =>  
+  @for(i <- List.range(2006, (new java.util.GregorianCalendar()).get(java.util.Calendar.YEAR)).reverse) {
+    @defining(new BigDecimal(reviewForm.data.getOrElse("definedBenefit_"+i,"0.0"))) { db =>
+    @defining(new BigDecimal(reviewForm.data.getOrElse("moneyPurchase_"+i,"0.0"))) { mp =>
+    @defining(new BigDecimal(reviewForm.data.getOrElse("taperedAllowance_"+i,"0.0"))) { ta =>
+    @if(db.intValue() > 0 || ta.intValue() > 0 || mp.intValue() > 0) {
+      <tr style="@if(reviewForm.errors.find(_.key == "definedBenefit_"+i) || 
+                     reviewForm.errors.find(_.key == "moneyPurchase_"+i) ||
+                     reviewForm.errors.find(_.key == "taperedAllowance_"+i)) {color:#b10e1e;}">
+        <td class="numeric">@(Contribution(i,0).taxYearLabel())</td>
+        <td>
+          @if(db.intValue() > 0){
+            @(currencyFormatter.format(db))
+          } else {
+            &pound;&nbsp;&ndash;
+          } 
+        </td>
+        <td>@if(i > 2014) {
+          @if(mp.intValue() > 0){
+            @(currencyFormatter.format(mp))
+          } else {
+            &pound;&nbsp;&ndash;
           }
+        } else {
+          &pound;&nbsp;&ndash;
         }
+        </td>
+        <td>@if(i > 2015) {
+          @if(ta.intValue() > 0){
+            @(currencyFormatter.format(ta))
+          } else {
+            &pound;&nbsp;&ndash;
+          }
+        } else {
+          &pound;&nbsp;&ndash;
+        }
+        </td>
+        <td style="width:5em;text-align: right;white-space: nowrap;">
+          <a href="#">@Messages("paac.review-amounts.action.edit") <span class="visuallyhidden">@(Contribution(i,0).taxYearLabel())</span></a>
+        </td>
+      </tr>
+    }
+    }
+    }
+    }
+  }
+}
           </tbody>
         </table>
         <button id="submit" type="submit" class="button" value="Continue">@Messages("paac.review-amounts.button.continue")</button>
+        <br>
+        <br>
+        <a hef="#">@Messages("paac.review-amounts.link.back")</a>
     }
 }

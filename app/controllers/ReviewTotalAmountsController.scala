@@ -36,29 +36,39 @@ trait ReviewTotalAmountsController extends BaseFrontendController {
   val connector: CalculatorConnector
 
   private def fetchAmounts()(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[Map[String,String]] = {
-    def fetchAmount(key: String, defaultAmount: String) : Future[(String,String)] = keystore.read[String](key).map { (amount) =>
+    def fetchAmount(key: String) : Future[Option[(String,String)]] = keystore.read[String](key).map { (amount) =>
         amount match {
-          case None => (key, defaultAmount)
-          case Some(value) => (key, value)
+          case None => Some((key, "0.00"))
+          case Some("0.00") => Some((key, "0.00"))
+          case Some(value) => Some((key, value))
         }
       }
-    def fetchYearAmounts(year: Int) : List[Future[(String,String)]] = year match {
+    def fetchYearAmounts(year: Int) : List[Future[Option[(String,String)]]] = year match {
+      case y if y == 2014 =>
+        List(Future.successful(Some(("definedBenefit_"+y, "50.00"))))
       case y if y < 2015 =>
-        List(fetchAmount("definedBenefit_"+y, "0.00"))
+        List("definedBenefit_"+y).map(fetchAmount(_))
       case y if y == 2015 => 
-        List("definedBenefit_"+y, "moneyPurchase_"+y).map(fetchAmount(_, "0.00"))
+        List("definedBenefit_"+y, "moneyPurchase_"+y).map(fetchAmount(_))
       case y if y >= 2015 => 
-        List("definedBenefit_"+y, "moneyPurchase_"+y, "thresholdIncome_"+y, "adjustedIncome_"+y).map(fetchAmount(_, "0.00"))
+        List("definedBenefit_"+y, "moneyPurchase_"+y, "thresholdIncome_"+y, "adjustedIncome_"+y, "taperedAllowance_"+y).map(fetchAmount(_))
       }
 
-    val amounts : Future[List[(String,String)]] = Future.sequence(List.range(2006, 2050).flatMap(fetchYearAmounts(_)))
-    amounts.map(_.toMap)
+    val currentYear = (new java.util.GregorianCalendar()).get(java.util.Calendar.YEAR)
+    val amounts : Future[List[Option[(String,String)]]] = Future.sequence(List.range(2006, currentYear).flatMap(fetchYearAmounts(_)))
+    amounts.map{ 
+      (maybeYearAmountTuples: List[Option[(String,String)]])  =>
+      maybeYearAmountTuples.filter(_ != None).map(_.head).toMap
+    }
   }
 
   val onPageLoad = withSession { implicit request =>
     fetchAmounts().map { (amountsMap) =>
+      println("*********************************")
+      println(amountsMap)
+      println("*********************************")
       CalculatorForm.form.bind(amountsMap).fold(
-        formWithErrors => Ok(views.html.review_amounts(formWithErrors)) ,
+        formWithErrors => {println(formWithErrors);Ok(views.html.review_amounts(formWithErrors))},
         form => Ok(views.html.review_amounts(CalculatorForm.form.bind(amountsMap)))
       )
     }

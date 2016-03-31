@@ -27,9 +27,6 @@ paac.calculator.error.number.zero= Enter a number greater than 0
 error.min={0} amount was too small and must be either £0.00 or greater.
 error.real.precision={0} amount must be not be empty. (Amount must have no more than {1} numbers, including {2} decimal places, that is it should be £0.00 or greater.)
 
-paac.review-amounts.button.continue=Confirm and calculate allowances
-
-
 ## Scheme Selection Page
 paac.scheme.selection.pagetitle = Scheme Selection
 paac.scheme.selection.heading = Pension Scheme Selection
@@ -43,3 +40,15 @@ paac.scheme.dbmp.label = Both DB and MP
 paac.pension.inputs.pagetitle = Pension Inputs
 paac.pension.inputs.heading = Pension Inputs
 paac.pension.inputs.question = If you have been a member of more than one pension scheme, please provide the total of all pension input periods ending in the relevant tax year. If you pension input amounts from previous tax years, then add them using the hyperlink below.
+
+## Review Amounts Page
+paac.review-amounts.page.heading=Check your answers
+paac.review-amounts.page.title=Check your answers
+paac.review-amounts.button.continue=Confirm and calculate allowances
+paac.review-amounts.link.back=Back
+paac.review-amounts.paragraph=Please review pension contribution amounts below.
+paac.review-amounts.heading.period=Period
+paac.review-amounts.heading.db=Total defined benefit
+paac.review-amounts.heading.mp=Total money purchase
+paac.review-amounts.heading.ta=Tapered Allowance
+paac.review-amounts.action.edit=Edit
