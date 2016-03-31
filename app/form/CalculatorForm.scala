@@ -42,6 +42,10 @@ case class CalculatorFormFields(amount2008:BigDecimal=0,
          Contribution(2014,(amount2014*100).longValue)
          )
   }
+  def hasValues():Boolean = {
+    def isZero(number: BigDecimal):Boolean = number.toInt == 0
+    CalculatorFormFields.unapply(this).get.productIterator.toList.exists((b:Any) => !isZero(b.asInstanceOf[BigDecimal]))
+  }
 }
 object CalculatorFormFields
 

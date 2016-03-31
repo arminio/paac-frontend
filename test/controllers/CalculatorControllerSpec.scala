@@ -55,10 +55,10 @@ class CalculatorControllerSpec extends UnitSpec with BeforeAndAfterAll {
       val result : Option[Future[Result]] = route(FakeRequest(GET, "/paac/calculate"))
       status(result.get) shouldBe 200
     }
-    "return error if no JSON supplied for POST request" in {
+    /*"return error if no JSON supplied for POST request" in {
       val result : Option[Future[Result]] = route(FakeRequest(POST, "/paac/calculate"))
       status(result.get) shouldBe 200
-    }
+    }*/
     "should return calculation results" in {
       // set up
       val contribution0 = Contribution(2008, 500000)

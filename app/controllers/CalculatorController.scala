@@ -28,7 +28,7 @@ object CalculatorController extends CalculatorController {
 
 }
 
-trait CalculatorController  extends FrontendController {
+trait CalculatorController extends BaseFrontendController {
   val connector: CalculatorConnector
 
   val onPageLoad = Action.async { implicit request =>
