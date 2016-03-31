@@ -18,7 +18,6 @@ package controllers
 
 import connector.CalculatorConnector
 import form.EligibilityForm
-import uk.gov.hmrc.play.frontend.controller.FrontendController
 import play.api.mvc._
 import scala.concurrent.Future
 
