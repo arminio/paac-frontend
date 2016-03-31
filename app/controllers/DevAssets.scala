@@ -35,7 +35,9 @@ object DevAssets extends Controller {
     }
 
     if (fileToServe.exists) {
+      // $COVERAGE-OFF$Disabling
       Ok.sendFile(fileToServe, inline = true)
+      // $COVERAGE-ON
     } else {
       Logger.error("DevAssets controller failed to serve a file: " + file)
       NotFound
