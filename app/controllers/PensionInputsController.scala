@@ -16,27 +16,37 @@
 
 package controllers
 
-import connector.CalculatorConnector
-import models._
-import uk.gov.hmrc.play.frontend.controller.FrontendController
+import service.KeystoreService
 import play.api.mvc._
 import scala.concurrent.Future
-import form.PensionInputForm
+import form.{CalculatorForm, SelectSchemeForm, PensionInputForm}
 
 object PensionInputsController extends PensionInputsController {
+
+  override val keystore: KeystoreService = KeystoreService
   override val connector: PensionInputsController = PensionInputsController
 
 }
 
-trait PensionInputsController  extends FrontendController {
+trait PensionInputsController  extends BaseFrontendController {
+
+  val keystore: KeystoreService
   val connector: PensionInputsController
 
-  val onPageLoad = Action.async { implicit request =>
+  val onPageLoad = withSession { implicit request =>
     Future.successful(Ok(views.html.pensionInputs(PensionInputForm.form)))
   }
 
-  val onSubmit = Action.async { implicit request =>
-    Future.successful(Ok(views.html.pensionInputs(PensionInputForm.form)))
+  val onSubmit = withSession { implicit request =>
+
+    SelectSchemeForm.form.bindFromRequest().fold(
+      formWithErrors => { Future.successful(Ok(views.html.selectScheme(SelectSchemeForm.form))) },
+      input => {
+        keystore.store[String](input, SelectSchemeForm.schemeType)
+        Future.successful(Ok(views.html.review_amounts(CalculatorForm.form)))
+      }
+    )
+
   }
 }
 
