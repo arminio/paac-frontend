@@ -28,26 +28,23 @@ object EligibilityController extends EligibilityController{
 }
 
 trait EligibilityController  extends BaseFrontendController {
-  val connector: EligibilityController
+  val connector: CalculatorConnector
   val keystore: KeystoreService
 
-  private val onSubmitRedirect: Call = routes.SelectSchemeController.onPageLoad()
-
-  val onPageLoad = withSession { implicit request =>
+  val onPageLoad:Action[AnyContent] = withSession { implicit request =>
     Future.successful(Ok(views.html.eligibility(EligibilityForm.form)))
   }
 
-  val onSubmit = withSession { implicit request =>
+  val onSubmit:Action[AnyContent] = withSession { implicit request =>
     EligibilityForm.form.bindFromRequest().fold(
       formWithErrors => { Future.successful(Ok(views.html.eligibility(EligibilityForm.form))) },
       input => {
         keystore.store[String](input, EligibilityForm.Eligibility)
-        Future.successful(Redirect(onSubmitRedirect))
+        Future.successful(Ok(views.html.selectScheme(SelectSchemeForm.form)))
       }
     )
   }
-
-  val onBack = Action.async { implicit request =>
+  val onBack:Action[AnyContent] = Action.async { implicit request =>
     Future.successful(Ok(views.html.startPage("")))
   }
 }

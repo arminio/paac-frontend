@@ -6,9 +6,6 @@ POST        /                                           controllers.StartPageCon
 GET         /eligibility                                controllers.EligibilityController.onPageLoad
 POST        /eligibility                                controllers.EligibilityController.onSubmit
 
-## Scheme Selection Page
-GET         /scheme                                     controllers.SelectSchemeController.onPageLoad
-POST        /scheme                                     controllers.SelectSchemeController.onSubmit
 
 GET         /calculate                                  controllers.CalculatorController.onPageLoad
 POST        /calculateOld                               controllers.CalculatorController.onSubmit
@@ -16,7 +13,9 @@ POST        /calculateOld                               controllers.CalculatorCo
 GET         /public/assets/*file                        controllers.Public.at(path="/public", file)
 GET         /assets/*file                               controllers.DevAssets.at(path="app/assets", file)
 
-
+## Scheme Selection Page
+GET         /scheme                                     controllers.SelectSchemeController.onPageLoad
+POST        /scheme                                     controllers.SelectSchemeController.onSubmit
 
 ## Pension Input Page
 GET         /pensionInputs                              controllers.PensionInputsController.onPageLoad
