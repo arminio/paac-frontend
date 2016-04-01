@@ -35,6 +35,8 @@ error.real.precision={0} amount must be not be empty. (Amount must have no more 
 ## Eligibility Page
 paac.calculator.eligibility.pagetitle = To use this service
 paac.calculator.eligibility.question = Were you a member of a registered pension scheme or an overseas pension scheme?
+paac.calculator.eligibility.yes = Yes
+paac.calculator.eligibility.no = No
 
 ## Scheme Selection Page
 paac.scheme.selection.pagetitle = Scheme Selection
