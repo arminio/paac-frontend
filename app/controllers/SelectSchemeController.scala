@@ -33,11 +33,11 @@ trait SelectSchemeController  extends BaseFrontendController {
   val keystore: KeystoreService
   val connector: SelectSchemeController
 
-  val onPageLoad:Action[AnyContent] = withSession { implicit request =>
+  val onPageLoad = withSession { implicit request =>
     Future.successful(Ok(views.html.selectScheme(SelectSchemeForm.form)))
   }
 
-  val onSubmit:Action[AnyContent] = withSession { implicit request =>
+  val onSubmit = withSession { implicit request =>
 
     SelectSchemeForm.form.bindFromRequest().fold(
       formWithErrors => { Future.successful(Ok(views.html.selectScheme(SelectSchemeForm.form))) },
