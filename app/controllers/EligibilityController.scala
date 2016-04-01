@@ -17,7 +17,7 @@
 package controllers
 
 import connector.CalculatorConnector
-import form.EligibilityForm
+import form.{SelectSchemeForm, EligibilityForm}
 import play.api.mvc._
 import scala.concurrent.Future
 import service.KeystoreService
@@ -37,7 +37,7 @@ trait EligibilityController  extends BaseFrontendController {
 
   val onSubmit:Action[AnyContent] = withSession { implicit request =>
     EligibilityForm.form.bindFromRequest().fold(
-      formWithErros => { Future.successful(Ok(views.html.eligibility(EligibilityForm.form))) },
+      formWithErrors => { Future.successful(Ok(views.html.eligibility(EligibilityForm.form))) },
       input => {
         keystore.store[String](input, EligibilityForm.Eligibility)
         Future.successful(Ok(views.html.selectScheme(SelectSchemeForm.form)))
