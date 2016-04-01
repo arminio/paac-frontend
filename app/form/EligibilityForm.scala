@@ -20,7 +20,7 @@ import play.api.data.Form
 import play.api.data.Forms._
 
 trait Eligibility{
-  val Eligibility = "Eligibility"
+  val eligibility = "eligibility"
 }
 
 object EligibilityForm extends Eligibility {
@@ -28,7 +28,7 @@ object EligibilityForm extends Eligibility {
 
   val form: Form[EligibilityFormType] = Form(
     mapping(
-      "Eligibility" -> text
-    )((Eligibility) => Eligibility)((schemeType: EligibilityFormType) => Some(Eligibility))
+      "eligibility" -> text
+    )((eligibility) => eligibility)((schemeType: EligibilityFormType) => Some(eligibility))
   )
 }
