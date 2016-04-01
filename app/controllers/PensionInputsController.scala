@@ -42,9 +42,10 @@ trait PensionInputsController  extends BaseFrontendController {
   val onSubmit = withSession { implicit request =>
 
     PensionInputForm.form.bindFromRequest().fold(
-      formWithErrors => { Future.successful(Ok(views.html.selectScheme(SelectSchemeForm.form))) },
+      formWithErrors => { Future.successful(Ok(views.html.pensionInputs(PensionInputForm.form))) },
       input => {
         keystore.store[BigDecimal](input.amount2014, "definedBenefit_2014")
+
         Future.successful(Redirect(onSubmitRedirect))
       }
     )
