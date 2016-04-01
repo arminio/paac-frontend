@@ -28,24 +28,9 @@
         navLinks = None)
 }
 
-@afterHeader = {
-}
+@afterHeader = {}
 
-@betaBanner = {
-    @layouts.betaBanner(
-        userLoggedIn = false,
-        betaFeedbackUrl = ApplicationConfig.betaFeedbackUrl,
-        betaFeedbackUnauthenticatedUrl = ApplicationConfig.betaFeedbackUnauthenticatedUrl,
-        showFeedbackLinkInBetaBanner = true)
-}
-
-@serviceInfo = {
-    @layouts.serviceInfo(
-        betaBanner = betaBanner,
-        includeGridWrapper = false,
-        serviceInfoContent = Some(serviceInfoContent),
-        includeHMRCBranding = false)
-}
+@serviceInfo = {}
 
 @footerTop = {}
 
@@ -56,7 +41,6 @@
         @layouts.main_content_header(contentHeader = contentHeader.get)
     }
 }
-
 
 @getHelpForm = @{uiHelpers.reportAProblemLink(ApplicationConfig.reportAProblemPartialUrl, ApplicationConfig.reportAProblemNonJSUrl)}
 

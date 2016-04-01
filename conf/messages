@@ -9,7 +9,11 @@ paac.calculator.button.continue = Continue
 paac.calculator.button.calculate = Calculate
 paac.calculator.button.back = Back
 paac.calculator.results.pagetitle = Tax Year Results
-paac.calculator.homepage.pagetitle = Pension AA Calculator
+paac.calculator.homepage.pagetitle = Pension Annual Allowance Calculator
+paac.calculator.startpage.button = Start Calculator
+paac.calculator.startpage.heading = Pension Annual Allowance Calculator
+paac.calculator.startpage.p1 = Lorem Ipsum, Lorem Ipsum, Lorem Ipsum, more Lorem Ipsum, even more Lorem Ipsum
+paac.calculator.startpage.p2 = In order to use this service, you need to Lorem Ipsum
 
 ## PAAC TaxYear Text
 paac.0809.taxyear.text = 2008/09
@@ -27,6 +31,11 @@ paac.calculator.error.number.zero= Enter a number greater than 0
 error.min={0} amount was too small and must be either £0.00 or greater.
 error.real.precision={0} amount must be not be empty. (Amount must have no more than {1} numbers, including {2} decimal places, that is it should be £0.00 or greater.)
 
+
+## Eligibility Page
+paac.calculator.eligibility.pagetitle = To use this service
+paac.calculator.eligibility.question = Were you a member of a registered pension scheme or an overseas pension scheme?
+
 ## Scheme Selection Page
 paac.scheme.selection.pagetitle = Scheme Selection
 paac.scheme.selection.heading = Pension Scheme Selection
@@ -36,7 +45,7 @@ paac.scheme.mp.label = MP (Money Purchase)
 paac.scheme.dbmp.label = Both DB and MP
 
 
-## Pension Inouts Page
+## Pension Inputs Page
 paac.pension.inputs.pagetitle = Pension Inputs
 paac.pension.inputs.heading = Pension Inputs
 paac.pension.inputs.question = If you have been a member of more than one pension scheme, please provide the total of all pension input periods ending in the relevant tax year. If you pension input amounts from previous tax years, then add them using the hyperlink below.
@@ -53,3 +62,4 @@ paac.review-amounts.heading.db=Total defined benefit
 paac.review-amounts.heading.mp=Total money purchase
 paac.review-amounts.heading.ta=Tapered Allowance
 paac.review-amounts.action.edit=Edit
+
