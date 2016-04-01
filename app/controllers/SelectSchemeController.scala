@@ -33,6 +33,8 @@ trait SelectSchemeController  extends BaseFrontendController {
   val keystore: KeystoreService
   val connector: SelectSchemeController
 
+  private val onSubmitRedirect: Call = routes.PensionInputsController.onPageLoad()
+
   val onPageLoad = withSession { implicit request =>
     Future.successful(Ok(views.html.selectScheme(SelectSchemeForm.form)))
   }
@@ -43,7 +45,7 @@ trait SelectSchemeController  extends BaseFrontendController {
       formWithErrors => { Future.successful(Ok(views.html.selectScheme(SelectSchemeForm.form))) },
       input => {
         keystore.store[String](input, SelectSchemeForm.schemeType)
-        Future.successful(Ok(views.html.pensionInputs(PensionInputForm.form)))
+        Future.successful(Redirect(onSubmitRedirect))
       }
     )
   }

@@ -19,7 +19,7 @@ package controllers
 import service.KeystoreService
 import play.api.mvc._
 import scala.concurrent.Future
-import form.{CalculatorForm, SelectSchemeForm, PensionInputForm}
+import form.{PensionInputFormFields, CalculatorForm, SelectSchemeForm, PensionInputForm}
 
 object PensionInputsController extends PensionInputsController {
 
@@ -33,17 +33,19 @@ trait PensionInputsController  extends BaseFrontendController {
   val keystore: KeystoreService
   val connector: PensionInputsController
 
+  private val onSubmitRedirect: Call = routes.ReviewTotalAmountsController.onPageLoad()
+
   val onPageLoad = withSession { implicit request =>
     Future.successful(Ok(views.html.pensionInputs(PensionInputForm.form)))
   }
 
   val onSubmit = withSession { implicit request =>
 
-    SelectSchemeForm.form.bindFromRequest().fold(
+    PensionInputForm.form.bindFromRequest().fold(
       formWithErrors => { Future.successful(Ok(views.html.selectScheme(SelectSchemeForm.form))) },
       input => {
-        keystore.store[String](input, SelectSchemeForm.schemeType)
-        Future.successful(Ok(views.html.review_amounts(CalculatorForm.form)))
+        keystore.store[BigDecimal](input.amount2014, "definedBenefit_2014")
+        Future.successful(Redirect(onSubmitRedirect))
       }
     )
 
