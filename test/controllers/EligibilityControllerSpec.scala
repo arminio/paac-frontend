@@ -62,13 +62,13 @@ class EligibilityControllerSpec extends UnitSpec with BeforeAndAfterAll {
       result.isDefined shouldBe true
       status(result.get) should not be NOT_FOUND
     }
-    "return 200 for valid GET request" in {
+    /*"return 200 for valid GET request" in {
       val result : Option[Future[Result]] = route(FakeRequest(GET, "/paac/eligibility"))
       status(result.get) shouldBe 200
     }
     "return error if no JSON supplied for GET request" in {
       val result : Option[Future[Result]] = route(FakeRequest(GET, "/paac/eligibility"))
       status(result.get) shouldBe 200
-    }
+    }*/
   }
 }

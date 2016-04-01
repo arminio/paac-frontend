@@ -88,16 +88,16 @@ class ReviewTotalAmountsControllerSpec extends UnitSpec with BeforeAndAfterAll {
                     "definedBenefit_2014" -> "500000",
                     SessionKeys.sessionId -> SESSION_ID)
       override def store[T](data: T, key: String)
-                  (implicit hc: HeaderCarrier, 
-                   format: play.api.libs.json.Format[T], 
+                  (implicit hc: HeaderCarrier,
+                   format: play.api.libs.json.Format[T],
                    request: Request[Any])
                   : Future[Option[T]] = {
         map + (key -> data.toString)
         Future.successful(Some(data))
       }
       override def read[T](key: String)
-                 (implicit hc: HeaderCarrier, 
-                  format: play.api.libs.json.Format[T], 
+                 (implicit hc: HeaderCarrier,
+                  format: play.api.libs.json.Format[T],
                   request: Request[Any])
                  : Future[Option[T]] = {
         Future.successful((map get key).map(_.asInstanceOf[T]))
@@ -108,8 +108,8 @@ class ReviewTotalAmountsControllerSpec extends UnitSpec with BeforeAndAfterAll {
   "ReviewTotalAmountsController" should {
     "display list of amounts previously provided by user" in new MockCalculatorConnectorFixture with MockKeystoreFixture {
       // set up
-      object MockedReviewTotalAmountsController extends ReviewTotalAmountsController { 
-        override val connector: CalculatorConnector = MockCalculatorConnector 
+      object MockedReviewTotalAmountsController extends ReviewTotalAmountsController {
+        override val connector: CalculatorConnector = MockCalculatorConnector
         override val keystore: KeystoreService = MockKeystore
       }
       val endpoint = "/paac/review"
@@ -123,8 +123,8 @@ class ReviewTotalAmountsControllerSpec extends UnitSpec with BeforeAndAfterAll {
 
     "should return calculation results from amounts stored in keystore" in new MockCalculatorConnectorFixture with MockKeystoreFixture {
       // set up
-      object MockedReviewTotalAmountsController extends ReviewTotalAmountsController { 
-        override val connector: CalculatorConnector = MockCalculatorConnector 
+      object MockedReviewTotalAmountsController extends ReviewTotalAmountsController {
+        override val connector: CalculatorConnector = MockCalculatorConnector
         override val keystore: KeystoreService = MockKeystore
       }
       val request = FakeRequest(GET, "/paac/calculate").withSession {(SessionKeys.sessionId,SESSION_ID)}

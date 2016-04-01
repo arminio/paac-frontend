@@ -29,7 +29,7 @@ class SessionProviderSpec extends UnitSpec {
     val sessionProvider = SessionProvider
   }
 
-  "SessionProvier" should {
+  "SessionProvider" should {
     "create unique session id" in new SessionProviderFixture {
       // set up
       val request = FakeRequest()
