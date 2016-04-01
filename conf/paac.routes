@@ -10,8 +10,16 @@ POST        /eligibility                                controllers.EligibilityC
 GET         /calculate                                  controllers.CalculatorController.onPageLoad
 POST        /calculateOld                               controllers.CalculatorController.onSubmit
 
-GET         /review                                     controllers.ReviewTotalAmountsController.onPageLoad
-POST        /calculate                                  controllers.ReviewTotalAmountsController.onSubmit
-
 GET         /public/assets/*file                        controllers.Public.at(path="/public", file)
 GET         /assets/*file                               controllers.DevAssets.at(path="app/assets", file)
+
+## Scheme Selection Page
+GET         /scheme                                     controllers.SelectSchemeController.onPageLoad
+POST        /scheme                                     controllers.SelectSchemeController.onSubmit
+
+## Pension Input Page
+GET         /pensionInputs                              controllers.PensionInputsController.onPageLoad
+POST        /pensionInputs                              controllers.PensionInputsController.onSubmit
+
+GET         /review                                     controllers.ReviewTotalAmountsController.onPageLoad
+POST        /calculate                                  controllers.ReviewTotalAmountsController.onSubmit

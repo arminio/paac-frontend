@@ -23,7 +23,6 @@ import play.api.mvc._
 import scala.concurrent.Future
 import form._
 import service._
-import controllers.routes
 import connector.CalculatorConnector
 
 object ReviewTotalAmountsController extends ReviewTotalAmountsController {
@@ -64,9 +63,6 @@ trait ReviewTotalAmountsController extends BaseFrontendController {
 
   val onPageLoad = withSession { implicit request =>
     fetchAmounts().map { (amountsMap) =>
-      println("*********************************")
-      println(amountsMap)
-      println("*********************************")
       CalculatorForm.form.bind(amountsMap).fold(
         formWithErrors => {println(formWithErrors);Ok(views.html.review_amounts(formWithErrors))},
         form => Ok(views.html.review_amounts(CalculatorForm.form.bind(amountsMap)))
