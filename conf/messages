@@ -46,6 +46,7 @@ paac.review-amounts.page.heading=Check your answers
 paac.review-amounts.page.title=Check your answers
 paac.review-amounts.button.continue=Confirm and calculate allowances
 paac.review-amounts.link.back=Back
+paac.review-amounts.link.back.href=pensionInputs
 paac.review-amounts.paragraph=Please review pension contribution amounts below.
 paac.review-amounts.heading.period=Period
 paac.review-amounts.heading.db=Total defined benefit
