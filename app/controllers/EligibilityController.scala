@@ -17,7 +17,7 @@
 package controllers
 
 import connector.CalculatorConnector
-import form.EligibilityForm
+import form.{SelectSchemeForm, EligibilityForm}
 import play.api.mvc._
 import scala.concurrent.Future
 import service.KeystoreService
