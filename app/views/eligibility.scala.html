@@ -10,7 +10,7 @@ heading = Messages("paac.calculator.eligibility.pagetitle")
 action = controllers.routes.EligibilityController.onSubmit,
 args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
 
-<p class="back"><a href="@controllers.routes.StartPageController.startPage()">@Messages("paac.calculator.button.back")</a></p>
+<p class="back"><a href="@controllers.routes.StartPageController.startPage">@Messages("paac.calculator.button.back")</a></p>
 
 <p class="lede text">@Messages("paac.calculator.eligibility.question")</p>
 
@@ -18,7 +18,7 @@ args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
 
     <fieldset class="inline">
         <label for="eligibility" class="block-label add-focus selected">
-            <input id="eligibility" type="radio" name="eligibility" value="Yes" >
+            <input id="eligibility" type="radio" name="eligibility" value="Yes" checked>
             @Messages("yes")
         </label><BR/><BR/><BR/>
         <label for="eligibility" class="block-label">

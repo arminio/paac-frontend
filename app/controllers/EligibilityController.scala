@@ -31,20 +31,20 @@ trait EligibilityController  extends BaseFrontendController {
   val connector: CalculatorConnector
   val keystore: KeystoreService
 
-  val onPageLoad:Action[AnyContent] = withSession { implicit request =>
+  private val onSubmitRedirect: Call = routes.SelectSchemeController.onPageLoad()
+
+  val onPageLoad = withSession { implicit request =>
     Future.successful(Ok(views.html.eligibility(EligibilityForm.form)))
   }
 
-  val onSubmit:Action[AnyContent] = withSession { implicit request =>
+  val onSubmit = withSession { implicit request =>
     EligibilityForm.form.bindFromRequest().fold(
       formWithErrors => { Future.successful(Ok(views.html.eligibility(EligibilityForm.form))) },
       input => {
-        keystore.store[String](input, EligibilityForm.Eligibility)
-        Future.successful(Ok(views.html.selectScheme(SelectSchemeForm.form)))
+        keystore.store[String](input, EligibilityForm.eligibility)
+        Future.successful(Redirect(onSubmitRedirect))
       }
     )
   }
-  val onBack:Action[AnyContent] = Action.async { implicit request =>
-    Future.successful(Ok(views.html.startPage("")))
-  }
+
 }
