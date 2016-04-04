@@ -44,7 +44,7 @@ trait PensionInputsController  extends BaseFrontendController {
     PensionInputForm.form.bindFromRequest().fold(
       formWithErrors => { Future.successful(Ok(views.html.pensionInputs(PensionInputForm.form))) },
       input => {
-        keystore.store[BigDecimal](input.amount2014, "definedBenefit_2014")
+        keystore.store[String](input.amount2014.toString, "definedBenefit_2014")
 
         Future.successful(Redirect(onSubmitRedirect))
       }
