@@ -14,7 +14,7 @@ backLink = Some((controllers.routes.PensionInputsController.onPageLoad.url,Messa
         <table>
           <thead>
             <tr>
-              <th class="numeric" scope="col"@Messages("paac.review-amounts.heading.period")</th>
+              <th class="numeric" scope="col">@Messages("paac.review-amounts.heading.period")</th>
               <th class="numeric" scope="col">@Messages("paac.review-amounts.heading.db")</th>
               <th class="numeric" scope="col">@Messages("paac.review-amounts.heading.mp")</th>
               <th class="numeric" scope="col">@Messages("paac.review-amounts.heading.ta")</th>
@@ -22,7 +22,7 @@ backLink = Some((controllers.routes.PensionInputsController.onPageLoad.url,Messa
             </tr>
           </thead>
           <tbody>
-@defining(java.text.NumberFormat.getCurrencyInstance()) { currencyFormatter =>  
+@defining(java.text.NumberFormat.getCurrencyInstance(java.util.Locale.UK)) { currencyFormatter =>  
   @for(i <- List.range(2006, (new java.util.GregorianCalendar()).get(java.util.Calendar.YEAR)).reverse) {
     @defining(new BigDecimal(reviewForm.data.getOrElse("definedBenefit_"+i,"0.0"))) { db =>
     @defining(new BigDecimal(reviewForm.data.getOrElse("moneyPurchase_"+i,"0.0"))) { mp =>
