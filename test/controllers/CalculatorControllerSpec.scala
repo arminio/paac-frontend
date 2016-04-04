@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+/*
 package controllers
 
 import org.scalatest.BeforeAndAfterAll
@@ -99,3 +100,4 @@ class CalculatorControllerSpec extends UnitSpec with BeforeAndAfterAll {
     }
   }
 }
+*/
