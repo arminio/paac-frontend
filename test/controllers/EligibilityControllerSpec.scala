@@ -70,5 +70,16 @@ class EligibilityControllerSpec extends UnitSpec with BeforeAndAfterAll {
       val result : Option[Future[Result]] = route(FakeRequest(GET, "/paac/eligibility"))
       status(result.get) shouldBe 200
     }*/
+
+
+  }
+
+  "POST" should {
+
+    "not respond with NOT_FOUND through POST method" in {
+      val result = route(FakeRequest(POST, "/paac/eligibility"))
+      result.isDefined shouldBe true
+      status(result.get) should not be NOT_FOUND
+    }
   }
 }

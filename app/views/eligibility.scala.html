@@ -6,30 +6,27 @@
 pageTitle = Messages("paac.calculator.eligibility.pagetitle"),
 heading = Messages("paac.calculator.eligibility.pagetitle")
 ) {
-@form(
-action = controllers.routes.EligibilityController.onSubmit,
-args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
+    @form(
+        action = controllers.routes.EligibilityController.onSubmit,
+        args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
 
-<p class="back"><a href="@controllers.routes.StartPageController.startPage">@Messages("paac.calculator.button.back")</a></p>
+    <p class="back"><a href="@controllers.routes.StartPageController.startPage">@Messages("paac.calculator.button.back")</a></p>
+    <p class="lede text">@Messages("paac.calculator.eligibility.question")</p>
 
-<p class="lede text">@Messages("paac.calculator.eligibility.question")</p>
-
-<div class='form-group'>
-
-    <fieldset class="inline">
-        <label for="eligibility" class="block-label add-focus selected">
-            <input id="eligibility" type="radio" name="eligibility" value="Yes" checked>
-            @Messages("yes")
-        </label><BR/><BR/><BR/>
-        <label for="eligibility" class="block-label">
-            <input id="eligibility" type="radio" name="eligibility" value="No" >
-            @Messages("no")
-        </label><BR/><BR/><BR/>
-    </fieldset>
-
-</div>
+    <div class='form-group'>
+        <fieldset class="inline">
+            <label for="eligibility" class="block-label add-focus selected">
+                <input id="eligibility" type="radio" name="eligibility" value="Yes" checked>
+                @Messages("paac.calculator.eligibility.yes")
+                </label><BR/><BR/><BR/>
+                <label for="eligibility" class="block-label">
+                <input id="eligibility" type="radio" name="eligibility" value="No">
+                @Messages("paac.calculator.eligibility.no")
+            </label><BR/><BR/><BR/>
+        </fieldset>
+    </div>
 
 <button id="submit" type="submit" class="button" value="Continue">@Messages("paac.calculator.button.continue")</button>
 
-}
+    }
 }

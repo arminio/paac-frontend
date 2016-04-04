@@ -28,11 +28,13 @@ object StartPageController extends StartPageController{
   trait StartPageController  extends BaseFrontendController {
     val connector: CalculatorConnector
 
+    private val onSubmitRedirect: Call = routes.EligibilityController.onPageLoad()
+
     val startPage = Action.async { implicit request =>
       Future.successful(Ok(views.html.startPage("")))
     }
 
     val onSubmit = Action.async { implicit request =>
-      Future.successful(Ok(views.html.eligibility(EligibilityForm.form)))
+      Future.successful(Redirect(onSubmitRedirect))
     }
   }
