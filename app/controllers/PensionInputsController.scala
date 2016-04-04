@@ -36,7 +36,16 @@ trait PensionInputsController  extends BaseFrontendController {
   private val onSubmitRedirect: Call = routes.ReviewTotalAmountsController.onPageLoad()
 
   val onPageLoad = withSession { implicit request =>
-    Future.successful(Ok(views.html.pensionInputs(PensionInputForm.form)))
+    val key = "definedBenefit_2014"
+    keystore.read[String](key).map {
+        (amount) =>
+        val fields = Map(amount match {
+          case None => (key, "0.00")
+          case Some("0") => (key, "0.00")
+          case Some(value) => (key, (value.toInt/100.00).toString)
+        })
+        Ok(views.html.pensionInputs(PensionInputForm.form.bind(fields)))
+    }
   }
 
   val onSubmit = withSession { implicit request =>
@@ -44,8 +53,8 @@ trait PensionInputsController  extends BaseFrontendController {
     PensionInputForm.form.bindFromRequest().fold(
       formWithErrors => { Future.successful(Ok(views.html.pensionInputs(PensionInputForm.form))) },
       input => {
-        keystore.store[String](input.amount2014.toString, "definedBenefit_2014")
-
+        val (amount:Long, key:String) = input.toDefinedBenefit(2014).getOrElse(("definedBenefit_2014", 0L))
+        keystore.store[String](amount.toString, key)
         Future.successful(Redirect(onSubmitRedirect))
       }
     )
