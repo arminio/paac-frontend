@@ -51,8 +51,8 @@ trait BaseFrontendController extends SessionProvider with FrontendController {
   def withSession(f: => Request[AnyContent]=> Future[Result]) : Action[AnyContent] = Action.async {
     implicit request : Request[AnyContent] =>
       getSessionId match {
-        case Some(NOSESSION) => Future.successful(Results.Redirect(routes.CalculatorController.onPageLoad()).withSession(createKeystoreSession()))
-        case None => Future.successful(Results.Redirect(routes.CalculatorController.onPageLoad()).withSession(createKeystoreSession()))
+        case Some(NOSESSION) => Future.successful(Results.Redirect(routes.StartPageController.newSession()))
+        case None => Future.successful(Results.Redirect(routes.StartPageController.newSession()))
         case _ => f(request)
       }
   }
