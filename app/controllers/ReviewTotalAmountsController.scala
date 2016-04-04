@@ -45,11 +45,7 @@ trait ReviewTotalAmountsController extends BaseFrontendController {
       }
     def fetchYearAmounts(year: Int) : List[Future[Option[(String,String)]]] = year match {
       case y if y == 2014 =>
-        List(Future.successful{
-          val x = Await.result(keystore.read[BigDecimal]("definedBenefit_2014"), Duration.Inf)
-
-          Some(("definedBenefit_"+y, x.map(_.toString).getOrElse("")))
-        })
+        List("definedBenefit_"+y).map(fetchAmount(_))
       case y if y < 2015 =>
         List("definedBenefit_"+y).map(fetchAmount(_))
       case y if y == 2015 => 
