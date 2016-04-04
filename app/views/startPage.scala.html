@@ -12,7 +12,6 @@ heading = Messages("paac.calculator.startpage.heading")){
 @form(
 action = controllers.routes.StartPageController.onSubmit,
 args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
-<button id="Start" class="button" value="Continue">@Messages("paac.calculator.startpage.button")</button>
-
+<button id="Start" class="button button-start" value="Continue" role="button">@Messages("paac.calculator.startpage.button")</button>
 }
 }

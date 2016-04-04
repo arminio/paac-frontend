@@ -4,12 +4,10 @@
 @common.paacMain(
 pageTitle = Messages("paac.calculator.results.heading"),
 heading = Messages("paac.calculator.results.pagetitle"),
-"main",
-Some("full-width")
+mainClass = "main",
+articleClasses=Some("full-width"),
+backLink = Some((controllers.routes.ReviewTotalAmountsController.onPageLoad.url,Messages("paac.link.text.back")))
 ) {
-    <a href="@Messages("paac.results.link.href")">@Messages("paac.results.link.back")</a>
-    &nbsp;
-    <a href="@Messages("paac.results.link.new.href")">@Messages("paac.results.link.new")</a>
     <table>
        <thead>
        <tr>
@@ -54,5 +52,6 @@ Some("full-width")
   }
        </tbody>
     </table>
+    <a href="@Messages("paac.results.link.new.href")">@Messages("paac.results.link.new")</a>
 }
 

@@ -1,7 +1,8 @@
 @(pageTitle: String,
   heading: String, 
   mainClass : String = "main",
-  articleClasses: Option[String] = None)(mainContent: Html)(implicit request:Request[_])
+  articleClasses: Option[String] = None,
+  backLink: Option[(String,String)] = None)(mainContent: Html)(implicit request:Request[_])
 
 @import uk.gov.hmrc.play.views.html.layouts
 
@@ -36,4 +37,5 @@
     contentHeader = Some(contentHeader),
     mainContent = layouts.article(mainContent, None, articleClasses),
     linkElement = Some(linkElement),
-    scriptElement = Some(scriptElement))
+    scriptElement = Some(scriptElement),
+    backLink = backLink)

@@ -3,26 +3,24 @@
 @import uk.gov.hmrc.play.views.html.helpers._
 
 @common.paacMain(
-pageTitle = Messages("paac.calculator.eligibility.pagetitle"),
-heading = Messages("paac.calculator.eligibility.pagetitle")
+pageTitle = Messages("paac.calculator.eligibility.question"),
+heading = Messages("paac.calculator.eligibility.question"),
+backLink = Some((controllers.routes.StartPageController.startPage.url,Messages("paac.link.text.back")))
 ) {
     @form(
         action = controllers.routes.EligibilityController.onSubmit,
         args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
-
-    <p class="back"><a href="@controllers.routes.StartPageController.startPage">@Messages("paac.calculator.button.back")</a></p>
-    <p class="lede text">@Messages("paac.calculator.eligibility.question")</p>
 
     <div class='form-group'>
         <fieldset class="inline">
             <label for="eligibility" class="block-label add-focus selected">
                 <input id="eligibility" type="radio" name="eligibility" value="Yes" checked>
                 @Messages("paac.calculator.eligibility.yes")
-                </label><BR/><BR/><BR/>
+                </label>
                 <label for="eligibility" class="block-label">
                 <input id="eligibility" type="radio" name="eligibility" value="No">
                 @Messages("paac.calculator.eligibility.no")
-            </label><BR/><BR/><BR/>
+            </label>
         </fieldset>
     </div>
 

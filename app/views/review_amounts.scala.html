@@ -6,12 +6,10 @@
 @common.paacMain(
 pageTitle = Messages("paac.review-amounts.page.heading"),
 heading = Messages("paac.review-amounts.page.title"),
-"main",
-Some("full-width")
+mainClass = "main",
+articleClasses = Some("full-width"),
+backLink = Some((controllers.routes.PensionInputsController.onPageLoad.url,Messages("paac.link.text.back")))
 ) {
-    <a href="@Messages("paac.review-amounts.link.back.href")">@Messages("paac.review-amounts.link.back")</a>
-    <br>
-    <br>
         <p class="lede text">@Messages("paac.review-amounts.paragraph")</p>
         <table>
           <thead>

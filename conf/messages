@@ -1,3 +1,6 @@
+## Common
+paac.link.text.back=Back
+
 ## Calculator Home Page
 paac.nav.title = Pension AA Calculator
 paac.calculator.homepage.heading = PAAC
@@ -34,7 +37,7 @@ error.real.precision={0} amount must be not be empty. (Amount must have no more 
 
 ## Eligibility Page
 paac.calculator.eligibility.pagetitle = To use this service
-paac.calculator.eligibility.question = Were you a member of a registered pension scheme or an overseas pension scheme?
+paac.calculator.eligibility.question = Were you a member of a registered pension scheme either in the UK or overseas?
 paac.calculator.eligibility.yes = Yes
 paac.calculator.eligibility.no = No
 
@@ -46,7 +49,6 @@ paac.scheme.db.label = DB (Defined Benefit)
 paac.scheme.mp.label = MP (Money Purchase)
 paac.scheme.dbmp.label = Both DB and MP
 
-
 ## Pension Inputs Page
 paac.pension.inputs.pagetitle = Pension Inputs
 paac.pension.inputs.heading = Pension Inputs
@@ -56,8 +58,6 @@ paac.pension.inputs.question = If you have been a member of more than one pensio
 paac.review-amounts.page.heading=Check your answers
 paac.review-amounts.page.title=Check your answers
 paac.review-amounts.button.continue=Confirm and calculate allowances
-paac.review-amounts.link.back=Back
-paac.review-amounts.link.back.href=pensionInputs
 paac.review-amounts.paragraph=Please review pension contribution amounts below.
 paac.review-amounts.heading.period=Period
 paac.review-amounts.heading.db=Total defined benefit
@@ -66,8 +66,6 @@ paac.review-amounts.heading.ta=Tapered Allowance
 paac.review-amounts.action.edit=Edit
 
 ## Results Page
-paac.results.link.back=Back
-paac.results.link.href=review
 paac.results.table.col.1=Period
 paac.results.table.col.2=Defined Benefit
 paac.results.table.col.3=Money Purchase
