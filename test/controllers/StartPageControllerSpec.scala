@@ -16,7 +16,6 @@
 
 package controllers
 
-
 import org.scalatest.BeforeAndAfterAll
 import play.api.Play
 import play.api.mvc.Result
@@ -25,7 +24,7 @@ import play.api.test.{FakeRequest, FakeApplication}
 import uk.gov.hmrc.play.test.UnitSpec
 import scala.concurrent.Future
 
-class startPageControllerSpec extends UnitSpec with BeforeAndAfterAll {
+class StartPageControllerSpec extends UnitSpec with BeforeAndAfterAll {
     val app = FakeApplication()
 
     override def beforeAll() {
@@ -41,16 +40,18 @@ class startPageControllerSpec extends UnitSpec with BeforeAndAfterAll {
 
     implicit val request = FakeRequest()
 
-    "startPageController" should {
+    "StartPageController" should {
       "not return result NOT_FOUND" in {
         val result : Option[Future[Result]] = route(FakeRequest(GET, "/paac"))
         result.isDefined shouldBe true
         status(result.get) should not be NOT_FOUND
       }
+
       "return 200 for valid GET request" in {
         val result : Option[Future[Result]] = route(FakeRequest(GET, "/paac"))
         status(result.get) shouldBe 200
       }
+
       "return error if no JSON supplied for GET request" in {
         val result : Option[Future[Result]] = route(FakeRequest(GET, "/paac"))
         status(result.get) shouldBe 200
