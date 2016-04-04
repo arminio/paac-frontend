@@ -39,13 +39,11 @@ trait ReviewTotalAmountsController extends BaseFrontendController {
     def fetchAmount(key: String) : Future[Option[(String,String)]] = keystore.read[String](key).map { (amount) =>
         amount match {
           case None => Some((key, "0.00"))
-          case Some("0.00") => Some((key, "0.00"))
-          case Some(value) => Some((key, value))
+          case Some("0") => Some((key, "0.00"))
+          case Some(value) => Some((key, (value.toInt/100.00).toString))
         }
       }
     def fetchYearAmounts(year: Int) : List[Future[Option[(String,String)]]] = year match {
-      case y if y == 2014 =>
-        List("definedBenefit_"+y).map(fetchAmount(_))
       case y if y < 2015 =>
         List("definedBenefit_"+y).map(fetchAmount(_))
       case y if y == 2015 => 
@@ -68,6 +66,20 @@ trait ReviewTotalAmountsController extends BaseFrontendController {
         formWithErrors => {println(formWithErrors);Ok(views.html.review_amounts(formWithErrors))},
         form => Ok(views.html.review_amounts(CalculatorForm.form.bind(amountsMap)))
       )
+    }
+  }
+
+  def onEditAmount(year:Long) = withSession { implicit request =>
+    if (year < 2015) {
+      Future.successful(Results.Redirect(routes.PensionInputsController.onPageLoad()))
+    }
+    else {
+      fetchAmounts().map { (amountsMap) =>
+        CalculatorForm.form.bind(amountsMap).fold(
+          formWithErrors => {println(formWithErrors);Ok(views.html.review_amounts(formWithErrors))},
+          form => Ok(views.html.review_amounts(CalculatorForm.form.bind(amountsMap)))
+        )
+      }
     }
   }
 

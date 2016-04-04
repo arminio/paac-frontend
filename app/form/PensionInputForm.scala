@@ -26,6 +26,10 @@ import play.api.i18n.Messages
 
 case class PensionInputFormFields(amount2014:BigDecimal=0) {
   def toContributions():List[Contribution] = List(Contribution(2014,(amount2014*100).longValue))
+
+  def toDefinedBenefit(year: Int) : Option[(Long, String)] = {
+    toContributions.find(_.taxPeriodStart.year == year).map((c)=>(c.amounts.definedBenefit,"definedBenefit_"+c.taxPeriodStart.year))
+  }
 }
 object PensionInputFormFields
 
