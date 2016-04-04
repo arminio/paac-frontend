@@ -1,6 +1,7 @@
 @(pageTitle: String,
-    heading: String,
-    mainClass : String = "main")(mainContent: Html)(implicit request:Request[_])
+  heading: String, 
+  mainClass : String = "main",
+  articleClasses: Option[String] = None)(mainContent: Html)(implicit request:Request[_])
 
 @import uk.gov.hmrc.play.views.html.layouts
 
@@ -8,7 +9,7 @@
     <meta name="robots" content="noindex">
     <meta name="googlebot" content="noindex">
     <meta name="format-detection" content="telephone=no">
-
+    <link rel="stylesheet" href='@routes.Public.at("stylesheets/paac.css")' />
 }
 
 @scriptElement = {
@@ -33,6 +34,6 @@
     title = title.toString,
     mainClass = Some(mainClass),
     contentHeader = Some(contentHeader),
-    mainContent = layouts.article(mainContent),
+    mainContent = layouts.article(mainContent, None, articleClasses),
     linkElement = Some(linkElement),
     scriptElement = Some(scriptElement))

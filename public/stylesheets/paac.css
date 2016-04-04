@@ -1,0 +1,13 @@
+#content > .full-width {
+  float: left !important;
+}
+
+#content > table > .numeric {
+  text-align: right
+}
+
+#content > table > .edit_action {
+  min-width:5em;
+  text-align: right;
+  white-space: nowrap;
+}
