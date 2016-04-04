@@ -4,7 +4,8 @@
 
 @common.paacMain(
 pageTitle = Messages("paac.scheme.selection.pagetitle"),
-heading = Messages("paac.scheme.selection.heading")
+heading = Messages("paac.scheme.selection.heading"),
+backLink = Some((controllers.routes.EligibilityController.onPageLoad.url,Messages("paac.link.text.back")))
 ) {
 
     <p class="lede text">@Messages("paac.calculator.startpage.p1")</p>
@@ -36,8 +37,5 @@ heading = Messages("paac.scheme.selection.heading")
     </div>
     <br/>
     <button id="submit" type="submit" class="button" value="Continue">@Messages("paac.calculator.button.continue")</button>
-    <br/>
-    <br/>
-    <p class="backlink"><a href="@controllers.routes.EligibilityController.onPageLoad">@Messages("paac.calculator.button.back")</a></p>
     }
 }

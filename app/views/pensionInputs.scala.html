@@ -4,7 +4,8 @@
 
 @common.paacMain(
 pageTitle = Messages("paac.pension.inputs.pagetitle"),
-heading = Messages("paac.pension.inputs.heading")
+heading = Messages("paac.pension.inputs.heading"),
+backLink = Some((controllers.routes.SelectSchemeController.onPageLoad.url,Messages("paac.link.text.back")))
 ) {
 
     <p class="lede text">@Messages("paac.calculator.startpage.p1")</p>
@@ -35,11 +36,11 @@ heading = Messages("paac.pension.inputs.heading")
                       <span style="float:right">
                       @if(paacForm.data.contains("definedBenefit_"+i)) {
                           <td style="text-align:right;min-width: 7em">
-                              £&nbsp;<input type="number" name="definedBenefit_@i" id="definedBenefit" min="0" value='@paacForm.data("definedBenefit_"+i)' style="@if(paacForm.errors.find(_.key == "definedBenefit_"+i)) {border: 4px solid #b10e1e;}"/>
+                              £&nbsp;<input type="number" name="definedBenefit_@i" id="definedBenefit" min="0" step="1" value='@paacForm.data("definedBenefit_"+i)' max="9999999.99" size="10" style="width:9em;@if(paacForm.errors.find(_.key == "definedBenefit_"+i)) {border: 4px solid #b10e1e;}"/>
                           </td>
                           } else {
                           <td style="text-align:right;min-width: 7em">
-                              £&nbsp;<input type="number" name="definedBenefit_@i" id="definedBenefit" min="0" value='0.00' style="@if(paacForm.errors.find(_.key == "definedBenefit_"+i)) {border: 4px solid #b10e1e;}"/>
+                              £&nbsp;<input type="number" name="definedBenefit_@i" id="definedBenefit" min="0" step="1" value='0.00' max="9999999.99" size="10" style="width:9em;@if(paacForm.errors.find(_.key == "definedBenefit_"+i)) {border: 4px solid #b10e1e;}"/>
                           </td>
                           }
                       </span>
@@ -53,8 +54,5 @@ heading = Messages("paac.pension.inputs.heading")
 
         <br/>
         <button id="submit" type="submit" class="button" value="Continue">@Messages("paac.calculator.button.continue")</button>
-        <br/>
-        <br/>
-        <p class="backlink"><a href="@controllers.routes.SelectSchemeController.onPageLoad()">@Messages("paac.calculator.button.back")</a></p>
     }
 }

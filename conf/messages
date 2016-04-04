@@ -1,3 +1,6 @@
+## Common
+paac.link.text.back=Back
+
 ## Calculator Home Page
 paac.nav.title = Pension AA Calculator
 paac.calculator.homepage.heading = PAAC
@@ -12,8 +15,8 @@ paac.calculator.results.pagetitle = Tax Year Results
 paac.calculator.homepage.pagetitle = Pension Annual Allowance Calculator
 paac.calculator.startpage.button = Start Calculator
 paac.calculator.startpage.heading = Pension Annual Allowance Calculator
-paac.calculator.startpage.p1 = Lorem Ipsum, Lorem Ipsum, Lorem Ipsum, more Lorem Ipsum, even more Lorem Ipsum
-paac.calculator.startpage.p2 = In order to use this service, you need to Lorem Ipsum
+paac.calculator.startpage.p1 = Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris dignissim, metus nec euismod mattis, nulla orci sodales lacus, et vestibulum dolor odio rutrum dolor. Aliquam commodo mi metus, sit amet iaculis nunc placerat vitae.
+paac.calculator.startpage.p2 = Nullam eu commodo ligula. Morbi consequat interdum consectetur. Integer sit amet hendrerit lorem, et aliquet odio. 
 
 ## PAAC TaxYear Text
 paac.0809.taxyear.text = 2008/09
@@ -34,7 +37,7 @@ error.real.precision={0} amount must be not be empty. (Amount must have no more 
 
 ## Eligibility Page
 paac.calculator.eligibility.pagetitle = To use this service
-paac.calculator.eligibility.question = Were you a member of a registered pension scheme or an overseas pension scheme?
+paac.calculator.eligibility.question = Were you a member of a registered pension scheme either in the UK or overseas?
 paac.calculator.eligibility.yes = Yes
 paac.calculator.eligibility.no = No
 
@@ -46,7 +49,6 @@ paac.scheme.db.label = DB (Defined Benefit)
 paac.scheme.mp.label = MP (Money Purchase)
 paac.scheme.dbmp.label = Both DB and MP
 
-
 ## Pension Inputs Page
 paac.pension.inputs.pagetitle = Pension Inputs
 paac.pension.inputs.heading = Pension Inputs
@@ -56,8 +58,6 @@ paac.pension.inputs.question = If you have been a member of more than one pensio
 paac.review-amounts.page.heading=Check your answers
 paac.review-amounts.page.title=Check your answers
 paac.review-amounts.button.continue=Confirm and calculate allowances
-paac.review-amounts.link.back=Back
-paac.review-amounts.link.back.href=pensionInputs
 paac.review-amounts.paragraph=Please review pension contribution amounts below.
 paac.review-amounts.heading.period=Period
 paac.review-amounts.heading.db=Total defined benefit
@@ -65,3 +65,14 @@ paac.review-amounts.heading.mp=Total money purchase
 paac.review-amounts.heading.ta=Tapered Allowance
 paac.review-amounts.action.edit=Edit
 
+## Results Page
+paac.results.table.col.1=Period
+paac.results.table.col.2=Defined Benefit
+paac.results.table.col.3=Money Purchase
+paac.results.table.col.4=Amount Exceeding the AA
+paac.results.table.col.5=Available Annual Allowance (Incl. Carry Fwd)
+paac.results.table.col.6=Contributions Liable to a Tax Charge
+paac.results.table.col.7=Unused AA Carried Forward to Next Year
+paac.results.table.col.8=Cumulative Carry Forward (3 Years)
+paac.results.link.new.href=new
+paac.results.link.new=Start Again

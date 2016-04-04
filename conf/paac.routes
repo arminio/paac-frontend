@@ -1,6 +1,7 @@
 # microservice specific routes
 
 GET         /                                           controllers.StartPageController.startPage
+GET         /new                                        controllers.StartPageController.newSession
 POST        /                                           controllers.StartPageController.onSubmit
 
 GET         /eligibility                                controllers.EligibilityController.onPageLoad
