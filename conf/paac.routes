@@ -21,5 +21,7 @@ POST        /scheme                                     controllers.SelectScheme
 GET         /pensionInputs                              controllers.PensionInputsController.onPageLoad
 POST        /pensionInputs                              controllers.PensionInputsController.onSubmit
 
+## Review Pension Input Amounts
 GET         /review                                     controllers.ReviewTotalAmountsController.onPageLoad
+GET         /edit/:year                                 controllers.ReviewTotalAmountsController.onEditAmount(year:Long)
 POST        /calculate                                  controllers.ReviewTotalAmountsController.onSubmit
