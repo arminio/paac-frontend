@@ -12,6 +12,8 @@
 @import uk.gov.hmrc.play.views.html.layouts
 @import uk.gov.hmrc.play.views.html.{helpers => uiHelpers}
 @import config._
+@import uk.gov.hmrc.play.views.html.{layouts => uiLayouts}
+
 
 @head = {
     @layouts.head(
@@ -30,8 +32,12 @@
 
 @afterHeader = {}
 
-@serviceInfo = {}
-
+@serviceInfo = {
+@uiLayouts.serviceInfo(
+betaBanner = HtmlFormat.empty,
+includeGridWrapper = false,
+serviceInfoContent = None)
+}
 @footerTop = {}
 
 @footerLinks = {}
