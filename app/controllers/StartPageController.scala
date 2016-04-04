@@ -34,7 +34,7 @@ object StartPageController extends StartPageController{
       Future.successful(Ok(views.html.startPage("")))
     }
 
-    val newSession = withSession { implicit request =>
+    val newSession = Action.async { implicit request =>
       Future.successful(Redirect(routes.StartPageController.startPage()).withNewSession.withSession(createSessionId()))
     }
 
