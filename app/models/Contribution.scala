@@ -23,9 +23,10 @@ import play.api.libs.json._
 sealed trait CalculationParam
 sealed trait PensionCalculatorValue
 
-case class InputAmounts(definedBenefit: Long = 0, moneyPurchase: Long = 0) extends PensionCalculatorValue {
+case class InputAmounts(definedBenefit: Long = -1, moneyPurchase: Long = -1) extends PensionCalculatorValue {
   def isEmpty() : Boolean = {
-    definedBenefit == 0 && moneyPurchase == 0
+    // users may enter values of 0 so using -1 should create new type for empty rather than option
+    definedBenefit == -1 && moneyPurchase == -1
   }
 }
 case class TaxPeriod(year: Int, month: Int, day: Int)
@@ -80,6 +81,6 @@ object Contribution {
   )(Contribution.apply(_:TaxPeriod, _:TaxPeriod, _:InputAmounts))
 
   def apply(year: Int, definedBenefit: Long) : Contribution = {
-    Contribution(TaxPeriod(year, 4, 6), TaxPeriod(year+1, 4, 5), InputAmounts(definedBenefit=definedBenefit))
+    Contribution(TaxPeriod(year, 4, 6), TaxPeriod(year+1, 4, 5), InputAmounts(definedBenefit=definedBenefit,moneyPurchase=0))
   }
 }

@@ -40,18 +40,17 @@ trait PensionInputsController  extends BaseFrontendController {
     keystore.read[String](key).map {
         (amount) =>
         val fields = Map(amount match {
-          case None => (key, "0.00")
+          case None => (key, "")
           case Some("0") => (key, "0.00")
-          case Some(value) => (key, (value.toInt/100.00).toString)
+          case Some(value) => (key, f"${(value.toInt/100.00)}%2.2f")
         })
-        Ok(views.html.pensionInputs(PensionInputForm.form.bind(fields)))
+        Ok(views.html.pensionInputs(PensionInputForm.form.bind(fields).discardingErrors))
     }
   }
 
   val onSubmit = withSession { implicit request =>
-
     PensionInputForm.form.bindFromRequest().fold(
-      formWithErrors => { Future.successful(Ok(views.html.pensionInputs(PensionInputForm.form))) },
+      formWithErrors => { Future.successful(Ok(views.html.pensionInputs(formWithErrors))) },
       input => {
         val (amount:Long, key:String) = input.toDefinedBenefit(2014).getOrElse(("definedBenefit_2014", 0L))
         keystore.store[String](amount.toString, key)

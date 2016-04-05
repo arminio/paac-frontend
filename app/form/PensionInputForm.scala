@@ -38,7 +38,7 @@ object PensionInputForm {
 
   val form: Form[PensionInputFormType] = Form(
     mapping(
-      "definedBenefit_2014" -> bigDecimal(10,2).verifying(Constraints.min[BigDecimal](0))
+      "definedBenefit_2014" -> bigDecimal(10,2).verifying(Constraints.min[BigDecimal](0), Constraints.max(BigDecimal(9999999.99)))
     )(PensionInputFormFields.apply)(PensionInputFormFields.unapply)
   )
 }

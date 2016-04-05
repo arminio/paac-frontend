@@ -38,9 +38,10 @@ trait ReviewTotalAmountsController extends BaseFrontendController {
   private def fetchAmounts()(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[Map[String,String]] = {
     def fetchAmount(key: String) : Future[Option[(String,String)]] = keystore.read[String](key).map { (amount) =>
         amount match {
-          case None => Some((key, "0.00"))
+          case None => None
+          case Some("-1") => Some((key, "0.00"))
           case Some("0") => Some((key, "0.00"))
-          case Some(value) => Some((key, (value.toInt/100.00).toString))
+          case Some(value) => Some((key, f"${(value.toInt/100.00)}%2.2f"))
         }
       }
     def fetchYearAmounts(year: Int) : List[Future[Option[(String,String)]]] = year match {
