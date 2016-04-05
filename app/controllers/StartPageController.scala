@@ -23,18 +23,22 @@ import scala.concurrent.Future
 
 object StartPageController extends StartPageController{
     override val connector: CalculatorConnector = CalculatorConnector
-  }
+}
 
-  trait StartPageController  extends BaseFrontendController {
+trait StartPageController extends BaseFrontendController {
     val connector: CalculatorConnector
 
     private val onSubmitRedirect: Call = routes.EligibilityController.onPageLoad()
 
-    val startPage = Action.async { implicit request =>
+    val startPage = withSession { implicit request =>
       Future.successful(Ok(views.html.startPage("")))
     }
 
-    val onSubmit = Action.async { implicit request =>
+    val newSession = withSession { implicit request =>
+      Future.successful(Redirect(routes.StartPageController.startPage()).withNewSession.withSession(createSessionId()))
+    }
+
+    val onSubmit = withSession { implicit request =>
       Future.successful(Redirect(onSubmitRedirect))
     }
-  }
+}

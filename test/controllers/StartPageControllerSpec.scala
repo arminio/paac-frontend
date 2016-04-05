@@ -47,14 +47,19 @@ class StartPageControllerSpec extends UnitSpec with BeforeAndAfterAll {
         status(result.get) should not be NOT_FOUND
       }
 
-      "return 200 for valid GET request" in {
+      "return 303 for valid GET request" in {
         val result : Option[Future[Result]] = route(FakeRequest(GET, "/paac"))
-        status(result.get) shouldBe 200
+        status(result.get) shouldBe 303
+      }
+
+      "not return 200 for valid GET request" in {
+        val result : Option[Future[Result]] = route(FakeRequest(GET, "/paac"))
+        status(result.get) should not be 200
       }
 
       "return error if no JSON supplied for GET request" in {
         val result : Option[Future[Result]] = route(FakeRequest(GET, "/paac"))
-        status(result.get) shouldBe 200
+        status(result.get) shouldBe 303
       }
     }
 }
