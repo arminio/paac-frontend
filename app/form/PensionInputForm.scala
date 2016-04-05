@@ -28,7 +28,14 @@ case class PensionInputFormFields(amount2014:BigDecimal=0) {
   def toContributions():List[Contribution] = List(Contribution(2014,(amount2014*100).longValue))
 
   def toDefinedBenefit(year: Int) : Option[(Long, String)] = {
-    toContributions.find(_.taxPeriodStart.year == year).map((c)=>(c.amounts.definedBenefit,"definedBenefit_"+c.taxPeriodStart.year))
+    toContributions.find(_.taxPeriodStart.year == year).map{
+      (c)=>
+      if (c.amounts.isDefined && c.amounts.get.definedBenefit.isDefined) {
+        (c.amounts.get.definedBenefit.get,"definedBenefit_"+c.taxPeriodStart.year)  
+      } else {
+        (-1,"definedBenefit_"+c.taxPeriodStart.year)
+      }
+    }
   }
 }
 object PensionInputFormFields

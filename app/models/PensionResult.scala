@@ -24,20 +24,14 @@ sealed trait PensionResult
 sealed trait PensionCalculationResult extends PensionResult
 
 case class TaxYearResults(input: Contribution,
-                          summaryResult: SummaryResult) extends PensionCalculationResult {
-  def isEmpty() : Boolean = {
-    input.isEmpty()
-  }
-}
-
+                          summaryResult: SummaryResult) extends PensionCalculationResult
 case class SummaryResult(chargableAmount: Long = 0,
                          exceedingAAAmount: Long = 0,
                          availableAllowance: Long = 0,
                          unusedAllowance: Long = 0,
                          availableAAWithCF: Long = 0,
                          availableAAWithCCF: Long = 0,
-                         unusedAllowanceCF: Long = 0) extends PensionCalculationResult {
-}
+                         unusedAllowanceCF: Long = 0) extends PensionCalculationResult
 
 object SummaryResult {
   implicit val summaryResultWrites: Writes[SummaryResult] = (

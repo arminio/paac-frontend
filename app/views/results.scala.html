@@ -1,6 +1,5 @@
 @(results: List[models.TaxYearResults])(implicit request:Request[_])
 
-
 @common.paacMain(
 pageTitle = Messages("paac.calculator.results.heading"),
 heading = Messages("paac.calculator.results.pagetitle"),
@@ -22,17 +21,24 @@ backLink = Some((controllers.routes.ReviewTotalAmountsController.onPageLoad.url,
        </tr>
        </thead>
        <tbody>
-  @results.map { result =>
-    @defining(java.text.NumberFormat.getCurrencyInstance(java.util.Locale.UK)) { currencyFormatter =>
-      @if(result.input.taxPeriodStart.year == 2014) {
+  @defining(java.text.NumberFormat.getCurrencyInstance(java.util.Locale.UK)) { currencyFormatter =>
+  @defining(results.sortWith(_.input.taxPeriodStart.year < _.input.taxPeriodStart.year).dropWhile((v)=>v.input.isEmpty || v.input.amounts.get.definedBenefit == Some(0))) { sortedResults =>
+    @sortedResults.map { result =>
+      @if(result.input.amounts.isDefined) {
        <tr>
           <td>@result.input.taxYearLabel</td>
-          <td class="numeric">@(currencyFormatter.format(result.input.amounts.definedBenefit/100.00))</td>
+          <td class="numeric">
+          @if(result.input.amounts.get.definedBenefit.isDefined || result.input.amounts.get.definedBenefit.get > 0) {
+            @(currencyFormatter.format(result.input.amounts.get.definedBenefit.get/100.00))
+          } else {
+            N/A
+          }
+          </td>
           <td class="numeric">
           @if(result.input.taxPeriodStart.year<2015) {
             N/A
           } else {
-            @(currencyFormatter.format(result.input.amounts.moneyPurchase/100.00))
+            @(currencyFormatter.format(result.input.amounts.get.moneyPurchase.get/100.00))
           }
           </td>
           <td class="numeric">@(currencyFormatter.format(result.summaryResult.exceedingAAAmount/100.00))</td>
@@ -50,8 +56,8 @@ backLink = Some((controllers.routes.ReviewTotalAmountsController.onPageLoad.url,
       }
     }
   }
+  }
        </tbody>
     </table>
     <a href="@Messages("paac.results.link.new.href")">@Messages("paac.results.link.new")</a>
 }
-
