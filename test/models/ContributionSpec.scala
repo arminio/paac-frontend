@@ -91,8 +91,8 @@ class ContributionSpec extends ModelSpec {
 
     "have default value of 0 for defined benefit and money purchase in pounds" in new InputAmountsFixture {
       // check
-      amounts.definedBenefit shouldBe 0
-      amounts.moneyPurchase shouldBe 0
+      amounts.definedBenefit shouldBe -1
+      amounts.moneyPurchase shouldBe -1
     }
 
     "have a defined benefit amount in pounds" in new InputAmountsFixture {

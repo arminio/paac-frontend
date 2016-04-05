@@ -39,7 +39,7 @@ case class CalculatorFormFields(amount2006:Option[BigDecimal]=None,
 
     val currentYear = (new java.util.GregorianCalendar()).get(java.util.Calendar.YEAR)
     val fieldValueMap: Map[String,Any]= this.getClass.getDeclaredFields.map(_.getName).zip(this.productIterator.toList).toMap
-    val maybeContributions = List.range(2008, currentYear).map {
+    val maybeContributions = List.range(2006, currentYear).map {
       (year:Int) =>
       fieldValueMap.get("amount"+year).map((v:Any)=>Contribution(year,toPence(v.asInstanceOf[Option[BigDecimal]])))
     }
