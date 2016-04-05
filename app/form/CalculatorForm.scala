@@ -25,22 +25,25 @@ import play.api.data.validation._
 import play.api.i18n.Messages
 
 /* Really horrible to have repeated fields however this will change shortly due to mini-tax years and tax periods. */
-case class CalculatorFormFields(amount2008:BigDecimal=0,
-                                amount2009:BigDecimal=0,
-                                amount2010:BigDecimal=0,
-                                amount2011:BigDecimal=0,
-                                amount2012:BigDecimal=0,
-                                amount2013:BigDecimal=0,
-                                amount2014:BigDecimal=0) {
+case class CalculatorFormFields(amount2006:Option[BigDecimal]=None,
+                                amount2007:Option[BigDecimal]=None,
+                                amount2008:Option[BigDecimal]=None,
+                                amount2009:Option[BigDecimal]=None,
+                                amount2010:Option[BigDecimal]=None,
+                                amount2011:Option[BigDecimal]=None,
+                                amount2012:Option[BigDecimal]=None,
+                                amount2013:Option[BigDecimal]=None,
+                                amount2014:Option[BigDecimal]=None) {
   def toContributions():List[Contribution] = {
-    List(Contribution(2008,(amount2008*100).longValue),
-         Contribution(2009,(amount2009*100).longValue),
-         Contribution(2010,(amount2010*100).longValue),
-         Contribution(2011,(amount2011*100).longValue),
-         Contribution(2012,(amount2012*100).longValue),
-         Contribution(2013,(amount2013*100).longValue),
-         Contribution(2014,(amount2014*100).longValue)
-         )
+    def toPence(maybeAmount: Option[BigDecimal]) : Long = maybeAmount.map((v:BigDecimal)=>(v*100).longValue).getOrElse(0)
+
+    val currentYear = (new java.util.GregorianCalendar()).get(java.util.Calendar.YEAR)
+    val fieldValueMap: Map[String,Any]= this.getClass.getDeclaredFields.map(_.getName).zip(this.productIterator.toList).toMap
+    val maybeContributions = List.range(2008, currentYear).map {
+      (year:Int) =>
+      fieldValueMap.get("amount"+year).map((v:Any)=>Contribution(year,toPence(v.asInstanceOf[Option[BigDecimal]])))
+    }
+    maybeContributions.filter(_!=None).map(_.get)
   }
 }
 
@@ -52,13 +55,15 @@ object CalculatorForm {
 
   val form: Form[CalculatorFormType] = Form(
     mapping(
-      "definedBenefit_2008" -> bigDecimal(10,2).verifying(Constraints.min[BigDecimal](0)),
-      "definedBenefit_2009" -> bigDecimal(10,2).verifying(Constraints.min[BigDecimal](0)),
-      "definedBenefit_2010" -> bigDecimal(10,2).verifying(Constraints.min[BigDecimal](0)),
-      "definedBenefit_2011" -> bigDecimal(10,2).verifying(Constraints.min[BigDecimal](0)),
-      "definedBenefit_2012" -> bigDecimal(10,2).verifying(Constraints.min[BigDecimal](0)),
-      "definedBenefit_2013" -> bigDecimal(10,2).verifying(Constraints.min[BigDecimal](0)),
-      "definedBenefit_2014" -> bigDecimal(10,2).verifying(Constraints.min[BigDecimal](0))
+      "definedBenefit_2006" -> optional(bigDecimal(10,2)).verifying("error.bounds",value=>if (value.isDefined) value.get.longValue >= 0 && value.get.longValue < 99999999.99 else true),
+      "definedBenefit_2007" -> optional(bigDecimal(10,2)).verifying("error.bounds",value=>if (value.isDefined) value.get.longValue >= 0 && value.get.longValue < 99999999.99 else true),
+      "definedBenefit_2008" -> optional(bigDecimal(10,2)).verifying("error.bounds",value=>if (value.isDefined) value.get.longValue >= 0 && value.get.longValue < 99999999.99 else true),
+      "definedBenefit_2009" -> optional(bigDecimal(10,2)).verifying("error.bounds",value=>if (value.isDefined) value.get.longValue >= 0 && value.get.longValue < 99999999.99 else true),
+      "definedBenefit_2010" -> optional(bigDecimal(10,2)).verifying("error.bounds",value=>if (value.isDefined) value.get.longValue >= 0 && value.get.longValue < 99999999.99 else true),
+      "definedBenefit_2011" -> optional(bigDecimal(10,2)).verifying("error.bounds",value=>if (value.isDefined) value.get.longValue >= 0 && value.get.longValue < 99999999.99 else true),
+      "definedBenefit_2012" -> optional(bigDecimal(10,2)).verifying("error.bounds",value=>if (value.isDefined) value.get.longValue >= 0 && value.get.longValue < 99999999.99 else true),
+      "definedBenefit_2013" -> optional(bigDecimal(10,2)).verifying("error.bounds",value=>if (value.isDefined) value.get.longValue >= 0 && value.get.longValue < 99999999.99 else true),
+      "definedBenefit_2014" -> optional(bigDecimal(10,2)).verifying("error.bounds",value=>if (value.isDefined) value.get.longValue >= 0 && value.get.longValue < 99999999.99 else true)
     )(CalculatorFormFields.apply)(CalculatorFormFields.unapply)
   )
 }

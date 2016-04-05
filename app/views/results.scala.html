@@ -24,7 +24,7 @@ backLink = Some((controllers.routes.ReviewTotalAmountsController.onPageLoad.url,
        <tbody>
   @results.map { result =>
     @defining(java.text.NumberFormat.getCurrencyInstance(java.util.Locale.UK)) { currencyFormatter =>
-      @if(!result.isEmpty()) {
+      @if(result.input.taxPeriodStart.year == 2014) {
        <tr>
           <td>@result.input.taxYearLabel</td>
           <td class="numeric">@(currencyFormatter.format(result.input.amounts.definedBenefit/100.00))</td>
