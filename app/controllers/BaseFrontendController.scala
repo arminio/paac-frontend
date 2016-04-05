@@ -24,8 +24,6 @@ import play.api.libs.concurrent.Execution.Implicits._
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import uk.gov.hmrc.play.http.SessionKeys
 
-// See https://github.tools.tax.service.gov.uk/DDCN/cc-frontend/blob/master/app/controllers/keystore/Session.scala
-
 trait SessionProvider {
   val NOSESSION = "NOSESSION"
   def createSessionId()(implicit request: Request[AnyContent]) : (String, String) = SessionKeys.sessionId -> s"session-${UUID.randomUUID}"

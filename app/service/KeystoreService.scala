@@ -23,11 +23,6 @@ import uk.gov.hmrc.play.http.{HeaderCarrier, SessionKeys}
 import play.api.libs.concurrent.Execution.Implicits._
 import scala.concurrent.{Future}
 
-// Loosely based on https://github.tools.tax.service.gov.uk/DDCN/cc-frontend/blob/master/app/service/keystore/KeyStoreService.scala
-object KeystoreService extends KeystoreService {
-
-}
-
 trait KeystoreService {
   val SOURCE = "paac-frontend"
   val sessionCache: SessionCache = PaacSessionCache
@@ -54,3 +49,5 @@ trait KeystoreService {
     }
   }
 }
+
+object KeystoreService extends KeystoreService
