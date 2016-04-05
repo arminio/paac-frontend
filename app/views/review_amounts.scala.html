@@ -5,24 +5,24 @@
 
 @common.paacMain(
 pageTitle = Messages("paac.review-amounts.page.heading"),
-heading = Messages("paac.review-amounts.page.title")
+heading = Messages("paac.review-amounts.page.title"),
+mainClass = "main",
+articleClasses = Some("full-width"),
+backLink = Some((controllers.routes.PensionInputsController.onPageLoad.url,Messages("paac.link.text.back")))
 ) {
-    @form(
-        action = controllers.routes.ReviewTotalAmountsController.onSubmit,
-        args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
         <p class="lede text">@Messages("paac.review-amounts.paragraph")</p>
-        <table style="width:100%">
+        <table>
           <thead>
             <tr>
-              <th>@Messages("paac.review-amounts.heading.period")</th>
-              <th>@Messages("paac.review-amounts.heading.db")</th>
-              <th>@Messages("paac.review-amounts.heading.mp")</th>
-              <th>@Messages("paac.review-amounts.heading.ta")</th>
+              <th class="numeric" scope="col">@Messages("paac.review-amounts.heading.period")</th>
+              <th class="numeric" scope="col">@Messages("paac.review-amounts.heading.db")</th>
+              <th class="numeric" scope="col">@Messages("paac.review-amounts.heading.mp")</th>
+              <th class="numeric" scope="col">@Messages("paac.review-amounts.heading.ta")</th>
               <th></th>
             </tr>
           </thead>
           <tbody>
-@defining(java.text.NumberFormat.getCurrencyInstance()) { currencyFormatter =>  
+@defining(java.text.NumberFormat.getCurrencyInstance(java.util.Locale.UK)) { currencyFormatter =>  
   @for(i <- List.range(2006, (new java.util.GregorianCalendar()).get(java.util.Calendar.YEAR)).reverse) {
     @defining(new BigDecimal(reviewForm.data.getOrElse("definedBenefit_"+i,"0.0"))) { db =>
     @defining(new BigDecimal(reviewForm.data.getOrElse("moneyPurchase_"+i,"0.0"))) { mp =>
@@ -32,14 +32,14 @@ heading = Messages("paac.review-amounts.page.title")
                      reviewForm.errors.find(_.key == "moneyPurchase_"+i) ||
                      reviewForm.errors.find(_.key == "taperedAllowance_"+i)) {color:#b10e1e;}">
         <td class="numeric">@(Contribution(i,0).taxYearLabel())</td>
-        <td>
+        <td class="numeric">
           @if(db.intValue() > 0){
             @(currencyFormatter.format(db))
           } else {
             &pound;&nbsp;&ndash;
           } 
         </td>
-        <td>@if(i > 2014) {
+        <td class="numeric">@if(i > 2014) {
           @if(mp.intValue() > 0){
             @(currencyFormatter.format(mp))
           } else {
@@ -49,7 +49,7 @@ heading = Messages("paac.review-amounts.page.title")
           &pound;&nbsp;&ndash;
         }
         </td>
-        <td>@if(i > 2015) {
+        <td class="numeric">@if(i > 2015) {
           @if(ta.intValue() > 0){
             @(currencyFormatter.format(ta))
           } else {
@@ -59,7 +59,7 @@ heading = Messages("paac.review-amounts.page.title")
           &pound;&nbsp;&ndash;
         }
         </td>
-        <td style="width:5em;text-align: right;white-space: nowrap;">
+        <td class="edit_action">
           <a href="edit/@i">@Messages("paac.review-amounts.action.edit") <span class="visuallyhidden">@(Contribution(i,0).taxYearLabel())</span></a>
         </td>
       </tr>
@@ -71,9 +71,9 @@ heading = Messages("paac.review-amounts.page.title")
 }
           </tbody>
         </table>
-        <button id="submit" type="submit" class="button" value="Continue">@Messages("paac.review-amounts.button.continue")</button>
-        <br>
-        <br>
-        <a href="@Messages("paac.review-amounts.link.back.href")">@Messages("paac.review-amounts.link.back")</a>
-    }
+  @form(
+      action = controllers.routes.ReviewTotalAmountsController.onSubmit,
+      args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
+    <button id="submit" type="submit" class="button" value="Continue">@Messages("paac.review-amounts.button.continue")</button>
+  }
 }

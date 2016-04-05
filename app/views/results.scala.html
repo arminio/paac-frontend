@@ -3,51 +3,55 @@
 
 @common.paacMain(
 pageTitle = Messages("paac.calculator.results.heading"),
-heading = Messages("paac.calculator.results.pagetitle")
+heading = Messages("paac.calculator.results.pagetitle"),
+mainClass = "main",
+articleClasses=Some("full-width"),
+backLink = Some((controllers.routes.ReviewTotalAmountsController.onPageLoad.url,Messages("paac.link.text.back")))
 ) {
-
     <table>
        <thead>
        <tr>
-         <th class="numeric" scope="col">Tax Year</th>
-         <th class="numeric" scope="col" style="text-align: right">DB Amount</th>
-         <th class="numeric" scope="col" style="text-align: right">MP Amount</th>
-         <th class="numeric" scope="col" style="text-align: right">Amount Exceeding the AA</th>
-         <th class="numeric" scope="col" style="text-align: right">Available Annual Allowance (Incl. Carry Fwd)</th>
-         <th class="numeric" scope="col" style="text-align: right">Contributions Liable to a Tax Charge</th>
-         <th class="numeric" scope="col" style="text-align: right">Unused AA Carried Forward to Next Year</th>
-         <th class="numeric" scope="col" style="text-align: right">Cumulative Carry Forward (3 Years)</th>
+         <th class="numeric" scope="col">@Messages("paac.results.table.col.1")</th>
+         <th class="numeric" scope="col">@Messages("paac.results.table.col.2")</th>
+         <th class="numeric" scope="col">@Messages("paac.results.table.col.3")</th>
+         <th class="numeric" scope="col">@Messages("paac.results.table.col.4")</th>
+         <th class="numeric" scope="col">@Messages("paac.results.table.col.5")</th>
+         <th class="numeric" scope="col">@Messages("paac.results.table.col.6")</th>
+         <th class="numeric" scope="col">@Messages("paac.results.table.col.7")</th>
+         <th class="numeric" scope="col">@Messages("paac.results.table.col.8")</th>
        </tr>
        </thead>
        <tbody>
   @results.map { result =>
     @defining(java.text.NumberFormat.getCurrencyInstance(java.util.Locale.UK)) { currencyFormatter =>
-
+      @if(!result.isEmpty()) {
        <tr>
           <td>@result.input.taxYearLabel</td>
-          <td class="numeric" style="text-align:right;min-width: 7em">@(currencyFormatter.format(result.input.amounts.definedBenefit/100.00))</td>
-          <td class="numeric" style="text-align:right;min-width: 7em">
+          <td class="numeric">@(currencyFormatter.format(result.input.amounts.definedBenefit/100.00))</td>
+          <td class="numeric">
           @if(result.input.taxPeriodStart.year<2015) {
             N/A
           } else {
             @(currencyFormatter.format(result.input.amounts.moneyPurchase/100.00))
           }
           </td>
-          <td class="numeric" style="text-align:right;min-width: 7em">@(currencyFormatter.format(result.summaryResult.exceedingAAAmount/100.00))</td>
-          <td class="numeric" style="text-align:right;min-width: 7em">@(currencyFormatter.format(result.summaryResult.availableAAWithCF/100.00))</td>
-          <td class="numeric" style="text-align:right;min-width: 7em">
+          <td class="numeric">@(currencyFormatter.format(result.summaryResult.exceedingAAAmount/100.00))</td>
+          <td class="numeric">@(currencyFormatter.format(result.summaryResult.availableAAWithCF/100.00))</td>
+          <td class="numeric">
           @if(result.summaryResult.chargableAmount<0) {
             N/A
           } else {
             @(currencyFormatter.format(result.summaryResult.chargableAmount/100.00))
           }
           </td>
-          <td class="numeric" style="text-align:right;min-width: 7em">@(currencyFormatter.format(result.summaryResult.unusedAllowance/100.00))</td>
-          <td class="numeric" style="text-align:right;min-width: 7em">@(currencyFormatter.format(result.summaryResult.availableAAWithCCF/100.00))</td>
+          <td class="numeric">@(currencyFormatter.format(result.summaryResult.unusedAllowance/100.00))</td>
+          <td class="numeric">@(currencyFormatter.format(result.summaryResult.availableAAWithCCF/100.00))</td>
        </tr>
+      }
     }
   }
        </tbody>
     </table>
+    <a href="@Messages("paac.results.link.new.href")">@Messages("paac.results.link.new")</a>
 }
 
