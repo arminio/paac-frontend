@@ -33,6 +33,7 @@ package controllers
  */
 
 import org.scalatest.BeforeAndAfterAll
+import org.scalatest.mock.MockitoSugar
 import play.api.Play
 import play.api.mvc.Result
 import play.api.test.Helpers._
@@ -40,7 +41,8 @@ import play.api.test.{FakeRequest, FakeApplication}
 import uk.gov.hmrc.play.test.UnitSpec
 import scala.concurrent.Future
 
-class EligibilityControllerSpec extends UnitSpec with BeforeAndAfterAll {
+class EligibilityControllerSpec extends UnitSpec with MockitoSugar with BeforeAndAfterAll {
+
   val app = FakeApplication()
 
   override def beforeAll() {
@@ -62,24 +64,9 @@ class EligibilityControllerSpec extends UnitSpec with BeforeAndAfterAll {
       result.isDefined shouldBe true
       status(result.get) should not be NOT_FOUND
     }
-    /*"return 200 for valid GET request" in {
+    "return 303 for valid GET request" in {
       val result : Option[Future[Result]] = route(FakeRequest(GET, "/paac/eligibility"))
-      status(result.get) shouldBe 200
-    }
-    "return error if no JSON supplied for GET request" in {
-      val result : Option[Future[Result]] = route(FakeRequest(GET, "/paac/eligibility"))
-      status(result.get) shouldBe 200
-    }*/
-
-
-  }
-
-  "POST" should {
-
-    "not respond with NOT_FOUND through POST method" in {
-      val result = route(FakeRequest(POST, "/paac/eligibility"))
-      result.isDefined shouldBe true
-      status(result.get) should not be NOT_FOUND
+      status(result.get) shouldBe 303
     }
   }
 }
