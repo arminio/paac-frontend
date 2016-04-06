@@ -19,7 +19,7 @@ package controllers
 import play.api.test.Helpers._
 import play.api.test.{FakeRequest}
 import uk.gov.hmrc.play.test.UnitSpec
- import uk.gov.hmrc.play.http.SessionKeys
+import uk.gov.hmrc.play.http.SessionKeys
 
 
 class SessionProviderSpec extends UnitSpec {

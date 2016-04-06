@@ -20,18 +20,14 @@ package controllers
 import service.KeystoreService
 import play.api.mvc._
 import scala.concurrent.Future
-import form.{PensionInputForm, SelectSchemeForm}
+import form.SelectSchemeForm
 
 object SelectSchemeController extends SelectSchemeController {
-
   override val keystore: KeystoreService = KeystoreService
-  override val connector: SelectSchemeController = SelectSchemeController
-
 }
 
 trait SelectSchemeController  extends BaseFrontendController {
   val keystore: KeystoreService
-  val connector: SelectSchemeController
 
   private val onSubmitRedirect: Call = routes.PensionInputsController.onPageLoad()
 
