@@ -71,7 +71,6 @@ class CalculatorFormSpec extends UnitSpec{
     "throw validation error if defined benefit is out of bounds" in {
       CalculatorForm.form.bind(Map("definedBenefit_2014" -> "100000000.01")).fold (
         formWithErrors => {
-          println(formWithErrors)
           formWithErrors.errors should not be empty
           formWithErrors.errors.head.key shouldBe "definedBenefit_2014"
           formWithErrors.errors.head.messages.head shouldBe "error.real.precision"
