@@ -45,8 +45,8 @@ class SelectSchemeControllerSpec extends UnitSpec with BeforeAndAfterAll {
 
   implicit val request = FakeRequest()
 
-  trait MockSelectSchemeControllerFixture extends MockKeystoreFixture{
-    object MockSelectSchemeController extends SelectSchemeController {
+  trait ControllerWithMockKeystore extends MockKeystoreFixture{
+    object MockSelectSchemeControllerWithMockKeystore extends SelectSchemeController {
       override val keystore: KeystoreService = MockKeystore
     }
   }
@@ -73,7 +73,7 @@ class SelectSchemeControllerSpec extends UnitSpec with BeforeAndAfterAll {
   }
 
   "SelectSchemeController" when {
-    "GET" should {
+    "GET with routes" should {
       "not return result NOT_FOUND" in {
         val result: Option[Future[Result]] = route(FakeRequest(GET, endPointURL))
         result.isDefined shouldBe true
@@ -91,7 +91,37 @@ class SelectSchemeControllerSpec extends UnitSpec with BeforeAndAfterAll {
       }
     }
 
-    "POST" should {
+    "onPageLoad with GET request" should {
+      "have keystore with no values and display select scheme options" in new ControllerWithMockKeystore {
+        // setup
+        val request = FakeRequest(GET,"").withSession{(SessionKeys.sessionId,SESSION_ID)}
+
+        // test
+        val result : Future[Result] = MockSelectSchemeControllerWithMockKeystore.onPageLoad()(request)
+
+        // check
+        status(result) shouldBe 200
+        val htmlPage = contentAsString(await(result))
+        htmlPage should include ("""<input id="scheme-type" type="radio" name="schemeType" value="db" checked >""")
+      }
+
+      "have keystore with schemeType value when we revisit the same page" in new ControllerWithMockKeystore {
+        // setup
+        val request = FakeRequest(GET,"").withSession{(SessionKeys.sessionId,SESSION_ID)}
+        MockKeystore.map = MockKeystore.map + ("schemeType" -> "db")
+
+        // test
+        val result : Future[Result] = MockSelectSchemeControllerWithMockKeystore.onPageLoad()(request)
+
+        // check
+        status(result) shouldBe 200
+        MockKeystore.map should contain key ("schemeType")
+        MockKeystore.map should contain value ("db")
+      }
+
+    }
+
+    "onSubmit with POST request" should {
       "not return result NOT_FOUND" in {
         val result: Option[Future[Result]] = route(FakeRequest(POST, endPointURL))
         result.isDefined shouldBe true
@@ -103,13 +133,13 @@ class SelectSchemeControllerSpec extends UnitSpec with BeforeAndAfterAll {
         status(result.get) shouldBe 303
       }
 
-      "with valid schemeType should save to keystore" in new MockSelectSchemeControllerFixture with MockKeystoreFixture{
+      "with valid schemeType should save to keystore" in new ControllerWithMockKeystore{
         // set up
         implicit val hc = HeaderCarrier()
         implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID)).withFormUrlEncodedBody(("schemeType" -> "db"))
 
         // test
-        val result: Future[Result] = MockSelectSchemeController.onSubmit()(request)
+        val result: Future[Result] = MockSelectSchemeControllerWithMockKeystore.onSubmit()(request)
 
         // check
         status(result) shouldBe 303
