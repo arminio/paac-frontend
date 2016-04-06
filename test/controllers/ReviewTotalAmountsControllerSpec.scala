@@ -250,7 +250,64 @@ class ReviewTotalAmountsControllerSpec extends UnitSpec with BeforeAndAfterAll {
     }
 
     "onPageLoad" can {
+      "display errors if values in keystore are incorrect" in new MockControllerFixture {
+        // set up
+        MockKeystore.map = (MockKeystore.map - "definedBenefit_2006") ++ Map("definedBenefit_2006"->"-100")
+        val request = FakeRequest(GET, "/paac/calculate").withSession {(SessionKeys.sessionId,SESSION_ID)}
 
+        // test
+        val result: Future[Result] = MockedReviewTotalAmountsController.onPageLoad()(request)
+
+        // check
+        val htmlSummaryPage = contentAsString(await(result))
+        htmlSummaryPage should include ("2006/07 amount was empty. Please provide an amount between £0.00 and £99999999.99.")
+      }
+
+      "display table of values that are present in keystore" in new MockControllerFixture {
+        // set up
+        val request = FakeRequest(GET, "/paac/calculate").withSession {(SessionKeys.sessionId,SESSION_ID)}
+
+        // test
+        val result: Future[Result] = MockedReviewTotalAmountsController.onPageLoad()(request)
+
+        // check
+        val htmlSummaryPage = contentAsString(await(result))
+        htmlSummaryPage should include ("£5,000.00")
+        htmlSummaryPage should include ("£6,000.00")
+        htmlSummaryPage should include ("£7,000.00")
+        htmlSummaryPage should include ("£8,000.00")
+        htmlSummaryPage should include ("£9,000.00")
+        htmlSummaryPage should include ("£10,000.00")
+        htmlSummaryPage should include ("£11,000.00")
+        htmlSummaryPage should include ("£12,000.00")
+        htmlSummaryPage should include ("£13,000.00")
+      }
+    }
+
+    "onEditAmount" can {
+      "redirect to pension inputs controller when year is less than 2015" in new MockControllerFixture {
+        // set up
+        val request = FakeRequest(GET, "/paac/calculate").withSession {(SessionKeys.sessionId,SESSION_ID)}
+
+        // test
+        val result: Future[Result] = MockedReviewTotalAmountsController.onEditAmount(2014)(request)
+
+        // check
+        status(result) shouldBe 303
+        redirectLocation(result) shouldBe Some("/paac/pensionInputs")
+      }
+
+      "redirect to on page load when year is 2015" in new MockControllerFixture {
+        // set up
+        val request = FakeRequest(GET, "/paac/calculate").withSession {(SessionKeys.sessionId,SESSION_ID)}
+
+        // test
+        val result: Future[Result] = MockedReviewTotalAmountsController.onEditAmount(2015)(request)
+
+        // check
+        status(result) shouldBe 303
+        redirectLocation(result) shouldBe Some("/paac/review")
+      }
     }
   }
 }

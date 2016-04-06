@@ -73,12 +73,7 @@ trait ReviewTotalAmountsController extends BaseFrontendController {
     if (year < 2015) {
       Future.successful(Results.Redirect(routes.PensionInputsController.onPageLoad()))
     } else {
-      fetchAmounts().map { (amountsMap) =>
-        CalculatorForm.form.bind(amountsMap).fold(
-          formWithErrors => Ok(views.html.review_amounts(formWithErrors)),
-          form => Ok(views.html.review_amounts(CalculatorForm.form.bind(amountsMap)))
-        )
-      }
+      Future.successful(Results.Redirect(routes.ReviewTotalAmountsController.onPageLoad()))
     }
   }
 
