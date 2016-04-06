@@ -35,7 +35,7 @@ trait ReviewTotalAmountsController extends BaseFrontendController {
   val keystore: KeystoreService
   val connector: CalculatorConnector
 
-  private def fetchAmounts()(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[Map[String,String]] = {
+  def fetchAmounts()(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[Map[String,String]] = {
     def fetchAmount(key: String) : Future[Option[(String,String)]] = keystore.read[String](key).map { (amount) =>
         amount match {
           case None => None
@@ -48,12 +48,12 @@ trait ReviewTotalAmountsController extends BaseFrontendController {
         List("definedBenefit_"+y).map(fetchAmount(_))
       case y if y == 2015 => 
         List("definedBenefit_"+y, "moneyPurchase_"+y).map(fetchAmount(_))
-      case y if y >= 2015 => 
+      case y if y > 2015 => 
         List("definedBenefit_"+y, "moneyPurchase_"+y, "thresholdIncome_"+y, "adjustedIncome_"+y, "taperedAllowance_"+y).map(fetchAmount(_))
       }
 
     val currentYear = (new java.util.GregorianCalendar()).get(java.util.Calendar.YEAR)
-    val amounts : Future[List[Option[(String,String)]]] = Future.sequence(List.range(2006, currentYear).flatMap(fetchYearAmounts(_)))
+    val amounts : Future[List[Option[(String,String)]]] = Future.sequence(List.range(2006, currentYear+1).flatMap(fetchYearAmounts(_)))
     amounts.map{ 
       (maybeYearAmountTuples: List[Option[(String,String)]])  =>
       maybeYearAmountTuples.filter(_ != None).map(_.head).toMap
@@ -63,7 +63,7 @@ trait ReviewTotalAmountsController extends BaseFrontendController {
   val onPageLoad = withSession { implicit request =>
     fetchAmounts().map { (amountsMap) =>
       CalculatorForm.form.bind(amountsMap).fold(
-        formWithErrors => {println(formWithErrors);Ok(views.html.review_amounts(formWithErrors))},
+        formWithErrors => Ok(views.html.review_amounts(formWithErrors)),
         form => Ok(views.html.review_amounts(CalculatorForm.form.bind(amountsMap)))
       )
     }
@@ -72,14 +72,8 @@ trait ReviewTotalAmountsController extends BaseFrontendController {
   def onEditAmount(year:Long) = withSession { implicit request =>
     if (year < 2015) {
       Future.successful(Results.Redirect(routes.PensionInputsController.onPageLoad()))
-    }
-    else {
-      fetchAmounts().map { (amountsMap) =>
-        CalculatorForm.form.bind(amountsMap).fold(
-          formWithErrors => {println(formWithErrors);Ok(views.html.review_amounts(formWithErrors))},
-          form => Ok(views.html.review_amounts(CalculatorForm.form.bind(amountsMap)))
-        )
-      }
+    } else {
+      Future.successful(Results.Redirect(routes.ReviewTotalAmountsController.onPageLoad()))
     }
   }
 
