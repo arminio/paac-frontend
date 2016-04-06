@@ -90,6 +90,10 @@ class PensionInputsControllerSpec extends UnitSpec with BeforeAndAfterAll {
   }
 
   "PensionInputsController" should {
+    "companion object has keystore" in {
+      PensionInputsController.keystore shouldBe KeystoreService
+    }
+
     "onPageLoad" can {
       "with keystore containing no values display blank field" in new ControllerWithMockKeystore {
         // setup

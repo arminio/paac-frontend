@@ -26,13 +26,13 @@ import play.api.mvc.Result
 import play.api.test.Helpers._
 import play.api.test.{FakeRequest, FakeApplication}
 import uk.gov.hmrc.play.test.UnitSpec
-import scala.concurrent.Future
 import service._
 import play.api.mvc.{AnyContent, Request}
 import uk.gov.hmrc.http.cache.client.SessionCache
 import uk.gov.hmrc.play.http.{HeaderCarrier, SessionKeys}
 import play.api.libs.concurrent.Execution.Implicits._
-import scala.concurrent.{Future}
+import scala.concurrent.{Future, Await}
+import scala.concurrent.duration._
 import uk.gov.hmrc.play.http.SessionKeys
 import java.util.UUID
 
@@ -77,22 +77,22 @@ class ReviewTotalAmountsControllerSpec extends UnitSpec with BeforeAndAfterAll {
 
   trait MockKeystoreFixture {
     object MockKeystore extends KeystoreService {
-      val map = Map("definedBenefit_2006" -> "500000",
-                    "definedBenefit_2007" -> "500000",
-                    "definedBenefit_2008" -> "500000",
-                    "definedBenefit_2009" -> "500000",
-                    "definedBenefit_2010" -> "500000",
-                    "definedBenefit_2011" -> "500000",
-                    "definedBenefit_2012" -> "500000",
-                    "definedBenefit_2013" -> "500000",
-                    "definedBenefit_2014" -> "500000",
+      var map = Map("definedBenefit_2006" -> "500000",
+                    "definedBenefit_2007" -> "600000",
+                    "definedBenefit_2008" -> "700000",
+                    "definedBenefit_2009" -> "800000",
+                    "definedBenefit_2010" -> "900000",
+                    "definedBenefit_2011" -> "1000000",
+                    "definedBenefit_2012" -> "1100000",
+                    "definedBenefit_2013" -> "1200000",
+                    "definedBenefit_2014" -> "1300000",
                     SessionKeys.sessionId -> SESSION_ID)
       override def store[T](data: T, key: String)
                   (implicit hc: HeaderCarrier,
                    format: play.api.libs.json.Format[T],
                    request: Request[Any])
                   : Future[Option[T]] = {
-        map + (key -> data.toString)
+        map = map + (key -> data.toString)
         Future.successful(Some(data))
       }
       override def read[T](key: String)
@@ -105,36 +105,152 @@ class ReviewTotalAmountsControllerSpec extends UnitSpec with BeforeAndAfterAll {
     }
   }
 
+  trait MockControllerFixture extends MockKeystoreFixture with MockCalculatorConnectorFixture {
+    object MockedReviewTotalAmountsController extends ReviewTotalAmountsController {
+      override val connector: CalculatorConnector = MockCalculatorConnector
+      override val keystore: KeystoreService = MockKeystore
+    }
+  }
+
   "ReviewTotalAmountsController" should {
-    "display list of amounts previously provided by user" in new MockCalculatorConnectorFixture with MockKeystoreFixture {
-      // set up
-      object MockedReviewTotalAmountsController extends ReviewTotalAmountsController {
-        override val connector: CalculatorConnector = MockCalculatorConnector
-        override val keystore: KeystoreService = MockKeystore
-      }
-      val endpoint = "/paac/review"
-
-      // test
-      val result : Future[Result] = MockedReviewTotalAmountsController.onSubmit()(FakeRequest(GET, endpoint).withSession {(SessionKeys.sessionId,SESSION_ID)})
-
-      // check
-      status(result) shouldBe 200
+    "companion object should have keystore" in {
+      ReviewTotalAmountsController.keystore shouldBe KeystoreService
     }
 
-    "should return calculation results from amounts stored in keystore" in new MockCalculatorConnectorFixture with MockKeystoreFixture {
-      // set up
-      object MockedReviewTotalAmountsController extends ReviewTotalAmountsController {
-        override val connector: CalculatorConnector = MockCalculatorConnector
-        override val keystore: KeystoreService = MockKeystore
+    "companion object should have connector" in {
+      ReviewTotalAmountsController.connector shouldBe CalculatorConnector
+    }
+
+    "fetch amounts" can {
+
+      "should return values for all years in keystore" in new MockControllerFixture {
+        // set up
+        implicit val hc = HeaderCarrier()
+        implicit val request = FakeRequest().withSession((SessionKeys.sessionId,SESSION_ID))
+
+        // test
+        val result: Future[Map[String,String]] = MockedReviewTotalAmountsController.fetchAmounts()
+
+        // check
+        val values: Map[String,String] = Await.result(result, Duration(1000,MILLISECONDS))
+        values should contain key ("definedBenefit_2011") 
+        values should contain value ("12000.00")
       }
-      val request = FakeRequest(GET, "/paac/calculate").withSession {(SessionKeys.sessionId,SESSION_ID)}
 
-      // test
-      val result: Future[Result] = MockedReviewTotalAmountsController.onSubmit()(request)
+      "should return 0.00 when keystore has 0 as an amount" in new MockControllerFixture {
+        // set up
+        MockKeystore.map = (MockKeystore.map - "definedBenefit_2006") + ("definedBenefit_2006"->"0")
+        implicit val hc = HeaderCarrier()
+        implicit val request = FakeRequest().withSession((SessionKeys.sessionId,SESSION_ID))
 
-      // check
-      val htmlSummaryPage = contentAsString(await(result))
-      htmlSummaryPage should include ("Tax Year Results")
+        // test
+        val result: Future[Map[String,String]] = MockedReviewTotalAmountsController.fetchAmounts()
+
+        // check
+        val values: Map[String,String] = Await.result(result, Duration(1000,MILLISECONDS))
+        values should contain key ("definedBenefit_2006") 
+        values should contain value ("0.00")
+      }
+
+      "should return money purchase when keystore has money purchase amount for 2015" in new MockControllerFixture {
+        // set up
+        MockKeystore.map = MockKeystore.map + ("moneyPurchase_2015"->"123450")
+        implicit val hc = HeaderCarrier()
+        implicit val request = FakeRequest().withSession((SessionKeys.sessionId,SESSION_ID))
+
+        // test
+        val result: Future[Map[String,String]] = MockedReviewTotalAmountsController.fetchAmounts()
+
+        // check
+        val values: Map[String,String] = Await.result(result, Duration(1000,MILLISECONDS))
+        values should contain key ("moneyPurchase_2015") 
+        values should contain value ("1234.50")
+      }
+
+      "should return defined benefit when keystore has money purchase amount for 2015" in new MockControllerFixture {
+        // set up
+        MockKeystore.map = MockKeystore.map + ("definedBenefit_2015"->"9123450")
+        implicit val hc = HeaderCarrier()
+        implicit val request = FakeRequest().withSession((SessionKeys.sessionId,SESSION_ID))
+
+        // test
+        val result: Future[Map[String,String]] = MockedReviewTotalAmountsController.fetchAmounts()
+
+        // check
+        val values: Map[String,String] = Await.result(result, Duration(1000,MILLISECONDS))
+        values should contain key ("definedBenefit_2015") 
+        values should contain value ("91234.50")
+      }
+
+      "should return values when keystore has amounts for 2016" in new MockControllerFixture {
+        // set up
+        MockKeystore.map = MockKeystore.map ++ Map("definedBenefit_2016"->"100",
+                                                   "moneyPurchase_2016"->"200",
+                                                   "thresholdIncome_2016"->"300",
+                                                   "adjustedIncome_2016"->"400",
+                                                   "taperedAllowance_2016"->"500")
+        implicit val hc = HeaderCarrier()
+        implicit val request = FakeRequest().withSession((SessionKeys.sessionId,SESSION_ID))
+
+        // test
+        val result: Future[Map[String,String]] = MockedReviewTotalAmountsController.fetchAmounts()
+
+        // check
+        val values: Map[String,String] = Await.result(result, Duration(1000,MILLISECONDS))
+        values should contain key ("definedBenefit_2016") 
+        values should contain value ("1.00")
+        values should contain key ("moneyPurchase_2016") 
+        values should contain value ("2.00")
+        values should contain key ("thresholdIncome_2016") 
+        values should contain value ("3.00")
+        values should contain key ("adjustedIncome_2016") 
+        values should contain value ("4.00")
+        values should contain key ("taperedAllowance_2016") 
+        values should contain value ("5.00")
+      }
+
+    }
+
+    "onSubmit" can {
+      "display list of amounts previously provided by user" in new MockControllerFixture {
+        // set up
+        val endpoint = "/paac/review"
+
+        // test
+        val result : Future[Result] = MockedReviewTotalAmountsController.onSubmit()(FakeRequest(GET, endpoint).withSession {(SessionKeys.sessionId,SESSION_ID)})
+
+        // check
+        status(result) shouldBe 200
+      }
+
+      "should return calculation results from amounts stored in keystore" in new MockControllerFixture {
+        // set up
+        val request = FakeRequest(GET, "/paac/calculate").withSession {(SessionKeys.sessionId,SESSION_ID)}
+
+        // test
+        val result: Future[Result] = MockedReviewTotalAmountsController.onSubmit()(request)
+
+        // check
+        val htmlSummaryPage = contentAsString(await(result))
+        htmlSummaryPage should include ("Tax Year Results")
+      }
+
+      "should display errors if values in keystore are incorrect" in new MockControllerFixture {
+        // set up
+        MockKeystore.map = (MockKeystore.map - "definedBenefit_2006") ++ Map("definedBenefit_2006"->"-100")
+        val request = FakeRequest(GET, "/paac/calculate").withSession {(SessionKeys.sessionId,SESSION_ID)}
+
+        // test
+        val result: Future[Result] = MockedReviewTotalAmountsController.onSubmit()(request)
+
+        // check
+        val htmlSummaryPage = contentAsString(await(result))
+        htmlSummaryPage should include ("2006/07 amount was empty. Please provide an amount between £0.00 and £99999999.99.")
+      }
+    }
+
+    "onPageLoad" can {
+
     }
   }
 }
