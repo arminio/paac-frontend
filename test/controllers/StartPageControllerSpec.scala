@@ -23,6 +23,7 @@ import play.api.test.Helpers._
 import play.api.test.{FakeRequest, FakeApplication}
 import uk.gov.hmrc.play.test.UnitSpec
 import scala.concurrent.Future
+import play.api.libs.concurrent.Execution.Implicits._
 
 class StartPageControllerSpec extends UnitSpec with BeforeAndAfterAll {
     val app = FakeApplication()
@@ -62,4 +63,6 @@ class StartPageControllerSpec extends UnitSpec with BeforeAndAfterAll {
         status(result.get) shouldBe 303
       }
     }
+
+
 }

@@ -29,6 +29,6 @@ object EligibilityForm extends Eligibility {
   val form: Form[EligibilityFormType] = Form(
     mapping(
       "eligibility" -> text
-    )((eligibility) => eligibility)((schemeType: EligibilityFormType) => Some(eligibility))
+    )((eligibility) => eligibility)((eligibilityType: EligibilityFormType) => Some(eligibility))
   )
 }
