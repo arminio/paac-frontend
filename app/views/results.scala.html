@@ -22,7 +22,7 @@ backLink = Some((controllers.routes.ReviewTotalAmountsController.onPageLoad.url,
        </thead>
        <tbody>
   @defining(java.text.NumberFormat.getCurrencyInstance(java.util.Locale.UK)) { currencyFormatter =>
-  @defining(results.sortWith(_.input.taxPeriodStart.year < _.input.taxPeriodStart.year).dropWhile((v)=>v.input.isEmpty || v.input.amounts.get.definedBenefit == Some(0))) { sortedResults =>
+  @defining(results.sortWith(_.input.taxPeriodStart.year < _.input.taxPeriodStart.year).dropWhile((v)=>v.input.isEmpty || v.input.amounts.get.definedBenefit == Some(0) && v.input.taxPeriodStart.year != 2014 )) { sortedResults =>
     @sortedResults.map { result =>
       @if(result.input.amounts.isDefined) {
        <tr>
