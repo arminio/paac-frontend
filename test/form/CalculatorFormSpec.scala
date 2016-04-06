@@ -67,6 +67,21 @@ class CalculatorFormSpec extends UnitSpec{
           success should not be Some("%l&^@sl3")
       )
     }
+
+    "throw validation error if defined benefit is out of bounds" in {
+      CalculatorForm.form.bind(Map("definedBenefit_2014" -> "100000000.01")).fold (
+        formWithErrors => {
+          formWithErrors.errors should not be empty
+          formWithErrors.errors.head.key shouldBe "definedBenefit_2014"
+          formWithErrors.errors.head.messages.head shouldBe "error.real.precision"
+        },
+        formWithoutErrors => formWithoutErrors should not be Some("")
+      )
+    }
+
+    "form correctly unbinds" in {
+      CalculatorForm.form.bind(Map("definedBenefit_2014" -> "")).mapping.unbind(CalculatorFormFields(amount2014 = Some(scala.math.BigDecimal(0.0))))("definedBenefit_2014") shouldBe "0.00"
+    }
   }
 
   "CalculatorFormFields" should {
