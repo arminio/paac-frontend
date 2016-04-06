@@ -63,4 +63,6 @@ class StartPageControllerSpec extends UnitSpec with BeforeAndAfterAll {
         status(result.get) shouldBe 303
       }
     }
+
+
 }

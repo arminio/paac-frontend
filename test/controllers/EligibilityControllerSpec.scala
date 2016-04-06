@@ -45,7 +45,7 @@ import uk.gov.hmrc.play.http.{HeaderCarrier, SessionKeys}
 import uk.gov.hmrc.play.test.UnitSpec
 import scala.concurrent.Future
 
-class EligibilityControllerSpec extends UnitSpec with MockitoSugar with BeforeAndAfterAll {
+class EligibilityControllerSpec extends UnitSpec with BeforeAndAfterAll {
 
   val app = FakeApplication()
   val SESSION_ID = s"session-${UUID.randomUUID}"
@@ -91,47 +91,89 @@ class EligibilityControllerSpec extends UnitSpec with MockitoSugar with BeforeAn
     }
   }
 
-  "EligibilityController" should {
-    "not return result NOT_FOUND" in {
-      val result : Option[Future[Result]] = route(FakeRequest(GET, "/paac/eligibility"))
-      result.isDefined shouldBe true
-      status(result.get) should not be NOT_FOUND
+  "EligibilityController" when {
+    "onPageLoad" can {
+      "with keystore containing no values display blank field" in new ControllerWithMockKeystore {
+        // setup
+        MockKeystore.map = MockKeystore.map - "eligibility"
+        val request = FakeRequest(GET, "").withSession {
+          (SessionKeys.sessionId, SESSION_ID)
+        }
+
+        // test
+        val result: Future[Result] = EligibilityControllerMockedKeystore.onPageLoad()(request)
+
+        // check
+        status(result) shouldBe 200
+        val htmlPage = contentAsString(await(result))
+        htmlPage should include("""<input id="eligibility" type="radio" name="eligibility" value="Yes" checked>""")
+      }
     }
-    "return 303 for valid GET request" in {
-      val result : Option[Future[Result]] = route(FakeRequest(GET, "/paac/eligibility"))
-      status(result.get) shouldBe 303
+    "GET" should {
+      "not return result NOT_FOUND" in {
+        val result: Option[Future[Result]] = route(FakeRequest(GET, "/paac/eligibility"))
+        result.isDefined shouldBe true
+        status(result.get) should not be NOT_FOUND
+      }
+      "return 303 for valid GET request" in {
+        val result: Option[Future[Result]] = route(FakeRequest(GET, "/paac/eligibility"))
+        status(result.get) shouldBe 303
+      }
+      "not return 200 for valid GET request" in {
+        val result: Option[Future[Result]] = route(FakeRequest(GET, "/paac/eligibility"))
+        status(result.get) should not be 200
+      }
+    }
+
+    "POST" should {
+      "not return result NOT_FOUND" in {
+        val result: Option[Future[Result]] = route(FakeRequest(POST, "/paac/eligibility"))
+        result.isDefined shouldBe true
+        status(result.get) should not be NOT_FOUND
+      }
+
+      "return 303 for valid GET request" in {
+        val result: Option[Future[Result]] = route(FakeRequest(POST, "/paac/eligibility"))
+        status(result.get) shouldBe 303
+      }
     }
 
     "return Eligibility that was saved in keystore" in new MockKeystoreFixture {
+
       // set up
       object MockedEligibilityController extends EligibilityController {
         override val keystore: KeystoreService = MockKeystore
       }
-      val request = FakeRequest(GET, "/paac/eligibility").withSession {(SessionKeys.sessionId,SESSION_ID)}
+
+      val request = FakeRequest(GET, "/paac/eligibility").withSession {
+        (SessionKeys.sessionId, SESSION_ID)
+      }
 
       // test
       val result: Future[Result] = MockedEligibilityController.onSubmit()(request)
 
       // check
       val htmlSummaryPage = contentAsString(await(result))
-      htmlSummaryPage should include ("Were you a member of a registered pension scheme either in the UK or overseas?")
+      htmlSummaryPage should include("Were you a member of a registered pension scheme either in the UK or overseas?")
     }
 
 
-  "with valid input amount should save to keystore" in new ControllerWithMockKeystore {
-    // set up
-    MockKeystore.map = MockKeystore.map - "eligibility"
-    implicit val hc = HeaderCarrier()
-    implicit val request = FakeRequest(POST,"/paac/eligibility").withSession{(SessionKeys.sessionId,SESSION_ID)}.withFormUrlEncodedBody(("eligibility"->"Yes"))
+    "with valid input amount should save to keystore" in new ControllerWithMockKeystore {
+      // set up
+      MockKeystore.map = MockKeystore.map - "eligibility"
+      implicit val hc = HeaderCarrier()
+      implicit val request = FakeRequest(POST, "/paac/eligibility").withSession {
+        (SessionKeys.sessionId, SESSION_ID)
+      }.withFormUrlEncodedBody(("eligibility" -> "Yes"))
 
 
-    // test
-    val result : Future[Result] = EligibilityControllerMockedKeystore.onSubmit()(request)
+      // test
+      val result: Future[Result] = EligibilityControllerMockedKeystore.onSubmit()(request)
 
-    // check
-    status(result) shouldBe 303
-    MockKeystore.map should contain key ("eligibility")
-    MockKeystore.map should contain value ("Yes")
+      // check
+      status(result) shouldBe 303
+      MockKeystore.map should contain key ("eligibility")
+      MockKeystore.map should contain value ("Yes")
     }
   }
 }
