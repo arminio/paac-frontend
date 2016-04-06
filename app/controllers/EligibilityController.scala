@@ -16,19 +16,16 @@
 
 package controllers
 
-import connector.CalculatorConnector
 import form.EligibilityForm
 import play.api.mvc._
 import scala.concurrent.Future
 import service.KeystoreService
 
 object EligibilityController extends EligibilityController{
-  override val connector: CalculatorConnector = CalculatorConnector
   override val keystore: KeystoreService = KeystoreService
 }
 
 trait EligibilityController  extends BaseFrontendController {
-  val connector: CalculatorConnector
   val keystore: KeystoreService
 
   private val onSubmitRedirect: Call = routes.SelectSchemeController.onPageLoad()
