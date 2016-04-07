@@ -16,19 +16,24 @@
 
 package controllers
 
+import java.util.UUID
+
 import org.scalatest.BeforeAndAfterAll
 import play.api.Play
 import play.api.mvc.Result
 import play.api.test.Helpers._
 import play.api.test.{FakeRequest, FakeApplication}
+import uk.gov.hmrc.play.http.SessionKeys
 import uk.gov.hmrc.play.test.UnitSpec
 import scala.concurrent.Future
 import play.api.libs.concurrent.Execution.Implicits._
 
 class StartPageControllerSpec extends UnitSpec with BeforeAndAfterAll {
-    val app = FakeApplication()
+  val app = FakeApplication()
+  val SESSION_ID = s"session-${UUID.randomUUID}"
 
-    override def beforeAll() {
+
+  override def beforeAll() {
       Play.start(app)
       super.beforeAll() // To be stackable, must call super.beforeEach
     }
@@ -62,7 +67,38 @@ class StartPageControllerSpec extends UnitSpec with BeforeAndAfterAll {
         val result : Option[Future[Result]] = route(FakeRequest(GET, "/paac"))
         status(result.get) shouldBe 303
       }
+      "create a session onSubmit" in {
+        // set up
+        val request = FakeRequest(GET, "/paac").withSession {(SessionKeys.sessionId,SESSION_ID)}
+
+        // test
+        val result: Future[Result] = StartPageController.onSubmit()(request)
+
+        // check
+        val StartPage = contentAsString(await(result))
+        StartPage should include ("")
+      }
+      "create a new session" in {
+        // set up
+        val request = FakeRequest(GET, "/paac").withSession {(SessionKeys.sessionId,SESSION_ID)}
+
+        // test
+        val result : Future[Result] = StartPageController.newSession()(request)
+
+        // check
+        val StartPage = contentAsString(await(result))
+        StartPage should include ("")
+      }
+      "render the StartPage" in {
+        // set up
+        val request = FakeRequest(GET, "/paac"). withSession {(SessionKeys.sessionId,SESSION_ID)}
+
+        // test
+        val result : Future[Result] = StartPageController.startPage()(request)
+
+        // check
+        val StartPage = contentAsString(await(result))
+        StartPage should include ("")
+      }
     }
-
-
 }
