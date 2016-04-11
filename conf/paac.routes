@@ -4,12 +4,8 @@ GET         /                                           controllers.StartPageCon
 GET         /new                                        controllers.StartPageController.newSession
 POST        /                                           controllers.StartPageController.onSubmit
 
-GET         /eligibility                                controllers.EligibilityController.onPageLoad
-POST        /eligibility                                controllers.EligibilityController.onSubmit
-
-
-#GET         /calculate                                  controllers.CalculatorController.onPageLoad
-#POST        /calculateOld                               controllers.CalculatorController.onSubmit
+#GET         /calculate                                 controllers.CalculatorController.onPageLoad
+#POST        /calculateOld                              controllers.CalculatorController.onSubmit
 
 GET         /public/assets/*file                        controllers.Public.at(path="/public", file)
 GET         /assets/*file                               controllers.DevAssets.at(path="app/assets", file)
