@@ -20,6 +20,8 @@ import play.api.libs.functional.syntax._
 import play.api.libs.json.Reads._
 import play.api.libs.json._
 
+import java.util.GregorianCalendar
+
 sealed trait CalculationParam
 sealed trait PensionCalculatorValue
 
@@ -29,7 +31,13 @@ case class InputAmounts(definedBenefit: Option[Long] = None, moneyPurchase: Opti
   }
 }
 
-case class TaxPeriod(year: Int, month: Int, day: Int)
+/** TaxPeriod really aught to be named SimpleDate.
+    Follows java.util.Calendar so that month is 0 based,
+    but year and day operate as expected.*/
+case class TaxPeriod(year: Int, month: Int, day: Int) {
+  def toCalendar() : GregorianCalendar = new GregorianCalendar(year, month, day)
+}
+
 case class Contribution(taxPeriodStart: TaxPeriod, taxPeriodEnd: TaxPeriod, amounts: Option[InputAmounts]) extends CalculationParam {
   def taxYearLabel() : String = s"${taxPeriodStart.year}/${taxPeriodEnd.year.toString().drop(2)}"
   def isEmpty() : Boolean = {
@@ -93,6 +101,7 @@ object Contribution {
   )(Contribution.apply(_:TaxPeriod, _:TaxPeriod, _:Option[InputAmounts]))
 
   def apply(year: Int, definedBenefit: Long) : Contribution = {
-    Contribution(TaxPeriod(year, 4, 6), TaxPeriod(year+1, 4, 5), Some(InputAmounts(definedBenefit=Some(definedBenefit))))
+    // month is 0 based
+    Contribution(TaxPeriod(year, 3, 6), TaxPeriod(year+1, 3, 5), Some(InputAmounts(definedBenefit=Some(definedBenefit))))
   }
 }
