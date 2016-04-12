@@ -45,6 +45,17 @@ case class CalculatorFormFields(amount2006:Option[BigDecimal]=None,
     }
     maybeContributions.filter(_!=None).map(_.get)
   }
+
+  def to1516P1DefinedBenefit(year: Int) : Option[(Long, String)] = {
+    toContributions.find(_.taxPeriodStart.year == year).flatMap {
+      (c)=>
+        (for {
+          amounts <- c.amounts
+          definedBenefit <- amounts.definedBenefit
+        } yield definedBenefit).map((_,"definedBenefit_"+c.taxPeriodStart.year+"_p1"))
+    }
+  }
+
 }
 
 object CalculatorFormFields {
