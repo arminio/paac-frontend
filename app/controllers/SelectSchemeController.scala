@@ -29,7 +29,6 @@ object SelectSchemeController extends SelectSchemeController {
 trait SelectSchemeController  extends BaseFrontendController {
   val keystore: KeystoreService
 
-  //private val onSubmitRedirect: Call = routes.PensionInputs1516P1Controller.onPageLoad()
   private val onSubmitRedirect: Call = routes.StaticPageController.onPipTaxYearPageLoad()
 
   val onPageLoad = withSession { implicit request =>
