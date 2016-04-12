@@ -1,0 +1,18 @@
+@()(implicit request:Request[_])
+
+@import uk.gov.hmrc.play.views.html.helpers._
+
+@common.paacMain(
+pageTitle = Messages("paac.pip.pagetitle"),
+heading = Messages("paac.pip.heading"),
+backLink = Some((controllers.routes.EligibilityController.onPageLoad.url,Messages("paac.link.text.back")))
+) {
+    <p class="lede text">@Messages("paac.pip.subheading")</p>
+    <p class="">@Messages("paac.pip.p1")</p>
+    <p class="">@Messages("paac.pip.p2")</p>
+
+    @form(action = controllers.routes.StaticPageController.onPipSubmit,
+          args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
+        <button id="submit" type="submit" class="button" value="Continue">@Messages("paac.pip.button.continue")</button>
+    }
+}

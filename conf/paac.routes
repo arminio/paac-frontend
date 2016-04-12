@@ -26,3 +26,7 @@ POST        /pensionInputs                              controllers.PensionInput
 GET         /review                                     controllers.ReviewTotalAmountsController.onPageLoad
 GET         /edit/:year                                 controllers.ReviewTotalAmountsController.onEditAmount(year:Long)
 POST        /calculate                                  controllers.ReviewTotalAmountsController.onSubmit
+
+# Changes to Pension Input Periods
+GET         /changes-to-pip                             controllers.StaticPageController.onPipPageLoad
+POST        /changes-to-pip                             controllers.StaticPageController.onPipSubmit
