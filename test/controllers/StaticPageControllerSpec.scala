@@ -72,13 +72,39 @@ class StaticPageControllerSpec extends UnitSpec with BeforeAndAfterAll {
       }
     }
 
-    "onPipSubmit" should {
+    "PipTaxYearPageLoad" should {
+      "return 200" in {
+        // set up
+        val request = FakeRequest(GET, "/paac/pip-tax-years").withSession {(SessionKeys.sessionId,SESSION_ID)}
+
+        // test
+        val result: Future[Result] = StaticPageController.onPipTaxYearPageLoad()(request)
+
+        // check
+        status(result) shouldBe 200
+      }
+
+      "return expected page" in {
+        // set up
+        val request = FakeRequest(GET, "/paac/pip-tax-years").withSession {(SessionKeys.sessionId,SESSION_ID)}
+
+        // test
+        val result: Future[Result] = StaticPageController.onPipTaxYearPageLoad()(request)
+
+        // check
+        val StartPage = contentAsString(await(result))
+        StartPage should include ("A tax year is 6 April to 5 April. The tax year that your " +
+          "pension input period is for is based on the date your pension input period ends.")
+      }
+    }
+
+    "onPipTaxYearSubmit" should {
       "return 303" in {
         // set up
         val request = FakeRequest(GET, "/paac").withSession {(SessionKeys.sessionId,SESSION_ID)}
 
         // test
-        val result: Future[Result] = StaticPageController.onPipSubmit()(request)
+        val result: Future[Result] = StaticPageController.onPipTaxYearSubmit()(request)
 
         // check
         status(result) shouldBe 303
