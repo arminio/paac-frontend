@@ -17,7 +17,6 @@
 package controllers
 
 import connector.CalculatorConnector
-import form.EligibilityForm
 import play.api.mvc._
 import scala.concurrent.Future
 
@@ -28,7 +27,7 @@ object StartPageController extends StartPageController{
 trait StartPageController extends BaseFrontendController {
     val connector: CalculatorConnector
 
-    private val onSubmitRedirect: Call = routes.EligibilityController.onPageLoad()
+    private val onSubmitRedirect: Call = routes.SelectSchemeController.onPageLoad()
 
     val startPage = withSession { implicit request =>
       Future.successful(Ok(views.html.startPage("")))
