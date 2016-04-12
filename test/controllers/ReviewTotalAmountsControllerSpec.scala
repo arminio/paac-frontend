@@ -169,7 +169,7 @@ class ReviewTotalAmountsControllerSpec extends UnitSpec with BeforeAndAfterAll {
 
       "should return defined benefit when keystore has money purchase amount for 2015" in new MockControllerFixture {
         // set up
-        MockKeystore.map = MockKeystore.map + ("definedBenefit_2015"->"9123450")
+        MockKeystore.map = MockKeystore.map + ("definedBenefit_2015_p1"->"9123450")
         implicit val hc = HeaderCarrier()
         implicit val request = FakeRequest().withSession((SessionKeys.sessionId,SESSION_ID))
 
@@ -178,7 +178,7 @@ class ReviewTotalAmountsControllerSpec extends UnitSpec with BeforeAndAfterAll {
 
         // check
         val values: Map[String,String] = Await.result(result, Duration(1000,MILLISECONDS))
-        values should contain key ("definedBenefit_2015") 
+        values should contain key ("definedBenefit_2015_p1")
         values should contain value ("91234.50")
       }
 
