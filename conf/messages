@@ -21,10 +21,13 @@ paac.startpage.p1 = Use this service to check whether:
 paac.startpage.p1lb1 = You have to pay tax on your pension contributions.
 paac.startpage.p1lb2 = You have any unused annual allowances that you can carry forward.
 paac.startpage.p2 = Before You Start
-paac.startpage.p3 = You will need to know the {} you have and how much you have paid in to them.
-link1 = <a href=\"https://www.gov.uk/pension-types\">type of pensions schemes</a>
+paac.startpage.p3 = You will need to know the you have and how much you have paid in to them.
 paac.startpage.p4 = If you have a total income of £110,000 or more, you will need to work out your adjusted net income.
 paac.startpage.p5 = Find out more about tax on your private pension contributions and your annual allowance.
+
+link1 = <a href="https://www.gov.uk/pension-types">type of pensions schemes</a>
+link2 = <a href="https://www.gov.uk/guidance/adjusted-net-income">adjusted net income</a>
+link3 = <a href="https://www.gov.uk/tax-on-your-private-pension">tax on your private pension contributions and your annual allowance</a>
 
 ## PAAC TaxYear Text
 paac.0809.taxyear.text = 2008/09
