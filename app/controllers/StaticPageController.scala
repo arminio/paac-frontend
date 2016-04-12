@@ -28,7 +28,7 @@ trait StaticPageController extends BaseFrontendController {
   }
 
   val onPipSubmit = withSession { implicit request =>
-    Future.successful(Redirect(routes.PensionInputsController.onPageLoad()))
+    Future.successful(Redirect(routes.PensionInputs1516P1Controller.onPageLoad()))
   }
 
   val onPipTaxYearPageLoad = withSession { implicit request =>

@@ -68,7 +68,8 @@ class StaticPageControllerSpec extends UnitSpec with BeforeAndAfterAll {
 
         // check
         val StartPage = contentAsString(await(result))
-        StartPage should include ("Period 1 is when your normal pension input period started to 8th July 2015 and period 2 is from 9th July 2015 to 5th April 2016.")
+        StartPage should include ("Period 1 is when your normal pension input period started to 8th" +
+          " July 2015 and period 2 is from 9th July 2015 to 5th April 2016.")
       }
     }
 

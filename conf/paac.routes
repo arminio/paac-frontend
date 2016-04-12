@@ -18,6 +18,10 @@ POST        /scheme                                     controllers.SelectScheme
 GET         /pip-tax-years                              controllers.StaticPageController.onPipTaxYearPageLoad
 POST        /pip-tax-years                              controllers.StaticPageController.onPipTaxYearSubmit
 
+# Changes to Pension Input Periods
+GET         /changes-to-pip                             controllers.StaticPageController.onPipPageLoad
+POST        /changes-to-pip                             controllers.StaticPageController.onPipSubmit
+
 ## 2015/16 Period-1 Pension Input Page
 GET         /pensionInputs1516p1                        controllers.PensionInputs1516P1Controller.onPageLoad
 POST        /pensionInputs1516p1                        controllers.PensionInputs1516P1Controller.onSubmit
@@ -34,7 +38,3 @@ POST        /pensionInputs                              controllers.PensionInput
 GET         /review                                     controllers.ReviewTotalAmountsController.onPageLoad
 GET         /edit/:year                                 controllers.ReviewTotalAmountsController.onEditAmount(year:Long)
 POST        /calculate                                  controllers.ReviewTotalAmountsController.onSubmit
-
-# Changes to Pension Input Periods
-GET         /changes-to-pip                             controllers.StaticPageController.onPipPageLoad
-POST        /changes-to-pip                             controllers.StaticPageController.onPipSubmit

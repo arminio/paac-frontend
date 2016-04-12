@@ -6,7 +6,7 @@
 pageTitle = Messages("paac.pension.inputs.pagetitle"),
 heading = Messages("paac.pension.inputs.heading"),
 articleClasses=Some("full-width"),
-backLink = Some((controllers.routes.SelectSchemeController.onPageLoad.url,Messages("paac.link.text.back")))
+backLink = Some((controllers.routes.StaticPageController.onPipPageLoad.url,Messages("paac.link.text.back")))
 ) {
 
     @if(paacForm.hasErrors) {
