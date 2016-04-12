@@ -15,8 +15,8 @@ GET         /scheme                                     controllers.SelectScheme
 POST        /scheme                                     controllers.SelectSchemeController.onSubmit
 
 ## Understand What Pension Input Periods are
-GET         /pip-tax-years                              controllers.StaticPageController.onPipPageLoad
-POST        /pip-tax-years                              controllers.StaticPageController.onPipSubmit
+GET         /pip-tax-years                              controllers.StaticPageController.onPipTaxYearPageLoad
+POST        /pip-tax-years                              controllers.StaticPageController.onPipTaxYearSubmit
 
 ## 2015/16 Period-1 Pension Input Page
 GET         /pensionInputs1516p1                        controllers.PensionInputs1516P1Controller.onPageLoad

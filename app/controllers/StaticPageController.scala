@@ -31,3 +31,13 @@ trait StaticPageController extends BaseFrontendController {
     Future.successful(Redirect(routes.PensionInputsController.onPageLoad()))
   }
 }
+
+trait StaticPageController extends BaseFrontendController {
+  val onPipTaxYearPageLoad = withSession { implicit request =>
+    Future.successful(Ok(views.html.pipTaxYearPage()))
+  }
+
+  val onPipTaxYearSubmit = withSession { implicit request =>
+    Future.successful(Redirect(routes.PensionInputsController.onPageLoad()))
+  }
+}
