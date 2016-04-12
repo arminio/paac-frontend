@@ -307,7 +307,7 @@ class ReviewTotalAmountsControllerSpec extends UnitSpec with BeforeAndAfterAll {
 
         // check
         status(result) shouldBe 303
-        redirectLocation(result) shouldBe Some("/paac/pensionInputs1516p1")
+        redirectLocation(result) shouldBe Some("/paac/review")
       }
     }
   }
