@@ -87,7 +87,8 @@ class CalculatorFormSpec extends UnitSpec{
   "CalculatorFormFields" should {
     "convert to list of contributions with pence amounts" in {
       // set up
-      val input = CalculatorFormFields(Some(50.50), Some(90.50), Some(100.50), Some(200.50), Some(300.50), Some(400.50), Some(500.50), Some(600.50), Some(700.50))
+      val input = CalculatorFormFields(Some(50.50), Some(90.50), Some(100.50), Some(200.50), Some(300.50), Some(400.50),
+                                       Some(500.50), Some(600.50), Some(700.50), Some(800.50), Some(9000.50))
 
       // test
       val contributions = input.toContributions()
@@ -101,7 +102,9 @@ class CalculatorFormSpec extends UnitSpec{
                                   Contribution(2011, 40050),
                                   Contribution(2012, 50050),
                                   Contribution(2013, 60050),
-                                  Contribution(2014, 70050))
+                                  Contribution(2014, 70050),
+        Contribution(TaxPeriod(2015,3,6), TaxPeriod(2015,6,8), Some(InputAmounts(80050))),
+        Contribution(TaxPeriod(2015,6,9),TaxPeriod(2016,3,5), Some(InputAmounts(900050))))
     }
   }
 }
