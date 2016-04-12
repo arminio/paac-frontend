@@ -56,7 +56,7 @@ case class CalculatorFormFields(amount2006:Option[BigDecimal]=None,
   }
 
   def to1516P1DefinedBenefit(year: Int) : Option[(Long, String)] = {
-    toContributions.find(_.taxPeriodStart.year == year).flatMap {
+    toContributions.find(_.taxPeriodEnd.day == 8).flatMap {
       (c)=>
         (for {
           amounts <- c.amounts
@@ -66,7 +66,7 @@ case class CalculatorFormFields(amount2006:Option[BigDecimal]=None,
   }
 
   def to1516P2DefinedBenefit(year: Int) : Option[(Long, String)] = {
-    toContributions.find(_.taxPeriodStart.year == year).flatMap {
+    toContributions.find(_.taxPeriodStart.day == 9).flatMap {
       (c)=>
         (for {
           amounts <- c.amounts
@@ -77,8 +77,7 @@ case class CalculatorFormFields(amount2006:Option[BigDecimal]=None,
 
 }
 
-object CalculatorFormFields {
-}
+object CalculatorFormFields
 
 object CalculatorForm {
   type CalculatorFormType = CalculatorFormFields

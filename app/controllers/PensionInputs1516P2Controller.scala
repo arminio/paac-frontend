@@ -45,7 +45,7 @@ trait PensionInputs1516P2Controller extends BaseFrontendController {
 
   val onSubmit = withSession { implicit request =>
     CalculatorForm.form.bindFromRequest().fold(
-      formWithErrors => { Future.successful(Ok(views.html.pensionInputs_1516_p2(formWithErrors))) },
+      formWithErrors => Future.successful(Ok(views.html.pensionInputs_1516_p2(formWithErrors))),
       input => {
         val (amount:Long, key:String) = input.to1516P2DefinedBenefit(2015).getOrElse(("definedBenefit_2015_p2", 0L))
         keystore.store[String](amount.toString, key)
