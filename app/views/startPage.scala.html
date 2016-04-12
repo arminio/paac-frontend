@@ -3,15 +3,26 @@
 @import uk.gov.hmrc.play.views.html.helpers._
 
 @common.paacMain(
-pageTitle = Messages("paac.calculator.homepage.pagetitle"),
-heading = Messages("paac.calculator.startpage.heading")){
+pageTitle = Messages("paac.startpage.pagetitle"),
+heading = Messages("paac.startpage.heading")){
 
-<p class="lede text">@Messages("paac.calculator.startpage.p1")</p>
-<p class="lede text">@Messages("paac.calculator.startpage.p2")</p>
+<p class="lede text">@Messages("paac.startpage.p1")</p>
+<ul class="list-bullet">
+    <li>@Messages("paac.startpage.p1lb1")</li>
+    <li>@Messages("paac.startpage.p1lb2")</li>
+</ul>
 
 @form(
 action = controllers.routes.StartPageController.onSubmit,
 args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
-<button id="Start" class="button button-start" value="Continue" role="button">@Messages("paac.calculator.startpage.button")</button>
+<button id="Start" class="button button-start" value="Continue" role="button">@Messages("paac.startpage.button")</button>
 }
+
+<p class="lede text">@Messages("paac.startpage.p2")</p>
+<p class="lede text">@Messages("paac.startpage.p3")</p>
+<p class="lede text">@Messages("paac.startpage.p4")</p>
+<p class="lede text">@Messages("paac.startpage.p5")</p>
+
 }
+
+

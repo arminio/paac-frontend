@@ -12,11 +12,19 @@ paac.calculator.button.continue = Continue
 paac.calculator.button.calculate = Calculate
 paac.calculator.button.back = Back
 paac.calculator.results.pagetitle = Tax Year Results
-paac.calculator.homepage.pagetitle = Pension Annual Allowance Calculator
-paac.calculator.startpage.button = Start Calculator
-paac.calculator.startpage.heading = Pension Annual Allowance Calculator
-paac.calculator.startpage.p1 = Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris dignissim, metus nec euismod mattis, nulla orci sodales lacus, et vestibulum dolor odio rutrum dolor. Aliquam commodo mi metus, sit amet iaculis nunc placerat vitae.
-paac.calculator.startpage.p2 = Nullam eu commodo ligula. Morbi consequat interdum consectetur. Integer sit amet hendrerit lorem, et aliquet odio. 
+
+## Start Page
+paac.startpage.pagetitle = Pension Annual Allowance Calculator
+paac.startpage.button = Start now
+paac.startpage.heading = Check your pension annual allowance
+paac.startpage.p1 = Use this service to check whether:
+paac.startpage.p1lb1 = You have to pay tax on your pension contributions.
+paac.startpage.p1lb2 = You have any unused annual allowances that you can carry forward.
+paac.startpage.p2 = Before You Start
+paac.startpage.p3 = You will need to know the {} you have and how much you have paid in to them.
+link1 = <a href=\"https://www.gov.uk/pension-types\">type of pensions schemes</a>
+paac.startpage.p4 = If you have a total income of £110,000 or more, you will need to work out your adjusted net income.
+paac.startpage.p5 = Find out more about tax on your private pension contributions and your annual allowance.
 
 ## PAAC TaxYear Text
 paac.0809.taxyear.text = 2008/09
