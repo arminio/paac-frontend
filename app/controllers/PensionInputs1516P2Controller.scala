@@ -21,17 +21,17 @@ import play.api.mvc._
 import scala.concurrent.Future
 import form.CalculatorForm
 
-object PensionInputs1516P1Controller extends PensionInputs1516P1Controller {
+object PensionInputs1516P2Controller extends PensionInputs1516P2Controller {
   override val keystore: KeystoreService = KeystoreService
 }
 
-trait PensionInputs1516P1Controller extends BaseFrontendController {
+trait PensionInputs1516P2Controller extends BaseFrontendController {
   val keystore: KeystoreService
 
-  private val onSubmitRedirect: Call = routes.PensionInputs1516P2Controller.onPageLoad()
+  private val onSubmitRedirect: Call = routes.PensionInputsController.onPageLoad()
 
   val onPageLoad = withSession { implicit request =>
-    val key = "definedBenefit_2015_p1"
+    val key = "definedBenefit_2015_p2"
     keystore.read[String](key).map {
         (amount) =>
         val fields = Map(amount match {
@@ -39,15 +39,15 @@ trait PensionInputs1516P1Controller extends BaseFrontendController {
           case Some("0") => (key, "0.00")
           case Some(value) => (key, f"${(value.toInt/100.00)}%2.2f")
         })
-        Ok(views.html.pensionInputs_1516_p1(CalculatorForm.form.bind(fields).discardingErrors))
+        Ok(views.html.pensionInputs_1516_p2(CalculatorForm.form.bind(fields).discardingErrors))
     }
   }
 
   val onSubmit = withSession { implicit request =>
     CalculatorForm.form.bindFromRequest().fold(
-      formWithErrors => { Future.successful(Ok(views.html.pensionInputs_1516_p1(formWithErrors))) },
+      formWithErrors => { Future.successful(Ok(views.html.pensionInputs_1516_p2(formWithErrors))) },
       input => {
-        val (amount:Long, key:String) = input.to1516P1DefinedBenefit(2015).getOrElse(("definedBenefit_2015_p1", 0L))
+        val (amount:Long, key:String) = input.to1516P2DefinedBenefit(2015).getOrElse(("definedBenefit_2015_p2", 0L))
         keystore.store[String](amount.toString, key)
         Future.successful(Redirect(onSubmitRedirect))
       }
@@ -55,3 +55,6 @@ trait PensionInputs1516P1Controller extends BaseFrontendController {
 
   }
 }
+
+
+
