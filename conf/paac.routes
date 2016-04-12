@@ -18,6 +18,10 @@ POST        /scheme                                     controllers.SelectScheme
 GET         /pensionInputs1516p1                        controllers.PensionInputs1516P1Controller.onPageLoad
 POST        /pensionInputs1516p1                        controllers.PensionInputs1516P1Controller.onSubmit
 
+## 2015/16 Period-2 Pension Input Page
+GET         /pensionInputs1516p2                        controllers.PensionInputs1516P2Controller.onPageLoad
+POST        /pensionInputs1516p2                        controllers.PensionInputs1516P2Controller.onSubmit
+
 ## Pension Input Page
 GET         /pensionInputs                              controllers.PensionInputsController.onPageLoad
 POST        /pensionInputs                              controllers.PensionInputsController.onSubmit
