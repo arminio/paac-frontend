@@ -47,7 +47,7 @@ trait ReviewTotalAmountsController extends BaseFrontendController {
       case y if y < 2015 =>
         List("definedBenefit_"+y).map(fetchAmount(_))
       case y if y == 2015 => 
-        List("definedBenefit_"+y, "moneyPurchase_"+y).map(fetchAmount(_))
+        List("definedBenefit_"+y+"_p1", "definedBenefit_"+y+"_p2", "moneyPurchase_"+y).map(fetchAmount(_))
       case y if y > 2015 => 
         List("definedBenefit_"+y, "moneyPurchase_"+y, "thresholdIncome_"+y, "adjustedIncome_"+y, "taperedAllowance_"+y).map(fetchAmount(_))
       }
