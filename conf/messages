@@ -49,6 +49,14 @@ paac.pension.inputs.pagetitle = Pension Inputs
 paac.pension.inputs.heading = Pension Inputs
 paac.pension.inputs.question = If you have been a member of more than one pension scheme, please provide the total of all pension input periods ending in the relevant tax year. If you pension input amounts from previous tax years, then add them using the hyperlink below.
 
+## Understand What Pension Input Periods are
+paac.pip.taxyear.pagetitle = Pension Input Periods and Tax Years
+paac.pip.taxyear.heading = Pension Input Periods and Tax Years
+paac.pip.taxyear.p1 = A pension input period is a year from when you started paying into your pension, like 1 November to 31 October.
+paac.pip.taxyear.p2 = A tax year is 6 April to 5 April. The tax year that your pension input period is for is based on the date your pension input period ends.
+paac.pip.taxyear.p3 = For example, your pension input period is 1 November 2012 to 31 October 2013. Because the end date of the period is between 6 April 2013 and 5 April 2014 this is for the tax year 2013 to 2014.
+paac.pip.taxyear.button.continue= Continue
+
 ## Review Amounts Page
 paac.review-amounts.page.heading=Check your answers
 paac.review-amounts.page.title=Check your answers
@@ -71,3 +79,11 @@ paac.results.table.col.7=Unused AA Carried Forward to Next Year
 paac.results.table.col.8=Cumulative Carry Forward (3 Years)
 paac.results.link.new.href=new
 paac.results.link.new=Start Again
+
+## Pension Inputs Changes Page
+paac.pip.button.continue=Continue
+paac.pip.p1=From the 6th April 2016, pension input periods are the same as tax years. To make the periods and years the same, the tax year 2015 to 2016 includes 2 periods.
+paac.pip.p2=Period 1 is when your normal pension input period started to 8th July 2015 and period 2 is from 9th July 2015 to 5th April 2016.
+paac.pip.pagetitle=Changes to pension input periods
+paac.pip.heading=Changes to pension input periods
+paac.pip.subheading=The tax year 2015 to 2016 is split into 2 periods.
