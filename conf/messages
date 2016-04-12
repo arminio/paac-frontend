@@ -78,3 +78,11 @@ paac.results.table.col.7=Unused AA Carried Forward to Next Year
 paac.results.table.col.8=Cumulative Carry Forward (3 Years)
 paac.results.link.new.href=new
 paac.results.link.new=Start Again
+
+## Pension Inputs Changes Page
+paac.pip.button.continue=Continue
+paac.pip.p1=From the 6th April 2016, pension input periods are the same as tax years. To make the periods and years the same, the tax year 2015 to 2016 includes 2 periods.
+paac.pip.p2=Period 1 is when your normal pension input period started to 8th July 2015 and period 2 is from 9th July 2015 to 5th April 2016.
+paac.pip.pagetitle=Changes to pension input periods
+paac.pip.heading=Changes to pension input periods
+paac.pip.subheading=The tax year 2015 to 2016 is split into 2 periods.
