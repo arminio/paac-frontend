@@ -98,6 +98,19 @@ class StaticPageControllerSpec extends UnitSpec with BeforeAndAfterAll {
       }
     }
 
+    "onPipSubmit" should {
+      "return 303" in {
+        // set up
+        val request = FakeRequest(GET, "/paac").withSession {(SessionKeys.sessionId,SESSION_ID)}
+
+        // test
+        val result: Future[Result] = StaticPageController.onPipSubmit()(request)
+
+        // check
+        status(result) shouldBe 303
+      }
+    }
+
     "onPipTaxYearSubmit" should {
       "return 303" in {
         // set up
