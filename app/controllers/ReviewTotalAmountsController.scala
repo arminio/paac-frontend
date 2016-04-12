@@ -72,6 +72,8 @@ trait ReviewTotalAmountsController extends BaseFrontendController {
   def onEditAmount(year:Long) = withSession { implicit request =>
     if (year < 2015) {
       Future.successful(Results.Redirect(routes.PensionInputsController.onPageLoad()))
+    } else if (year == 2015) {
+      Future.successful(Results.Redirect(routes.PensionInputs1516P1Controller.onPageLoad()))
     } else {
       Future.successful(Results.Redirect(routes.ReviewTotalAmountsController.onPageLoad()))
     }

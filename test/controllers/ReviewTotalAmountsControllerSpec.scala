@@ -297,6 +297,7 @@ class ReviewTotalAmountsControllerSpec extends UnitSpec with BeforeAndAfterAll {
         redirectLocation(result) shouldBe Some("/paac/pensionInputs")
       }
 
+      // TODO: Need to update this scenario with 2015 tax year
       "redirect to on page load when year is 2015" in new MockControllerFixture {
         // set up
         val request = FakeRequest(GET, "/paac/calculate").withSession {(SessionKeys.sessionId,SESSION_ID)}
@@ -306,7 +307,7 @@ class ReviewTotalAmountsControllerSpec extends UnitSpec with BeforeAndAfterAll {
 
         // check
         status(result) shouldBe 303
-        redirectLocation(result) shouldBe Some("/paac/review")
+        redirectLocation(result) shouldBe Some("/paac/pensionInputs1516p1")
       }
     }
   }
