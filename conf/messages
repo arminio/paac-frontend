@@ -67,11 +67,11 @@ paac.1516.period2.pension.inputs.subheading = Period-2
 paac.1516.period2.pension.inputs.question = Only provide us with the contributions to your defined benefit arrangements after 9 July 2015.
 paac.1516.period2.pension.inputs.db = Defined benefit
 
-
 ## Pension Inputs Page
 paac.pension.inputs.pagetitle = Pension Inputs
-paac.pension.inputs.heading = Pension Inputs
-paac.pension.inputs.question = If you have been a member of more than one pension scheme, please provide the total of all pension input periods ending in the relevant tax year. If you pension input amounts from previous tax years, then add them using the hyperlink below.
+paac.pension.inputs.heading = How much did you pay into your defined benefit pension schemes in the tax year 2014 to 2015?
+paac.pension.inputs.p1 = This is how much pension input amount you paid into your pension scheme during the pension input period that started earlier in 2014 and ended on or before 5 April 2015.
+paac.pension.inputs.p2 = If you are a member of more than one pension scheme, enter the total amount of money you paid into all your pensions in this year.
 
 ## Understand What Pension Input Periods are
 paac.pip.taxyear.pagetitle = Pension Input Periods and Tax Years
