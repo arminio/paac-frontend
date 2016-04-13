@@ -27,7 +27,6 @@ paac.startpage.beforeInfo.p3 = If you have a total income of £110,000 or more, 
 paac.startpage.beforeInfo.p4 = Find out more about <a href="https://www.gov.uk/tax-on-your-private-pension">tax on your private pension contributions and your annual allowance</a>.
 
 ## Scheme Selection Page
-
 paac.scheme.selection.pagetitle = Scheme Selection
 paac.scheme.selection.heading = Which type of pension scheme are you a member of?
 paac.scheme.selection.p1 = A defined contribution scheme is a pension based on how much is paid in to it. These are usually personal or stakeholder pensions, and are sometimes called ‘money purchase’ pension schemes.

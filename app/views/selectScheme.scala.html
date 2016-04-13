@@ -7,7 +7,7 @@ pageTitle = Messages("paac.scheme.selection.pagetitle"),
 heading = Messages("paac.scheme.selection.heading"),
 backLink = Some((controllers.routes.StartPageController.startPage.url,Messages("paac.link.text.back")))
 ) {
-
+<br>
     <p id="paac-scheme-selection-p1">@Messages("paac.scheme.selection.p1")</p>
     <p id="paac-scheme-selection-p2">@Messages("paac.scheme.selection.p2")</p>
 
@@ -15,10 +15,7 @@ backLink = Some((controllers.routes.StartPageController.startPage.url,Messages("
         action = controllers.routes.SelectSchemeController.onSubmit,
         args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
 
-
-
     <div class='form-group'>
-
         <fieldset class="inline">
             <label for="scheme-type" class="block-label add-focus selected">
                 <input id="scheme-type" type="radio" name="schemeType" value="db" checked >
