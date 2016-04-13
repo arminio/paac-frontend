@@ -157,9 +157,6 @@ class PensionInputsControllerSpec extends UnitSpec with BeforeAndAfterAll {
       MockKeystore.map = MockKeystore.map - "definedBenefit_2014"
       implicit val hc = HeaderCarrier()
       implicit val request = FakeRequest(POST,"/paac/pensionInputs").withSession{(SessionKeys.sessionId,SESSION_ID)}.withFormUrlEncodedBody(("definedBenefit_2014"->"1234.56"))
-      def readAmount[T]()(implicit hc: HeaderCarrier,
-                       format: play.api.libs.json.Format[T],
-                       request: Request[Any]) : Future[Option[String]] = MockKeystore.read[String]("definedBenefit_2014")
 
       // test
       val result : Future[Result] = PensionInputsControllerMockedKeystore.onSubmit()(request)

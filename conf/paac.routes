@@ -22,6 +22,10 @@ POST        /pip-tax-years                              controllers.StaticPageCo
 GET         /changes-to-pip                             controllers.StaticPageController.onPipPageLoad
 POST        /changes-to-pip                             controllers.StaticPageController.onPipSubmit
 
+## 2015/16 Period-1 Yes/No Page
+GET         /yesno1516p1                                controllers.YesNo1516Period1Controller.onPageLoad
+POST        /yesno1516p1                                controllers.YesNo1516Period1Controller.onSubmit
+
 ## 2015/16 Period-1 Pension Input Page
 GET         /pensionInputs1516p1                        controllers.PensionInputs1516P1Controller.onPageLoad
 POST        /pensionInputs1516p1                        controllers.PensionInputs1516P1Controller.onSubmit
