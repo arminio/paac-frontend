@@ -52,6 +52,13 @@ paac.scheme.db.label = DB (Defined Benefit)
 paac.scheme.mp.label = MP (Money Purchase)
 paac.scheme.dbmp.label = Both DB and MP
 
+
+## 2015/16 Period-1 Pension Inputs Page
+paac.1516.period1.pension.inputs.pagetitle = 2015/16 P1 Pension Inputs
+paac.1516.period1.pension.inputs.heading = How much did you pay into your defined benefit pension schemes in 2015 to 2016?
+paac.1516.period1.pension.inputs.subheading = Period-1
+paac.1516.period1.pension.inputs.question = This is how much you paid in from the pension input period that started earlier in 2015 and ended 8 July 2015.
+
 ## Pension Inputs Page
 paac.pension.inputs.pagetitle = Pension Inputs
 paac.pension.inputs.heading = Pension Inputs
