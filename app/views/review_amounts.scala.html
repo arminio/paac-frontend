@@ -59,7 +59,7 @@ backLink = Some((controllers.routes.PensionInputsController.onPageLoad.url,Messa
             <tr class="@if(reviewForm.errors.find(_.key == "definedBenefit_"+i+"_p1")
                         || reviewForm.errors.find(_.key == "moneyPurchase_"+i)
                         || reviewForm.errors.find(_.key == "taperedAllowance_"+i)) {error_color}">
-                <td class="numeric">@(Contribution(i,0).taxYearLabel()) Period-1</td>
+                <td class="numeric">@(Contribution(TaxPeriod(i, 3, 6), TaxPeriod(i, 6, 8), Some(InputAmounts(0))).taxYearLabel())</td>
                 <td class="numeric">
                     @if(p1.intValue() >= 0){
                         @(currencyFormatter.format(p1))
@@ -79,7 +79,7 @@ backLink = Some((controllers.routes.PensionInputsController.onPageLoad.url,Messa
             <tr class="@if(reviewForm.errors.find(_.key == "definedBenefit_"+i+"_p2")
                         || reviewForm.errors.find(_.key == "moneyPurchase_"+i)
                         || reviewForm.errors.find(_.key == "taperedAllowance_"+i)) {error_color}">
-                <td class="numeric">@(Contribution(i,0).taxYearLabel()) Period-2</td>
+                <td class="numeric">@(Contribution(TaxPeriod(i, 6, 9), TaxPeriod(i, 3, 5), Some(InputAmounts(0))).taxYearLabel())</td>
                 <td class="numeric">
                     @if(p2.intValue() >= 0){
                         @(currencyFormatter.format(p2))
@@ -122,7 +122,7 @@ backLink = Some((controllers.routes.PensionInputsController.onPageLoad.url,Messa
     } @* End of else block: Non-2015 *@
 
 
-    } @* end of first for loop *@
+    } @* End of first for loop *@
     } @* End of defining *@
     </tbody>
 </table>
@@ -131,5 +131,5 @@ action = controllers.routes.ReviewTotalAmountsController.onSubmit,
 args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
 <button id="submit" type="submit" class="button" value="Continue">@Messages("paac.review-amounts.button.continue")
 </button>
-} @* form end brace *@
-} @* end of common.paacMain *@
+} @* End of form *@
+} @* End of common.paacMain *@
