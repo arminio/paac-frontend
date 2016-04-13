@@ -26,6 +26,16 @@ paac.startpage.beforeInfo.p2 = The best way to get this information is to ask yo
 paac.startpage.beforeInfo.p3 = If you have a total income of £110,000 or more, you will need to work out your <a href="https://www.gov.uk/guidance/adjusted-net-income">adjusted net income</a>.
 paac.startpage.beforeInfo.p4 = Find out more about <a href="https://www.gov.uk/tax-on-your-private-pension">tax on your private pension contributions and your annual allowance</a>.
 
+## Scheme Selection Page
+
+paac.scheme.selection.pagetitle = Scheme Selection
+paac.scheme.selection.heading = Which type of pension scheme are you a member of?
+paac.scheme.selection.p1 = A defined contribution scheme is a pension based on how much is paid in to it. These are usually personal or stakeholder pensions, and are sometimes called ‘money purchase’ pension schemes.
+paac.scheme.selection.p2 = A defined benefit scheme is a pension based on your salary and how long you have worked for your employer. These are always workplace pensions that your employer arranges, and are sometimes called ‘final salary’ or ‘career average’ pension schemes.
+paac.scheme.selection.dc.label = Defined Contribution
+paac.scheme.selection.db.label = Defined Benefit
+paac.scheme.selection.dcdb.label = Both
+
 ## PAAC TaxYear Text
 paac.0809.taxyear.text = 2008/09
 paac.0910.taxyear.text = 2009/10
@@ -43,14 +53,6 @@ error.min={0} amount was too small and must be either £0.00 or greater.
 error.max={0} amount was too large and must be either £{1} or less.
 error.bounds={0} amount was empty. Please provide an amount between £0.00 and £99999999.99.
 error.real.precision={0} amount must be not be empty. (Amount must have no more than {1} numbers, including {2} decimal places, and should be £0.00 or larger and under £99999999.99.)
-
-## Scheme Selection Page
-paac.scheme.selection.pagetitle = Scheme Selection
-paac.scheme.selection.heading = Pension Scheme Selection
-paac.scheme.selection.question = What pension scheme are you a member of?
-paac.scheme.db.label = DB (Defined Benefit)
-paac.scheme.mp.label = MP (Money Purchase)
-paac.scheme.dbmp.label = Both DB and MP
 
 ## Pension Inputs Page
 paac.pension.inputs.pagetitle = Pension Inputs

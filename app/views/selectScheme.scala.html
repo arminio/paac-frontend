@@ -8,29 +8,29 @@ heading = Messages("paac.scheme.selection.heading"),
 backLink = Some((controllers.routes.StartPageController.startPage.url,Messages("paac.link.text.back")))
 ) {
 
-    <p class="lede text">@Messages("paac.calculator.startpage.p1")</p>
-    <p class="lede text">@Messages("paac.calculator.startpage.p2")</p>
+    <p id="paac-scheme-selection-p1">@Messages("paac.scheme.selection.p1")</p>
+    <p id="paac-scheme-selection-p2">@Messages("paac.scheme.selection.p2")</p>
 
     @form(
         action = controllers.routes.SelectSchemeController.onSubmit,
         args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
 
-    <p class="lede text">@Messages("paac.scheme.selection.question")</p>
+
 
     <div class='form-group'>
 
         <fieldset class="inline">
             <label for="scheme-type" class="block-label add-focus selected">
                 <input id="scheme-type" type="radio" name="schemeType" value="db" checked >
-                @Messages("paac.scheme.db.label")
+                @Messages("paac.scheme.selection.dc.label")
             </label><BR/><BR/><BR/>
             <label for="scheme-type" class="block-label">
                 <input id="scheme-type" type="radio" name="schemeType" value="mp" disabled>
-                @Messages("paac.scheme.mp.label")
+                @Messages("paac.scheme.selection.db.label")
             </label><BR/><BR/><BR/>
             <label for="scheme-type" class="block-label">
                 <input id="scheme-type" type="radio" name="schemeType" value="db-mp" disabled>
-                @Messages("paac.scheme.dbmp.label")
+                @Messages("paac.scheme.selection.dcdb.label")
             </label>
         </fieldset>
 
