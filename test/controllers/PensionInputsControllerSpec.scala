@@ -141,7 +141,7 @@ class PensionInputsControllerSpec extends UnitSpec with BeforeAndAfterAll {
   "onSubmit" can {
     "with blank value returns to page with errors" in new ControllerWithMockKeystore {
         // setup
-        val request = FakeRequest(POST,"").withFormUrlEncodedBody(("definedBenefit_2014","")).withSession{(SessionKeys.sessionId,SESSION_ID)}
+        val request = FakeRequest(POST,"").withFormUrlEncodedBody(("definedBenefit_2014"," ")).withSession{(SessionKeys.sessionId,SESSION_ID)}
 
         // test
         val result : Future[Result] = PensionInputsControllerMockedKeystore.onSubmit()(request)
@@ -149,7 +149,7 @@ class PensionInputsControllerSpec extends UnitSpec with BeforeAndAfterAll {
         // check 
         status(result) shouldBe 200
         val htmlPage = contentAsString(await(result))
-        htmlPage should include ("""2014/15 amount must be not be empty. (Amount must have no more than 10 numbers, including 2 decimal places, and should be £0.00 or larger and under £99999999.99.)""")
+        htmlPage should include ("""2014/15 amount must not be empty. (Amount must have no more than 10 numbers, including 2 decimal places, and should be £0.00 or larger and under £99999999.99.)""")
     }
 
     "with valid input amount should save to keystore" in new ControllerWithMockKeystore {

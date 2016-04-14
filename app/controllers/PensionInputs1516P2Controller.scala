@@ -47,7 +47,7 @@ trait PensionInputs1516P2Controller extends BaseFrontendController {
     CalculatorForm.form.bindFromRequest().fold(
       formWithErrors => Future.successful(Ok(views.html.pensionInputs_1516_p2(formWithErrors))),
       input => {
-        val (amount:Long, key:String) = input.to1516P2DefinedBenefit(2015).getOrElse(("definedBenefit_2015_p2", 0L))
+        val (amount:Long, key:String) = input.to1516Period2DefinedBenefit.getOrElse(("definedBenefit_2015_p2", 0L))
         keystore.store[String](amount.toString, key)
         Future.successful(Redirect(onSubmitRedirect))
       }
