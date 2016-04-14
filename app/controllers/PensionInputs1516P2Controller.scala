@@ -28,16 +28,16 @@ object PensionInputs1516P2Controller extends PensionInputs1516P2Controller {
 trait PensionInputs1516P2Controller extends BaseFrontendController {
   val keystore: KeystoreService
 
+  private val kesystoreKey = "definedBenefit_2015_p1"
   private val onSubmitRedirect: Call = routes.PensionInputsController.onPageLoad()
 
   val onPageLoad = withSession { implicit request =>
-    val key = "definedBenefit_2015_p2"
-    keystore.read[String](key).map {
+    keystore.read[String](kesystoreKey).map {
         (amount) =>
         val fields = Map(amount match {
-          case None => (key, "")
-          case Some("0") => (key, "0.00")
-          case Some(value) => (key, f"${(value.toInt/100.00)}%2.2f")
+          case None => (kesystoreKey, "")
+          case Some("0") => (kesystoreKey, "0.00")
+          case Some(value) => (kesystoreKey, f"${(value.toInt/100.00)}%2.2f")
         })
         Ok(views.html.pensionInputs_1516_p2(CalculatorForm.form.bind(fields).discardingErrors))
     }
@@ -47,7 +47,7 @@ trait PensionInputs1516P2Controller extends BaseFrontendController {
     CalculatorForm.form.bindFromRequest().fold(
       formWithErrors => Future.successful(Ok(views.html.pensionInputs_1516_p2(formWithErrors))),
       input => {
-        val (amount:Long, key:String) = input.to1516Period2DefinedBenefit.getOrElse(("definedBenefit_2015_p2", 0L))
+        val (amount:Long, key:String) = input.to1516Period2DefinedBenefit.getOrElse((kesystoreKey, 0L))
         keystore.store[String](amount.toString, key)
         Future.successful(Redirect(onSubmitRedirect))
       }
