@@ -53,11 +53,11 @@ backLink = Some((controllers.routes.YesNo1516Period1Controller.onPageLoad.url,Me
                       <span style="float:right">
                       @if(paacForm.data.contains("definedBenefit_2015_p1")) {
                           <tr style="text-align:left;min-width: 7em">
-                              £&nbsp;<input type="number" name="definedBenefit_2015_p1" id="definedBenefit" min="0" step="1" value='@paacForm.data("definedBenefit_2015_p1")' max="9999999.99" size="10" style="width:9em;@if(paacForm.errors.find(_.key == "definedBenefit_2015_p1")) {border: 4px solid #b10e1e;}"/>
+                              £&nbsp;<input type="number" name="definedBenefit_2015_p1" id="definedBenefit_2015_p1" min="0" step="1" value='@paacForm.data("definedBenefit_2015_p1")' max="9999999.99" size="10" style="width:9em;@if(paacForm.errors.find(_.key == "definedBenefit_2015_p1")) {border: 4px solid #b10e1e;}"/>
                           </tr>
                           } else {
                           <tr style="text-align:left;min-width: 7em">
-                              £&nbsp;<input type="number" name="definedBenefit_2015_p1" id="definedBenefit" min="0" step="1" value='' max="9999999.99" size="10" style="width:9em;@if(paacForm.errors.find(_.key == "definedBenefit_2015_p1")) {border: 4px solid #b10e1e;}"/>
+                              £&nbsp;<input type="number" name="definedBenefit_2015_p1" id="definedBenefit_2015_p1" min="0" step="1" value='' max="9999999.99" size="10" style="width:9em;@if(paacForm.errors.find(_.key == "definedBenefit_2015_p1")) {border: 4px solid #b10e1e;}"/>
                           </tr>
                           }
                       </span>
