@@ -55,7 +55,7 @@ case class CalculatorFormFields(amount2006:Option[BigDecimal]=None,
 
   }
 
-  def to1516P1DefinedBenefit(year: Int) : Option[(Long, String)] = {
+  def to1516Period1DefinedBenefit: Option[(Long, String)] = {
     toContributions.find(_.taxPeriodEnd.day == 8).flatMap {
       (c)=>
         (for {
@@ -65,13 +65,24 @@ case class CalculatorFormFields(amount2006:Option[BigDecimal]=None,
     }
   }
 
-  def to1516P2DefinedBenefit(year: Int) : Option[(Long, String)] = {
+  def to1516Period2DefinedBenefit: Option[(Long, String)] = {
     toContributions.find(_.taxPeriodStart.day == 9).flatMap {
       (c)=>
         (for {
           amounts <- c.amounts
           definedBenefit <- amounts.definedBenefit
         } yield definedBenefit).map((_,"definedBenefit_"+c.taxPeriodStart.year+"_p2"))
+    }
+  }
+
+  // Useful for all years except 2015/16 Tax Year
+  def toDefinedBenefit(year: Int) : Option[(Long, String)] = {
+    toContributions.find(_.taxPeriodStart.year == year).flatMap {
+      (c)=>
+        (for {
+          amounts <- c.amounts
+          definedBenefit <- amounts.definedBenefit
+        } yield definedBenefit).map((_,"definedBenefit_"+c.taxPeriodStart.year))
     }
   }
 
