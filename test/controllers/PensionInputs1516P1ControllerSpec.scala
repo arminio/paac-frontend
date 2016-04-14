@@ -49,6 +49,7 @@ class PensionInputs1516P1ControllerSpec extends UnitSpec with BeforeAndAfterAll 
 
   trait ControllerWithMockKeystore extends MockKeystoreFixture{
     object MockPensionInputs1516P1ControllerWithMockKeystore extends PensionInputs1516P1Controller {
+      val kesystoreKey = "definedBenefit_2015_p1"
       override val keystore: KeystoreService = MockKeystore
     }
   }
@@ -104,7 +105,7 @@ class PensionInputs1516P1ControllerSpec extends UnitSpec with BeforeAndAfterAll 
         // check
         status(result) shouldBe 200
         val htmlPage = contentAsString(await(result))
-        //htmlPage should include ("""<input id="scheme-type" type="radio" name="definedBenefit_2015_p1" value="db" checked >""")
+        htmlPage should include ("""<input type="number" name="definedBenefit_2015_p1"""")
       }
 
 /*      "have keystore with definedBenefit_2015_p1 value when we revisit the same page" in new ControllerWithMockKeystore {
