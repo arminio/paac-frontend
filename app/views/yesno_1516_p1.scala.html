@@ -1,0 +1,34 @@
+@(paacForm : Form[String])(implicit request:Request[_])
+
+@import uk.gov.hmrc.play.views.html.helpers._
+
+@common.paacMain(
+pageTitle = Messages("paac.1516.period1.yesno.pagetitle"),
+heading = Messages("paac.1516.period1.yesno.question"),
+backLink = Some((controllers.routes.StaticPageController.onPipPageLoad.url,Messages("paac.link.text.back")))
+) {
+
+    @form(
+        action = controllers.routes.YesNo1516Period1Controller.onSubmit,
+        args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
+
+    <div class='form-group'>
+
+        <div class='form-group'>
+            <fieldset class="inline">
+                <label for="yesNo" class="block-label add-focus selected">
+                    <input id="yesNo" type="radio" name="yesNo" value="Yes" checked>
+                    @Messages("paac.1516.period1.yesno.yes")
+                </label>
+                <label for="yesNo" class="block-label">
+                    <input id="yesNo" type="radio" name="yesNo" value="No">
+                    @Messages("paac.1516.period1.yesno.no")
+                </label>
+            </fieldset>
+        </div>
+
+    </div>
+    <br/>
+    <button id="submit" type="submit" class="button" value="Continue">@Messages("paac.calculator.button.continue")</button>
+    }
+}
