@@ -102,7 +102,7 @@ class SelectSchemeControllerSpec extends UnitSpec with BeforeAndAfterAll {
         // check
         status(result) shouldBe 200
         val htmlPage = contentAsString(await(result))
-        htmlPage should include ("""<input id="scheme-type" type="radio" name="schemeType" value="dc" checked >""")
+        htmlPage should include ("""<input id="scheme-type" type="radio" name="schemeType" value="db" checked>""")
       }
 
       "have keystore with schemeType value when we revisit the same page" in new ControllerWithMockKeystore {
