@@ -16,13 +16,14 @@ backLink = Some((controllers.routes.StartPageController.startPage.url,Messages("
         args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
 
     <div class='form-group'>
+
         <fieldset class="inline">
-            <label for="scheme-type" class="block-label add-focus selected">
-                <input id="scheme-type" type="radio" name="schemeType" value="dc" checked >
+            <label for="scheme-type" class="block-label">
+                <input id="scheme-type" type="radio" name="schemeType" value="dc" disabled>
                 @Messages("paac.scheme.selection.dc.label")
             </label><BR/><BR/><BR/>
-            <label for="scheme-type" class="block-label">
-                <input id="scheme-type" type="radio" name="schemeType" value="db" disabled>
+            <label for="scheme-type" class="block-label add-focus selected">
+                <input id="scheme-type" type="radio" name="schemeType" value="db" checked>
                 @Messages("paac.scheme.selection.db.label")
             </label><BR/><BR/><BR/>
             <label for="scheme-type" class="block-label">
@@ -34,5 +35,5 @@ backLink = Some((controllers.routes.StartPageController.startPage.url,Messages("
     </div>
     <br/>
     <button id="submit" type="submit" class="button" value="Continue">@Messages("paac.calculator.button.continue")</button>
-    }
-}
+    } @* End of HTML Form block *@
+} @* End of paacMain block *@
