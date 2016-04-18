@@ -49,6 +49,8 @@ class YesNo1516Period1ControllerSpec extends UnitSpec with BeforeAndAfterAll {
 
   trait ControllerWithMockKeystore extends MockKeystoreFixture{
     object MockYesNo1516Period1ControllerrWithMockKeystore extends YesNo1516Period1Controller {
+      val yesNoKesystoreKey = "yesnoFor1516P1"
+      val yesNoFormKey = "yesNo"
       override val keystore: KeystoreService = MockKeystore
     }
   }

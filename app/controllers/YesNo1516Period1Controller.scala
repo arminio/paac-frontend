@@ -28,11 +28,20 @@ object YesNo1516Period1Controller extends YesNo1516Period1Controller {
 trait YesNo1516Period1Controller extends BaseFrontendController {
   val keystore: KeystoreService
 
+  private   val yesNoKesystoreKey = "yesnoFor1516P1"
+  private   val yesNoFormKey = "yesNo"
   private val onSubmitRedirectForYes: Call = routes.PensionInputs1516P1Controller.onPageLoad()
   private val onSubmitRedirectForNo: Call = routes.PensionInputs1516P2Controller.onPageLoad()
 
   val onPageLoad = withSession { implicit request =>
-    Future.successful(Ok(views.html.yesno_1516_p1(YesNo1516Period1Form.form)))
+    keystore.read[String](yesNoKesystoreKey).map {
+      (yesNo) =>
+        val fields = Map(yesNo match {
+          case Some(value) => (yesNoFormKey, value)
+          case None => (yesNoFormKey, "Yes")
+        })
+        Ok(views.html.yesno_1516_p1(YesNo1516Period1Form.form.bind(fields).discardingErrors))
+    }
   }
 
   val onSubmit = withSession { implicit request =>
