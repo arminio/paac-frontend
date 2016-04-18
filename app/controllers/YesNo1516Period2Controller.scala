@@ -16,22 +16,22 @@
 
 package controllers
 
-import form.YesNo1516Period1Form
+import form.YesNo1516Period2Form
 import play.api.mvc._
 import service.KeystoreService
 import scala.concurrent.Future
 
-object YesNo1516Period1Controller extends YesNo1516Period1Controller {
+object YesNo1516Period2Controller extends YesNo1516Period2Controller {
   override val keystore: KeystoreService = KeystoreService
 }
 
-trait YesNo1516Period1Controller extends BaseFrontendController {
+trait YesNo1516Period2Controller extends BaseFrontendController {
   val keystore: KeystoreService
 
-  private   val yesNoKesystoreKey = "yesnoFor1516P1"
+  private   val yesNoKesystoreKey = "yesnoFor1516P2"
   private   val yesNoFormKey = "yesNo"
-  private val onSubmitRedirectForYes: Call = routes.PensionInputs1516P1Controller.onPageLoad()
-  private val onSubmitRedirectForNo: Call = routes.YesNo1516Period2Controller.onPageLoad()
+  private val onSubmitRedirectForYes: Call = routes.PensionInputs1516P2Controller.onPageLoad()
+  private val onSubmitRedirectForNo: Call = routes.PensionInputsController.onPageLoad()
 
   val onPageLoad = withSession { implicit request =>
     keystore.read[String](yesNoKesystoreKey).map {
@@ -40,16 +40,16 @@ trait YesNo1516Period1Controller extends BaseFrontendController {
           case Some(value) => (yesNoFormKey, value)
           case None => (yesNoFormKey, "Yes")
         })
-        Ok(views.html.yesno_1516_period1(YesNo1516Period1Form.form.bind(fields).discardingErrors))
+        Ok(views.html.yesno_1516_period2(YesNo1516Period2Form.form.bind(fields).discardingErrors))
     }
   }
 
   val onSubmit = withSession { implicit request =>
 
-    YesNo1516Period1Form.form.bindFromRequest().fold(
-      formWithErrors => { Future.successful(Ok(views.html.yesno_1516_period1(YesNo1516Period1Form.form))) },
+    YesNo1516Period2Form.form.bindFromRequest().fold(
+      formWithErrors => { Future.successful(Ok(views.html.yesno_1516_period2(YesNo1516Period2Form.form))) },
       input => {
-        keystore.store[String](input, YesNo1516Period1Form.yesNo)
+        keystore.store[String](input, YesNo1516Period2Form.yesNo)
         if (input == "Yes") {
           Future.successful(Redirect(onSubmitRedirectForYes))
         } else {
