@@ -3,8 +3,8 @@
 @import uk.gov.hmrc.play.views.html.helpers._
 
 @common.paacMain(
-pageTitle = Messages("paac.1516.period1.yesno.pagetitle"),
-heading = Messages("paac.1516.period1.yesno.question"),
+pageTitle = Messages("paac.1516.period2.yesno.pagetitle"),
+heading = Messages("paac.1516.period2.yesno.question"),
 backLink = Some((controllers.routes.PensionInputs1516P1Controller.onPageLoad.url,Messages("paac.link.text.back")))
 ) {
 
@@ -18,11 +18,11 @@ backLink = Some((controllers.routes.PensionInputs1516P1Controller.onPageLoad.url
             <fieldset class="inline">
                 <label for="yesNo" class="block-label">
                     <input id="yesNo" type="radio" name="yesNo" value="Yes">
-                    @Messages("paac.1516.period1.yesno.yes")
+                    @Messages("paac.1516.yesno.yes")
                 </label>
                 <label for="yesNo" class="block-label">
                     <input id="yesNo" type="radio" name="yesNo" value="No">
-                    @Messages("paac.1516.period1.yesno.no")
+                    @Messages("paac.1516.yesno.no")
                 </label>
             </fieldset>
         </div>
