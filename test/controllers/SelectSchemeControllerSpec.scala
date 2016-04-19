@@ -102,13 +102,13 @@ class SelectSchemeControllerSpec extends UnitSpec with BeforeAndAfterAll {
         // check
         status(result) shouldBe 200
         val htmlPage = contentAsString(await(result))
-        htmlPage should include ("""<input id="scheme-type" type="radio" name="schemeType" value="db" checked>""")
+        htmlPage should include ("""<input id="scheme-type-db" type="radio" name="schemeType" value="db">""")
       }
 
       "have keystore with schemeType value when we revisit the same page" in new ControllerWithMockKeystore {
         // setup
         val request = FakeRequest(GET,"").withSession{(SessionKeys.sessionId,SESSION_ID)}
-        MockKeystore.map = MockKeystore.map + ("schemeType" -> "dc")
+        MockKeystore.map = MockKeystore.map + ("schemeType" -> "db")
 
         // test
         val result : Future[Result] = MockSelectSchemeControllerWithMockKeystore.onPageLoad()(request)
@@ -116,7 +116,7 @@ class SelectSchemeControllerSpec extends UnitSpec with BeforeAndAfterAll {
         // check
         status(result) shouldBe 200
         MockKeystore.map should contain key ("schemeType")
-        MockKeystore.map should contain value ("dc")
+        MockKeystore.map should contain value ("db")
       }
 
     }
@@ -136,7 +136,7 @@ class SelectSchemeControllerSpec extends UnitSpec with BeforeAndAfterAll {
       "with valid schemeType should save to keystore" in new ControllerWithMockKeystore{
         // set up
         implicit val hc = HeaderCarrier()
-        implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID)).withFormUrlEncodedBody(("schemeType" -> "dc"))
+        implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID)).withFormUrlEncodedBody(("schemeType" -> "db"))
 
         // test
         val result: Future[Result] = MockSelectSchemeControllerWithMockKeystore.onSubmit()(request)
@@ -144,7 +144,7 @@ class SelectSchemeControllerSpec extends UnitSpec with BeforeAndAfterAll {
         // check
         status(result) shouldBe 303
         MockKeystore.map should contain key ("schemeType")
-        MockKeystore.map should contain value ("dc")
+        MockKeystore.map should contain value ("db")
       }
     }
   }
