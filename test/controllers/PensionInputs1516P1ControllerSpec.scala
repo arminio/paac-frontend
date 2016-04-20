@@ -108,10 +108,10 @@ class PensionInputs1516P1ControllerSpec extends UnitSpec with BeforeAndAfterAll 
         htmlPage should include ("""<input type="number" name="definedBenefit_2015_p1"""")
       }
 
-/*      "have keystore with definedBenefit_2015_p1 value when we revisit the same page" in new ControllerWithMockKeystore {
+      "have keystore with definedBenefit_2015_p1 value when we revisit the same page" in new ControllerWithMockKeystore {
         // setup
         val request = FakeRequest(GET,"").withSession{(SessionKeys.sessionId,SESSION_ID)}
-        MockKeystore.map = MockKeystore.map + ("definedBenefit_2015_p1" -> "40000.00")
+        MockKeystore.map = MockKeystore.map + ("definedBenefit_2015_p1" -> "40000")
 
         // test
         val result : Future[Result] = MockPensionInputs1516P1ControllerWithMockKeystore.onPageLoad()(request)
@@ -119,8 +119,8 @@ class PensionInputs1516P1ControllerSpec extends UnitSpec with BeforeAndAfterAll 
         // check
         status(result) shouldBe 200
         MockKeystore.map should contain key ("definedBenefit_2015_p1")
-        MockKeystore.map should contain value ("40000.00")
-      }*/
+        MockKeystore.map should contain value ("40000")
+      }
 
     }
 
@@ -136,7 +136,7 @@ class PensionInputs1516P1ControllerSpec extends UnitSpec with BeforeAndAfterAll 
         status(result.get) shouldBe 303
       }
 
-/*      "with valid definedBenefit_2015_p1 should save to keystore" in new ControllerWithMockKeystore{
+      "with valid definedBenefit_2015_p1 should save to keystore" in new ControllerWithMockKeystore{
         // set up
         implicit val hc = HeaderCarrier()
         implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID)).withFormUrlEncodedBody(("definedBenefit_2015_p1" -> "40000.00"))
@@ -147,8 +147,8 @@ class PensionInputs1516P1ControllerSpec extends UnitSpec with BeforeAndAfterAll 
         // check
         status(result) shouldBe 303
         MockKeystore.map should contain key ("definedBenefit_2015_p1")
-        MockKeystore.map should contain value ("40000.00")
-      }*/
+        MockKeystore.map should contain value ("4000000")
+      }
     }
   }
 }
