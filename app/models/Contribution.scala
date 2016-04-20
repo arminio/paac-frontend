@@ -53,24 +53,22 @@ case class Contribution(taxPeriodStart: TaxPeriod, taxPeriodEnd: TaxPeriod, amou
     amounts == None || (amounts.isDefined && amounts.get.isEmpty)
   }
 
-  def isPeriod1(): Boolean = {
-    val PERIOD_START_AFTER = TaxPeriod.PERIOD_1_2015_START.toCalendar
-    val PERIOD_END_BEFORE = TaxPeriod.PERIOD_1_2015_END.toCalendar
+  def isPeriod(s:TaxPeriod, e:TaxPeriod):Boolean = {
+    val PERIOD_START_AFTER = s.toCalendar
+    val PERIOD_END_BEFORE = e.toCalendar
     PERIOD_START_AFTER.add(java.util.Calendar.DAY_OF_MONTH, -1)
     PERIOD_END_BEFORE.add(java.util.Calendar.DAY_OF_MONTH, 1)
     val start = taxPeriodStart.toCalendar
     val end = taxPeriodEnd.toCalendar
-    start.after(PERIOD_START_AFTER) && start.before(PERIOD_END_BEFORE) && end.after(PERIOD_START_AFTER) && end.before(PERIOD_END_BEFORE)    
+    start.after(PERIOD_START_AFTER) && start.before(PERIOD_END_BEFORE) && end.after(PERIOD_START_AFTER) && end.before(PERIOD_END_BEFORE) 
+  }
+
+  def isPeriod1(): Boolean = {
+    isPeriod(TaxPeriod.PERIOD_1_2015_START, TaxPeriod.PERIOD_1_2015_END) 
   }
 
   def isPeriod2(): Boolean = {
-    val PERIOD_START_AFTER = TaxPeriod.PERIOD_2_2015_START.toCalendar
-    val PERIOD_END_BEFORE = TaxPeriod.PERIOD_2_2015_END.toCalendar
-    PERIOD_START_AFTER.add(java.util.Calendar.DAY_OF_MONTH, -1)
-    PERIOD_END_BEFORE.add(java.util.Calendar.DAY_OF_MONTH, 1)    
-    val start = taxPeriodStart.toCalendar
-    val end = taxPeriodEnd.toCalendar
-    start.after(PERIOD_START_AFTER) && start.before(PERIOD_END_BEFORE) && end.after(PERIOD_START_AFTER) && end.before(PERIOD_END_BEFORE)    
+    isPeriod(TaxPeriod.PERIOD_2_2015_START, TaxPeriod.PERIOD_2_2015_END) 
   }
 
   def +(that:Contribution): Contribution = {
@@ -83,7 +81,11 @@ case class Contribution(taxPeriodStart: TaxPeriod, taxPeriodEnd: TaxPeriod, amou
     } else {
       this
     }
-  }  
+  }
+
+  def isGroup1(): Boolean = {
+    amounts.isDefined && (amounts.get.definedBenefit != None || (taxPeriodStart.year < 2015 && amounts.get.moneyPurchase != None))
+  }
 }
 
 object TaxPeriod {
@@ -92,8 +94,10 @@ object TaxPeriod {
   val EARLIEST_YEAR_SUPPORTED:Int = 2006
   val LATEST_YEAR_SUPPORTED:Int = 2016
 
-  val MIN_VALUE:Int = 0
+  val MIN_MONTH_VALUE:Int = 0
   val MIN_DAY_VALUE:Int = 1
+  val MAX_MONTH_VALUE:Int = 11
+  val MAX_DAY_VALUE:Int = 31
 
   val PERIOD_1_2015_START = TaxPeriod(2015, 3, 6)
   val PERIOD_1_2015_END = TaxPeriod(2015, 6, 8)
@@ -108,8 +112,8 @@ object TaxPeriod {
 
   implicit val taxPeriodReads: Reads[TaxPeriod] = (
     (JsPath \ "year").read[Int](min(EARLIEST_YEAR_SUPPORTED)) and
-    (JsPath \ "month").read[Int](min(MIN_VALUE)) and
-    (JsPath \ "day").read[Int](min(MIN_DAY_VALUE))
+    (JsPath \ "month").read[Int](min(MIN_MONTH_VALUE) keepAnd max(MAX_MONTH_VALUE)) and
+    (JsPath \ "day").read[Int](min(MIN_DAY_VALUE) keepAnd max(MAX_DAY_VALUE))
   )(TaxPeriod.apply _)
 }
 
