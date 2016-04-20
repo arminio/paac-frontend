@@ -24,5 +24,5 @@ sbt run
 and then access the application at
 
 ```
-http://localhost:9000/paac/calculate
+http://localhost:9000/paac
 ```
