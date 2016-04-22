@@ -16,14 +16,17 @@ backLink = Some((controllers.routes.StaticPageController.onPipPageLoad.url,Messa
 
         <div class='form-group'>
             <fieldset class="inline">
-                <label for="yesno-yes" class="block-label">
-                    <input id="yesno-yes" type="radio" name="yesNo" value="Yes">
-                    @Messages("paac.1516.yesno.yes")
-                </label>
-                <label for="yesno-no" class="block-label">
-                    <input id="yesno-no" type="radio" name="yesNo" value="No">
-                    @Messages("paac.1516.yesno.no")
-                </label>
+                @inputRadioGroup(
+                    paacForm("yesNo"), Seq(
+                        ("Yes", Messages("paac.1516.yesno.yes")),
+                        ("No", Messages("paac.1516.yesno.no"))
+                        ),
+                        '_legend -> Messages("paac.1516.period1.yesno.question"),
+                        '_legendClass -> "hidden",
+                        '_labelAfter -> true,
+                        '_labelClass -> "block-label",
+                        '_groupClass -> "inline-block"
+                )
             </fieldset>
         </div>
 
