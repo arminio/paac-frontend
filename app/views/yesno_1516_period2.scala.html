@@ -3,41 +3,30 @@
 @import uk.gov.hmrc.play.views.html.helpers._
 
 @common.paacMain(
-pageTitle = Messages("paac.1516.period1.yesno.pagetitle"),
-heading = Messages("paac.1516.period1.yesno.question"),
-backLink = Some((controllers.routes.StaticPageController.onPipPageLoad.url,Messages("paac.link.text.back")))
+pageTitle = Messages("paac.1516.period2.yesno.pagetitle"),
+heading = Messages("paac.1516.period2.yesno.question"),
+backLink = Some((controllers.routes.PensionInputs1516P1Controller.onPageLoad.url,Messages("paac.link.text.back")))
 ) {
 
     @form(
-        action = controllers.routes.YesNo1516Period1Controller.onSubmit,
+        action = controllers.routes.YesNo1516Period2Controller.onSubmit,
         args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
 
     <div class='form-group'>
 
         <div class='form-group'>
             <fieldset class="inline">
-<<<<<<< Updated upstream:app/views/yesno_1516_p1.scala.html
-                <label for="yesNo" class="block-label">
-                    <input id="yesNo" type="radio" name="yesNo" value="Yes">
-                    @Messages("paac.1516.period1.yesno.yes")
-                </label>
-                <label for="yesNo" class="block-label">
-                    <input id="yesNo" type="radio" name="yesNo" value="No">
-                    @Messages("paac.1516.period1.yesno.no")
-                </label>
-=======
                 @inputRadioGroup(
                     paacForm("yesNo"), Seq(
                         ("Yes", Messages("paac.1516.yesno.yes")),
                         ("No", Messages("paac.1516.yesno.no"))
                         ),
-                        '_legend -> Messages("paac.1516.period1.yesno.question"),
+                        '_legend -> Messages("paac.1516.period2.yesno.question"),
                         '_legendClass -> "hidden",
                         '_labelAfter -> true,
                         '_labelClass -> "block-label",
                         '_groupClass -> "inline-block"
                 )
->>>>>>> Stashed changes:app/views/yesno_1516_period1.scala.html
             </fieldset>
         </div>
 
