@@ -35,6 +35,7 @@ case class CalculatorFormFields(amount2006:Option[BigDecimal]=None,
                                 amount2013:Option[BigDecimal]=None,
                                 amount2014:Option[BigDecimal]=None,
                                 amount2015P1:Option[BigDecimal]=None,
+                                dcAmount2015P1:Option[BigDecimal]=None,
                                 amount2015P2:Option[BigDecimal]=None) {
 
   def toContributions():List[Contribution] = {
@@ -50,7 +51,7 @@ case class CalculatorFormFields(amount2006:Option[BigDecimal]=None,
           None
         }
     }
-    (maybeContributions ++ List(Some(Contribution(TaxPeriod(2015,3,6), TaxPeriod(2015,6,8), Some(InputAmounts(toPence(amount2015P1))))),
+    (maybeContributions ++ List(Some(Contribution(TaxPeriod(2015,3,6), TaxPeriod(2015,6,8), Some(InputAmounts(toPence(amount2015P1),toPence(dcAmount2015P1))))),
       Some(Contribution(TaxPeriod(2015,6,9), TaxPeriod(2016,3,5), Some(InputAmounts(toPence(amount2015P2))))))).filter(_!=None).map(_.get)
 
   }
@@ -62,6 +63,16 @@ case class CalculatorFormFields(amount2006:Option[BigDecimal]=None,
           amounts <- c.amounts
           definedBenefit <- amounts.definedBenefit
         } yield definedBenefit).map((_,"definedBenefit_"+c.taxPeriodStart.year+"_p1"))
+    }
+  }
+
+  def to1516Period1DefinedContribution: Option[(Long, String)] = {
+    toContributions.find(_.taxPeriodEnd.day == 8).flatMap {
+      (c)=>
+        (for {
+          amounts <- c.amounts
+          definedContribution <- amounts.moneyPurchase
+        } yield definedContribution).map((_,"definedContribution_"+c.taxPeriodStart.year+"_p1"))
     }
   }
 
@@ -105,6 +116,7 @@ object CalculatorForm {
       "definedBenefit_2013" -> optional(bigDecimal(10,2)).verifying("error.bounds",value=>if (value.isDefined) value.get.longValue >= 0 && value.get.longValue < 100000000 else true),
       "definedBenefit_2014" -> optional(bigDecimal(10,2)).verifying("error.bounds",value=>if (value.isDefined) value.get.longValue >= 0 && value.get.longValue < 100000000 else true),
       "definedBenefit_2015_p1" -> optional(bigDecimal(10,2)).verifying("error.bounds",value=>if (value.isDefined) value.get.longValue >= 0 && value.get.longValue < 100000000 else true),
+      "definedContribution_2015_p1" -> optional(bigDecimal(10,2)).verifying("error.bounds",value=>if (value.isDefined) value.get.longValue >= 0 && value.get.longValue < 100000000 else true),
       "definedBenefit_2015_p2" -> optional(bigDecimal(10,2)).verifying("error.bounds",value=>if (value.isDefined) value.get.longValue >= 0 && value.get.longValue < 100000000 else true)
     )(CalculatorFormFields.apply)(CalculatorFormFields.unapply)
   )
