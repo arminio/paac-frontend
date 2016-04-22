@@ -13,6 +13,11 @@ paac.calculator.button.calculate = Calculate
 paac.calculator.button.back = Back
 paac.calculator.results.pagetitle = Tax Year Results
 
+## Common
+
+paac.common.continue.button = Continue
+
+
 ## Start Page
 paac.startpage.pagetitle = Pension Annual Allowance Calculator
 paac.startpage.button = Start now
@@ -92,6 +97,12 @@ paac.pip.taxyear.p1 = A pension input period is a year from when you started pay
 paac.pip.taxyear.p2 = A tax year is 6 April to 5 April. The tax year that your pension input period is for is based on the date your pension input period ends.
 paac.pip.taxyear.p3 = For example, your pension input period is 1 November 2012 to 31 October 2013. Because the end date of the period is between 6 April 2013 and 5 April 2014 this is for the tax year 2013 to 2014.
 paac.pip.taxyear.button.continue= Continue
+
+## Tax Year Selection
+paac.taxyear.selection.pagetitle = Tax Year Selection
+paac.taxyear.selection.heading = Which tax years were you a member of a registered pension scheme?
+paac.taxyear.selection.p1  = A tax year is 6 April to 5 April. The tax year that your pension input period is for is based on the date your pension input period ends.
+
 
 ## Pension Inputs Changes Page
 paac.pip.button.continue=Continue

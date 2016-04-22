@@ -1,0 +1,17 @@
+@()(implicit request:Request[_])
+
+@import uk.gov.hmrc.play.views.html.helpers._
+
+@common.paacMain(
+pageTitle = Messages("paac.taxyear.selection.pagetitle"),
+heading = Messages("paac.taxyear.selection.heading"),
+backLink = Some((controllers.routes.StaticPageController.onPipTaxYearPageLoad.url,Messages("paac.link.text.back")))
+) {
+<p class="">@Messages("paac.taxyear.selection.p1")</p>
+
+
+@form(action = controllers.routes.TaxYearSelectionController.onPageLoad,
+args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
+<button id="submit" type="submit" class="button" value="Continue">@Messages("paac.common.continue.button")</button>
+}
+}
