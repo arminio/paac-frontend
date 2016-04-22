@@ -30,7 +30,7 @@ trait YesNo1516Period1Controller extends BaseFrontendController {
 
   private   val yesNoKesystoreKey = "yesnoFor1516P1"
   private   val yesNoFormKey = "yesNo"
-  private val onSubmitRedirectForYes: Call = routes.PensionInputs1516P1Controller.onPageLoad()
+  private val onSubmitRedirectForYes: Call = routes.PensionInputs1516Period1Controller.onPageLoad()
   private val onSubmitRedirectForNo: Call = routes.YesNo1516Period2Controller.onPageLoad()
 
   val onPageLoad = withSession { implicit request =>

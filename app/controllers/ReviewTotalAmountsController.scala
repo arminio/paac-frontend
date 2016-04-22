@@ -73,7 +73,7 @@ trait ReviewTotalAmountsController extends BaseFrontendController {
     if (year < 2015) {
       Future.successful(Results.Redirect(routes.PensionInputsController.onPageLoad()))
     } else if (year == 20151) {
-      Future.successful(Results.Redirect(routes.PensionInputs1516P1Controller.onPageLoad()))
+      Future.successful(Results.Redirect(routes.PensionInputs1516Period1Controller.onPageLoad()))
     } else if (year == 20152) {
       Future.successful(Results.Redirect(routes.PensionInputs1516P2Controller.onPageLoad()))
     } else {

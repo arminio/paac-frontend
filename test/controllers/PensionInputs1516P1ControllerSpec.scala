@@ -48,7 +48,7 @@ class PensionInputs1516P1ControllerSpec extends UnitSpec with BeforeAndAfterAll 
   implicit val request = FakeRequest()
 
   trait ControllerWithMockKeystore extends MockKeystoreFixture{
-    object MockPensionInputs1516P1ControllerWithMockKeystore extends PensionInputs1516P1Controller {
+    object MockPensionInputs1516P1ControllerWithMockKeystore extends PensionInputs1516Period1Controller {
       val kesystoreKey = "definedBenefit_2015_p1"
       override val keystore: KeystoreService = MockKeystore
     }
@@ -75,7 +75,7 @@ class PensionInputs1516P1ControllerSpec extends UnitSpec with BeforeAndAfterAll 
     }
   }
 
-  "PensionInputs1516P1Controller" when {
+  "PensionInputs1516Period1Controller" when {
     "GET with routes" should {
       "not return result NOT_FOUND" in {
         val result: Option[Future[Result]] = route(FakeRequest(GET, endPointURL))
