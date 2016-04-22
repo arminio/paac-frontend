@@ -19,17 +19,17 @@ package form
 import play.api.data.Form
 import play.api.data.Forms._
 
-trait YesNo1516Period1{
-  val yesNo = "yesnoFor1516P1"
+trait YesNo1516Period2{
+  val yesNo = "yesnoFor1516P2"
 }
 
-object YesNo1516Period1Form extends YesNo1516Period1 {
+object YesNo1516Period2Form extends YesNo1516Period2 {
 
-  type YesNo1516Period1Form = String
+  type YesNo1516Period2Form = String
 
-  val form: Form[YesNo1516Period1Form] = Form(
+  val form: Form[YesNo1516Period2Form] = Form(
     mapping(
       "yesNo" -> text
-    )((yesNo) => yesNo)((yesNo: YesNo1516Period1Form) => Some(yesNo))
+    )((yesNo) => yesNo)((yesNo: YesNo1516Period2Form) => Some(yesNo))
 )
 }

@@ -28,7 +28,7 @@ object PensionInputs1516P2Controller extends PensionInputs1516P2Controller {
 trait PensionInputs1516P2Controller extends BaseFrontendController {
   val keystore: KeystoreService
 
-  private val kesystoreKey = "definedBenefit_2015_p1"
+  private val kesystoreKey = "definedBenefit_2015_p2"
   private val onSubmitRedirect: Call = routes.PensionInputsController.onPageLoad()
 
   val onPageLoad = withSession { implicit request =>

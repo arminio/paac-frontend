@@ -16,16 +16,6 @@ backLink = Some((controllers.routes.StaticPageController.onPipPageLoad.url,Messa
 
         <div class='form-group'>
             <fieldset class="inline">
-<<<<<<< Updated upstream:app/views/yesno_1516_p1.scala.html
-                <label for="yesNo" class="block-label">
-                    <input id="yesNo" type="radio" name="yesNo" value="Yes">
-                    @Messages("paac.1516.period1.yesno.yes")
-                </label>
-                <label for="yesNo" class="block-label">
-                    <input id="yesNo" type="radio" name="yesNo" value="No">
-                    @Messages("paac.1516.period1.yesno.no")
-                </label>
-=======
                 @inputRadioGroup(
                     paacForm("yesNo"), Seq(
                         ("Yes", Messages("paac.1516.yesno.yes")),
@@ -37,7 +27,6 @@ backLink = Some((controllers.routes.StaticPageController.onPipPageLoad.url,Messa
                         '_labelClass -> "block-label",
                         '_groupClass -> "inline-block"
                 )
->>>>>>> Stashed changes:app/views/yesno_1516_period1.scala.html
             </fieldset>
         </div>
 

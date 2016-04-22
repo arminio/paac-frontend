@@ -53,12 +53,17 @@ error.max={0} amount was too large and must be either £{1} or less.
 error.bounds={0} amount was empty. Please provide an amount between £0.00 and £99999999.99.
 error.real.precision={0} amount must not be empty. (Amount must have no more than {1} numbers, including {2} decimal places, and should be £0.00 or larger and under £99999999.99.)
 
+## 2015/16 Period-1 and Period-2 Common messages
+paac.1516.yesno.yes = Yes
+paac.1516.yesno.no = No
+
 ## 2015/16 Period-1 Yes/No Page
 paac.1516.period1.yesno.pagetitle = 2015/16 Period-1
-paac.1516.period1.yesno.yes = Yes
-paac.1516.period1.yesno.no = No
 paac.1516.period1.yesno.question = Did you have any pension input periods that ended between 6 April 2015 and 8 July 2015?
 
+## 2015/16 Period-2 Yes/No Page
+paac.1516.period2.yesno.pagetitle = 2015/16 Period-2
+paac.1516.period2.yesno.question = Did you have any pension input periods that started between 9 July 2015 and 5 April 2016?
 
 ## 2015/16 Period-1 Pension Inputs Page
 paac.1516.period1.pension.inputs.pagetitle = 2015/16 P1 Pension Inputs
