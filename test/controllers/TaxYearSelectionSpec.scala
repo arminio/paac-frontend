@@ -17,11 +17,10 @@
 package controllers
 
 import java.util.UUID
-
-import form.TaxYearSelectionForm
 import org.scalatest.BeforeAndAfterAll
 import play.api.Play
-import play.api.mvc.Request
+import play.api.mvc.{Result, Request}
+import play.api.test.Helpers._
 import play.api.test.{FakeRequest, FakeApplication}
 import service.KeystoreService
 import uk.gov.hmrc.play.http.{HeaderCarrier, SessionKeys}
@@ -31,8 +30,7 @@ import scala.concurrent.Future
 class TaxYearSelectionSpec extends UnitSpec with BeforeAndAfterAll {
   val app = FakeApplication()
   val SESSION_ID = s"session-${UUID.randomUUID}"
-  // TODO: chagnge the endpoint url
-  val endPointURL = "/paac/"
+  val endPointURL = "/paac/taxyearselection"
 
   override def beforeAll() {
     Play.start(app)
@@ -47,15 +45,18 @@ class TaxYearSelectionSpec extends UnitSpec with BeforeAndAfterAll {
 
   implicit val request = FakeRequest()
 
-//  trait ControllerWithMockKeystore extends MockKeystoreFixture{
-//    object MockSelectSchemeControllerWithMockKeystore extends SelectSchemeController {
-//      override val keystore: KeystoreService = MockKeystore
-//    }
-//  }
+  trait ControllerWithMockKeystore extends MockKeystoreFixture {
+    object MockTaxYearSelectionWithMockKeystore extends TaxYearSelectionController {
+      // override val keystore: KeystoreService = MockKeystore
+    }
+  }
+
 
   trait MockKeystoreFixture {
+
     object MockKeystore extends KeystoreService {
       var map = Map(SessionKeys.sessionId -> SESSION_ID)
+
       override def store[T](data: T, key: String)
                            (implicit hc: HeaderCarrier,
                             format: play.api.libs.json.Format[T],
@@ -64,6 +65,7 @@ class TaxYearSelectionSpec extends UnitSpec with BeforeAndAfterAll {
         map = map + (key -> data.toString)
         Future.successful(Some(data))
       }
+
       override def read[T](key: String)
                           (implicit hc: HeaderCarrier,
                            format: play.api.libs.json.Format[T],
@@ -72,14 +74,62 @@ class TaxYearSelectionSpec extends UnitSpec with BeforeAndAfterAll {
         Future.successful((map get key).map(_.asInstanceOf[T]))
       }
     }
+
   }
 
   "TaxYearSelection" when {
+    "GET with routes" should {
+      "not return result NOT_FOUND" in {
+        val result: Option[Future[Result]] = route(FakeRequest(GET, endPointURL))
+        result.isDefined shouldBe true
+        status(result.get) should not be NOT_FOUND
+      }
+
+      "return 303 for valid GET request" in {
+        val result: Option[Future[Result]] = route(FakeRequest(GET, endPointURL))
+        status(result.get) shouldBe 303
+      }
+
+      "not return 200 for valid GET request" in {
+        val result: Option[Future[Result]] = route(FakeRequest(GET, endPointURL))
+        status(result.get) should not be 200
+      }
+    }
+
+    "onPageLoad with GET request" should {
+      "have keystore with no values and display Tax Year Selection options" in new ControllerWithMockKeystore {
+        // setup
+        val request = FakeRequest(GET,"").withSession{(SessionKeys.sessionId,SESSION_ID)}
+
+        // test
+        val result : Future[Result] = MockTaxYearSelectionWithMockKeystore.onPageLoad()(request)
+
+        // check
+        status(result) shouldBe 200
+        val htmlPage = contentAsString(await(result))
+      }
+
+      "have keystore with TaxYearSelection value when page is revisited" in new ControllerWithMockKeystore {
+        // setup
+        val request = FakeRequest(GET,"").withSession{(SessionKeys.sessionId,SESSION_ID)}
+        MockKeystore.map = MockKeystore.map + ("TaxYear" -> "TaxYear")
+
+        // test
+        val result : Future[Result] = MockTaxYearSelectionWithMockKeystore.onPageLoad()(request)
+
+        // check
+        status(result) shouldBe 200
+        MockKeystore.map should contain value ("TaxYear")
+      }
+
+    }
+
+
+    //  "Checkbox group" should {
+    //    "Allow to check more than on checkbox" in {
+    //      val form = form(TaxYearSelectionForm)
+    //    }
+    //  }
   }
 
-//  "Checkbox group" should {
-//    "Allow to check more than on checkbox" in {
-//      val form = form(TaxYearSelectionForm)
-//    }
-//  }
 }
