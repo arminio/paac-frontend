@@ -71,6 +71,7 @@ paac.1516.period1.pension.inputs.heading = How much did you pay into your define
 paac.1516.period1.pension.inputs.subheading = Period-1
 paac.1516.period1.pension.inputs.question = This is how much you paid in from the pension input period that started earlier in 2015 and ended 8 July 2015.
 paac.1516.period1.pension.inputs.db = Defined benefit
+paac.1516.period1.pension.inputs.dc = Defined contribution
 
 ## 2015/16 Period-2 Pension Inputs Page
 paac.1516.period2.pension.inputs.pagetitle = 2015/16 P2 Pension Inputs
@@ -78,6 +79,7 @@ paac.1516.period2.pension.inputs.heading = How much did you pay into your define
 paac.1516.period2.pension.inputs.subheading = Period-2
 paac.1516.period2.pension.inputs.question = Only provide us with the contributions to your defined benefit arrangements after 9 July 2015.
 paac.1516.period2.pension.inputs.db = Defined benefit
+paac.1516.period2.pension.inputs.dc = Defined contribution
 
 ## Pension Inputs Page
 paac.pension.inputs.pagetitle = Pension Inputs
