@@ -31,27 +31,52 @@ object PensionInputs1516Period1Controller extends PensionInputs1516Period1Contro
 trait PensionInputs1516Period1Controller extends BaseFrontendController {
   val keystore: KeystoreService
 
-  private val kesystoreKey = "definedBenefit_2015_p1"
+  private val kesystoreDBKey = "definedBenefit_2015_p1"
+  private val kesystoreDCKey = "definedContribution_2015_p1"
+  private var selectedSchemeTypeKey: String = "schemeType"
+  private var selectedSchemeType: String = _
   private val onSubmitRedirect: Call = routes.YesNo1516Period2Controller.onPageLoad()
 
   val onPageLoad = withSession { implicit request =>
-    keystore.read[String](kesystoreKey).map {
-        (amount) =>
-        val fields = Map(amount match {
-          case None => (kesystoreKey, "")
-          case Some("0") => (kesystoreKey, "0.00")
-          case Some(value) => (kesystoreKey, f"${(value.toInt/100.00)}%2.2f")
-        })
-        Ok(views.html.pensionInputs_1516_period1(CalculatorForm.form.bind(fields).discardingErrors))
+    var fields:Map[String, String] = Map()
+
+    keystore.read[String](selectedSchemeTypeKey).map {
+      (schemeType) =>
+        selectedSchemeType = schemeType match {
+          case None => ""
+          case Some(value) => value
+        }
     }
+
+    keystore.read[String](kesystoreDBKey).map {
+        (amount) =>
+        fields ++= Map(amount match {
+          case None => (kesystoreDBKey, "")
+          case Some("0") => (kesystoreDBKey, "0.00")
+          case Some(value) => (kesystoreDBKey, f"${(value.toInt/100.00)}%2.2f")
+        })
+    }
+    keystore.read[String](kesystoreDCKey).map {
+        (amount) =>
+        fields ++= Map(amount match {
+          case None => (kesystoreDCKey, "")
+          case Some("0") => (kesystoreDCKey, "0.00")
+          case Some(value) => (kesystoreDCKey, f"${(value.toInt/100.00)}%2.2f")
+        })
+        Ok(views.html.pensionInputs_1516_period1(CalculatorForm.form.bind(fields).discardingErrors,selectedSchemeType))
+    }
+    //Future(Ok(views.html.pensionInputs_1516_period1(CalculatorForm.form.bind(fields).discardingErrors)))
+
   }
 
   val onSubmit = withSession { implicit request =>
     CalculatorForm.form.bindFromRequest().fold(
-      formWithErrors => { Future.successful(Ok(views.html.pensionInputs_1516_period1(formWithErrors))) },
+      formWithErrors => { Future.successful(Ok(views.html.pensionInputs_1516_period1(formWithErrors,selectedSchemeType))) },
       input => {
-        val (amount:Long, key:String) = input.to1516Period1DefinedBenefit.getOrElse((kesystoreKey, 0L))
-        keystore.store[String](amount.toString, key)
+        val (dbAmount:Long, dbKey:String) = input.to1516Period1DefinedBenefit.getOrElse((kesystoreDBKey, 0L))
+        keystore.store[String](dbAmount.toString, dbKey)
+        val (dcAmount:Long, dcKey:String) = input.to1516Period1DefinedContribution.getOrElse((kesystoreDCKey, 0L))
+        keystore.store[String](dcAmount.toString, dcKey)
         Future.successful(Redirect(onSubmitRedirect))
       }
     )
