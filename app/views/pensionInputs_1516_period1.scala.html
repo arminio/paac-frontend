@@ -1,4 +1,4 @@
-@(paacForm : Form[form.CalculatorFormFields])(implicit request:Request[_])
+@(paacForm : Form[form.CalculatorFormFields],selectedSchemeType: String = "")(implicit request:Request[_])
 
 @import uk.gov.hmrc.play.views.html.helpers._
 
@@ -46,6 +46,7 @@ backLink = Some((controllers.routes.YesNo1516Period1Controller.onPageLoad.url,Me
             <tbody>
                 @for(i <- List(2015)) {
                     <fieldset id="input_@i" class="form-field-group" style="max-width:12.35em;">
+                        @if(selectedSchemeType == "db" || selectedSchemeType == "dcdb"){
                         <label class="form-element-bold label--full-length numeric" for="definedBenefit_2015_p1" style="width:150%;display: inline-block;@if(paacForm.errors.find(_.key == "definedBenefit_2015_p1")) {color:#b10e1e;}">
                         <tr style="text-align:left;min-width: 7em">@Messages("paac.1516.period1.pension.inputs.db")</tr><BR/>
                           <span style="float:right">
@@ -60,7 +61,8 @@ backLink = Some((controllers.routes.YesNo1516Period1Controller.onPageLoad.url,Me
                               }
                           </span>
                         </label>
-
+                        }
+                        @if(selectedSchemeType == "dc" || selectedSchemeType == "dcdb"){
                         <label class="form-element-bold label--full-length numeric" for="definedContribution_2015_p1" style="width:150%;display: inline-block;@if(paacForm.errors.find(_.key == "definedContribution_2015_p1")) {color:#b10e1e;}">
                         <tr style="text-align:left;min-width: 7em">@Messages("paac.1516.period1.pension.inputs.dc")</tr><BR/>
                           <span style="float:right">
@@ -75,6 +77,7 @@ backLink = Some((controllers.routes.YesNo1516Period1Controller.onPageLoad.url,Me
                               }
                           </span>
                         </label>
+                        }
                     </fieldset>
                 }  @* End of for loop *@
             </tbody>
