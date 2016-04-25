@@ -21,11 +21,11 @@ import play.api.mvc._
 import scala.concurrent.Future
 import form.CalculatorForm
 
-object PensionInputs1516P2Controller extends PensionInputs1516P2Controller {
+object PensionInputs1516Period2Controller extends PensionInputs1516Period2Controller {
   override val keystore: KeystoreService = KeystoreService
 }
 
-trait PensionInputs1516P2Controller extends BaseFrontendController {
+trait PensionInputs1516Period2Controller extends BaseFrontendController {
   val keystore: KeystoreService
 
   private val kesystoreKey = "definedBenefit_2015_p2"
@@ -39,13 +39,13 @@ trait PensionInputs1516P2Controller extends BaseFrontendController {
           case Some("0") => (kesystoreKey, "0.00")
           case Some(value) => (kesystoreKey, f"${(value.toInt/100.00)}%2.2f")
         })
-        Ok(views.html.pensionInputs_1516_p2(CalculatorForm.form.bind(fields).discardingErrors))
+        Ok(views.html.pensionInputs_1516_period2(CalculatorForm.form.bind(fields).discardingErrors))
     }
   }
 
   val onSubmit = withSession { implicit request =>
     CalculatorForm.form.bindFromRequest().fold(
-      formWithErrors => Future.successful(Ok(views.html.pensionInputs_1516_p2(formWithErrors))),
+      formWithErrors => Future.successful(Ok(views.html.pensionInputs_1516_period2(formWithErrors))),
       input => {
         val (amount:Long, key:String) = input.to1516Period2DefinedBenefit.getOrElse((kesystoreKey, 0L))
         keystore.store[String](amount.toString, key)
