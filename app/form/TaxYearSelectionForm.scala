@@ -14,17 +14,23 @@
  * limitations under the License.
  */
 
-package controllers
+package form
 
-import scala.concurrent.Future
-import form.TaxYearSelectionForm
+import play.api.data.Form
+import play.api.data.Forms._
 
-object TaxYearSelectionController extends TaxYearSelectionController {
+trait TaxYearSelection {
+  val TaxYear = "taxyear"
 }
-  trait TaxYearSelectionController extends BaseFrontendController {
 
-    val onPageLoad = withSession { implicit request =>
+object TaxYearSelectionForm extends TaxYearSelection {
 
-      Future.successful(Ok(views.html.taxyearselection(TaxYearSelectionForm.form)) )
-    }
+  type TaxYearSelectionForm = String
+
+  val form: Form[TaxYearSelectionForm] = Form(
+    mapping(
+      "TaxYear" -> text
+    )((TaxYear) => TaxYear)((TaxYear: TaxYearSelectionForm) => Some(TaxYear))
+  )
+
 }

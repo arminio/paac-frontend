@@ -18,6 +18,7 @@ package controllers
 
 import java.util.UUID
 
+import form.TaxYearSelectionForm
 import org.scalatest.BeforeAndAfterAll
 import play.api.Play
 import play.api.mvc.Request
@@ -76,4 +77,9 @@ class TaxYearSelectionSpec extends UnitSpec with BeforeAndAfterAll {
   "TaxYearSelection" when {
   }
 
+//  "Checkbox group" should {
+//    "Allow to check more than on checkbox" in {
+//      val form = form(TaxYearSelectionForm)
+//    }
+//  }
 }

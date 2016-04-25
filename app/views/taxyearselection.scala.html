@@ -1,4 +1,4 @@
-@()(implicit request:Request[_])
+@(TaxYearForm : Form[String])(implicit request:Request[_])
 
 @import uk.gov.hmrc.play.views.html.helpers._
 
@@ -7,7 +7,21 @@ pageTitle = Messages("paac.taxyear.selection.pagetitle"),
 heading = Messages("paac.taxyear.selection.heading"),
 backLink = Some((controllers.routes.StaticPageController.onPipTaxYearPageLoad.url,Messages("paac.link.text.back")))
 ) {
+
 <p class="">@Messages("paac.taxyear.selection.p1")</p>
+
+<div class="form-group">
+
+    <span id="no-selection-error" class="error-message" style="display:none">Select at least one tax year that you paid into your pension schemes</span>
+
+
+    <label class="block-label">2016 to 2017 <input id="2016-17" type="checkbox" name="2016-17"></label>
+    <label class="block-label">2015 to 2016 <input id="2015-16" type="checkbox" name="2015-16"></label>
+    <label class="block-label">2014 to 2015 <input id="2014-15" type="checkbox" name="2014-15"></label>
+    <label class="block-label">2013 to 2014 <input id="2013-14" type="checkbox" name="2013-14"></label>
+
+</div>
+
 
 
 @form(action = controllers.routes.TaxYearSelectionController.onPageLoad,
