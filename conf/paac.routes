@@ -35,8 +35,8 @@ GET         /pensionInputs1516p1                        controllers.PensionInput
 POST        /pensionInputs1516p1                        controllers.PensionInputs1516Period1Controller.onSubmit
 
 ## 2015/16 Period-2 Pension Input Page
-GET         /pensionInputs1516p2                        controllers.PensionInputs1516P2Controller.onPageLoad
-POST        /pensionInputs1516p2                        controllers.PensionInputs1516P2Controller.onSubmit
+GET         /pensionInputs1516p2                        controllers.PensionInputs1516Period2Controller.onPageLoad
+POST        /pensionInputs1516p2                        controllers.PensionInputs1516Period2Controller.onSubmit
 
 ## Pension Input Page
 GET         /pensionInputs                              controllers.PensionInputsController.onPageLoad
