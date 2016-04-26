@@ -80,6 +80,5 @@ trait PensionInputs1516Period1Controller extends BaseFrontendController {
         Future.successful(Redirect(onSubmitRedirect))
       }
     )
-
   }
 }

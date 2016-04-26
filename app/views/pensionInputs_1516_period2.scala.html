@@ -1,4 +1,4 @@
-@(paacForm : Form[form.CalculatorFormFields])(implicit request:Request[_])
+@(paacForm : Form[form.CalculatorFormFields],selectedSchemeType: String = "")(implicit request:Request[_])
 
 @import uk.gov.hmrc.play.views.html.helpers._
 
@@ -46,31 +46,50 @@ backLink = Some((controllers.routes.YesNo1516Period2Controller.onPageLoad.url,Me
             <tbody>
                 <tr>
                 @defining(java.text.NumberFormat.getCurrencyInstance(java.util.Locale.UK)) { currencyFormatter =>
-                @for(i <- List(2015)) {
-                <fieldset id="input_@i" class="form-field-group" style="max-width:12.35em;">
-                    <label class="form-element-bold label--full-length numeric" for="definedBenefit_2015_p2" style="width:150%;display: inline-block;@if(paacForm.errors.find(_.key == "definedBenefit_2015_p2")) {color:#b10e1e;}">
-                    <tr style="text-align:left;min-width: 7em">@Messages("paac.1516.period2.pension.inputs.db")</tr><BR/>
+                    @for(i <- List(2015)) {
+                    <fieldset id="input_@i" class="form-field-group" style="max-width:12.35em;">
+                        @if(selectedSchemeType == "db" || selectedSchemeType == "dcdb"){
+                            <label class="form-element-bold label--full-length numeric" for="definedBenefit_2015_p2" style="width:150%;display: inline-block;@if(paacForm.errors.find(_.key == "definedBenefit_2015_p2")) {color:#b10e1e;}">
+                            <tr style="text-align:left;min-width: 7em">@Messages("paac.1516.pension.inputs.db")</tr><BR/>
 
-                      <span style="float:right">
-                      @if(paacForm.data.contains("definedBenefit_2015_p2")) {
-                          <tr style="text-align:left;min-width: 7em">
-                              £&nbsp;<input type="number" name="definedBenefit_2015_p2" id="definedBenefit_2015_p2" min="0" step="1" value='@paacForm.data("definedBenefit_2015_p2")' max="9999999.99" size="10" style="width:9em;@if(paacForm.errors.find(_.key == "definedBenefit_2015_p2")) {border: 4px solid #b10e1e;}"/>
-                          </tr>
-                          } else {
-                          <tr style="text-align:left;min-width: 7em">
-                              £&nbsp;<input type="number" name="definedBenefit_2015_p2" id="definedBenefit_2015_p2" min="0" step="1" value='' max="9999999.99" size="10" style="width:9em;@if(paacForm.errors.find(_.key == "definedBenefit_2015_p2")) {border: 4px solid #b10e1e;}"/>
-                          </tr>
-                          }
-                      </span>
-                    </label>
+                              <span style="float:right">
+                              @if(paacForm.data.contains("definedBenefit_2015_p2")) {
+                                  <tr style="text-align:left;min-width: 7em">
+                                      £&nbsp;<input type="number" name="definedBenefit_2015_p2" id="definedBenefit_2015_p2" min="0" step="1" value='@paacForm.data("definedBenefit_2015_p2")' max="9999999.99" size="10" style="width:9em;@if(paacForm.errors.find(_.key == "definedBenefit_2015_p2")) {border: 4px solid #b10e1e;}"/>
+                                  </tr>
+                                  } else {
+                                  <tr style="text-align:left;min-width: 7em">
+                                      £&nbsp;<input type="number" name="definedBenefit_2015_p2" id="definedBenefit_2015_p2" min="0" step="1" value='' max="9999999.99" size="10" style="width:9em;@if(paacForm.errors.find(_.key == "definedBenefit_2015_p2")) {border: 4px solid #b10e1e;}"/>
+                                  </tr>
+                                  }
+                              </span>
+                            </label>
+                        }
+                        @if(selectedSchemeType == "dc" || selectedSchemeType == "dcdb"){
+                            <label class="form-element-bold label--full-length numeric" for="definedContribution_2015_p2" style="width:150%;display: inline-block;@if(paacForm.errors.find(_.key == "definedContribution_2015_p2")) {color:#b10e1e;}">
+                            <tr style="text-align:left;min-width: 7em">@Messages("paac.1516.pension.inputs.dc")</tr><BR/>
+
+                              <span style="float:right">
+                              @if(paacForm.data.contains("definedContribution_2015_p2")) {
+                                  <tr style="text-align:left;min-width: 7em">
+                                      £&nbsp;<input type="number" name="definedContribution_2015_p2" id="definedContribution_2015_p2" min="0" step="1" value='@paacForm.data("definedContribution_2015_p2")' max="9999999.99" size="10" style="width:9em;@if(paacForm.errors.find(_.key == "definedContribution_2015_p2")) {border: 4px solid #b10e1e;}"/>
+                                  </tr>
+                                  } else {
+                                  <tr style="text-align:left;min-width: 7em">
+                                      £&nbsp;<input type="number" name="definedContribution_2015_p2" id="definedContribution_2015_p2" min="0" step="1" value='' max="9999999.99" size="10" style="width:9em;@if(paacForm.errors.find(_.key == "definedContribution_2015_p2")) {border: 4px solid #b10e1e;}"/>
+                                  </tr>
+                                  }
+                              </span>
+                            </label>
+                        }
                 </fieldset>
-                }
-                }
+                    } @* End of For loop *@
+                } @* End of defining *@
             </tr>
             </tbody>
         </table>
 
         <br/>
         <button id="submit" type="submit" class="button" value="Continue">@Messages("paac.calculator.button.continue")</button>
-    }
-}
+    } @* End of Form *@
+} @* End of paacMain *@
