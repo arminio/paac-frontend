@@ -9,28 +9,22 @@ backLink = Some((controllers.routes.StaticPageController.onPipTaxYearPageLoad.ur
 ) {
 
 <p class="">@Messages("paac.taxyear.selection.p1")</p>
-
+@form(action = controllers.routes.TaxYearSelectionController.onYearSelected,
+args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
 <div class="form-group">
 
-    <span id="no-selection-error" class="error-message" style="display:none">Select at least one tax year that you paid into your pension schemes</span>
-
     @defining((new java.util.GregorianCalendar()).get(java.util.Calendar.YEAR)) { thisYear =>
-    @for(i <- List.range(thisYear-3, thisYear+1)) {
-    <label class="block-label">@(i) to @(i+1) <input id="@(i)" type="checkbox" name="@(i)"></label>
-    }
-    }
+    @for(i <- List.range(thisYear-3, thisYear+1).reverse) {
 
-    <!--label class="block-label">2016 to 2017 <input id="2016-17" type="checkbox" name="2016-17"></label>
-    <label class="block-label">2015 to 2016 <input id="2015-16" type="checkbox" name="2015-16"></label>
-    <label class="block-label">2014 to 2015 <input id="2014-15" type="checkbox" name="2014-15"></label>
-    <label class="block-label">2013 to 2014 <input id="2013-14" type="checkbox" name="2013-14"></label-->
+    <label class="block-label">@(i) to @(i+1) <input id="TaxYear@(i)" type="checkbox" name="TaxYear@(i)"></label>
+        }
+    }
 
 </div>
 
 
 
-@form(action = controllers.routes.TaxYearSelectionController.onPageLoad,
-args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
+
 <button id="submit" type="submit" class="button" value="Continue">@Messages("paac.common.continue.button")</button>
-}
+    }
 }

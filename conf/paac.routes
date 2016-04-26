@@ -24,6 +24,8 @@ POST        /changes-to-pip                             controllers.StaticPageCo
 
 # Tax year selection
 GET         /taxyearselection                           controllers.TaxYearSelectionController.onPageLoad
+POST        /taxyearselection                                     controllers.TaxYearSelectionController.onYearSelected
+
 
 ## 2015/16 Period-1 Yes/No Page
 GET         /yesno1516p1                                controllers.YesNo1516Period1Controller.onPageLoad
