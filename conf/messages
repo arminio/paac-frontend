@@ -74,6 +74,17 @@ paac.1516.period2.yesno.question = Did you have any pension input periods that s
 paac.1516.pension.inputs.db = Defined benefit
 paac.1516.pension.inputs.dc = Defined contribution
 
+paac.1516.pension.inputs.pages.heading = How much was paid into these {0} schemes?
+paac.1516.pension.inputs.pages.description = This is how much was paid into your {0} schemes during the pension input period that started earlier in 2014 and ended between 6 April 2015 and 8 July 2015.
+
+paac.1516.pension.inputs.dc.heading = How much was paid into these defined contribution schemes?
+paac.1516.pension.inputs.db.heading = How much was paid into these defined benefit schemes?
+paac.1516.pension.inputs.dcdb.heading = How much was paid into these pension schemes?
+
+paac.1516.pension.inputs.dc.description = This is how much was paid into your defined contribution schemes during the pension input period that started earlier in 2014 and ended between 6 April 2015 and 8 July 2015.
+paac.1516.pension.inputs.db.description = This is how much was paid into your defined benefit schemes during the pension input period that started earlier in 2014 and ended between 6 April 2015 and 8 July 2015.
+paac.1516.pension.inputs.dcdb.description = This is how much was paid into your pension schemes during the pension input period that started earlier in 2014 and ended between 6 April 2015 and 8 July 2015.
+
 ## 2015/16 Period-1 Pension Inputs Page
 paac.1516.period1.pension.inputs.pagetitle = 2015/16 P1 Pension Inputs
 paac.1516.period1.pension.inputs.heading = How much did you pay into your defined benefit pension schemes in 2015 to 2016?
@@ -84,11 +95,6 @@ paac.1516.period1.pension.inputs.dc = Defined contribution
 
 ## 2015/16 Period-2 Pension Inputs Page
 paac.1516.period2.pension.inputs.pagetitle = 2015/16 P2 Pension Inputs
-paac.1516.period2.pension.inputs.heading = How much did you pay into your defined benefit pension schemes in 2015 to 2016?
-paac.1516.period2.pension.inputs.subheading = Period-2
-paac.1516.period2.pension.inputs.question = Only provide us with the contributions to your defined benefit arrangements after 9 July 2015.
-paac.1516.period2.pension.inputs.db = Defined benefit
-paac.1516.period2.pension.inputs.dc = Defined contribution
 
 ## Pension Inputs Page
 paac.pension.inputs.pagetitle = Pension Inputs
