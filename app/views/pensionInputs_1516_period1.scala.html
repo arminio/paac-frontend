@@ -4,7 +4,7 @@
 
 @common.paacMain(
 pageTitle = Messages("paac.1516.period1.pension.inputs.pagetitle"),
-heading = if(selectedSchemeType == "db") Messages("paac.1516.pension.inputs.db.heading") else if(selectedSchemeType == "dc") Messages("paac.1516.pension.inputs.dc.heading") else Messages("paac.1516.pension.inputs.dcdb.heading"),
+heading = Messages("paac.1516.pension.inputs.pages.heading", (if(selectedSchemeType == "db") "defined benefit" else if (selectedSchemeType == "dc") "defined contribution"  else "pension")),
 articleClasses=Some("full-width"),
 backLink = Some((controllers.routes.YesNo1516Period1Controller.onPageLoad.url,Messages("paac.link.text.back")))
 ) {
@@ -40,9 +40,7 @@ backLink = Some((controllers.routes.YesNo1516Period1Controller.onPageLoad.url,Me
         action = controllers.routes.PensionInputs1516Period1Controller.onSubmit,
         args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
 
-
-        <p class="lede text">@Messages("paac.1516.pension.inputs.db.description")</p>
-
+        <p class="lede text">@Messages("paac.1516.pension.inputs.pages.description", (if(selectedSchemeType == "db") "defined benefit" else if (selectedSchemeType == "dc") "defined contribution"  else "pension"))</p>
 
         <table>
             <tbody>
@@ -50,7 +48,7 @@ backLink = Some((controllers.routes.YesNo1516Period1Controller.onPageLoad.url,Me
                     <fieldset id="input_@i" class="form-field-group" style="max-width:12.35em;">
                         @if(selectedSchemeType == "db" || selectedSchemeType == "dcdb"){
                         <label class="form-element-bold label--full-length numeric" for="definedBenefit_2015_p1" style="width:150%;display: inline-block;@if(paacForm.errors.find(_.key == "definedBenefit_2015_p1")) {color:#b10e1e;}">
-                        <tr style="text-align:left;min-width: 7em">@Messages("paac.1516.period1.pension.inputs.db")</tr><BR/>
+                        <tr style="text-align:left;min-width: 7em">@Messages("paac.1516.pension.inputs.db")</tr><BR/>
                           <span style="float:right">
                               @if(paacForm.data.contains("definedBenefit_2015_p1")) {
                               <tr style="text-align:left;min-width: 7em">
@@ -66,7 +64,7 @@ backLink = Some((controllers.routes.YesNo1516Period1Controller.onPageLoad.url,Me
                         }
                         @if(selectedSchemeType == "dc" || selectedSchemeType == "dcdb"){
                         <label class="form-element-bold label--full-length numeric" for="definedContribution_2015_p1" style="width:150%;display: inline-block;@if(paacForm.errors.find(_.key == "definedContribution_2015_p1")) {color:#b10e1e;}">
-                        <tr style="text-align:left;min-width: 7em">@Messages("paac.1516.period1.pension.inputs.dc")</tr><BR/>
+                        <tr style="text-align:left;min-width: 7em">@Messages("paac.1516.pension.inputs.dc")</tr><BR/>
                           <span style="float:right">
                               @if(paacForm.data.contains("definedContribution_2015_p1")) {
                               <tr style="text-align:left;min-width: 7em">
