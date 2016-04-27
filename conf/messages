@@ -70,6 +70,10 @@ paac.1516.period1.yesno.question = Did you have any pension input periods that e
 paac.1516.period2.yesno.pagetitle = 2015/16 Period-2
 paac.1516.period2.yesno.question = Did you have any pension input periods that started between 9 July 2015 and 5 April 2016?
 
+## 2015/16 Period-1 and Period-2 Pension Inputs Page
+paac.1516.pension.inputs.db = Defined benefit
+paac.1516.pension.inputs.dc = Defined contribution
+
 ## 2015/16 Period-1 Pension Inputs Page
 paac.1516.period1.pension.inputs.pagetitle = 2015/16 P1 Pension Inputs
 paac.1516.period1.pension.inputs.heading = How much did you pay into your defined benefit pension schemes in 2015 to 2016?
