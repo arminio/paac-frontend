@@ -48,7 +48,8 @@ class TaxYearSelectionSpec extends UnitSpec with BeforeAndAfterAll {
 
   trait ControllerWithMockKeystore extends MockKeystoreFixture {
     object MockTaxYearSelectionWithMockKeystore extends TaxYearSelectionController {
-       override val keystore: KeystoreService = MockKeystore
+      val keystorekey = "TaxYearSelection"
+      override val keystore: KeystoreService = MockKeystore
     }
   }
 
@@ -113,14 +114,16 @@ class TaxYearSelectionSpec extends UnitSpec with BeforeAndAfterAll {
       "have keystore with TaxYearSelection value when page is revisited" in new ControllerWithMockKeystore {
         // setup
         val request = FakeRequest(GET,"").withSession{(SessionKeys.sessionId,SESSION_ID)}
-        MockKeystore.map = MockKeystore.map + ("TaxYear" -> "TaxYear")
+        MockKeystore.map = MockKeystore.map + ("TaxYearSelection" -> "2015")
 
         // test
         val result : Future[Result] = MockTaxYearSelectionWithMockKeystore.onPageLoad()(request)
 
         // check
         status(result) shouldBe 200
-        MockKeystore.map should contain value ("TaxYear")
+        MockKeystore.map should contain key ("TaxYearSelection")
+        MockKeystore.map should contain value ("2015")
+
       }
 
     }
@@ -143,7 +146,7 @@ class TaxYearSelectionSpec extends UnitSpec with BeforeAndAfterAll {
           "TaxYear" -> "%l&^@sl3"
         )).fold(
           formWithErrors =>
-          {formWithErrors.errors.head should not be ("Success")},
+            formWithErrors.errors.head should not be ("Success"),
           success =>
             success should not be Some("%l&^@sl3")
         )
@@ -164,7 +167,7 @@ class TaxYearSelectionSpec extends UnitSpec with BeforeAndAfterAll {
 //        "with valid TaxYear should save to keystore" in new ControllerWithMockKeystore{
 //          // set up
 //          implicit val hc = HeaderCarrier()
-//          implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID)).withFormUrlEncodedBody(("schemeType" -> "db"))
+//          implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID)).withFormUrlEncodedBody(("TaxYear" -> "2014"))
 //
 //          // test
 //          val result: Future[Result] = MockTaxYearSelectionWithMockKeystore.onYearSelected()(request)
@@ -175,8 +178,6 @@ class TaxYearSelectionSpec extends UnitSpec with BeforeAndAfterAll {
 //          MockKeystore.map should contain value ("2014")
 //        }
       }
-
-
 
 //      "Checkbox group" should {
 //        "Allow to check more than on checkbox" in {
