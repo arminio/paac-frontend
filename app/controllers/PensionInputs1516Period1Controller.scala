@@ -37,12 +37,6 @@ trait PensionInputs1516Period1Controller extends BaseFrontendController {
   private var selectedSchemeType: String = _
   private val onSubmitRedirect: Call = routes.YesNo1516Period2Controller.onPageLoad()
 
-  private def toTuple(amount:Option[String], key: String): (String,String) = amount match {
-      case None => (key, "")
-      case Some("0") => (key, "0.00")
-      case Some(value) => (key, f"${(value.toInt/100.00)}%2.2f")
-    }
-
   val onPageLoad = withSession { implicit request =>
     val reads: List[Future[(String, String)]] = List(kesystoreDBKey, kesystoreDCKey, selectedSchemeTypeKey).map {
       (key) =>
