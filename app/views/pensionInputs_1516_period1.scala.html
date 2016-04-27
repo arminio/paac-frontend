@@ -4,7 +4,7 @@
 
 @common.paacMain(
 pageTitle = Messages("paac.1516.period1.pension.inputs.pagetitle"),
-heading = Messages("paac.1516.period1.pension.inputs.heading"),
+heading = if(selectedSchemeType == "db") Messages("paac.1516.pension.inputs.db.heading") else if(selectedSchemeType == "dc") Messages("paac.1516.pension.inputs.dc.heading") else Messages("paac.1516.pension.inputs.dcdb.heading"),
 articleClasses=Some("full-width"),
 backLink = Some((controllers.routes.YesNo1516Period1Controller.onPageLoad.url,Messages("paac.link.text.back")))
 ) {
@@ -40,8 +40,10 @@ backLink = Some((controllers.routes.YesNo1516Period1Controller.onPageLoad.url,Me
         action = controllers.routes.PensionInputs1516Period1Controller.onSubmit,
         args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
 
-        <h2>@Messages("paac.1516.period1.pension.inputs.subheading")</h2>
-        <p class="lede text">@Messages("paac.1516.period1.pension.inputs.question")</p>
+
+        <p class="lede text">@Messages("paac.1516.pension.inputs.db.description")</p>
+
+
         <table>
             <tbody>
                 @for(i <- List(2015)) {
