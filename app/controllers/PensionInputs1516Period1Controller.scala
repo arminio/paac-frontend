@@ -34,7 +34,6 @@ trait PensionInputs1516Period1Controller extends BaseFrontendController {
   private val kesystoreDBKey = "definedBenefit_2015_p1"
   private val kesystoreDCKey = "definedContribution_2015_p1"
   private var selectedSchemeTypeKey: String = "schemeType"
-  private var selectedSchemeType: String = _
   private val onSubmitRedirect: Call = routes.YesNo1516Period2Controller.onPageLoad()
 
   val onPageLoad = withSession { implicit request =>
@@ -66,7 +65,8 @@ trait PensionInputs1516Period1Controller extends BaseFrontendController {
 
   val onSubmit = withSession { implicit request =>
     CalculatorForm.form.bindFromRequest().fold(
-      formWithErrors => { Future.successful(Ok(views.html.pensionInputs_1516_period1(formWithErrors,selectedSchemeType))) },
+      // TODO: When we do validation story, please forward this to onPageLoad method with selectedSchemeType
+      formWithErrors => { Future.successful(Ok(views.html.pensionInputs_1516_period1(formWithErrors))) },
       input => {
         List((input.to1516Period1DefinedBenefit, kesystoreDBKey), (input.to1516Period1DefinedContribution,kesystoreDCKey)).foreach {
           (pair)=>
