@@ -1,0 +1,29 @@
+@(paacForm : Form[String])(implicit request:Request[_])
+
+@import uk.gov.hmrc.play.views.html.helpers._
+
+@common.paacMain(
+pageTitle = Messages("paac.mpaa.ta.date.page.title"),
+heading = Messages("paac.mpaa.ta.date.page.heading"),
+articleClasses=Some("full-width"),
+backLink = Some((controllers.routes.YesNo1516Period1Controller.onPageLoad.url,Messages("paac.link.text.back")))
+) {
+
+    @form(
+        action = controllers.routes.PensionInputs1516Period1Controller.onSubmit,
+        args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
+
+        <p class="lede text">@Messages("paac.mpaa.ta.date.page.description")</p>
+
+        <table>
+            <tbody>
+                <fieldset id="mpaa_trigger_event_date" class="form-field-group" style="max-width:12.35em;">
+
+                </fieldset>
+            </tbody>
+        </table>
+
+        <br/>
+        <button id="submit" type="submit" class="button" value="Continue">@Messages("paac.calculator.button.continue")</button>
+    } @* End of Form *@
+} @* End of paacMain *@
