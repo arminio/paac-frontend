@@ -19,10 +19,12 @@ package controllers
 import java.util.UUID
 import scala.concurrent.Future
 import play.api.mvc._
-import play.api.libs.concurrent.Execution.Implicits._
 
+import service.KeystoreService
 import uk.gov.hmrc.play.frontend.controller.FrontendController
-import uk.gov.hmrc.play.http.SessionKeys
+import play.api.mvc._
+import uk.gov.hmrc.play.http.{HeaderCarrier, SessionKeys}
+
 
 trait SessionProvider {
   val NOSESSION = "NOSESSION"
@@ -30,6 +32,35 @@ trait SessionProvider {
 
   def createKeystoreSession()(implicit request: Request[AnyContent]) : Session = {
     Session(request.session.data + createSessionId())
+  }
+}
+trait RedirectController extends BaseFrontendController {
+  def keystore: KeystoreService
+  val CurrentYear : String = "Current"
+  val SelectedYears : String = "SelectedYears"
+
+  def wheretoNext[T](implicit hc: HeaderCarrier, format: play.api.libs.json.Format[T], request: Request[Any]) : Future[Result] = {
+    val reads: List[Future[(String, String)]] = List(CurrentYear, SelectedYears).map {
+      (key) =>
+        keystore.read[String](key).map {
+          case None => (key, "")
+          case Some(v) => (key, v)
+        }
+    }
+
+    Future.sequence(reads).map {
+      (fields) =>
+        val fieldsMap = Map[String, String](fields: _*)
+        val currentYear = fieldsMap(CurrentYear)
+        val selectedYears = fieldsMap(SelectedYears)
+        val syears = selectedYears.split(",")
+        val nextYear = syears.indexOf(currentYear) + 1
+        // Save next year value to keystore with CurrentYear
+        keystore.store("", nextYear.toString)
+        //redirect to nextYear Controller
+        Redirect(routes.StartPageController.startPage())
+
+    }
   }
 }
 
