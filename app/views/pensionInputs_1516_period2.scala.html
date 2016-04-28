@@ -40,7 +40,7 @@ backLink = Some((controllers.routes.YesNo1516Period2Controller.onPageLoad.url,Me
         action = controllers.routes.PensionInputs1516Period2Controller.onSubmit,
         args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
 
-        <p class="lede text">@Messages("paac.1516.pension.inputs.pages.description", (if(selectedSchemeType == "db") "defined benefit" else if (selectedSchemeType == "dc") "defined contribution"  else "pension"))</p>
+        <p class="lede text">@Messages("paac.1516.pension.inputs.period2.description", (if(selectedSchemeType == "db") "defined benefit" else if (selectedSchemeType == "dc") "defined contribution"  else "pension"))</p>
         <table>
             <tbody>
                 <fieldset id="input_2015_p2" class="form-field-group" style="max-width:12.35em;">
