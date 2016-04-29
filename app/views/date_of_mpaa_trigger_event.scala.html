@@ -1,16 +1,18 @@
 @(paacForm : Form[String])(implicit request:Request[_])
 
-@import uk.gov.hmrc.play.views.html.helpers._
+@import play.api.i18n._
+@import views.html.helper._
+@import uk.gov.hmrc.play.mappers.DateFields._
 
 @common.paacMain(
 pageTitle = Messages("paac.mpaa.ta.date.page.title"),
 heading = Messages("paac.mpaa.ta.date.page.heading"),
 articleClasses=Some("full-width"),
-backLink = Some((controllers.routes.YesNo1516Period1Controller.onPageLoad.url,Messages("paac.link.text.back")))
+backLink = Some((controllers.routes.PensionInputs1516Period2Controller.onPageLoad.url,Messages("paac.link.text.back")))
 ) {
 
     @form(
-        action = controllers.routes.PensionInputs1516Period1Controller.onSubmit,
+        action = controllers.routes.DateOfMPAATriggerEventController.onSubmit,
         args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
 
         <p class="lede text">@Messages("paac.mpaa.ta.date.page.description")</p>
@@ -18,6 +20,7 @@ backLink = Some((controllers.routes.YesNo1516Period1Controller.onPageLoad.url,Me
         <table>
             <tbody>
                 <fieldset id="mpaa_trigger_event_date" class="form-field-group" style="max-width:12.35em;">
+
 
                 </fieldset>
             </tbody>

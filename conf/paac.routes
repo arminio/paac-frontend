@@ -1,14 +1,13 @@
 # microservice specific routes
 
+## Public Assets
+GET         /public/assets/*file                        controllers.Public.at(path="/public", file)
+GET         /assets/*file                               controllers.DevAssets.at(path="app/assets", file)
+
+## PAAC Start Page
 GET         /                                           controllers.StartPageController.startPage
 GET         /new                                        controllers.StartPageController.newSession
 POST        /                                           controllers.StartPageController.onSubmit
-
-#GET         /calculate                                 controllers.CalculatorController.onPageLoad
-#POST        /calculateOld                              controllers.CalculatorController.onSubmit
-
-GET         /public/assets/*file                        controllers.Public.at(path="/public", file)
-GET         /assets/*file                               controllers.DevAssets.at(path="app/assets", file)
 
 ## Scheme Selection Page
 GET         /scheme                                     controllers.SelectSchemeController.onPageLoad
@@ -33,6 +32,10 @@ POST        /yesno1516p2                                controllers.YesNo1516Per
 ## 2015/16 Period-1 Pension Input Page
 GET         /pensionInputs1516p1                        controllers.PensionInputs1516Period1Controller.onPageLoad
 POST        /pensionInputs1516p1                        controllers.PensionInputs1516Period1Controller.onSubmit
+
+## Date of MPAA Trigger Event Page
+GET         /dateofmpaate                               controllers.DateOfMPAATriggerEventController.onPageLoad
+POST        /dateofmpaate                               controllers.DateOfMPAATriggerEventController.onSubmit
 
 ## 2015/16 Period-2 Pension Input Page
 GET         /pensionInputs1516p2                        controllers.PensionInputs1516Period2Controller.onPageLoad

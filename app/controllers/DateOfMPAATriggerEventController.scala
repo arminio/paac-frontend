@@ -28,7 +28,7 @@ object DateOfMPAATriggerEventController extends DateOfMPAATriggerEventController
 trait DateOfMPAATriggerEventController extends BaseFrontendController {
   val keystore: KeystoreService
 
-  private val onSubmitRedirect: Call = routes.ReviewTotalAmountsController.onPageLoad()
+  private val onSubmitRedirect: Call = routes.PensionInputsController.onPageLoad()
 
   val onPageLoad = withSession { implicit request =>
     Future.successful(Ok(views.html.date_of_mpaa_trigger_event(DateOfMPAATriggerEventForm.form)))
