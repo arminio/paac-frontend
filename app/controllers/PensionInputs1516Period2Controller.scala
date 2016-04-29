@@ -67,7 +67,7 @@ trait PensionInputs1516Period2Controller extends BaseFrontendController {
       input => {
         List((input.to1516Period2DefinedBenefit, kesystoreDBKey), (input.to1516Period2DefinedContribution,kesystoreDCKey)).foreach {
           (pair)=>
-            val (dbAmount:Long, dbKey:String) = pair._1.getOrElse((pair._2, 0L))
+            val (dbAmount:Long, dbKey:String) = pair._1.getOrElse((0L,pair._2))
             keystore.store[String](dbAmount.toString, dbKey)
         }
         Future.successful(Redirect(onSubmitRedirect))

@@ -48,8 +48,10 @@ trait PensionInputsController extends BaseFrontendController {
       formWithErrors => { Future.successful(Ok(views.html.pensionInputs(formWithErrors))) },
       input => {
         val (amount:Long, key:String) = input.toDefinedBenefit(2014).getOrElse((kesystoreKey, 0L))
-        keystore.store[String](amount.toString, key)
-        Future.successful(Redirect(onSubmitRedirect))
+        keystore.store[String](amount.toString, key).map {
+          _ =>
+          Redirect(onSubmitRedirect)
+        }
       }
     )
 
