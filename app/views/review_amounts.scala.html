@@ -1,4 +1,4 @@
-@(reviewForm : Form[form.CalculatorFormFields])(implicit request:Request[_])
+@(reviewForm : Form[form.CalculatorFormFields], hasBenefits: Boolean, hasContributions: Boolean)(implicit request:Request[_])
 
 @import uk.gov.hmrc.play.views.html.helpers._
 @import java.math.BigDecimal
@@ -40,92 +40,66 @@ backLink = Some((controllers.routes.PensionInputsController.onPageLoad.url,Messa
 </div>
 }
 
+@if(reviewForm.hasErrors == false && reviewForm.hasGlobalErrors == false) {
 <table>
     <thead>
     <tr>
         <th class="numeric" scope="col">@Messages("paac.review-amounts.heading.period")</th>
+        @if(hasBenefits) {
         <th class="numeric" scope="col">@Messages("paac.review-amounts.heading.db")</th>
+        }
+        @if(hasContributions) {
+        <th class="numeric" scope="col">@Messages("paac.review-amounts.heading.mp")</th>
+        }
         <th class="edit_action" scope="col"></th>
     </tr>
     </thead>
     <tbody>
     @defining(java.text.NumberFormat.getCurrencyInstance(java.util.Locale.UK)) { currencyFormatter =>
-    @for(i <- List.range(2006, (new java.util.GregorianCalendar()).get(java.util.Calendar.YEAR))) {
-
-    @if(i == 2015){
-        @* Period-1 2015 row *@
-
-        @defining(new BigDecimal(reviewForm.data.getOrElse("definedBenefit_"+i+"_p1","-1.0"))) { p1 =>
-            <tr class="@if(reviewForm.errors.find(_.key == "definedBenefit_"+i+"_p1")
-                        || reviewForm.errors.find(_.key == "moneyPurchase_"+i)
-                        || reviewForm.errors.find(_.key == "taperedAllowance_"+i)) {error_color}">
-                <td class="numeric">@(Contribution(TaxPeriod(i, 3, 6), TaxPeriod(i, 6, 8), Some(InputAmounts(0))).taxYearLabel())</td>
-                <td class="numeric">
-                    @if(p1.intValue() >= 0){
-                        @(currencyFormatter.format(p1))
-                    } else {
-                        &pound;&nbsp;&ndash;
-                    }
-                </td>
-                <td class="edit_action">
-                    <a href="edit/20151">@Messages("paac.review-amounts.action.edit") <span class="visuallyhidden">@(Contribution(i,0).taxYearLabel())</span></a>
-                </td>
-            </tr>
-        }
-
-        @* Period-2 2015 row *@
-
-        @defining(new BigDecimal(reviewForm.data.getOrElse("definedBenefit_"+i+"_p2","-1.0"))) { p2 =>
-            <tr class="@if(reviewForm.errors.find(_.key == "definedBenefit_"+i+"_p2")
-                        || reviewForm.errors.find(_.key == "moneyPurchase_"+i)
-                        || reviewForm.errors.find(_.key == "taperedAllowance_"+i)) {error_color}">
-                <td class="numeric">@(Contribution(TaxPeriod(i, 6, 9), TaxPeriod(i, 3, 5), Some(InputAmounts(0))).taxYearLabel())</td>
-                <td class="numeric">
-                    @if(p2.intValue() >= 0){
-                        @(currencyFormatter.format(p2))
-                    } else {
-                        &pound;&nbsp;&ndash;
-                    }
-                </td>
-                <td class="edit_action">
-                    <a href="edit/20152">@Messages("paac.review-amounts.action.edit") <span class="visuallyhidden">@(Contribution(i,0).taxYearLabel())</span></a>
-                </td>
-            </tr>
-        }
-
-    } else {
-
-        @defining(new BigDecimal(reviewForm.data.getOrElse("definedBenefit_"+i,"-1.0"))) { db =>
-            @defining(new BigDecimal(reviewForm.data.getOrElse("moneyPurchase_"+i,"-1.0"))) { mp =>
-                @defining(new BigDecimal(reviewForm.data.getOrElse("taperedAllowance_"+i,"-1.0"))) { ta =>
-                    @if(db.intValue() >= 0 || ta.intValue() >= 0 || mp.intValue() >= 0) {
-                    <tr class="@if(reviewForm.errors.find(_.key == " definedBenefit_"+i)
-                                || reviewForm.errors.find(_.key == "moneyPurchase_"+i)
-                                || reviewForm.errors.find(_.key == "taperedAllowance_"+i)) {error_color}">
-                        <td class="numeric">@(Contribution(i,0).taxYearLabel())</td>
-                        <td class="numeric">
-                            @if(db.intValue() >= 0){
-                                @(currencyFormatter.format(db))
-                            } else {
-                                &pound;&nbsp;&ndash;
-                            }
-                        </td>
-                        <td class="edit_action">
-                            <a href="edit/@i">@Messages("paac.review-amounts.action.edit") <span class="visuallyhidden">@(Contribution(i,0).taxYearLabel())</span></a>
-                        </td>
-                    </tr>
-                    }
+    @for(contribution <- reviewForm.get.toPageValues()) {
+        @defining(contribution.amounts.getOrElse(InputAmounts())) { amounts =>
+        @if(contribution.isEmpty() == false) {
+        <tr>
+            <td class="numeric">@(contribution.taxYearLabel())</td>
+            @if(hasBenefits) {
+            <td class="numeric">
+                @if(amounts.definedBenefit.isDefined){
+                    @(currencyFormatter.format(amounts.definedBenefit.get/100L))
+                } else {
+                    &pound;&nbsp;&ndash;
                 }
+            </td>
             }
+            @if(hasContributions) {
+            <td class="numeric">
+                @if(amounts.moneyPurchase.isDefined){
+                    @(currencyFormatter.format(amounts.moneyPurchase.get/100L))
+                } else {
+                    &pound;&nbsp;&ndash;
+                }
+            </td>
+            }
+            <td class="edit_action">
+                @if(contribution.taxPeriodStart.year < 2015) {
+                <a href="edit/@contribution.taxPeriodStart.year">
+                }
+                @if(contribution.isPeriod1()) {
+                <a href="edit/20151">
+                }
+                @if(contribution.isPeriod2()) {
+                <a href="edit/20152">
+                }
+                 @Messages("paac.review-amounts.action.edit") <span class="visuallyhidden">@(contribution.taxYearLabel())</span>
+                </a>
+            </td>
+        </tr>
         }
-
-    } @* End of else block: Non-2015 *@
-
-
-    } @* End of first for loop *@
-    } @* End of defining *@
+        }
+    }
+    }
     </tbody>
 </table>
+}
 @form(
 action = controllers.routes.ReviewTotalAmountsController.onSubmit,
 args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
