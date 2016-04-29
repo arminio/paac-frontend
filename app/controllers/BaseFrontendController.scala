@@ -22,7 +22,6 @@ import play.api.mvc._
 
 import service.KeystoreService
 import uk.gov.hmrc.play.frontend.controller.FrontendController
-import play.api.mvc._
 import uk.gov.hmrc.play.http.{HeaderCarrier, SessionKeys}
 
 
@@ -39,7 +38,7 @@ trait RedirectController extends BaseFrontendController {
   val CurrentYear : String = "Current"
   val SelectedYears : String = "SelectedYears"
 
-  def wheretoNext[T](implicit hc: HeaderCarrier, format: play.api.libs.json.Format[T], request: Request[Any]) : Future[Result] = {
+  def wheretoNext[T](defaultRoute: Result)(implicit hc: HeaderCarrier, format: play.api.libs.json.Format[T], request: Request[Any]) : Future[Result] = {
     val reads: List[Future[(String, String)]] = List(CurrentYear, SelectedYears).map {
       (key) =>
         keystore.read[String](key).map {
@@ -54,12 +53,32 @@ trait RedirectController extends BaseFrontendController {
         val currentYear = fieldsMap(CurrentYear)
         val selectedYears = fieldsMap(SelectedYears)
         val syears = selectedYears.split(",")
-        val nextYear = syears.indexOf(currentYear) + 1
-        // Save next year value to keystore with CurrentYear
-        keystore.store("", nextYear.toString)
-        //redirect to nextYear Controller
-        Redirect(routes.StartPageController.startPage())
+        val nextYear = if (currentYear == "") {
+          syears(0).toInt
+        } else {
+          val i = syears.indexOf(currentYear) + 1
+          if (i < syears.length) {
+            syears(i).toInt
+          } else {
+            -1
+          }
+        }
 
+
+        // Save next year value to keystore with CurrentYear
+        keystore.store(nextYear, CurrentYear)
+        //redirect to nextYear Controller
+        if (nextYear == -1) {
+          defaultRoute
+        }
+        else if (nextYear < 2015) {
+          Redirect(routes.StartPageController.startPage())
+        } else if (nextYear == 2015) {
+          Redirect(routes.PensionInputs1516Period1Controller.onPageLoad())
+        } else {
+            // 2016
+          Redirect(routes.PensionInputsController.onPageLoad())
+          }
     }
   }
 }
@@ -72,7 +91,8 @@ trait BaseFrontendController extends SessionProvider with FrontendController {
   /**
    * every session should have an ID: required by key-store
    * If no session Id is found or session was deleted (NOSESSION), a new session id will be issued
-   * @return redirect to start page if no session else action
+    *
+    * @return redirect to start page if no session else action
    * 
    * Example usage:
    * def onPageLoad(...) = withSession { implicit request => etc. }
