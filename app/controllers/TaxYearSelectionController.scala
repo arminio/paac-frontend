@@ -18,7 +18,6 @@ package controllers
 
 import play.api.mvc._
 import service.KeystoreService
-import scala.concurrent.Future
 import form.TaxYearSelectionForm
 object TaxYearSelectionController extends TaxYearSelectionController {
   override val keystore: KeystoreService = KeystoreService
@@ -34,18 +33,18 @@ object TaxYearSelectionController extends TaxYearSelectionController {
     def onYearSelected = withSession { implicit request =>
       val data: Map[String, Seq[String]] = request.body.asFormUrlEncoded.getOrElse(Map[String, Seq[String]]())
 
-      val key: String = data.keySet.find(_.contains("TaxYear")).getOrElse("TaxYear2015")
+     // val key: String = data.keySet.find(_.contains("TaxYear")).getOrElse("TaxYear2015")
 
       val kkey = data.view.map { case (k,v) => if (k == "csrfToken" ) "" else k.drop(7) }.drop(1) mkString (",")
+     // val year: String = key.drop(7)
       val year: String = ""
-
-      //save kkey values to keystore
       keystore.store[String](kkey, SelectedYears)
       keystore.store[String](year, CurrentYear)
 
+      println("**************************")
+      println("CurrentYear : " + CurrentYear + "  selectedyear: " + SelectedYears)
       wheretoNext[String](Redirect(routes.StartPageController.startPage()))
     }
-
        val onPageLoad = withSession { implicit request =>
          keystore.read[String](keystoreKey).map {
            (taxyear) =>
@@ -58,5 +57,3 @@ object TaxYearSelectionController extends TaxYearSelectionController {
          }
        }
 }
-
-
