@@ -154,7 +154,7 @@ class ReviewTotalAmountsControllerSpec extends UnitSpec with BeforeAndAfterAll {
 
       "should return money purchase when keystore has money purchase amount for 2015" in new MockControllerFixture {
         // set up
-        MockKeystore.map = MockKeystore.map + ("moneyPurchase_2015"->"123450")
+        MockKeystore.map = MockKeystore.map + ("definedContribution_2015_p1"->"123450")
         implicit val hc = HeaderCarrier()
         implicit val request = FakeRequest().withSession((SessionKeys.sessionId,SESSION_ID))
 
@@ -163,7 +163,7 @@ class ReviewTotalAmountsControllerSpec extends UnitSpec with BeforeAndAfterAll {
 
         // check
         val values: Map[String,String] = Await.result(result, Duration(1000,MILLISECONDS))
-        values should contain key ("moneyPurchase_2015") 
+        values should contain key ("definedContribution_2015_p1") 
         values should contain value ("1234.50")
       }
 
@@ -185,7 +185,7 @@ class ReviewTotalAmountsControllerSpec extends UnitSpec with BeforeAndAfterAll {
       "should return values when keystore has amounts for 2016" in new MockControllerFixture {
         // set up
         MockKeystore.map = MockKeystore.map ++ Map("definedBenefit_2016"->"100",
-                                                   "moneyPurchase_2016"->"200",
+                                                   "definedContribution_2016"->"200",
                                                    "thresholdIncome_2016"->"300",
                                                    "adjustedIncome_2016"->"400",
                                                    "taperedAllowance_2016"->"500")
@@ -199,7 +199,7 @@ class ReviewTotalAmountsControllerSpec extends UnitSpec with BeforeAndAfterAll {
         val values: Map[String,String] = Await.result(result, Duration(1000,MILLISECONDS))
         values should contain key ("definedBenefit_2016") 
         values should contain value ("1.00")
-        values should contain key ("moneyPurchase_2016") 
+        values should contain key ("definedContribution_2016") 
         values should contain value ("2.00")
         values should contain key ("thresholdIncome_2016") 
         values should contain value ("3.00")
@@ -223,7 +223,7 @@ class ReviewTotalAmountsControllerSpec extends UnitSpec with BeforeAndAfterAll {
         status(result) shouldBe 200
       }
 
-      "should return calculation results from amounts stored in keystore" in new MockControllerFixture {
+      "return calculation results from amounts stored in keystore" in new MockControllerFixture {
         // set up
         val request = FakeRequest(GET, "/paac/calculate").withSession {(SessionKeys.sessionId,SESSION_ID)}
 
@@ -235,7 +235,7 @@ class ReviewTotalAmountsControllerSpec extends UnitSpec with BeforeAndAfterAll {
         htmlSummaryPage should include ("Tax Year Results")
       }
 
-      "should display errors if values in keystore are incorrect" in new MockControllerFixture {
+      "display errors if values in keystore are incorrect" in new MockControllerFixture {
         // set up
         MockKeystore.map = (MockKeystore.map - "definedBenefit_2006") ++ Map("definedBenefit_2006"->"-100")
         val request = FakeRequest(GET, "/paac/calculate").withSession {(SessionKeys.sessionId,SESSION_ID)}
