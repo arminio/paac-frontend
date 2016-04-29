@@ -47,9 +47,9 @@ trait ReviewTotalAmountsController extends BaseFrontendController {
       case y if y < 2015 =>
         List("definedBenefit_"+y).map(fetchAmount(_))
       case y if y == 2015 => 
-        List("definedBenefit_"+y+"_p1", "definedBenefit_"+y+"_p2", "moneyPurchase_"+y).map(fetchAmount(_))
+        List("definedBenefit_2015_p1", "definedBenefit_2015_p2", "definedContribution_2015_p1", "definedContribution_2015_p2").map(fetchAmount(_))
       case y if y > 2015 => 
-        List("definedBenefit_"+y, "moneyPurchase_"+y, "thresholdIncome_"+y, "adjustedIncome_"+y, "taperedAllowance_"+y).map(fetchAmount(_))
+        List("definedBenefit_"+y, "definedContribution_"+y, "thresholdIncome_"+y, "adjustedIncome_"+y, "taperedAllowance_"+y).map(fetchAmount(_))
       }
 
     val currentYear = (new java.util.GregorianCalendar()).get(java.util.Calendar.YEAR)
@@ -63,8 +63,11 @@ trait ReviewTotalAmountsController extends BaseFrontendController {
   val onPageLoad = withSession { implicit request =>
     fetchAmounts().map { (amountsMap) =>
       CalculatorForm.form.bind(amountsMap).fold(
-        formWithErrors => Ok(views.html.review_amounts(formWithErrors)),
-        form => Ok(views.html.review_amounts(CalculatorForm.form.bind(amountsMap)))
+        formWithErrors => Ok(views.html.review_amounts(formWithErrors, true, true)),
+        form => {
+          val f = CalculatorForm.form.bind(amountsMap)
+          Ok(views.html.review_amounts(f, f.get.hasDefinedBenefits(), f.get.hasDefinedContributions()))
+        }
       )
     }
   }
@@ -84,7 +87,9 @@ trait ReviewTotalAmountsController extends BaseFrontendController {
   val onSubmit = withSession { implicit request =>
     fetchAmounts().flatMap { (amounts) =>
       CalculatorForm.form.bind(amounts).fold(
-        formWithErrors => Future.successful(Ok(views.html.review_amounts(formWithErrors))),
+        formWithErrors => {
+          Future.successful(Ok(views.html.review_amounts(formWithErrors, true, true)))
+        },
         input => connector.connectToPAACService(input.toContributions()).map(response => Ok(views.html.results(response)))
       )
     }

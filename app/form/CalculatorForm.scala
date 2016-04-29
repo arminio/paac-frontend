@@ -38,76 +38,65 @@ case class CalculatorFormFields(amount2006:Option[BigDecimal]=None,
                                 dcAmount2015P1:Option[BigDecimal]=None,
                                 amount2015P2:Option[BigDecimal]=None,
                                 dcAmount2015P2:Option[BigDecimal]=None) {
+  val THIS_YEAR = (new java.util.GregorianCalendar()).get(java.util.Calendar.YEAR)
+  val START_YEAR = 2006
+
+  def toPageValues():List[Contribution] = {
+    val fieldValueMap: Map[String,Any]= this.getClass.getDeclaredFields.map(_.getName).zip(this.productIterator.toList).toMap
+    def get(name:String): Option[Long] = fieldValueMap.get(name).map(_.asInstanceOf[Option[BigDecimal]]).flatMap(_.map((v:BigDecimal)=>(v * 100).longValue))
+    def toInputAmounts(name1: String, name2: String): Option[InputAmounts] = {
+      val a = InputAmounts(get(name1), get(name2))
+      if (a.isEmpty) None else Some(a)
+    }
+
+    List.range(START_YEAR, THIS_YEAR).flatMap {
+      (year:Int) =>
+      if (year == 2015) {
+        List(Contribution(TaxPeriod.PERIOD_1_2015_START, TaxPeriod.PERIOD_1_2015_END,toInputAmounts("amount2015P1","dcAmount2015P1")),
+             Contribution(TaxPeriod.PERIOD_2_2015_START, TaxPeriod.PERIOD_2_2015_END,toInputAmounts("amount2015P2","dcAmount2015P2")))
+      } else {
+        List(Contribution(year, toInputAmounts("amount"+year, "dcAmount"+year)))
+      }
+    }
+  }
 
   def toContributions():List[Contribution] = {
-    def toPence(maybeAmount: Option[BigDecimal]) : Long = maybeAmount.map((v:BigDecimal)=>(v*100).longValue).getOrElse(0)
-
-    val currentYear = (new java.util.GregorianCalendar()).get(java.util.Calendar.YEAR)
-    val fieldValueMap: Map[String,Any]= this.getClass.getDeclaredFields.map(_.getName).zip(this.productIterator.toList).toMap
-    val maybeContributions: List[Option[Contribution]] = List.range(2006, currentYear).flatMap {
-      (year:Int) =>
-        if (year != 2015) {
-          fieldValueMap.get("amount" + year).map((v: Any) => Some(Contribution(year, toPence(v.asInstanceOf[Option[BigDecimal]]))))
-        } else {
-          None
-        }
-    }
-    (maybeContributions ++ List(Some(Contribution(TaxPeriod(2015,3,6), TaxPeriod(2015,6,8), Some(InputAmounts(toPence(amount2015P1),toPence(dcAmount2015P1))))),
-      Some(Contribution(TaxPeriod(2015,6,9), TaxPeriod(2016,3,5), Some(InputAmounts(toPence(amount2015P2),toPence(dcAmount2015P2))))))).filter(_!=None).map(_.get)
-
+    toPageValues().filter(_.isEmpty() == false)
   }
 
-  def to1516Period1DefinedBenefit: Option[(Long, String)] = {
-    toContributions.find(_.taxPeriodEnd.day == 8).flatMap {
+  def hasDefinedContributions(): Boolean = dcAmount2015P1 != None || dcAmount2015P2 != None
+  def hasDefinedBenefits(): Boolean = List(amount2006, amount2007, amount2008, amount2009, amount2010, amount2011, amount2012, amount2013, amount2014).exists(_ != None)
+
+  def toDefinedBenefit(first: Contribution => Boolean)(key: String) : Option[(Long, String)] = {
+    toContributions.find(first).flatMap {
       (c)=>
         (for {
           amounts <- c.amounts
           definedBenefit <- amounts.definedBenefit
-        } yield definedBenefit).map((_,"definedBenefit_"+c.taxPeriodStart.year+"_p1"))
+        } yield definedBenefit).map((_,key))
     }
   }
 
-  def to1516Period1DefinedContribution: Option[(Long, String)] = {
-    toContributions.find(_.taxPeriodEnd.day == 8).flatMap {
-      (c)=>
-        (for {
-          amounts <- c.amounts
-          definedContribution <- amounts.moneyPurchase
-        } yield definedContribution).map((_,"definedContribution_"+c.taxPeriodStart.year+"_p1"))
-    }
-  }
-
-  def to1516Period2DefinedBenefit: Option[(Long, String)] = {
-    toContributions.find(_.taxPeriodStart.day == 9).flatMap {
-      (c)=>
-        (for {
-          amounts <- c.amounts
-          definedBenefit <- amounts.definedBenefit
-        } yield definedBenefit).map((_,"definedBenefit_"+c.taxPeriodStart.year+"_p2"))
-    }
-  }
-
-  def to1516Period2DefinedContribution: Option[(Long, String)] = {
-    toContributions.find(_.taxPeriodStart.day == 9).flatMap {
+  def toDefinedContribution(first: Contribution => Boolean)(key: String) : Option[(Long, String)] = {
+    toContributions.find(first).flatMap {
       (c)=>
         (for {
           amounts <- c.amounts
           definedBenefit <- amounts.moneyPurchase
-        } yield definedBenefit).map((_,"definedContribution_"+c.taxPeriodStart.year+"_p2"))
+        } yield definedBenefit).map((_,key))
     }
   }
 
+  def period1(): Contribution => Boolean = { (c) => c.taxPeriodEnd.day == 8 && c.taxPeriodEnd.year == 2015 } 
+  def period2(): Contribution => Boolean = { (c) => c.taxPeriodStart.day == 9 && c.taxPeriodStart.year == 2015 } 
+
+  def to1516Period1DefinedBenefit: Option[(Long, String)] = toDefinedBenefit(period1())("definedBenefit_2015_p1")
+  def to1516Period1DefinedContribution: Option[(Long, String)] = toDefinedContribution(period1())("definedContribution_2015_p1")
+  def to1516Period2DefinedBenefit: Option[(Long, String)] = toDefinedBenefit(period2())("definedBenefit_2015_p2")
+  def to1516Period2DefinedContribution: Option[(Long, String)] = toDefinedContribution(period2())("definedContribution_2015_p2")
   // Useful for all years except 2015/16 Tax Year
-  def toDefinedBenefit(year: Int) : Option[(Long, String)] = {
-    toContributions.find(_.taxPeriodStart.year == year).flatMap {
-      (c)=>
-        (for {
-          amounts <- c.amounts
-          definedBenefit <- amounts.definedBenefit
-        } yield definedBenefit).map((_,"definedBenefit_"+c.taxPeriodStart.year))
-    }
-  }
-
+  def toDefinedBenefit(year: Int) : Option[(Long, String)] = toDefinedBenefit((_.taxPeriodStart.year == year))("definedBenefit_"+year)
+  def toDefinedContribution(year: Int) : Option[(Long, String)] = toDefinedContribution((_.taxPeriodStart.year == year))("definedContribution_"+year)
 }
 
 object CalculatorFormFields
