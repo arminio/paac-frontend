@@ -31,7 +31,7 @@ trait PensionInputs1516Period2Controller extends BaseFrontendController {
   private val kesystoreDBKey = "definedBenefit_2015_p2"
   private val kesystoreDCKey = "definedContribution_2015_p2"
   private var selectedSchemeTypeKey: String = "schemeType"
-  private val onSubmitRedirect: Call = routes.PensionInputsController.onPageLoad()
+  private val onSubmitRedirect: Call = routes.DateOfMPAATriggerEventController.onPageLoad()
 
   val onPageLoad = withSession { implicit request =>
     val reads: List[Future[(String, String)]] = List(kesystoreDBKey, kesystoreDCKey, selectedSchemeTypeKey).map {
