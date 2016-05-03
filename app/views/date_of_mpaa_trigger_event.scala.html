@@ -1,0 +1,34 @@
+@(paacForm : Form[form.DateOfMPAATriggerEventPageModel])(implicit request:Request[_])
+
+@import play.api.i18n._
+@import uk.gov.hmrc.play.views.html.helpers._
+@import views.html.date._
+
+@common.paacMain(
+pageTitle = Messages("paac.mpaa.ta.date.page.title"),
+heading = Messages("paac.mpaa.ta.date.page.heading"),
+articleClasses=Some("full-width"),
+backLink = Some((controllers.routes.PensionInputs1516Period2Controller.onPageLoad.url,Messages("paac.link.text.back")))
+) {
+
+    @form(
+        action = controllers.routes.DateOfMPAATriggerEventController.onSubmit,
+        args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
+
+        <p class="lede text">@Messages("paac.mpaa.ta.date.page.description")</p>
+        @* 'dateOfBirth' class name is misleading. However, it's coming from Assets_Frontend App. *@
+        @dateFieldsFree(
+            formItem = paacForm,
+            fieldName = "dateOfMPAATriggerEvent",
+            label = Html(Messages("")),
+            isNested = false,
+            '_groupClass -> "form-date form-group dateOfBirth",
+            '_idName -> "dateOfMPAATriggerEvent",
+            '_hintText -> Messages("paac.mpaa.ta.date.page.hint"),
+            '_hintId -> "dateOfBirth-hint"
+        )
+
+        <br/>
+        <button id="submit" type="submit" class="button" value="Continue">@Messages("paac.calculator.button.continue")</button>
+    } @* End of Form *@
+} @* End of paacMain *@
