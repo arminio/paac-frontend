@@ -25,36 +25,44 @@ object PensionInputsController extends PensionInputsController {
   override val keystore: KeystoreService = KeystoreService
 }
 
-trait PensionInputsController extends BaseFrontendController {
+trait PensionInputsController extends RedirectController {
   val keystore: KeystoreService
 
-  private val kesystoreKey = "definedBenefit_2014"
-  private val onSubmitRedirect: Call = routes.ReviewTotalAmountsController.onPageLoad()
+  private val onSubmitRedirect = routes.ReviewTotalAmountsController.onPageLoad
 
   val onPageLoad = withSession { implicit request =>
-    keystore.read[String](kesystoreKey).map {
+    keystore.read[String]("Current").flatMap {
+      (currentYear) =>
+      val cy = currentYear.getOrElse("2014")
+      val keyStoreKey = "definedBenefit_"+cy
+      keystore.read[String](keyStoreKey).map {
         (amount) =>
         val fields = Map(amount match {
-          case None => (kesystoreKey, "")
-          case Some("0") => (kesystoreKey, "0.00")
-          case Some(value) => (kesystoreKey, f"${(value.toInt/100.00)}%2.2f")
+          case None => (keyStoreKey, "")
+          case Some("0") => (keyStoreKey, "0.00")
+          case Some(value) => (keyStoreKey, f"${(value.toInt/100.00)}%2.2f")
         })
-        Ok(views.html.pensionInputs(CalculatorForm.form.bind(fields).discardingErrors))
+        Ok(views.html.pensionInputs(CalculatorForm.form.bind(fields).discardingErrors, cy))
+      }
     }
   }
 
   val onSubmit = withSession { implicit request =>
-    CalculatorForm.form.bindFromRequest().fold(
-      formWithErrors => { Future.successful(Ok(views.html.pensionInputs(formWithErrors))) },
-      input => {
-        val (amount:Long, key:String) = input.toDefinedBenefit(2014).getOrElse((kesystoreKey, 0L))
-        keystore.store[String](amount.toString, key).map {
-          _ =>
-          Redirect(onSubmitRedirect)
+    keystore.read[String]("Current").flatMap {
+      (currentYear) =>
+      val cy = currentYear.getOrElse("2014")
+      CalculatorForm.form.bindFromRequest().fold(
+        formWithErrors => { Future.successful(Ok(views.html.pensionInputs(formWithErrors, cy))) },
+        input => {
+          val keyStoreKey = "definedBenefit_"+cy
+          val (amount:Long, key:String) = input.toDefinedBenefit(cy.toInt).getOrElse((keyStoreKey, 0L))
+          keystore.store[String](amount.toString, key).flatMap{ 
+            (_) => 
+            wheretoNext[String]( Redirect(onSubmitRedirect) ) 
+          }
         }
-      }
-    )
-
+      )
+    }
   }
 }
 

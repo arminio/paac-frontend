@@ -47,7 +47,7 @@ trait RedirectController extends BaseFrontendController {
         }
     }
 
-    Future.sequence(reads).map {
+    Future.sequence(reads).flatMap {
       (fields) =>
         val fieldsMap = Map[String, String](fields: _*)
         val currentYear = fieldsMap(CurrentYear)
@@ -66,19 +66,21 @@ trait RedirectController extends BaseFrontendController {
         }
 
         // Save next year value to keystore with CurrentYear
-        keystore.store(nextYear, CurrentYear)
-        //redirect to nextYear Controller
-        if (nextYear == -1) {
-          defaultRoute
-        }
-        else if (nextYear > 2015) {
-          //2016
-          Redirect(routes.PensionInputsController.onPageLoad())
-        } else if (nextYear == 2015) {
-          Redirect(routes.PensionInputs1516Period1Controller.onPageLoad())
-        } else {
-          Redirect(routes.StartPageController.startPage())
+        keystore.store(nextYear.toString(), CurrentYear).map {
+          (values) =>
+          //redirect to nextYear Controller
+          if (nextYear == -1) {
+            defaultRoute
           }
+          else if (nextYear > 2015) {
+            //2016
+            Redirect(routes.StartPageController.startPage())
+          } else if (nextYear == 2015) {
+            Redirect(routes.PensionInputs1516Period1Controller.onPageLoad())
+          } else {
+            Redirect(routes.PensionInputsController.onPageLoad())
+          }
+        }
     }
   }
 }

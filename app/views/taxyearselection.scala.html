@@ -1,4 +1,4 @@
-@(TaxYearForm : Form[String])(implicit request:Request[_])
+@(selectedYears : Array[String], isError: Boolean)(implicit request:Request[_])
 
 @import uk.gov.hmrc.play.views.html.helpers._
 
@@ -15,9 +15,8 @@ args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
 
     @defining((new java.util.GregorianCalendar()).get(java.util.Calendar.YEAR)) { thisYear =>
     @for(i <- List.range(thisYear-3, thisYear+1).reverse) {
-
     <label class="block-label">@(i) to @(i+1) <input id="TaxYear@(i)" type="checkbox" name="TaxYear@(i)"></label>
-        }
+    }
     }
 
 </div>

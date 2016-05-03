@@ -1,4 +1,4 @@
-@(paacForm : Form[form.CalculatorFormFields])(implicit request:Request[_])
+@(paacForm : Form[form.CalculatorFormFields], currentYear: String)(implicit request:Request[_])
 
 @import uk.gov.hmrc.play.views.html.helpers._
 
@@ -29,8 +29,8 @@ backLink = Some((controllers.routes.DateOfMPAATriggerEventController.onPageLoad.
 
         <ul class="error-summary-list">
           @for(error <- paacForm.errors) {
-            @defining(error.key.drop(15).toInt) { year =>
-              @defining(Seq(models.Contribution(year,0).taxYearLabel())++error.args) { args =>
+            @defining(currentYear) { year =>
+              @defining(Seq(models.Contribution(currentYear.toInt,0).taxYearLabel())++error.args) { args =>
                 <li><a href="#input_@year" style="color:#b10e1e;font-weight: bold;">@Messages(error.message, args:_*)</a></li>
               }
             }
@@ -46,25 +46,23 @@ backLink = Some((controllers.routes.DateOfMPAATriggerEventController.onPageLoad.
         <table>
             <tbody>
                 @defining(java.text.NumberFormat.getCurrencyInstance(java.util.Locale.UK)) { currencyFormatter =>
-                @for(i <- List(2014)) {
-                <fieldset id="input_@i" class="form-field-group" style="max-width:12.35em;">
-                    <label class="form-element-bold label--full-length numeric" for="definedBenefit_@i" style="width:150%;display: inline-block;@if(paacForm.errors.find(_.key == "definedBenefit_"+i)) {color:#b10e1e;}">
-                    <tr style="text-align:left;min-width: 7em">@(Contribution(i,0).taxYearLabel())</tr><BR/>
+                <fieldset id="input_@currentYear" class="form-field-group" style="max-width:12.35em;">
+                    <label class="form-element-bold label--full-length numeric" for="definedBenefit_@currentYear" style="width:150%;display: inline-block;@if(paacForm.errors.find(_.key == "definedBenefit_"+currentYear)) {color:#b10e1e;}">
+                    <tr style="text-align:left;min-width: 7em">@(Contribution(currentYear.toInt,0).taxYearLabel())</tr><BR/>
 
                       <span style="float:right">
-                      @if(paacForm.data.contains("definedBenefit_"+i)) {
+                      @if(paacForm.data.contains("definedBenefit_"+currentYear)) {
                           <tr style="text-align:left;min-width: 7em">
-                              £&nbsp;<input type="number" name="definedBenefit_@i" id="definedBenefit" min="0" step="1" value='@paacForm.data("definedBenefit_"+i)' max="9999999.99" size="10" style="width:9em;@if(paacForm.errors.find(_.key == "definedBenefit_"+i)) {border: 4px solid #b10e1e;}"/>
+                              £&nbsp;<input type="number" name="definedBenefit_@currentYear" id="definedBenefit_@currentYear" min="0" step="1" value='@paacForm.data("definedBenefit_"+currentYear)' max="9999999.99" size="10" style="width:9em;@if(paacForm.errors.find(_.key == "definedBenefit_"+currentYear)) {border: 4px solid #b10e1e;}"/>
                           </tr>
                           } else {
                           <tr style="text-align:left;min-width: 7em">
-                              £&nbsp;<input type="number" name="definedBenefit_@i" id="definedBenefit" min="0" step="1" value='' max="9999999.99" size="10" style="width:9em;@if(paacForm.errors.find(_.key == "definedBenefit_"+i)) {border: 4px solid #b10e1e;}"/>
+                              £&nbsp;<input type="number" name="definedBenefit_@currentYear" id="definedBenefit_@currentYear" min="0" step="1" value='' max="9999999.99" size="10" style="width:9em;@if(paacForm.errors.find(_.key == "definedBenefit_"+currentYear)) {border: 4px solid #b10e1e;}"/>
                           </tr>
                           }
                       </span>
                     </label>
                 </fieldset>
-                }
                 }
             </tbody>
         </table>
