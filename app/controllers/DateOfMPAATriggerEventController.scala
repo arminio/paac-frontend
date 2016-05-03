@@ -30,9 +30,22 @@ trait DateOfMPAATriggerEventController extends RedirectController {
   val keystore: KeystoreService
 
   private val onSubmitRedirect: Call = routes.PensionInputsController.onPageLoad
+  private val dateOfMPAATEKey = "dateOfMPAATriggerEvent"
 
   val onPageLoad = withSession { implicit request =>
-    Future.successful(Ok(views.html.date_of_mpaa_trigger_event(DateOfMPAATriggerEventForm.form.fill(DateOfMPAATriggerEventPageModel(None)))))
+    keystore.read[String](dateOfMPAATEKey).map {
+      (date) =>
+        val fields = Map(date match {
+          case None => (dateOfMPAATEKey, "")
+          //case Some(value) => (dateOfMPAATEKey, DateOfMPAATriggerEventPageModel(Some(value)))
+          case Some(value) => {
+            println("Date value is " + value)
+            (dateOfMPAATEKey, value)
+          }
+        })
+        println("Fields is  " + fields)
+        Ok(views.html.date_of_mpaa_trigger_event(DateOfMPAATriggerEventForm.form.bind(fields).discardingErrors))
+    }
   }
 
   val onSubmit = withSession { implicit request =>
@@ -40,7 +53,7 @@ trait DateOfMPAATriggerEventController extends RedirectController {
     DateOfMPAATriggerEventForm.form.bindFromRequest().fold(
       formWithErrors => { Future.successful(Ok(views.html.date_of_mpaa_trigger_event(DateOfMPAATriggerEventForm.form))) },
       input => {
-        wheretoNext[String]( Redirect(onSubmitRedirect) )
+        keystore.store[String](input.toString, dateOfMPAATEKey).map((_)=> wheretoNext[String]( Redirect(onSubmitRedirect) ) )
       }
     )
   }
