@@ -56,7 +56,7 @@ trait PensionInputs1516Period2Controller extends BaseFrontendController {
     Future.sequence(reads).map {
       (fields) =>
         val fieldsMap = Map[String, String](fields: _*)
-        Ok(views.html.pensionInputs_1516_period2(CalculatorForm.form.bind(fieldsMap).discardingErrors, fieldsMap(selectedSchemeTypeKey)))
+        Ok(views.html.pensionInputs_1516_period2(CalculatorForm.bind(fieldsMap).discardingErrors, fieldsMap(selectedSchemeTypeKey)))
     }
   }
 

@@ -55,9 +55,7 @@ class PensionInputsControllerSpec extends UnitSpec with BeforeAndAfterAll {
 
   trait MockKeystoreFixture {
     object MockKeystore extends KeystoreService {
-      var map = Map("definedBenefit_2006" -> "500000",
-                    "definedBenefit_2007" -> "600000",
-                    "definedBenefit_2008" -> "700000",
+      var map = Map("definedBenefit_2008" -> "700000",
                     "definedBenefit_2009" -> "800000",
                     "definedBenefit_2010" -> "900000",
                     "definedBenefit_2011" -> "1000000",
@@ -106,7 +104,7 @@ class PensionInputsControllerSpec extends UnitSpec with BeforeAndAfterAll {
         // check 
         status(result) shouldBe 200
         val htmlPage = contentAsString(await(result))
-        htmlPage should include ("""<input type="number" name="definedBenefit_2014" id="definedBenefit" min="0" step="1" value='' max="9999999.99" size="10" style="width:9em;"/>""")
+        htmlPage should include ("""<input type="number" name="definedBenefits.amount_2014" id="definedBenefits.amount_2014" min="0" step="1" value='' max="9999999.99" size="10" style="width:9em;"/>""")
       }
 
       "with keystore containing a 2014 value should display value" in new ControllerWithMockKeystore {
@@ -119,7 +117,7 @@ class PensionInputsControllerSpec extends UnitSpec with BeforeAndAfterAll {
         // check 
         status(result) shouldBe 200
         val htmlPage = contentAsString(await(result))
-        htmlPage should include ("""<input type="number" name="definedBenefit_2014" id="definedBenefit" min="0" step="1" value='13000.00' max="9999999.99" size="10" style="width:9em;"/>""")
+        htmlPage should include ("""<input type="number" name="definedBenefits.amount_2014" id="definedBenefits.amount_2014" min="0" step="1" value='13000.00' max="9999999.99" size="10" style="width:9em;"/>""")
       }
 
       "with keystore containing 0 display field with 0.00" in new ControllerWithMockKeystore {
@@ -133,7 +131,7 @@ class PensionInputsControllerSpec extends UnitSpec with BeforeAndAfterAll {
         // check 
         status(result) shouldBe 200
         val htmlPage = contentAsString(await(result))
-        htmlPage should include ("""<input type="number" name="definedBenefit_2014" id="definedBenefit" min="0" step="1" value='0.00' max="9999999.99" size="10" style="width:9em;"/>""")
+        htmlPage should include ("""<input type="number" name="definedBenefits.amount_2014" id="definedBenefits.amount_2014" min="0" step="1" value='0.00' max="9999999.99" size="10" style="width:9em;"/>""")
       }
     }
   }
@@ -141,7 +139,7 @@ class PensionInputsControllerSpec extends UnitSpec with BeforeAndAfterAll {
   "onSubmit" can {
     "with blank value returns to page with errors" in new ControllerWithMockKeystore {
         // setup
-        val request = FakeRequest(POST,"").withFormUrlEncodedBody(("definedBenefit_2014"," ")).withSession{(SessionKeys.sessionId,SESSION_ID)}
+        val request = FakeRequest(POST,"").withFormUrlEncodedBody(("definedBenefits.amount_2014"," ")).withSession{(SessionKeys.sessionId,SESSION_ID)}
 
         // test
         val result : Future[Result] = PensionInputsControllerMockedKeystore.onSubmit()(request)
@@ -156,7 +154,7 @@ class PensionInputsControllerSpec extends UnitSpec with BeforeAndAfterAll {
       // set up
       MockKeystore.map = MockKeystore.map - "definedBenefit_2014"
       implicit val hc = HeaderCarrier()
-      implicit val request = FakeRequest(POST,"/paac/pensionInputs").withSession{(SessionKeys.sessionId,SESSION_ID)}.withFormUrlEncodedBody(("definedBenefit_2014"->"1234.56"))
+      implicit val request = FakeRequest(POST,"/paac/pensionInputs").withSession{(SessionKeys.sessionId,SESSION_ID)}.withFormUrlEncodedBody(("definedBenefits.amount_2014"->"1234.56"))
 
       // test
       val result : Future[Result] = PensionInputsControllerMockedKeystore.onSubmit()(request)
