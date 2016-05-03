@@ -53,7 +53,7 @@ trait DateOfMPAATriggerEventController extends RedirectController {
       input => {
         // should store as json and read out as json but sticking with string throughout
         keystore.store[String](input.dateOfMPAATriggerEvent.map(_.toString).getOrElse(""), dateOfMPAATEKey).flatMap{
-          (a)=> 
+          (_)=> 
           wheretoNext[String]( Redirect(onSubmitRedirect) ) 
         }
       }
