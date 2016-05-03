@@ -16,7 +16,8 @@
 
 package controllers
 
-import form.DateOfMPAATriggerEventForm
+import form.{DateOfMPAATriggerEventPageModel, DateOfMPAATriggerEventForm}
+import org.joda.time.LocalDate
 import play.api.mvc._
 import service.KeystoreService
 import scala.concurrent.Future
@@ -31,7 +32,7 @@ trait DateOfMPAATriggerEventController extends BaseFrontendController {
   private val onSubmitRedirect: Call = routes.PensionInputsController.onPageLoad()
 
   val onPageLoad = withSession { implicit request =>
-    Future.successful(Ok(views.html.date_of_mpaa_trigger_event(DateOfMPAATriggerEventForm.form)))
+    Future.successful(Ok(views.html.date_of_mpaa_trigger_event(DateOfMPAATriggerEventForm.form.fill(DateOfMPAATriggerEventPageModel(None)))))
   }
 
   val onSubmit = withSession { implicit request =>

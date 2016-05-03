@@ -105,6 +105,14 @@ paac.mpaa.ta.date.page.title = MPAA TE Date
 paac.mpaa.ta.date.page.heading = When did you access your savings?
 paac.mpaa.ta.date.page.description = This is the date you first accessed your savings. You will have received a statement from your scheme administrator informing you that your defined contribution scheme was flexibily accessed.
 
+paac.mpaa.ta.date.page.label1 = MPAA TE Label1
+paac.mpaa.ta.date.page.label2 = MPAA TE Label2
+paac.mpaa.ta.date.page.validation = MPAA TE Validation
+
+
+
+
+
 ## Review Amounts Page
 paac.review-amounts.page.heading=Check your answers
 paac.review-amounts.page.title=Check your answers

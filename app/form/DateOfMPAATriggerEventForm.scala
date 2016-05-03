@@ -16,20 +16,30 @@
 
 package form
 
+import org.joda.time.LocalDate
 import play.api.data.Form
 import play.api.data.Forms._
+import play.api.i18n.Messages
+import play.api.libs.json.Json
+import uk.gov.hmrc.play.mappers.DateTuple._
 
-trait DateOfMPAATriggerEvent{
-  val date = "dateOfMPAATriggerEvent"
+case class DateOfMPAATriggerEventPageModel(dob: Option[LocalDate])
+
+object DateOfMPAATriggerEventPageModel {
+  implicit val formats = Json.format[DateOfMPAATriggerEventPageModel]
 }
 
-object DateOfMPAATriggerEventForm extends DateOfMPAATriggerEvent {
+trait DateOfMPAATriggerEvent{
+  val dob = "dateOfBirth"
+}
 
-  type DateOfMPAATriggerEventFormType = String
+object DateOfMPAATriggerEventForm extends DateOfMPAATriggerEvent with DateOfMPAATriggerEventForm
 
-  val form: Form[DateOfMPAATriggerEventFormType] = Form(
+trait DateOfMPAATriggerEventForm extends DateOfMPAATriggerEvent {
+
+  val form: Form[DateOfMPAATriggerEventPageModel] = Form(
     mapping(
-      "dateOfMPAATriggerEvent" -> text
-    )((date) => date)((date: DateOfMPAATriggerEventFormType) => Some(date))
-)
+      dob -> dateTuple
+    )(DateOfMPAATriggerEventPageModel.apply)(DateOfMPAATriggerEventPageModel.unapply)
+  )
 }

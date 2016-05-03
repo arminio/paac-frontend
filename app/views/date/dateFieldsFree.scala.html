@@ -1,0 +1,62 @@
+@(formItem:Form[_], fieldName: String, label: Html, isNested: Boolean, args: (Symbol,Any)*)(implicit lang: play.api.i18n.Lang)
+
+@import uk.gov.hmrc.play.validators._
+@import play.api.i18n._
+@import uk.gov.hmrc.play.views.html._
+@import uk.gov.hmrc.play.mappers.DateFormatSymbols._
+@import uk.gov.hmrc.play.mappers.DateFields._
+@import views.html.helper._
+
+@elements = @{ new FieldElements(formItem(fieldName).id, formItem(fieldName), null, args.toMap, lang) }
+
+    <fieldset id="@elements.args.get('_idName)" class="@elements.args.get('_groupClass) @if(elements.hasErrors) {form-field--error}">
+        <legend class="@elements.args.get('_legendClass)">@label</legend>
+
+        @if(elements.args.get('_hintText).isDefined) {
+            <span @if(elements.args.get('_hintId).isDefined){id="@elements.args.get('_hintId)"} class="form-hint">@elements.args.get('_hintText)</span>
+        } else {
+            <span @if(elements.args.get('_hintId).isDefined){id="@elements.args.get('_hintId)"} class="form-hint">@Messages("cc.date.example")</span>
+        }
+
+        @elements.errors(elements.lang).map { error =>
+            @helpers.errorInline({elements.field.name.replaceAll("""[\.\[\]]""", "-")}, Messages(error))
+        }
+
+        <div class='date-of-birth'>
+            @isOptional = {@if(elements.args.contains('_isRequired)) @{ if(elements.args.get('_isRequired).get == true) {true} else {false}} else {false}}
+
+            @dayElem = @{fieldName + "." + day}
+
+            @dateField(
+            formItem(dayElem),
+            '_label -> Messages("date.fields.day"),
+            '_inputClass -> "text day validate form-control",
+            '_divClass -> "form-group day",
+            '_emptyValueText -> " ",
+            '_dataAttributes -> "pattern=[0-9]*",
+            'parentField -> formItem(fieldName)
+            )
+
+            @monthElem = @{fieldName + "." + month}
+            @dateField(
+            formItem(monthElem),
+            '_label -> Messages("date.fields.month"),
+            '_inputClass -> "text month validate form-control",
+            '_divClass -> "form-group month",
+            '_emptyValueText -> " ",
+            '_dataAttributes -> "pattern=[0-9]*",
+            'parentField -> formItem(fieldName)
+            )
+
+            @yearElem = @{fieldName + "." + year}
+            @dateField(
+            formItem(yearElem),
+            '_label -> Messages("date.fields.year"),
+            '_inputClass -> "text year validate form-control",
+            '_divClass -> "form-group year form-group-year form-field",
+            '_emptyValueText -> " ",
+            '_dataAttributes -> "pattern=[0-9]*",
+            'parentField -> formItem(fieldName)
+            )
+        </div>
+    </fieldset>

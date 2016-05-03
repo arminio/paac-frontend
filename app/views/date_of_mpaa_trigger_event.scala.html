@@ -1,8 +1,7 @@
-@(paacForm : Form[String])(implicit request:Request[_])
+@(paacForm : Form[form.DateOfMPAATriggerEventPageModel])(implicit request:Request[_])
 
 @import play.api.i18n._
-@import views.html.helper._
-@import uk.gov.hmrc.play.mappers.DateFields._
+@import uk.gov.hmrc.play.views.html.helpers._
 
 @common.paacMain(
 pageTitle = Messages("paac.mpaa.ta.date.page.title"),
@@ -17,14 +16,17 @@ backLink = Some((controllers.routes.PensionInputs1516Period2Controller.onPageLoa
 
         <p class="lede text">@Messages("paac.mpaa.ta.date.page.description")</p>
 
-        <table>
-            <tbody>
-                <fieldset id="mpaa_trigger_event_date" class="form-field-group" style="max-width:12.35em;">
-
-
-                </fieldset>
-            </tbody>
-        </table>
+        @date.dateFieldsFree(
+            formItem = paacForm,
+            fieldName = "dateOfBirth",
+            label = Html(Messages("paac.mpaa.ta.date.page.label1")),
+            isNested = false,
+            '_groupClass -> "form-date form-group dateOfBirth",
+            '_idName -> "dateOfBirth",
+            '_hintText -> Messages("paac.mpaa.ta.date.page.label1"),
+            '_hintId -> "dateOfBirth-hint",
+            '_legendClass -> "bold-small"
+        )
 
         <br/>
         <button id="submit" type="submit" class="button" value="Continue">@Messages("paac.calculator.button.continue")</button>
