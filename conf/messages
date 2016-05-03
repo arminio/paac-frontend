@@ -92,13 +92,10 @@ paac.pip.taxyear.p2 = A tax year is 6 April to 5 April. The tax year that your p
 paac.pip.taxyear.p3 = For example, your pension input period is 1 November 2012 to 31 October 2013. Because the end date of the period is between 6 April 2013 and 5 April 2014 this is for the tax year 2013 to 2014.
 paac.pip.taxyear.button.continue= Continue
 
-## Pension Inputs Changes Page
-paac.pip.button.continue=Continue
-paac.pip.p1=From the 6th April 2016, pension input periods are the same as tax years. To make the periods and years the same, the tax year 2015 to 2016 includes 2 periods.
-paac.pip.p2=Period 1 is when your normal pension input period started to 8th July 2015 and period 2 is from 9th July 2015 to 5th April 2016.
-paac.pip.pagetitle=Changes to pension input periods
-paac.pip.heading=Changes to pension input periods
-paac.pip.subheading=The tax year 2015 to 2016 is split into 2 periods.
+## MPAA Trigger Event Yes/No Page
+paac.mpaa.te.yesno.pagetitle = MPAA TE Yes/No
+paac.mpaa.te.yesno.question = Have you accessed any of your defined contribution pension savings?
+paac.mpaa.te.yesno.description = If you have, your pension provider would have sent you a flexible access statement.
 
 ## Date Of MPAA Trigger Event
 paac.mpaa.ta.date.page.title = MPAA TE Date
@@ -107,6 +104,13 @@ paac.mpaa.ta.date.page.description = This is the date you first accessed your sa
 paac.mpaa.ta.date.page.datehint = For example, 21 6 2015
 paac.mpaa.ta.date.page.datevalidation = Check all date of MPAA Trigger Event fields are complete and only contain numbers
 
+## Pension Inputs Changes Page
+paac.pip.button.continue=Continue
+paac.pip.p1=From the 6th April 2016, pension input periods are the same as tax years. To make the periods and years the same, the tax year 2015 to 2016 includes 2 periods.
+paac.pip.p2=Period 1 is when your normal pension input period started to 8th July 2015 and period 2 is from 9th July 2015 to 5th April 2016.
+paac.pip.pagetitle=Changes to pension input periods
+paac.pip.heading=Changes to pension input periods
+paac.pip.subheading=The tax year 2015 to 2016 is split into 2 periods.
 
 ## Review Amounts Page
 paac.review-amounts.page.heading=Check your answers

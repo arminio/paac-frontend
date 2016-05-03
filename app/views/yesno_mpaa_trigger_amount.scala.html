@@ -1,0 +1,38 @@
+@(paacForm : Form[String])(implicit request:Request[_])
+
+@import uk.gov.hmrc.play.views.html.helpers._
+
+@common.paacMain(
+pageTitle = Messages("paac.mpaa.te.yesno.pagetitle"),
+heading = Messages("paac.mpaa.te.yesno.question"),
+backLink = Some((controllers.routes.PensionInputs1516Period2Controller.onPageLoad.url,Messages("paac.link.text.back")))
+) {
+
+    @form(
+        action = controllers.routes.YesNoMPAATriggerEventAmountController.onSubmit,
+        args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
+
+    <p class="lede text">@Messages("paac.mpaa.te.yesno.description")</p>
+    <div class='form-group'>
+
+        <div class='form-group'>
+            <fieldset class="inline">
+                @inputRadioGroup(
+                    paacForm("yesNo"), Seq(
+                        ("Yes", Messages("paac.1516.yesno.yes")),
+                        ("No", Messages("paac.1516.yesno.no"))
+                        ),
+                        '_legend -> Messages("paac.1516.period1.yesno.question"),
+                        '_legendClass -> "hidden",
+                        '_labelAfter -> true,
+                        '_labelClass -> "block-label",
+                        '_groupClass -> "inline-block"
+                )
+            </fieldset>
+        </div>
+
+    </div>
+    <br/>
+    <button id="submit" type="submit" class="button" value="Continue">@Messages("paac.calculator.button.continue")</button>
+    }
+}

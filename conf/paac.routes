@@ -25,21 +25,25 @@ POST        /changes-to-pip                             controllers.StaticPageCo
 GET         /yesno1516p1                                controllers.YesNo1516Period1Controller.onPageLoad
 POST        /yesno1516p1                                controllers.YesNo1516Period1Controller.onSubmit
 
-## 2015/16 Period-2 Yes/No Page
-GET         /yesno1516p2                                controllers.YesNo1516Period2Controller.onPageLoad
-POST        /yesno1516p2                                controllers.YesNo1516Period2Controller.onSubmit
-
 ## 2015/16 Period-1 Pension Input Page
 GET         /pensionInputs1516p1                        controllers.PensionInputs1516Period1Controller.onPageLoad
 POST        /pensionInputs1516p1                        controllers.PensionInputs1516Period1Controller.onSubmit
 
-## Date of MPAA Trigger Event Page
-GET         /dateofmpaate                               controllers.DateOfMPAATriggerEventController.onPageLoad
-POST        /dateofmpaate                               controllers.DateOfMPAATriggerEventController.onSubmit
+## 2015/16 Period-2 Yes/No Page
+GET         /yesno1516p2                                controllers.YesNo1516Period2Controller.onPageLoad
+POST        /yesno1516p2                                controllers.YesNo1516Period2Controller.onSubmit
 
 ## 2015/16 Period-2 Pension Input Page
 GET         /pensionInputs1516p2                        controllers.PensionInputs1516Period2Controller.onPageLoad
 POST        /pensionInputs1516p2                        controllers.PensionInputs1516Period2Controller.onSubmit
+
+## MPAA Trigger Event Yes/No Page
+GET         /yesnompaate                                controllers.YesNoMPAATriggerEventAmountController.onPageLoad
+POST        /yesnompaate                                controllers.YesNoMPAATriggerEventAmountController.onSubmit
+
+## Date of MPAA Trigger Event Page
+GET         /dateofmpaate                               controllers.DateOfMPAATriggerEventController.onPageLoad
+POST        /dateofmpaate                               controllers.DateOfMPAATriggerEventController.onSubmit
 
 ## Pension Input Page
 GET         /pensionInputs                              controllers.PensionInputsController.onPageLoad
