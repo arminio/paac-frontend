@@ -1,0 +1,30 @@
+@(TaxYearForm : Form[String])(implicit request:Request[_])
+
+@import uk.gov.hmrc.play.views.html.helpers._
+
+@common.paacMain(
+pageTitle = Messages("paac.taxyear.selection.pagetitle"),
+heading = Messages("paac.taxyear.selection.heading"),
+backLink = Some((controllers.routes.StaticPageController.onPipTaxYearPageLoad.url,Messages("paac.link.text.back")))
+) {
+
+<p class="">@Messages("paac.taxyear.selection.p1")</p>
+@form(action = controllers.routes.TaxYearSelectionController.onYearSelected,
+args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
+<div class="form-group">
+
+    @defining((new java.util.GregorianCalendar()).get(java.util.Calendar.YEAR)) { thisYear =>
+    @for(i <- List.range(thisYear-3, thisYear+1).reverse) {
+
+    <label class="block-label">@(i) to @(i+1) <input id="TaxYear@(i)" type="checkbox" name="TaxYear@(i)"></label>
+        }
+    }
+
+</div>
+
+
+
+
+<button id="submit" type="submit" class="button" value="Continue">@Messages("paac.common.continue.button")</button>
+    }
+}
