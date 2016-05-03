@@ -26,10 +26,10 @@ object DateOfMPAATriggerEventController extends DateOfMPAATriggerEventController
   override val keystore: KeystoreService = KeystoreService
 }
 
-trait DateOfMPAATriggerEventController extends BaseFrontendController {
+trait DateOfMPAATriggerEventController extends RedirectController {
   val keystore: KeystoreService
 
-  private val onSubmitRedirect: Call = routes.PensionInputsController.onPageLoad()
+  private val onSubmitRedirect: Call = routes.PensionInputsController.onPageLoad
 
   val onPageLoad = withSession { implicit request =>
     Future.successful(Ok(views.html.date_of_mpaa_trigger_event(DateOfMPAATriggerEventForm.form.fill(DateOfMPAATriggerEventPageModel(None)))))
@@ -40,7 +40,7 @@ trait DateOfMPAATriggerEventController extends BaseFrontendController {
     DateOfMPAATriggerEventForm.form.bindFromRequest().fold(
       formWithErrors => { Future.successful(Ok(views.html.date_of_mpaa_trigger_event(DateOfMPAATriggerEventForm.form))) },
       input => {
-          Future.successful(Redirect(onSubmitRedirect))
+        wheretoNext[String]( Redirect(onSubmitRedirect) )
       }
     )
   }
