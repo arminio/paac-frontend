@@ -35,12 +35,14 @@ trait DateOfMPAATriggerEventController extends RedirectController {
   val onPageLoad = withSession { implicit request =>
     keystore.read[String](dateOfMPAATEKey).map {
       (date) =>
-        val fields = Map(date match {
-          case None => (dateOfMPAATEKey, "")
-          //case Some(value) => (dateOfMPAATEKey, DateOfMPAATriggerEventPageModel(Some(value)))
-          case Some(value) => (dateOfMPAATEKey, value)
-        })
-        Ok(views.html.date_of_mpaa_trigger_event(DateOfMPAATriggerEventForm.form.bind(fields).discardingErrors))
+        val dateAsStr = date.getOrElse("")
+        if (dateAsStr == "") {
+          Ok(views.html.date_of_mpaa_trigger_event(DateOfMPAATriggerEventForm.form))
+        } else {
+          val parts = dateAsStr.split("-").map(_.toInt)
+          val model = DateOfMPAATriggerEventPageModel(Some(new LocalDate(parts(0),parts(1),parts(2))))
+          Ok(views.html.date_of_mpaa_trigger_event(DateOfMPAATriggerEventForm.form.fill(model)))
+        }
     }
   }
 
@@ -49,7 +51,11 @@ trait DateOfMPAATriggerEventController extends RedirectController {
     DateOfMPAATriggerEventForm.form.bindFromRequest().fold(
       formWithErrors => { Future.successful(Ok(views.html.date_of_mpaa_trigger_event(DateOfMPAATriggerEventForm.form))) },
       input => {
-        wheretoNext[String]( Redirect(onSubmitRedirect) )
+        // should store as json and read out as json but sticking with string throughout
+        keystore.store[String](input.dateOfMPAATriggerEvent.map(_.toString).getOrElse(""), dateOfMPAATEKey).flatMap{
+          (_)=> 
+          wheretoNext[String]( Redirect(onSubmitRedirect) ) 
+        }
       }
     )
   }

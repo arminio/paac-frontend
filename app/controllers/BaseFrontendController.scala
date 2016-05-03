@@ -55,7 +55,11 @@ trait RedirectController extends BaseFrontendController {
         val selectedYears = fieldsMap(SelectedYears)
         val syears = selectedYears.split(",")
         val nextYear = if (currentYear == "") {
-          syears(0).toInt
+          if (syears.size > 0 && selectedYears.length > 0){
+            syears(0).toInt
+          } else {
+            -1
+          }
         } else {
           val i = syears.indexOf(currentYear) + 1
           if (i < syears.length) {

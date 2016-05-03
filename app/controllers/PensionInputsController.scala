@@ -54,7 +54,6 @@ trait PensionInputsController extends RedirectController {
       CalculatorForm.form.bindFromRequest().fold(
         formWithErrors => { Future.successful(Ok(views.html.pensionInputs(formWithErrors, cy))) },
         input => {
-          println("**********" + input)
           val keyStoreKey = "definedBenefit_"+cy
           val (amount:Long, key:String) = input.toDefinedBenefit(cy.toInt).getOrElse((keyStoreKey, 0L))
           keystore.store[String](amount.toString, key).flatMap{ 
