@@ -51,6 +51,7 @@ trait DateOfMPAATriggerEventController extends RedirectController {
     DateOfMPAATriggerEventForm.form.bindFromRequest().fold(
       formWithErrors => { Future.successful(Ok(views.html.date_of_mpaa_trigger_event(DateOfMPAATriggerEventForm.form))) },
       input => {
+        // should store as json and read out as json but sticking with string throughout
         keystore.store[String](input.dateOfMPAATriggerEvent.map(_.toString).getOrElse(""), dateOfMPAATEKey).flatMap{
           (a)=> 
           wheretoNext[String]( Redirect(onSubmitRedirect) ) 
