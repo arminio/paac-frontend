@@ -29,17 +29,30 @@ object DateOfMPAATriggerEventController extends DateOfMPAATriggerEventController
 trait DateOfMPAATriggerEventController extends BaseFrontendController {
   val keystore: KeystoreService
 
+  private val dateOfMPAATEKey = "dateOfMPAATriggerEvent"
   private val onSubmitRedirect: Call = routes.PensionInputsController.onPageLoad()
 
   val onPageLoad = withSession { implicit request =>
-    Future.successful(Ok(views.html.date_of_mpaa_trigger_event(DateOfMPAATriggerEventForm.form.fill(DateOfMPAATriggerEventPageModel(None)))))
+    keystore.read[String](dateOfMPAATEKey).map {
+      (date) =>
+        val fields = Map(date match {
+          case None => (dateOfMPAATEKey, "")
+          //case Some(value) => (dateOfMPAATEKey, DateOfMPAATriggerEventPageModel(Some(value)))
+          case Some(value) => (dateOfMPAATEKey, value)
+        })
+        Ok(views.html.date_of_mpaa_trigger_event(DateOfMPAATriggerEventForm.form.bind(fields).discardingErrors))
+    }
   }
 
+
+
+  
   val onSubmit = withSession { implicit request =>
 
     DateOfMPAATriggerEventForm.form.bindFromRequest().fold(
       formWithErrors => { Future.successful(Ok(views.html.date_of_mpaa_trigger_event(DateOfMPAATriggerEventForm.form))) },
       input => {
+          keystore.store[String](input.toString, dateOfMPAATEKey)
           Future.successful(Redirect(onSubmitRedirect))
       }
     )
