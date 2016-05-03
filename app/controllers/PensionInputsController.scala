@@ -39,7 +39,7 @@ trait PensionInputsController extends BaseFrontendController {
           case Some("0") => (kesystoreKey, "0.00")
           case Some(value) => (kesystoreKey, f"${(value.toInt/100.00)}%2.2f")
         })
-        Ok(views.html.pensionInputs(CalculatorForm.form.bind(fields).discardingErrors))
+        Ok(views.html.pensionInputs(CalculatorForm.bind(fields).discardingErrors))
     }
   }
 

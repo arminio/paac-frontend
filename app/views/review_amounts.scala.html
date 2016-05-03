@@ -63,7 +63,7 @@ backLink = Some((controllers.routes.PensionInputsController.onPageLoad.url,Messa
             <td class="numeric">@(contribution.taxYearLabel())</td>
             @if(hasBenefits) {
             <td class="numeric">
-                @if(amounts.definedBenefit.isDefined){
+                @if(amounts.definedBenefit.isDefined) {
                     @(currencyFormatter.format(amounts.definedBenefit.get/100L))
                 } else {
                     &pound;&nbsp;&ndash;

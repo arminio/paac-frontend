@@ -113,8 +113,8 @@ paac.review-amounts.page.title=Check your answers
 paac.review-amounts.button.continue=Confirm and calculate allowances
 paac.review-amounts.paragraph=Please review pension contribution amounts below.
 paac.review-amounts.heading.period=Period
-paac.review-amounts.heading.db=Total defined benefit
-paac.review-amounts.heading.mp=Total money purchase
+paac.review-amounts.heading.db=Total defined benefits
+paac.review-amounts.heading.mp=Total defined contributions
 paac.review-amounts.heading.ta=Tapered Allowance
 paac.review-amounts.action.edit=Edit
 
