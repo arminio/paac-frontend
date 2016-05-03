@@ -104,13 +104,7 @@ paac.pip.subheading=The tax year 2015 to 2016 is split into 2 periods.
 paac.mpaa.ta.date.page.title = MPAA TE Date
 paac.mpaa.ta.date.page.heading = When did you access your savings?
 paac.mpaa.ta.date.page.description = This is the date you first accessed your savings. You will have received a statement from your scheme administrator informing you that your defined contribution scheme was flexibily accessed.
-
-paac.mpaa.ta.date.page.label1 = MPAA TE Label1
-paac.mpaa.ta.date.page.label2 = MPAA TE Label2
-paac.mpaa.ta.date.page.validation = MPAA TE Validation
-
-
-
+paac.mpaa.ta.date.page.hint = For example, 21 6 2015
 
 
 ## Review Amounts Page

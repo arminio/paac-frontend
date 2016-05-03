@@ -30,7 +30,7 @@ object DateOfMPAATriggerEventPageModel {
 }
 
 trait DateOfMPAATriggerEvent{
-  val dob = "dateOfBirth"
+  val mpaaDate = "dateOfMPAATriggerEvent"
 }
 
 object DateOfMPAATriggerEventForm extends DateOfMPAATriggerEvent with DateOfMPAATriggerEventForm
@@ -39,7 +39,7 @@ trait DateOfMPAATriggerEventForm extends DateOfMPAATriggerEvent {
 
   val form: Form[DateOfMPAATriggerEventPageModel] = Form(
     mapping(
-      dob -> dateTuple
+      mpaaDate -> dateTuple
     )(DateOfMPAATriggerEventPageModel.apply)(DateOfMPAATriggerEventPageModel.unapply)
   )
 }

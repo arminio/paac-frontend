@@ -2,6 +2,7 @@
 
 @import play.api.i18n._
 @import uk.gov.hmrc.play.views.html.helpers._
+@import views.html.date._
 
 @common.paacMain(
 pageTitle = Messages("paac.mpaa.ta.date.page.title"),
@@ -15,17 +16,16 @@ backLink = Some((controllers.routes.PensionInputs1516Period2Controller.onPageLoa
         args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
 
         <p class="lede text">@Messages("paac.mpaa.ta.date.page.description")</p>
-
-        @date.dateFieldsFree(
+        @* 'dateOfBirth' class name is misleading. However, it's coming from Assets_Frontend App. *@
+        @dateFieldsFree(
             formItem = paacForm,
-            fieldName = "dateOfBirth",
-            label = Html(Messages("paac.mpaa.ta.date.page.label1")),
+            fieldName = "dateOfMPAATriggerEvent",
+            label = Html(Messages("")),
             isNested = false,
             '_groupClass -> "form-date form-group dateOfBirth",
-            '_idName -> "dateOfBirth",
-            '_hintText -> Messages("paac.mpaa.ta.date.page.label1"),
-            '_hintId -> "dateOfBirth-hint",
-            '_legendClass -> "bold-small"
+            '_idName -> "dateOfMPAATriggerEvent",
+            '_hintText -> Messages("paac.mpaa.ta.date.page.hint"),
+            '_hintId -> "dateOfBirth-hint"
         )
 
         <br/>
