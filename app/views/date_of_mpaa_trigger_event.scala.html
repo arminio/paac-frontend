@@ -16,6 +16,7 @@ backLink = Some((controllers.routes.PensionInputs1516Period2Controller.onPageLoa
         args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
 
         <p class="lede text">@Messages("paac.mpaa.ta.date.page.description")</p>
+
         @* 'dateOfBirth' class name is misleading. However, it's coming from Assets_Frontend App. *@
         @dateFieldsFree(
             formItem = paacForm,
@@ -24,7 +25,7 @@ backLink = Some((controllers.routes.PensionInputs1516Period2Controller.onPageLoa
             isNested = false,
             '_groupClass -> "form-date form-group dateOfBirth",
             '_idName -> "dateOfMPAATriggerEvent",
-            '_hintText -> Messages("paac.mpaa.ta.date.page.hint"),
+            '_hintText -> Messages("paac.mpaa.ta.date.page.datehint"),
             '_hintId -> "dateOfBirth-hint"
         )
 

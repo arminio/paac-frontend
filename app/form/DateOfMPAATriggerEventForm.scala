@@ -23,7 +23,7 @@ import play.api.i18n.Messages
 import play.api.libs.json.Json
 import uk.gov.hmrc.play.mappers.DateTuple._
 
-case class DateOfMPAATriggerEventPageModel(dob: Option[LocalDate])
+case class DateOfMPAATriggerEventPageModel(dateOfMPAATriggerEvent: Option[LocalDate])
 
 object DateOfMPAATriggerEventPageModel {
   implicit val formats = Json.format[DateOfMPAATriggerEventPageModel]
@@ -39,7 +39,16 @@ trait DateOfMPAATriggerEventForm extends DateOfMPAATriggerEvent {
 
   val form: Form[DateOfMPAATriggerEventPageModel] = Form(
     mapping(
-      mpaaDate -> dateTuple
+      mpaaDate -> dateTuple(validate = true).verifying(Messages("paac.mpaa.ta.date.page.datevalidation"), data => {
+        data match
+        {
+          case Some(x) =>
+            if (x.year().get() < 0 || x.year().get().toString.length != 4)
+              false
+            else
+              true
+          case _ => false
+        }})
     )(DateOfMPAATriggerEventPageModel.apply)(DateOfMPAATriggerEventPageModel.unapply)
   )
 }
