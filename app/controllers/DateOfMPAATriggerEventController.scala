@@ -44,9 +44,6 @@ trait DateOfMPAATriggerEventController extends BaseFrontendController {
     }
   }
 
-
-
-  
   val onSubmit = withSession { implicit request =>
 
     DateOfMPAATriggerEventForm.form.bindFromRequest().fold(
