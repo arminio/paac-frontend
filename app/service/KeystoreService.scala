@@ -32,8 +32,7 @@ trait KeystoreService {
    */
   def store[T](data: T, key: String)(implicit hc: HeaderCarrier, format: play.api.libs.json.Format[T], request: Request[Any]): Future[Option[T]] = {
     request.session.get(SessionKeys.sessionId) match {
-      case Some(id) => 
-        sessionCache.cache[T](SOURCE, id, key, data) map { case x => x.getEntry[T](key) }
+      case Some(id) => sessionCache.cache[T](SOURCE, id, key, data) map { case x => x.getEntry[T](key) }
       case None => Future.successful(None)
     }
   }
@@ -43,8 +42,7 @@ trait KeystoreService {
    */
   def read[T](key: String)(implicit hc: HeaderCarrier, format: play.api.libs.json.Format[T], request: Request[Any]): Future[Option[T]] = {
     request.session.get(SessionKeys.sessionId) match {
-      case Some(id) => 
-        sessionCache.fetchAndGetEntry[T](SOURCE, id, key)
+      case Some(id) => sessionCache.fetchAndGetEntry[T](SOURCE, id, key)
       case None => Future.successful(None)
     }
   }
