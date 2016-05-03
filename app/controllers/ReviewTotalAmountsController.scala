@@ -61,11 +61,11 @@ trait ReviewTotalAmountsController extends BaseFrontendController {
   }
 
   val onPageLoad = withSession { implicit request =>
-    fetchAmounts().map { (amountsMap) =>
-      CalculatorForm.form.bind(amountsMap).fold(
+    fetchAmounts.map { (amountsMap) =>
+      CalculatorForm.bind(amountsMap).fold(
         formWithErrors => Ok(views.html.review_amounts(formWithErrors, true, true)),
         form => {
-          val f = CalculatorForm.form.bind(amountsMap)
+          val f = CalculatorForm.bind(amountsMap)
           Ok(views.html.review_amounts(f, f.get.hasDefinedBenefits(), f.get.hasDefinedContributions()))
         }
       )
@@ -86,7 +86,7 @@ trait ReviewTotalAmountsController extends BaseFrontendController {
 
   val onSubmit = withSession { implicit request =>
     fetchAmounts().flatMap { (amounts) =>
-      CalculatorForm.form.bind(amounts).fold(
+      CalculatorForm.bind(amounts).fold(
         formWithErrors => {
           Future.successful(Ok(views.html.review_amounts(formWithErrors, true, true)))
         },

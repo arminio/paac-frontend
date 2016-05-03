@@ -77,9 +77,7 @@ class ReviewTotalAmountsControllerSpec extends UnitSpec with BeforeAndAfterAll {
 
   trait MockKeystoreFixture {
     object MockKeystore extends KeystoreService {
-      var map = Map("definedBenefit_2006" -> "500000",
-                    "definedBenefit_2007" -> "600000",
-                    "definedBenefit_2008" -> "700000",
+      var map = Map("definedBenefit_2008" -> "700000",
                     "definedBenefit_2009" -> "800000",
                     "definedBenefit_2010" -> "900000",
                     "definedBenefit_2011" -> "1000000",
@@ -234,34 +232,9 @@ class ReviewTotalAmountsControllerSpec extends UnitSpec with BeforeAndAfterAll {
         val htmlSummaryPage = contentAsString(await(result))
         htmlSummaryPage should include ("Tax Year Results")
       }
-
-      "display errors if values in keystore are incorrect" in new MockControllerFixture {
-        // set up
-        MockKeystore.map = (MockKeystore.map - "definedBenefit_2006") ++ Map("definedBenefit_2006"->"-100")
-        val request = FakeRequest(GET, "/paac/calculate").withSession {(SessionKeys.sessionId,SESSION_ID)}
-
-        // test
-        val result: Future[Result] = MockedReviewTotalAmountsController.onSubmit()(request)
-
-        // check
-        val htmlSummaryPage = contentAsString(await(result))
-        htmlSummaryPage should include ("2006/07 amount was empty. Please provide an amount between £0.00 and £99999999.99.")
-      }
     }
 
     "onPageLoad" can {
-      "display errors if values in keystore are incorrect" in new MockControllerFixture {
-        // set up
-        MockKeystore.map = (MockKeystore.map - "definedBenefit_2006") ++ Map("definedBenefit_2006"->"-100")
-        val request = FakeRequest(GET, "/paac/calculate").withSession {(SessionKeys.sessionId,SESSION_ID)}
-
-        // test
-        val result: Future[Result] = MockedReviewTotalAmountsController.onPageLoad()(request)
-
-        // check
-        val htmlSummaryPage = contentAsString(await(result))
-        htmlSummaryPage should include ("2006/07 amount was empty. Please provide an amount between £0.00 and £99999999.99.")
-      }
 
       "display table of values that are present in keystore" in new MockControllerFixture {
         // set up
@@ -272,8 +245,6 @@ class ReviewTotalAmountsControllerSpec extends UnitSpec with BeforeAndAfterAll {
 
         // check
         val htmlSummaryPage = contentAsString(await(result))
-        htmlSummaryPage should include ("£5,000.00")
-        htmlSummaryPage should include ("£6,000.00")
         htmlSummaryPage should include ("£7,000.00")
         htmlSummaryPage should include ("£8,000.00")
         htmlSummaryPage should include ("£9,000.00")

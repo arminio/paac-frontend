@@ -35,11 +35,11 @@ class CalculatorFormSpec extends UnitSpec{
     }
 
     "throw validation error when providing a value less than 0" in {
-      CalculatorForm.form.bind(Map(
+      CalculatorForm.bind(Map(
         "definedBenefit_2008" -> "-1"
       )).fold(
         formWithErrors => {
-          formWithErrors.errors.find(_.key == "definedBenefit_2008") should not be None
+          formWithErrors.errors.find(_.key == "definedBenefits.amount_2008") should not be None
         },
         success =>
           success should not be Some(-1)
@@ -47,7 +47,7 @@ class CalculatorFormSpec extends UnitSpec{
     }
 
     "throw a ValidationError when providing a character" in {
-      CalculatorForm.form.bind(Map(
+      CalculatorForm.bind(Map(
         "definedBenefit_2010" -> "Idontknow"
       )).fold(
         formWithErrors => {
@@ -58,7 +58,7 @@ class CalculatorFormSpec extends UnitSpec{
     }
 
     "throw a ValidationError when providing special characters" in {
-      CalculatorForm.form.bind(Map(
+      CalculatorForm.bind(Map(
         "PensionInputAmount" -> "%l&^@sl3"
       )).fold(
         formWithErrors =>
@@ -69,10 +69,10 @@ class CalculatorFormSpec extends UnitSpec{
     }
 
     "throw validation error if defined benefit is out of bounds" in {
-      CalculatorForm.form.bind(Map("definedBenefit_2014" -> "100000000.01")).fold (
+      CalculatorForm.bind(Map("definedBenefit_2014" -> "100000000.01")).fold (
         formWithErrors => {
           formWithErrors.errors should not be empty
-          formWithErrors.errors.head.key shouldBe "definedBenefit_2014"
+          formWithErrors.errors.head.key shouldBe "definedBenefits.amount_2014"
           formWithErrors.errors.head.messages.head shouldBe "error.real.precision"
         },
         formWithoutErrors => formWithoutErrors should not be Some("")
@@ -80,31 +80,25 @@ class CalculatorFormSpec extends UnitSpec{
     }
 
     "form correctly unbinds" in {
-      CalculatorForm.form.bind(Map("definedBenefit_2014" -> "")).mapping.unbind(CalculatorFormFields(amount2014 = Some(scala.math.BigDecimal(0.0))))("definedBenefit_2014") shouldBe "0.00"
+      //CalculatorForm.bind(Map("definedBenefit_2014" -> "")).mapping.unbind(CalculatorFormFields(amount2014 = Some(scala.math.BigDecimal(0.0))))("definedBenefit_2014") shouldBe "0.00"
     }
   }
 
   "CalculatorFormFields" should {
-    "convert to list of contributions with pence amounts" in {
+    "convert values to pence amounts" in {
       // set up
-      val input = CalculatorFormFields(Some(50.50), Some(90.50), Some(100.50), Some(200.50), Some(300.50), Some(400.50), Some(500.50),
-                                            Some(600.50), Some(700.50), Some(800.50), Some(900.50), Some(1000.50), Some(1100.50))
+      val input = CalculatorFormFields(DefinedBenefits(Some(50.50), Some(90.50), Some(100.50), Some(200.50), Some(300.50), Some(400.50), Some(500.50), Some(600.50)), 
+                                       DefinedContributions(Some(700.50), Some(800.50), Some(900.50), Some(1000.50), Some(1100.50), Some(1200.50), Some(1300.50), Some(1400.50)),
+                                       Year2015Amounts(Some(1500.50), Some(1600.50), Some(1700.50), Some(1800.50)))
+      val THIS_YEAR = (new java.util.GregorianCalendar()).get(java.util.Calendar.YEAR)
 
       // test
-      val contributions = input.toContributions()
+      val maybeTuple = input.toDefinedBenefit(THIS_YEAR)
 
       // check
-      contributions shouldBe List(Contribution(2006, 5050),
-                                  Contribution(2007, 9050),
-                                  Contribution(2008, 10050),
-                                  Contribution(2009, 20050),
-                                  Contribution(2010, 30050),
-                                  Contribution(2011, 40050),
-                                  Contribution(2012, 50050),
-                                  Contribution(2013, 60050),
-                                  Contribution(2014, 70050),
-        Contribution(TaxPeriod(2015,3,6), TaxPeriod(2015,6,8), Some(InputAmounts(80050,90050))),
-        Contribution(TaxPeriod(2015,6,9),TaxPeriod(2016,3,5), Some(InputAmounts(100050,110050))))
+      maybeTuple should not be None
+      maybeTuple.get._1 shouldBe 5050L
+      maybeTuple.get._2 shouldBe "definedBenefit_"+THIS_YEAR
     }
   }
 }
