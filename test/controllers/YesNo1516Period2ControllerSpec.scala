@@ -178,7 +178,7 @@ class YesNo1516Period2ControllerSpec extends UnitSpec with BeforeAndAfterAll {
         redirectLocation(result) shouldBe Some("/paac/pensionInputs1516p2")
       }
 
-      "with yesNo = No should forward to 2015/16 Period-2 InputPage" in new ControllerWithMockKeystore{
+      /*"with yesNo = No should forward to 2015/16 Period-2 InputPage" in new ControllerWithMockKeystore{
         // set up
         implicit val hc = HeaderCarrier()
         implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID)).withFormUrlEncodedBody(("yesNo" -> "No"))
@@ -191,7 +191,7 @@ class YesNo1516Period2ControllerSpec extends UnitSpec with BeforeAndAfterAll {
         MockKeystore.map should contain key ("yesnoFor1516P2")
         MockKeystore.map should contain value ("No")
         redirectLocation(result) shouldBe Some("/paac/pensionInputs")
-      }
+      }*/
     }
   }
 }

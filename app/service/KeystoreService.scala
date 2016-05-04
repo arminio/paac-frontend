@@ -48,4 +48,21 @@ trait KeystoreService {
   }
 }
 
-object KeystoreService extends KeystoreService
+object KeystoreService extends KeystoreService {
+  val TRIGGER_DATE_KEY = "dateOfMPAATriggerEvent"
+  val P1_DB_KEY = "definedBenefit_2015_p1"
+  val P1_DC_KEY = "definedContribution_2015_p1"
+  val P2_DB_KEY = "definedBenefit_2015_p2"
+  val P2_DC_KEY= "definedContribution_2015_p2"
+  val SCHEME_TYPE_KEY = "schemeType"
+  val CURRENT_INPUT_YEAR_KEY = "Current"
+  val SELECTED_INPUT_YEARS_KEY = "SelectedYears"
+  val DB_PREFIX = "definedBenefit_"
+  val DC_PREFIX = "definedContribution_"
+  val TH_PREFIX = "thresholdIncome_"
+  val AI_PREFIX = "adjustedIncome_"
+  val TA_PREFIX = "taperedAllowance_"
+  val P1_YES_NO_KEY = "yesnoFor1516P1"
+  val P2_YES_NO_KEY = "yesnoFor1516P2"
+  val TE_YES_NO_KEY = "yesnoForMPAATriggerEvent"
+}
