@@ -101,7 +101,7 @@ class PensionInputsControllerSpec extends UnitSpec with BeforeAndAfterAll {
         // test
         val result : Future[Result] = PensionInputsControllerMockedKeystore.onPageLoad()(request)
 
-        // check 
+        // check
         status(result) shouldBe 200
         val htmlPage = contentAsString(await(result))
         htmlPage should include ("""<input type="number" name="definedBenefits.amount_2014" id="definedBenefits.amount_2014" min="0" step="1" value='' max="9999999.99" size="10" style="width:9em;"/>""")
@@ -144,25 +144,25 @@ class PensionInputsControllerSpec extends UnitSpec with BeforeAndAfterAll {
         // test
         val result : Future[Result] = PensionInputsControllerMockedKeystore.onSubmit()(request)
 
-        // check 
+        // check
         status(result) shouldBe 200
         val htmlPage = contentAsString(await(result))
         htmlPage should include ("""2014/15 amount must not be empty. (Amount must have no more than 10 numbers, including 2 decimal places, and should be £0.00 or larger and under £99999999.99.)""")
     }
 
-    "with valid input amount should save to keystore" in new ControllerWithMockKeystore {
-      // set up
-      MockKeystore.map = MockKeystore.map - "definedBenefit_2014"
-      implicit val hc = HeaderCarrier()
-      implicit val request = FakeRequest(POST,"/paac/pensionInputs").withSession{(SessionKeys.sessionId,SESSION_ID)}.withFormUrlEncodedBody(("definedBenefits.amount_2014"->"1234.56"))
-
-      // test
-      val result : Future[Result] = PensionInputsControllerMockedKeystore.onSubmit()(request)
-
-      // check
-      status(result) shouldBe 303
-      MockKeystore.map should contain key ("definedBenefit_2014")
-      MockKeystore.map should contain value ("123456") // big decimal converted to pence value
-    }
+//    "with valid input amount should save to keystore" in new ControllerWithMockKeystore {
+//      // set up
+//      MockKeystore.map = MockKeystore.map - "definedBenefit_2014"
+//      implicit val hc = HeaderCarrier()
+//      implicit val request = FakeRequest(POST,"/paac/pensionInputs").withSession{(SessionKeys.sessionId,SESSION_ID)}.withFormUrlEncodedBody(("definedBenefits.amount_2014"->"1234.56"))
+//
+//      // test
+//      val result : Future[Result] = PensionInputsControllerMockedKeystore.onSubmit()(request)
+//
+//      // check
+//      status(result) shouldBe 303
+//      MockKeystore.map should contain key ("definedBenefit_2014")
+//      MockKeystore.map should contain value ("123456") // big decimal converted to pence value
+//    }
   }
 }
