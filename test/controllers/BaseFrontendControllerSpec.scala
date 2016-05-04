@@ -16,20 +16,71 @@
 
 package controllers
 
+import java.util.UUID
+
+import org.scalatest.BeforeAndAfterAll
 import play.api.test.Helpers._
 import play.api.test.{FakeRequest}
 import play.api.Play
 import play.api.test._
 import play.api.mvc._
 import play.api.mvc.Results._
+import service.KeystoreService
 
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpPost, HttpResponse}
 import uk.gov.hmrc.play.http.SessionKeys
 import uk.gov.hmrc.play.test.UnitSpec
 import scala.concurrent.Future
 
-class BaseFrontendControllerSpec extends UnitSpec {
+class BaseFrontendControllerSpec extends UnitSpec with BeforeAndAfterAll {
   val app = FakeApplication()
+  val SESSION_ID = s"session-${UUID.randomUUID}"
+
+  override def beforeAll() {
+    Play.start(app)
+    super.beforeAll() // To be stackable, must call super.beforeEach
+  }
+
+  override def afterAll() {
+    try {
+      super.afterAll()
+    } finally Play.stop()
+  }
+
+  implicit val request = FakeRequest()
+
+  trait ControllerWithMockKeystore extends MockKeystoreFixture {
+    object RedirectController extends BaseFrontendController {
+      val keystorekey = "TaxYearSelection"
+     // override val keystore: KeystoreService = MockKeystore
+    }
+  }
+
+
+  trait MockKeystoreFixture {
+    object MockKeystore extends KeystoreService {
+      var map = Map(SessionKeys.sessionId -> SESSION_ID)
+
+      override def store[T](data: T, key: String)
+                           (implicit hc: HeaderCarrier,
+                            format: play.api.libs.json.Format[T],
+                            request: Request[Any])
+      : Future[Option[T]] = {
+        map = map + (key -> data.toString)
+        Future.successful(Some(data))
+      }
+
+      override def read[T](key: String)
+                          (implicit hc: HeaderCarrier,
+                           format: play.api.libs.json.Format[T],
+                           request: Request[Any])
+      : Future[Option[T]] = {
+        Future.successful((map get key).map(_.asInstanceOf[T]))
+      }
+    }
+
+  }
+
 
   "BaseFrontendController" should {
     "get session id should return None if keystore session id is not present" in {
@@ -126,5 +177,7 @@ class BaseFrontendControllerSpec extends UnitSpec {
         Play.stop()
       }
     }
+
+
   }
 }

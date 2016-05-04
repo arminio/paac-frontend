@@ -54,7 +54,6 @@ class TaxYearSelectionSpec extends UnitSpec with BeforeAndAfterAll {
 
 
   trait MockKeystoreFixture {
-
     object MockKeystore extends KeystoreService {
       var map = Map(SessionKeys.sessionId -> SESSION_ID)
 
@@ -79,18 +78,16 @@ class TaxYearSelectionSpec extends UnitSpec with BeforeAndAfterAll {
   }
 
   "TaxYearSelection" when {
-    "GET with routes" should {
+    "GET with routes".should {
       "not return result NOT_FOUND" in {
         val result: Option[Future[Result]] = route(FakeRequest(GET, endPointURL))
         result.isDefined shouldBe true
         status(result.get) should not be NOT_FOUND
       }
-
       "return 303 for valid GET request" in {
         val result: Option[Future[Result]] = route(FakeRequest(GET, endPointURL))
         status(result.get) shouldBe 303
       }
-
       "not return 200 for valid GET request" in {
         val result: Option[Future[Result]] = route(FakeRequest(GET, endPointURL))
         status(result.get) should not be 200
@@ -122,9 +119,36 @@ class TaxYearSelectionSpec extends UnitSpec with BeforeAndAfterAll {
         status(result) shouldBe 200
         MockKeystore.map should contain key ("TaxYearSelection")
         MockKeystore.map should contain value ("2015")
-
       }
-
     }
+  }
+
+  "onYearSelected with POST request" should {
+    "not return result NOT_FOUND" in {
+      val result: Option[Future[Result]] = route(FakeRequest(POST, endPointURL))
+      result.isDefined shouldBe true
+      status(result.get) should not be NOT_FOUND
+    }
+
+    "return 303 for valid GET request" in {
+      val result: Option[Future[Result]] = route(FakeRequest(POST, endPointURL))
+      status(result.get) shouldBe 303
+    }
+
+//    "have valid TaxYearSelection saved to keystore" in new ControllerWithMockKeystore{
+//      // set up
+//      implicit val hc = HeaderCarrier()
+//      implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID)).withFormUrlEncodedBody(("TaxYear2015" -> "2015"))
+//
+//      // test
+//      val result: Future[Result] = MockTaxYearSelectionWithMockKeystore.onYearSelected()(request)
+//
+//      // check
+//      status(result) shouldBe 200
+//      MockKeystore.map should contain key ("TaxYearSelection")
+//      MockKeystore.map should contain value ("2015")
+//    }
+
+
   }
 }
