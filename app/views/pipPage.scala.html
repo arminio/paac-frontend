@@ -5,7 +5,7 @@
 @common.paacMain(
 pageTitle = Messages("paac.pip.pagetitle"),
 heading = Messages("paac.pip.heading"),
-backLink = Some((controllers.routes.StaticPageController.onPipTaxYearPageLoad.url,Messages("paac.link.text.back")))
+backLink = Some((controllers.routes.TaxYearSelectionController.onPageLoad.url,Messages("paac.link.text.back")))
 ) {
     <p class="lede text">@Messages("paac.pip.subheading")</p>
     <p class="">@Messages("paac.pip.p1")</p>

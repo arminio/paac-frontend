@@ -17,7 +17,6 @@
 package controllers
 
 import java.util.UUID
-import form.TaxYearSelectionForm
 import org.scalatest.BeforeAndAfterAll
 import play.api.Play
 import play.api.mvc.{Result, Request}
@@ -127,66 +126,5 @@ class TaxYearSelectionSpec extends UnitSpec with BeforeAndAfterAll {
       }
 
     }
-
-    "TaxYearSelectionForm" should {
-
-      "throw validation error when form not filled" in {
-        TaxYearSelectionForm.form.bind(Map(
-          "TaxYear" -> ""
-        )).fold(
-          formWithErrors =>
-            formWithErrors.errors should not be empty,
-          success =>
-            success should not be Some("")
-        )
-      }
-
-      "throw a ValidationError when providing special characters" in {
-        TaxYearSelectionForm.form.bind(Map(
-          "TaxYear" -> "%l&^@sl3"
-        )).fold(
-          formWithErrors =>
-            formWithErrors.errors.head should not be ("Success"),
-          success =>
-            success should not be Some("%l&^@sl3")
-        )
-      }
-
-      "onYearSelected with POST request" should {
-        "not return result NOT_FOUND" in {
-          val result: Option[Future[Result]] = route(FakeRequest(POST, endPointURL))
-          result.isDefined shouldBe true
-          status(result.get) should not be NOT_FOUND
-        }
-
-        "return 303 for valid GET request" in {
-          val result: Option[Future[Result]] = route(FakeRequest(POST, endPointURL))
-          status(result.get) shouldBe 303
-        }
-
-//        "with valid TaxYear should save to keystore" in new ControllerWithMockKeystore{
-//          // set up
-//          implicit val hc = HeaderCarrier()
-//          implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID)).withFormUrlEncodedBody(("TaxYear" -> "2014"))
-//
-//          // test
-//          val result: Future[Result] = MockTaxYearSelectionWithMockKeystore.onYearSelected()(request)
-//
-//          // check
-//          status(result) shouldBe 303
-//          MockKeystore.map should contain key ("TaxYear")
-//          MockKeystore.map should contain value ("2014")
-//        }
-      }
-
-//      "Checkbox group" should {
-//        "Allow to check more than on checkbox" in {
-//          val form = form(TaxYearSelectionForm)
-//        }
-//        "Redirect to the proper user journey" in {
-//
-//        }
-//      }
   }
-}
 }
