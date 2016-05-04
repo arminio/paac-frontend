@@ -18,7 +18,6 @@ package controllers
 
 import play.api.mvc._
 import service.KeystoreService
-import form.TaxYearSelectionForm
 import scala.concurrent.Future
 
 object TaxYearSelectionController extends TaxYearSelectionController {
