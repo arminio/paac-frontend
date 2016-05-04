@@ -34,15 +34,19 @@ trait PensionInputsController extends RedirectController {
     keystore.read[String]("Current").flatMap {
       (currentYear) =>
       val cy = currentYear.getOrElse("2014")
-      val keyStoreKey = "definedBenefit_"+cy
-      keystore.read[String](keyStoreKey).map {
-        (amount) =>
-        val fields = Map(amount match {
-          case None => (keyStoreKey, "")
-          case Some("0") => (keyStoreKey, "0.00")
-          case Some(value) => (keyStoreKey, f"${(value.toInt/100.00)}%2.2f")
-        })
-        Ok(views.html.pensionInputs(CalculatorForm.form.bind(fields).discardingErrors, cy))
+      if (cy == "2015" || cy == "-1") {
+        Future.successful(Redirect(onSubmitRedirect))
+      } else {
+        val keyStoreKey = "definedBenefit_"+cy
+        keystore.read[String](keyStoreKey).map {
+          (amount) =>
+          val fields = Map(amount match {
+            case None => (keyStoreKey, "")
+            case Some("0") => (keyStoreKey, "0.00")
+            case Some(value) => (keyStoreKey, f"${(value.toInt/100.00)}%2.2f")
+          })
+          Ok(views.html.pensionInputs(CalculatorForm.form.bind(fields).discardingErrors, cy))
+        }
       }
     }
   }
