@@ -80,7 +80,7 @@ trait RedirectController extends BaseFrontendController {
             //2016
             Redirect(routes.StartPageController.startPage())
           } else if (nextYear == 2015) {
-            Redirect(routes.PensionInputs1516Period1Controller.onPageLoad())
+            Redirect(routes.StaticPageController.onPipPageLoad())
           } else {
             Redirect(routes.PensionInputsController.onPageLoad())
           }
