@@ -1,4 +1,4 @@
-@(paacForm : Form[form.CalculatorFormFields], contribution: models.Contribution)(implicit request:Request[_])
+@(paacForm : Form[form.CalculatorFormFields], contribution: models.Contribution, id: String, value: Option[BigDecimal])(implicit request:Request[_])
 
 @import uk.gov.hmrc.play.views.html.helpers._
 @import models._
@@ -40,22 +40,21 @@ backLink = Some((controllers.routes.DateOfMPAATriggerEventController.onPageLoad.
     @form(
         action = controllers.routes.PostTriggerPensionInputsController.onSubmit,
         args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
-
         <table>
             <tbody>
                 @defining(java.text.NumberFormat.getCurrencyInstance(java.util.Locale.UK)) { currencyFormatter =>
                 <fieldset id="input_@thisYear" class="form-field-group" style="max-width:12.35em;">
-                    <label class="form-element-bold label--full-length numeric" for="postTriggerAmounts.amount_@thisYear" style="width:150%;display: inline-block;@if(paacForm.errors.find(_.key == "postTriggerAmounts.amount_"+thisYear)) {color:#b10e1e;}">
+                    <label class="form-element-bold label--full-length numeric" for="@id" style="width:150%;display: inline-block;@if(paacForm.errors.find(_.key == id)) {color:#b10e1e;}">
                     <tr style="text-align:left;min-width: 7em">@(contribution.taxYearLabel())</tr><BR/>
 
                       <span style="float:right">
-                      @if(paacForm.data.contains("postTriggerAmounts.amount_"+thisYear)) {
+                      @if(value != None) {
                           <tr style="text-align:left;min-width: 7em">
-                              £&nbsp;<input type="number" name="postTriggerAmounts.amount_@thisYear" id="postTriggerAmounts.amount_@thisYear" min="0" step="1" value='@paacForm.data("postTriggerAmounts.amount_"+thisYear)' max="9999999.99" size="10" style="width:9em;@if(paacForm.errors.find(_.key == "postTriggerAmounts.amount_"+thisYear)) {border: 4px solid #b10e1e;}"/>
+                              £&nbsp;<input type="number" name="@id" id="@id" min="0" step="1" value='@(value)' max="9999999.99" size="10" style="width:9em;@if(paacForm.errors.find(_.key == id)) {border: 4px solid #b10e1e;}"/>
                           </tr>
                           } else {
                           <tr style="text-align:left;min-width: 7em">
-                              £&nbsp;<input type="number" name="postTriggerAmounts.amount_@thisYear" id="postTriggerAmounts.amount_@thisYear" min="0" step="1" value='' max="9999999.99" size="10" style="width:9em;@if(paacForm.errors.find(_.key == "postTriggerAmounts.amount_"+thisYear)) {border: 4px solid #b10e1e;}"/>
+                              £&nbsp;<input type="number" name="@id" id="@id" min="0" step="1" value='' max="9999999.99" size="10" style="width:9em;@if(paacForm.errors.find(_.key == id)) {border: 4px solid #b10e1e;}"/>
                           </tr>
                           }
                       </span>

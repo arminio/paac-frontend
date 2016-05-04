@@ -34,7 +34,7 @@ trait PensionInputsController extends RedirectController {
     keystore.read[String]("Current").flatMap {
       (currentYear) =>
       val cy = currentYear.getOrElse("2014")
-      if (cy == 2015) {
+      if (cy == "2015" || cy == "-1") {
         Future.successful(Redirect(onSubmitRedirect))
       } else {
         val keyStoreKey = "definedBenefit_"+cy
@@ -58,7 +58,6 @@ trait PensionInputsController extends RedirectController {
       CalculatorForm.form.bindFromRequest().fold(
         formWithErrors => { Future.successful(Ok(views.html.pensionInputs(formWithErrors, cy))) },
         input => {
-          println("********** form " + input)
           val keyStoreKey = "definedBenefit_"+cy
           val (amount:Long, key:String) = input.toDefinedBenefit(cy.toInt).getOrElse((keyStoreKey, 0L))
           keystore.store[String](amount.toString, key).flatMap{ 

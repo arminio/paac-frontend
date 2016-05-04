@@ -68,18 +68,17 @@ case class CalculatorFormFields(definedBenefits: Amounts, definedContributions: 
   def toPageValues():List[Contribution] = {
     def retrieveValue(amounts: Amounts, name: String): Option[Long] = {
       val fieldValueMap: Map[String,Any]= amounts.getClass.getDeclaredFields.map(_.getName).zip(amounts.productIterator.toList).toMap
-      fieldValueMap.get("c" + name.drop(3)).map(_.asInstanceOf[Option[BigDecimal]]).flatMap(_.map((v:BigDecimal)=>(v * 100).longValue))
+      fieldValueMap.get("c" + name.drop(3)).map(_.asInstanceOf[Option[BigDecimal]]).flatMap(_.map(Amounts.toPence))
     }
-    def toPence(value: BigDecimal): Long = (value * 100).longValue
 
     def get(name:String): Option[Long] = {
       name match {
-        case "amount2015P1" => year2015.amount2015P1.map(toPence)
-        case "dcAmount2015P1" => year2015.dcAmount2015P1.map(toPence)
-        case "amount2015P2" => year2015.amount2015P2.map(toPence)
-        case "dcAmount2015P2" => year2015.dcAmount2015P2.map(toPence)
-        case "ptDcAmount2015P1" => year2015.postTriggerDcAmount2015P1.map(toPence)
-        case "ptDcAmount2015P2" => year2015.postTriggerDcAmount2015P2.map(toPence)
+        case "amount2015P1" => year2015.amount2015P1.map(Amounts.toPence)
+        case "dcAmount2015P1" => year2015.dcAmount2015P1.map(Amounts.toPence)
+        case "amount2015P2" => year2015.amount2015P2.map(Amounts.toPence)
+        case "dcAmount2015P2" => year2015.dcAmount2015P2.map(Amounts.toPence)
+        case "ptDcAmount2015P1" => year2015.postTriggerDcAmount2015P1.map(Amounts.toPence)
+        case "ptDcAmount2015P2" => year2015.postTriggerDcAmount2015P2.map(Amounts.toPence)
         case _ => {
           val amounts: Amounts = if (name.contains("dbCurrentYearMinus")) {
             this.definedBenefits
@@ -151,6 +150,10 @@ case class CalculatorFormFields(definedBenefits: Amounts, definedContributions: 
 
 object CalculatorFormFields
 
+object Amounts {
+  def toPence(value: BigDecimal): Long = (value * 100).longValue
+}
+
 object CalculatorForm {
   type CalculatorFormType = CalculatorFormFields
   val THIS_YEAR = (new java.util.GregorianCalendar()).get(java.util.Calendar.YEAR)
@@ -197,13 +200,14 @@ object CalculatorForm {
     val year2015 = List((s"year2015.definedBenefit_2015_p1", data.getOrElse("amount2015P1", data.getOrElse("definedBenefit_2015_p1",""))),
                         (s"year2015.definedContribution_2015_p1", data.getOrElse("dcAmount2015P1", data.getOrElse("definedContribution_2015_p1",""))),
                         (s"year2015.definedBenefit_2015_p2", data.getOrElse("amount2015P2", data.getOrElse("definedBenefit_2015_p2",""))),
-                        (s"year2015.definedContribution_2015_p2", data.getOrElse("dcAmount2015P2", data.getOrElse("definedContribution_2015_p2",""))))
+                        (s"year2015.definedContribution_2015_p2", data.getOrElse("dcAmount2015P2", data.getOrElse("definedContribution_2015_p2",""))),
+                        (s"year2015.postTriggerDcAmount2015P1", data.getOrElse("postTriggerDefinedContribution_2015_p1","")),
+                        (s"year2015.postTriggerDcAmount2015P2", data.getOrElse("postTriggerDefinedContribution_2015_p2","")))
     val values = List.range(THIS_YEAR-8, THIS_YEAR+1).flatMap {
       (year)=>
       if (year != 2015){
         List((s"definedBenefits.amount_${year}", data.getOrElse("definedBenefit_"+year, "")),
-             (s"definedContributions.amount_${year}", data.getOrElse("definedContribution_"+year, "")),
-             (s"postTriggerAmounts.amount_${year}", data.getOrElse("postTriggerDefinedContribution_"+year, "")))
+             (s"definedContributions.amount_${year}", data.getOrElse("definedContribution_"+year, "")))
       } else {
         year2015
       }

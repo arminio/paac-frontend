@@ -21,6 +21,7 @@ import play.api.mvc._
 import scala.concurrent.Future
 import form.CalculatorForm
 import models._
+import form._
 
 object PostTriggerPensionInputsController extends PostTriggerPensionInputsController {
   override val keystore: KeystoreService = KeystoreService
@@ -42,19 +43,72 @@ trait PostTriggerPensionInputsController extends RedirectController {
     }
   }
 
+  def id(c: Contribution): String = {
+    if (c.isPeriod1()) {
+      "year2015.postTriggerDcAmount2015P1"
+    } else if (c.isPeriod2()) {
+      "year2015.postTriggerDcAmount2015P2"
+    } else {
+      "triggerAmounts.amount_"+c.taxPeriodStart.year
+    }
+  }
+
+  def key(c: Contribution): String = {
+    if (c.isPeriod1()) {
+      "postTriggerDefinedContribution_2015_p1"
+    } else if (c.isPeriod2()) {
+      "postTriggerDefinedContribution_2015_p2"
+    } else {
+      "postTriggerDefinedContribution_"+c.taxPeriodStart.year
+    }
+  }
+
+  def amount(c: Contribution, form: CalculatorFormFields): Long = {
+    if (c.isPeriod1()) {
+      form.year2015.postTriggerDcAmount2015P1.map((_ * 100L).toLong).getOrElse(0L)
+    } else if (c.isPeriod2()) {
+      form.year2015.postTriggerDcAmount2015P2.map((_ * 100L).toLong).getOrElse(0L)
+    } else {
+      0L
+    }
+  }
+
   val onPageLoad = withSession { implicit request =>
-    keystore.read[String](DateOfMPAATriggerEventController.dateOfMPAATEKey).map {
+    keystore.read[String](DateOfMPAATriggerEventController.dateOfMPAATEKey).flatMap {
       (date) =>
         val dateAsStr = date.getOrElse("")
         if (dateAsStr == "") {
-          Redirect(routes.DateOfMPAATriggerEventController.onPageLoad)
+          Future.successful(Redirect(routes.DateOfMPAATriggerEventController.onPageLoad))
         } else {
-          Ok(views.html.postTriggerPensionInputs(CalculatorForm.form, toContribution(dateAsStr)))
+          val c = toContribution(dateAsStr)
+          keystore.read[String](key(c)).flatMap {
+            (value) =>
+            val v = BigDecimal(value.toInt/100L)
+            Future.successful(Ok(views.html.postTriggerPensionInputs(CalculatorForm.form, c, id(c), v)))
+          }
         }
     }
   }
 
   val onSubmit = withSession { implicit request =>
-    Future.successful(Redirect(routes.ReviewTotalAmountsController.onPageLoad))
+    keystore.read[String](DateOfMPAATriggerEventController.dateOfMPAATEKey).flatMap {
+      (date) =>
+      val dateAsStr = date.getOrElse("")
+      if (dateAsStr == "") {
+        Future.successful(Redirect(routes.DateOfMPAATriggerEventController.onPageLoad))
+      } else {
+        val c = toContribution(dateAsStr)
+        val a = amount(c, input)
+        CalculatorForm.form.bindFromRequest().fold(
+          formWithErrors => { Future.successful( Ok(views.html.postTriggerPensionInputs(CalculatorForm.form, c, id(c), a)) ) },
+          input => {
+            keystore.store[String](a.toString, key(c)).flatMap {
+              (_) => 
+              Future.successful(Redirect(routes.ReviewTotalAmountsController.onPageLoad))
+            }
+          }
+        )
+      }
+    }
   }
 }
