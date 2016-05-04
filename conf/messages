@@ -141,3 +141,8 @@ paac.results.table.col.7=Unused AA Carried Forward to Next Year
 paac.results.table.col.8=Cumulative Carry Forward (3 Years)
 paac.results.link.new.href=new
 paac.results.link.new=Start Again
+
+## Post Trigger Pension Inputs Page
+paac.post-trigger-value.page.heading=How much was paid into your pension scheme after you accessed your pension savings?
+paac.post-trigger-value.page.title=Money Purchase Value After Flexi Access
+paac.post-trigger-value.p1=This is how much was paid into your pension scheme from the day after you accessed your pension savings to the end of the pension input period.

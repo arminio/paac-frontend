@@ -24,13 +24,15 @@ import scala.concurrent.Future
 
 object DateOfMPAATriggerEventController extends DateOfMPAATriggerEventController {
   override val keystore: KeystoreService = KeystoreService
+  override val dateOfMPAATEKey = "dateOfMPAATriggerEvent"
 }
 
 trait DateOfMPAATriggerEventController extends RedirectController {
   val keystore: KeystoreService
+  val dateOfMPAATEKey: String
 
   private val onSubmitRedirect: Call = routes.PensionInputsController.onPageLoad
-  private val dateOfMPAATEKey = "dateOfMPAATriggerEvent"
+  
 
   val onPageLoad = withSession { implicit request =>
     keystore.read[String](dateOfMPAATEKey).map {
@@ -47,14 +49,13 @@ trait DateOfMPAATriggerEventController extends RedirectController {
   }
 
   val onSubmit = withSession { implicit request =>
-
     DateOfMPAATriggerEventForm.form.bindFromRequest().fold(
       formWithErrors => { Future.successful(Ok(views.html.date_of_mpaa_trigger_event(DateOfMPAATriggerEventForm.form))) },
       input => {
         // should store as json and read out as json but sticking with string throughout
         keystore.store[String](input.dateOfMPAATriggerEvent.map(_.toString).getOrElse(""), dateOfMPAATEKey).flatMap{
           (_)=> 
-          wheretoNext[String]( Redirect(onSubmitRedirect) ) 
+          Future.successful(Results.Redirect(routes.PostTriggerPensionInputsController.onPageLoad()))
         }
       }
     )

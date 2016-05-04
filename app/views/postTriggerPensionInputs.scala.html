@@ -1,0 +1,72 @@
+@(paacForm : Form[form.CalculatorFormFields], contribution: models.Contribution)(implicit request:Request[_])
+
+@import uk.gov.hmrc.play.views.html.helpers._
+@import models._
+
+@common.paacMain(
+pageTitle = Messages("paac.post-trigger-value.page.title"),
+heading = Messages("paac.post-trigger-value.page.heading"),
+backLink = Some((controllers.routes.DateOfMPAATriggerEventController.onPageLoad.url,Messages("paac.link.text.back")))
+) {
+
+@defining(contribution.taxPeriodStart.year) { thisYear =>
+    <p id="paac.post-trigger-value.p1">@Messages("paac.post-trigger-value.p1")</p>
+
+    @if(paacForm.hasErrors) {
+      <div class="error-summary" role="group" aria-labelledby="error-summary-heading-example-1" tabindex="-1" style="border: 5px solid #b10e1e;padding: 20px;padding-top: 0px;margin-bottom: 30px;">
+
+        <h1 class="heading-medium error-summary-heading">
+          There was a problem with the amount you reported to us
+        </h1>
+
+        @if(paacForm.hasGlobalErrors) {
+          <ul>
+          @for(error <- paacForm.globalErrors) {
+            <li>@error.message</li>
+          }
+          </ul>
+        }
+
+        <ul class="error-summary-list">
+          @for(error <- paacForm.errors) {
+            @defining(Seq(contribution.taxYearLabel())++error.args) { args =>
+            <li><a href="#input_@thisYear" style="color:#b10e1e;font-weight: bold;">@Messages(error.message, args:_*)</a></li>
+            }
+          }
+        </ul>
+      </div>
+    }
+
+    @form(
+        action = controllers.routes.PostTriggerPensionInputsController.onSubmit,
+        args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
+
+        <table>
+            <tbody>
+                @defining(java.text.NumberFormat.getCurrencyInstance(java.util.Locale.UK)) { currencyFormatter =>
+                <fieldset id="input_@thisYear" class="form-field-group" style="max-width:12.35em;">
+                    <label class="form-element-bold label--full-length numeric" for="postTriggerAmounts.amount_@thisYear" style="width:150%;display: inline-block;@if(paacForm.errors.find(_.key == "postTriggerAmounts.amount_"+thisYear)) {color:#b10e1e;}">
+                    <tr style="text-align:left;min-width: 7em">@(contribution.taxYearLabel())</tr><BR/>
+
+                      <span style="float:right">
+                      @if(paacForm.data.contains("postTriggerAmounts.amount_"+thisYear)) {
+                          <tr style="text-align:left;min-width: 7em">
+                              £&nbsp;<input type="number" name="postTriggerAmounts.amount_@thisYear" id="postTriggerAmounts.amount_@thisYear" min="0" step="1" value='@paacForm.data("postTriggerAmounts.amount_"+thisYear)' max="9999999.99" size="10" style="width:9em;@if(paacForm.errors.find(_.key == "postTriggerAmounts.amount_"+thisYear)) {border: 4px solid #b10e1e;}"/>
+                          </tr>
+                          } else {
+                          <tr style="text-align:left;min-width: 7em">
+                              £&nbsp;<input type="number" name="postTriggerAmounts.amount_@thisYear" id="postTriggerAmounts.amount_@thisYear" min="0" step="1" value='' max="9999999.99" size="10" style="width:9em;@if(paacForm.errors.find(_.key == "postTriggerAmounts.amount_"+thisYear)) {border: 4px solid #b10e1e;}"/>
+                          </tr>
+                          }
+                      </span>
+                    </label>
+                </fieldset>
+                }
+            </tbody>
+        </table>
+
+        <br/>
+        <button id="submit" type="submit" class="button" value="Continue">@Messages("paac.calculator.button.continue")</button>
+    }
+  }
+}

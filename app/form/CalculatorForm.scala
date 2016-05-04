@@ -25,35 +25,15 @@ import play.api.data.validation._
 import play.api.i18n.Messages
 import play.api.mvc._
 
-case class DefinedBenefits(currentYearMinus0:Option[BigDecimal]=None,
-                           currentYearMinus1:Option[BigDecimal]=None,
-                           currentYearMinus2:Option[BigDecimal]=None,
-                           currentYearMinus3:Option[BigDecimal]=None,
-                           currentYearMinus4:Option[BigDecimal]=None,
-                           currentYearMinus5:Option[BigDecimal]=None,
-                           currentYearMinus6:Option[BigDecimal]=None,
-                           currentYearMinus7:Option[BigDecimal]=None,
-                           currentYearMinus8:Option[BigDecimal]=None) {
-  def isEmpty(): Boolean = currentYearMinus0 == None && 
-                           currentYearMinus1 == None && 
-                           currentYearMinus2 == None && 
-                           currentYearMinus3 == None && 
-                           currentYearMinus4 == None && 
-                           currentYearMinus5 == None && 
-                           currentYearMinus6 == None && 
-                           currentYearMinus7 == None && 
-                           currentYearMinus8 == None
-}
-
-case class DefinedContributions(currentYearMinus0:Option[BigDecimal]=None,
-                                currentYearMinus1:Option[BigDecimal]=None,
-                                currentYearMinus2:Option[BigDecimal]=None,
-                                currentYearMinus3:Option[BigDecimal]=None,
-                                currentYearMinus4:Option[BigDecimal]=None,
-                                currentYearMinus5:Option[BigDecimal]=None,
-                                currentYearMinus6:Option[BigDecimal]=None,
-                                currentYearMinus7:Option[BigDecimal]=None,
-                                currentYearMinus8:Option[BigDecimal]=None) {
+case class Amounts(currentYearMinus0:Option[BigDecimal]=None,
+                   currentYearMinus1:Option[BigDecimal]=None,
+                   currentYearMinus2:Option[BigDecimal]=None,
+                   currentYearMinus3:Option[BigDecimal]=None,
+                   currentYearMinus4:Option[BigDecimal]=None,
+                   currentYearMinus5:Option[BigDecimal]=None,
+                   currentYearMinus6:Option[BigDecimal]=None,
+                   currentYearMinus7:Option[BigDecimal]=None,
+                   currentYearMinus8:Option[BigDecimal]=None) {
   def isEmpty(): Boolean = currentYearMinus0 == None && 
                            currentYearMinus1 == None && 
                            currentYearMinus2 == None && 
@@ -68,36 +48,47 @@ case class DefinedContributions(currentYearMinus0:Option[BigDecimal]=None,
 case class Year2015Amounts(amount2015P1:Option[BigDecimal]=None,
                            dcAmount2015P1:Option[BigDecimal]=None,
                            amount2015P2:Option[BigDecimal]=None,
-                           dcAmount2015P2:Option[BigDecimal]=None) {
+                           dcAmount2015P2:Option[BigDecimal]=None,
+                           postTriggerDcAmount2015P1:Option[BigDecimal]=None,
+                           postTriggerDcAmount2015P2:Option[BigDecimal]=None) {
   def isEmpty(): Boolean = amount2015P1 == None && 
                          dcAmount2015P1 == None && 
                          amount2015P2 == None && 
-                         dcAmount2015P2 == None
-  def hasDefinedContributions(): Boolean = dcAmount2015P1 != None && dcAmount2015P2 != None
-  def hasDefinedBenefits(): Boolean = amount2015P1 != None && amount2015P2 != None
+                         dcAmount2015P2 == None && 
+                         postTriggerDcAmount2015P1 == None && 
+                         postTriggerDcAmount2015P2 == None
+  def hasDefinedContributions(): Boolean = dcAmount2015P1 != None || dcAmount2015P2 != None || postTriggerDcAmount2015P1 != None || postTriggerDcAmount2015P2 != None 
+  def hasDefinedBenefits(): Boolean = amount2015P1 != None || amount2015P2 != None
 }
 
-case class CalculatorFormFields(db: DefinedBenefits, dc: DefinedContributions, year2015: Year2015Amounts) {
+case class CalculatorFormFields(definedBenefits: Amounts, definedContributions: Amounts, year2015: Year2015Amounts) {
   val THIS_YEAR = (new java.util.GregorianCalendar()).get(java.util.Calendar.YEAR)
   val START_YEAR = THIS_YEAR-8
 
   def toPageValues():List[Contribution] = {
+    def retrieveValue(amounts: Amounts, name: String): Option[Long] = {
+      val fieldValueMap: Map[String,Any]= amounts.getClass.getDeclaredFields.map(_.getName).zip(amounts.productIterator.toList).toMap
+      fieldValueMap.get("c" + name.drop(3)).map(_.asInstanceOf[Option[BigDecimal]]).flatMap(_.map((v:BigDecimal)=>(v * 100).longValue))
+    }
+    def toPence(value: BigDecimal): Long = (value * 100).longValue
+
     def get(name:String): Option[Long] = {
       name match {
-        case "amount2015P1" => year2015.amount2015P1.map((v:BigDecimal)=>(v * 100).longValue)
-        case "dcAmount2015P1" => year2015.dcAmount2015P1.map((v:BigDecimal)=>(v * 100).longValue)
-        case "amount2015P2" => year2015.amount2015P2.map((v:BigDecimal)=>(v * 100).longValue)
-        case "dcAmount2015P2" => year2015.dcAmount2015P2.map((v:BigDecimal)=>(v * 100).longValue)
+        case "amount2015P1" => year2015.amount2015P1.map(toPence)
+        case "dcAmount2015P1" => year2015.dcAmount2015P1.map(toPence)
+        case "amount2015P2" => year2015.amount2015P2.map(toPence)
+        case "dcAmount2015P2" => year2015.dcAmount2015P2.map(toPence)
+        case "ptDcAmount2015P1" => year2015.postTriggerDcAmount2015P1.map(toPence)
+        case "ptDcAmount2015P2" => year2015.postTriggerDcAmount2015P2.map(toPence)
         case _ => {
-          if (name.contains("dbCurrentYearMinus")) {
-            val fieldValueMap: Map[String,Any]= this.db.getClass.getDeclaredFields.map(_.getName).zip(this.db.productIterator.toList).toMap
-            fieldValueMap.get("c" + name.drop(3)).map(_.asInstanceOf[Option[BigDecimal]]).flatMap(_.map((v:BigDecimal)=>(v * 100).longValue))
+          val amounts: Amounts = if (name.contains("dbCurrentYearMinus")) {
+            this.definedBenefits
           } else if (name.contains("dcCurrentYearMinus")) {
-            val fieldValueMap: Map[String,Any]= this.dc.getClass.getDeclaredFields.map(_.getName).zip(this.dc.productIterator.toList).toMap
-            fieldValueMap.get("c" + name.drop(3)).map(_.asInstanceOf[Option[BigDecimal]]).flatMap(_.map((v:BigDecimal)=>(v * 100).longValue))
+            this.definedContributions
           } else {
-            None
+            Amounts()
           }
+          retrieveValue(amounts, name)
         }
       }
     }
@@ -123,8 +114,8 @@ case class CalculatorFormFields(db: DefinedBenefits, dc: DefinedContributions, y
     toPageValues().filter(_.isEmpty() == false)
   }
 
-  def hasDefinedContributions(): Boolean = !dc.isEmpty || year2015.hasDefinedContributions
-  def hasDefinedBenefits(): Boolean = !db.isEmpty || year2015.hasDefinedBenefits
+  def hasDefinedContributions(): Boolean = !definedContributions.isEmpty || year2015.hasDefinedContributions
+  def hasDefinedBenefits(): Boolean = !definedBenefits.isEmpty || year2015.hasDefinedBenefits
 
   def toDefinedBenefit(first: Contribution => Boolean)(key: String) : Option[(Long, String)] = {
     toContributions.find(first).flatMap {
@@ -183,7 +174,7 @@ object CalculatorForm {
                                          s"amount_${CY5}"->validator,
                                          s"amount_${CY6}"->validator,
                                          s"amount_${CY7}"->validator,
-                                         s"amount_${CY8}"->validator)(DefinedBenefits.apply)(DefinedBenefits.unapply),
+                                         s"amount_${CY8}"->validator)(Amounts.apply)(Amounts.unapply),
             "definedContributions" -> mapping(s"amount_${CY0}"->validator,
                                               s"amount_${CY1}"->validator,
                                               s"amount_${CY2}"->validator,
@@ -192,11 +183,13 @@ object CalculatorForm {
                                               s"amount_${CY5}"->validator,
                                               s"amount_${CY6}"->validator,
                                               s"amount_${CY7}"->validator,
-                                              s"amount_${CY8}"->validator)(DefinedContributions.apply)(DefinedContributions.unapply),
+                                              s"amount_${CY8}"->validator)(Amounts.apply)(Amounts.unapply),
             "year2015" -> mapping("definedBenefit_2015_p1"->validator,
                                   "definedContribution_2015_p1"->validator,
                                   "definedBenefit_2015_p2"->validator,
-                                  "definedContribution_2015_p2"->validator)(Year2015Amounts.apply)(Year2015Amounts.unapply)
+                                  "definedContribution_2015_p2"->validator,
+                                  "postTriggerDcAmount2015P1"->validator,
+                                  "postTriggerDcAmount2015P2"->validator)(Year2015Amounts.apply)(Year2015Amounts.unapply)
     )(CalculatorFormFields.apply)(CalculatorFormFields.unapply)
   )
 
@@ -209,7 +202,8 @@ object CalculatorForm {
       (year)=>
       if (year != 2015){
         List((s"definedBenefits.amount_${year}", data.getOrElse("definedBenefit_"+year, "")),
-            (s"definedContributions.amount_${year}", data.getOrElse("definedContribution_"+year, "")))
+             (s"definedContributions.amount_${year}", data.getOrElse("definedContribution_"+year, "")),
+             (s"postTriggerAmounts.amount_${year}", data.getOrElse("postTriggerDefinedContribution_"+year, "")))
       } else {
         year2015
       }
