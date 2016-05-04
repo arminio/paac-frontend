@@ -46,6 +46,26 @@ trait KeystoreService {
       case None => Future.successful(None)
     }
   }
+
+  def read[T](keys: List[String])(implicit marshall: (String, Option[T]) => (String, T), hc: HeaderCarrier, format: play.api.libs.json.Format[T], request: Request[Any]): Future[Map[String, T]] = {
+    val reads: List[Future[(String, T)]] = keys.map((key)=>read[T](key).map(marshall(key,_)))
+    Future.sequence(reads).map((fields) =>Map[String, T](fields: _*))
+  }
+
+  def save[T](values: List[(Option[T],String)], defaultT: T)(implicit hc: HeaderCarrier, format: play.api.libs.json.Format[T], request: Request[Any]): Future[List[Option[T]]] = {
+    Future.sequence(values.map{
+      (pair)=>
+      val v = pair._1.getOrElse(defaultT)
+      store[T](v, pair._2)
+    })
+  }
+
+  def save[T](values: List[(T,String)])(implicit hc: HeaderCarrier, format: play.api.libs.json.Format[T], request: Request[Any]): Future[List[Option[T]]] = {
+    Future.sequence(values.map{
+      (pair)=>
+      store[T](pair._1, pair._2)
+    })
+  }
 }
 
 object KeystoreService extends KeystoreService {
@@ -65,4 +85,9 @@ object KeystoreService extends KeystoreService {
   val P1_YES_NO_KEY = "yesnoFor1516P1"
   val P2_YES_NO_KEY = "yesnoFor1516P2"
   val TE_YES_NO_KEY = "yesnoForMPAATriggerEvent"
+
+  def toStringPair(key: String, value: Option[String]): (String, String) = value match {
+    case None => (key, "")
+    case Some(v) => (key, v)
+  }
 }

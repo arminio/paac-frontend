@@ -21,6 +21,7 @@ import scala.concurrent.Future
 import play.api.mvc._
 
 import service.KeystoreService
+import service.KeystoreService._
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import uk.gov.hmrc.play.http.{HeaderCarrier, SessionKeys}
 
@@ -37,51 +38,47 @@ trait RedirectController extends BaseFrontendController {
   def keystore: KeystoreService
 
   def wheretoNext[T](defaultRoute: Result)(implicit hc: HeaderCarrier, format: play.api.libs.json.Format[T], request: Request[Any]) : Future[Result] = {
-    val reads: List[Future[(String, String)]] = List(KeystoreService.CURRENT_INPUT_YEAR_KEY, KeystoreService.SELECTED_INPUT_YEARS_KEY).map {
-      (key) =>
-        keystore.read[String](key).map {
-          case None => (key, "")
-          case Some(v) => (key, v)
+    implicit val marshall = KeystoreService.toStringPair _
+
+    def next(currentYear: String, selectedYears: String): Int = {
+      val syears = selectedYears.split(",")
+      if (currentYear == "") {
+        if (syears.size > 0 && selectedYears.length > 0){
+          syears(0).toInt
+        } else {
+          -1
         }
+      } else {
+        val i = syears.indexOf(currentYear) + 1
+        if (i < syears.length) {
+          syears(i).toInt
+        } else {
+          -1
+        }
+      }
     }
 
-    Future.sequence(reads).flatMap {
-      (fields) =>
-        val fieldsMap = Map[String, String](fields: _*)
-        val currentYear = fieldsMap(KeystoreService.CURRENT_INPUT_YEAR_KEY)
+    keystore.read(List(CURRENT_INPUT_YEAR_KEY, SELECTED_INPUT_YEARS_KEY)).flatMap {
+      (fieldsMap) =>
+      val currentYear = fieldsMap(KeystoreService.CURRENT_INPUT_YEAR_KEY)
+      val selectedYears = fieldsMap(KeystoreService.SELECTED_INPUT_YEARS_KEY)
+      val nextYear = next(currentYear, selectedYears)
 
-        val selectedYears = fieldsMap(KeystoreService.SELECTED_INPUT_YEARS_KEY)
-        val syears = selectedYears.split(",")
-        val nextYear = if (currentYear == "") {
-          if (syears.size > 0 && selectedYears.length > 0){
-            syears(0).toInt
-          } else {
-            -1
-          }
+      // Save next year value to keystore with CurrentYear
+      keystore.store(nextYear.toString(), KeystoreService.CURRENT_INPUT_YEAR_KEY).map {
+        (values) =>
+        //redirect to nextYear Controller
+        if (nextYear == -1) {
+          defaultRoute
+        } else if (nextYear > 2015) {
+          //2016
+          Redirect(routes.StartPageController.startPage())
+        } else if (nextYear == 2015) {
+          Redirect(routes.StaticPageController.onPipPageLoad())
         } else {
-          val i = syears.indexOf(currentYear) + 1
-          if (i < syears.length) {
-            syears(i).toInt
-          } else {
-            -1
-          }
+          Redirect(routes.PensionInputsController.onPageLoad())
         }
-
-        // Save next year value to keystore with CurrentYear
-        keystore.store(nextYear.toString(), KeystoreService.CURRENT_INPUT_YEAR_KEY).map {
-          (values) =>
-          //redirect to nextYear Controller
-          if (nextYear == -1) {
-            defaultRoute
-          } else if (nextYear > 2015) {
-            //2016
-            Redirect(routes.StartPageController.startPage())
-          } else if (nextYear == 2015) {
-            Redirect(routes.StaticPageController.onPipPageLoad())
-          } else {
-            Redirect(routes.PensionInputsController.onPageLoad())
-          }
-        }
+      }
     }
   }
 }
