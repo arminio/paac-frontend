@@ -31,13 +31,13 @@ trait PensionInputsController extends RedirectController {
   private val onSubmitRedirect = routes.ReviewTotalAmountsController.onPageLoad
 
   val onPageLoad = withSession { implicit request =>
-    keystore.read[String]("Current").flatMap {
+    keystore.read[String](KeystoreService.CURRENT_INPUT_YEAR_KEY).flatMap {
       (currentYear) =>
       val cy = currentYear.getOrElse("2014")
       if (cy == "2015" || cy == "-1") {
         Future.successful(Redirect(onSubmitRedirect))
       } else {
-        val keyStoreKey = "definedBenefit_"+cy
+        val keyStoreKey = KeystoreService.DB_PREFIX+cy
         keystore.read[String](keyStoreKey).map {
           (amount) =>
           val fields = Map(amount match {
@@ -52,13 +52,13 @@ trait PensionInputsController extends RedirectController {
   }
 
   val onSubmit = withSession { implicit request =>
-    keystore.read[String]("Current").flatMap {
+    keystore.read[String](KeystoreService.CURRENT_INPUT_YEAR_KEY).flatMap {
       (currentYear) =>
       val cy = currentYear.getOrElse("2014")
       CalculatorForm.form.bindFromRequest().fold(
         formWithErrors => { Future.successful(Ok(views.html.pensionInputs(formWithErrors, cy))) },
         input => {
-          val keyStoreKey = "definedBenefit_"+cy
+          val keyStoreKey = KeystoreService.DB_PREFIX+cy
           val (amount:Long, key:String) = input.toDefinedBenefit(cy.toInt).getOrElse((keyStoreKey, 0L))
           keystore.store[String](amount.toString, key).flatMap{
             (_) =>

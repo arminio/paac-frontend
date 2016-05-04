@@ -23,18 +23,18 @@ import scala.concurrent.Future
 
 object YesNo1516Period1Controller extends YesNo1516Period1Controller {
   override val keystore: KeystoreService = KeystoreService
+  override val yesNoFormKey = "yesNo"
 }
 
 trait YesNo1516Period1Controller extends BaseFrontendController {
   val keystore: KeystoreService
+  val yesNoFormKey: String
 
-  private   val yesNoKesystoreKey = "yesnoFor1516P1"
-  private   val yesNoFormKey = "yesNo"
   private val onSubmitRedirectForYes: Call = routes.PensionInputs1516Period1Controller.onPageLoad()
   private val onSubmitRedirectForNo: Call = routes.YesNo1516Period2Controller.onPageLoad()
 
   val onPageLoad = withSession { implicit request =>
-    keystore.read[String](yesNoKesystoreKey).map {
+    keystore.read[String](KeystoreService.P1_YES_NO_KEY).map {
       (yesNo) =>
         val fields = Map(yesNo match {
           case Some(value) => (yesNoFormKey, value)
@@ -45,11 +45,10 @@ trait YesNo1516Period1Controller extends BaseFrontendController {
   }
 
   val onSubmit = withSession { implicit request =>
-
     YesNo1516Period1Form.form.bindFromRequest().fold(
       formWithErrors => { Future.successful(Ok(views.html.yesno_1516_period1(YesNo1516Period1Form.form))) },
       input => {
-        keystore.store[String](input, YesNo1516Period1Form.yesNo)
+        keystore.store[String](input, KeystoreService.P1_YES_NO_KEY)
         if (input == "Yes") {
           Future.successful(Redirect(onSubmitRedirectForYes))
         } else {
