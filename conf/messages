@@ -31,12 +31,9 @@ paac.startpage.beforeInfo.p4 = Find out more about <a href="https://www.gov.uk/t
 
 ## Scheme Selection Page
 paac.scheme.selection.pagetitle = Scheme Selection
-paac.scheme.selection.heading = Which type of pension scheme are you a member of?
-paac.scheme.selection.p1 = A defined contribution scheme is a pension based on how much is paid in to it. These are usually personal or stakeholder pensions, and are sometimes called ‘money purchase’ pension schemes.
-paac.scheme.selection.p2 = A defined benefit scheme is a pension based on your salary and how long you have worked for your employer. These are always workplace pensions that your employer arranges, and are sometimes called ‘final salary’ or ‘career average’ pension schemes.
-paac.scheme.selection.dc.label = Defined Contribution
-paac.scheme.selection.db.label = Defined Benefit
-paac.scheme.selection.dcdb.label = Both
+paac.scheme.selection.heading = Which types of pension schemes are you a member of?
+paac.scheme.selection.dc.label = <B>Defined contribution</B><P>A pension based on how much is paid in to it. These are usually personal or stakeholder pensions.</P>
+paac.scheme.selection.db.label = <B>Defined benefit</B><P>A pension based on your salary and how long you have worked for your employer. These are always workplace pensions.</P>
 
 ## PAAC TaxYear Text
 paac.0809.taxyear.text = 2008/09

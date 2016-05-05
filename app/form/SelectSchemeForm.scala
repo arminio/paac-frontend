@@ -20,21 +20,32 @@ import models.{TaxPeriod, Contribution,InputAmounts}
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.data.validation.Constraint
+import play.api.libs.json.Json
 import scala.math._
 import play.api.data.validation._
 import play.api.i18n.Messages
 
-trait SelectScheme{
-  val schemeType = "schemeType"
+
+case class SelectSchemeModel(definedBenefit: Boolean,definedContribution: Boolean)
+
+object SelectSchemeModel {
+  implicit val formats = Json.format[SelectSchemeModel]
 }
 
-object SelectSchemeForm extends SelectScheme {
+trait SelectSchemeKeys{
+  val definedBenefit = "definedBenefit"
+  val definedContribution = "definedContribution"
+}
 
-  type SelectSchemeFormType = String
+object SelectSchemeForm extends SelectSchemeKeys with SelectSchemeForm
 
-  val form: Form[SelectSchemeFormType] = Form(
+
+trait SelectSchemeForm extends SelectSchemeKeys {
+
+  val form: Form[SelectSchemeModel] = Form(
     mapping(
-      "schemeType" -> text
-    )((schemeType) => schemeType)((schemeType: SelectSchemeFormType) => Some(schemeType))
+      definedBenefit -> boolean,
+      definedContribution -> boolean
+    )(SelectSchemeModel.apply)(SelectSchemeModel.unapply)
 )
 }
