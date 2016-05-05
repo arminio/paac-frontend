@@ -102,7 +102,7 @@ trait BaseFrontendController extends SessionProvider with FrontendController {
         }
       }
   }
-    
+  
   def getSessionId()(implicit request : Request[AnyContent]) : Option[String] = request.session.get(SessionKeys.sessionId)
 
   /**
