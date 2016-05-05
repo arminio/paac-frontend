@@ -39,8 +39,7 @@ trait SelectSchemeController  extends BaseFrontendController {
     SelectSchemeForm.form.bindFromRequest().fold(
       formWithErrors => Future.successful(Ok(views.html.selectScheme(SelectSchemeForm.form))),
       input => {
-        keystore.store[String](input, SelectSchemeForm.schemeType)
-        Future.successful(Redirect(onSubmitRedirect))
+        keystore.store[String](input, SelectSchemeForm.schemeType).map((_)=>Redirect(onSubmitRedirect))
       }
     )
   }
