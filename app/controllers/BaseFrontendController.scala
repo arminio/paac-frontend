@@ -34,6 +34,7 @@ trait SessionProvider {
     Session(request.session.data + createSessionId())
   }
 }
+
 trait RedirectController extends BaseFrontendController {
   def keystore: KeystoreService
 
@@ -86,6 +87,22 @@ trait RedirectController extends BaseFrontendController {
 trait BaseFrontendController extends SessionProvider with FrontendController {
   this: SessionProvider =>
 
+  implicit val marshall = {
+    (key: String, value: Option[String]) =>
+      if (key == KeystoreService.SCHEME_TYPE_KEY) {
+        value match {
+          case None => (key, "")
+          case Some(v) => (key, v)
+        }
+      } else {
+        value match {
+          case None => (key, "")
+          case Some("0") => (key, "0.00")
+          case Some(v) => (key, f"${(v.toInt / 100.00)}%2.2f")
+        }
+      }
+  }
+    
   def getSessionId()(implicit request : Request[AnyContent]) : Option[String] = request.session.get(SessionKeys.sessionId)
 
   /**

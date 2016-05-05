@@ -34,22 +34,6 @@ trait PensionInputs1516Period1Controller extends BaseFrontendController {
   private val onSubmitRedirect: Call = routes.YesNo1516Period2Controller.onPageLoad()
 
   val onPageLoad = withSession { implicit request =>
-    implicit val marshall = {
-      (key: String, value: Option[String]) =>
-        if (key == KeystoreService.SCHEME_TYPE_KEY) {
-          value match {
-            case None => (key, "")
-            case Some(v) => (key, v)
-          }
-        } else {
-          value match {
-            case None => (key, "")
-            case Some("0") => (key, "0.00")
-            case Some(v) => (key, f"${(v.toInt / 100.00)}%2.2f")
-          }
-        }
-    }
-
     keystore.read[String](List(KeystoreService.P1_DB_KEY, KeystoreService.P1_DC_KEY, KeystoreService.SCHEME_TYPE_KEY)).map {
       (fieldsMap) =>
         Ok(views.html.pensionInputs_1516_period1(CalculatorForm.bind(fieldsMap).discardingErrors, fieldsMap(KeystoreService.SCHEME_TYPE_KEY)))
