@@ -35,11 +35,9 @@ trait SessionProvider {
 }
 trait RedirectController extends BaseFrontendController {
   def keystore: KeystoreService
-  val CurrentYear : String = "Current"
-  val SelectedYears : String = "SelectedYears"
 
   def wheretoNext[T](defaultRoute: Result)(implicit hc: HeaderCarrier, format: play.api.libs.json.Format[T], request: Request[Any]) : Future[Result] = {
-    val reads: List[Future[(String, String)]] = List(CurrentYear, SelectedYears).map {
+    val reads: List[Future[(String, String)]] = List(KeystoreService.CURRENT_INPUT_YEAR_KEY, KeystoreService.SELECTED_INPUT_YEARS_KEY).map {
       (key) =>
         keystore.read[String](key).map {
           case None => (key, "")
@@ -50,9 +48,9 @@ trait RedirectController extends BaseFrontendController {
     Future.sequence(reads).flatMap {
       (fields) =>
         val fieldsMap = Map[String, String](fields: _*)
-        val currentYear = fieldsMap(CurrentYear)
+        val currentYear = fieldsMap(KeystoreService.CURRENT_INPUT_YEAR_KEY)
 
-        val selectedYears = fieldsMap(SelectedYears)
+        val selectedYears = fieldsMap(KeystoreService.SELECTED_INPUT_YEARS_KEY)
         val syears = selectedYears.split(",")
         val nextYear = if (currentYear == "") {
           if (syears.size > 0 && selectedYears.length > 0){
@@ -70,13 +68,12 @@ trait RedirectController extends BaseFrontendController {
         }
 
         // Save next year value to keystore with CurrentYear
-        keystore.store(nextYear.toString(), CurrentYear).map {
+        keystore.store(nextYear.toString(), KeystoreService.CURRENT_INPUT_YEAR_KEY).map {
           (values) =>
           //redirect to nextYear Controller
           if (nextYear == -1) {
             defaultRoute
-          }
-          else if (nextYear > 2015) {
+          } else if (nextYear > 2015) {
             //2016
             Redirect(routes.StartPageController.startPage())
           } else if (nextYear == 2015) {

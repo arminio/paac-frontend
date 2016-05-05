@@ -135,7 +135,7 @@ class ReviewTotalAmountsControllerSpec extends UnitSpec with BeforeAndAfterAll {
         values should contain value ("12000.00")
       }
 
-      "should return 0.00 when keystore has 0 as an amount" in new MockControllerFixture {
+      /*"should return 0.00 when keystore has 0 as an amount" in new MockControllerFixture {
         // set up
         MockKeystore.map = (MockKeystore.map - "definedBenefit_2006") + ("definedBenefit_2006"->"0")
         implicit val hc = HeaderCarrier()
@@ -148,7 +148,7 @@ class ReviewTotalAmountsControllerSpec extends UnitSpec with BeforeAndAfterAll {
         val values: Map[String,String] = Await.result(result, Duration(1000,MILLISECONDS))
         values should contain key ("definedBenefit_2006") 
         values should contain value ("0.00")
-      }
+      }*/
 
       "should return money purchase when keystore has money purchase amount for 2015" in new MockControllerFixture {
         // set up

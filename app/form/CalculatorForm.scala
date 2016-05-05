@@ -73,8 +73,8 @@ case class Year2015Amounts(amount2015P1:Option[BigDecimal]=None,
                          dcAmount2015P1 == None && 
                          amount2015P2 == None && 
                          dcAmount2015P2 == None
-  def hasDefinedContributions(): Boolean = dcAmount2015P1 != None && dcAmount2015P2 != None
-  def hasDefinedBenefits(): Boolean = amount2015P1 != None && amount2015P2 != None
+  def hasDefinedContributions(): Boolean = dcAmount2015P1 != None || dcAmount2015P2 != None
+  def hasDefinedBenefits(): Boolean = amount2015P1 != None || amount2015P2 != None
 }
 
 case class CalculatorFormFields(db: DefinedBenefits, dc: DefinedContributions, year2015: Year2015Amounts) {
