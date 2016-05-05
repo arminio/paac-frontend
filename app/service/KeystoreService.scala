@@ -22,6 +22,7 @@ import uk.gov.hmrc.http.cache.client.SessionCache
 import uk.gov.hmrc.play.http.{HeaderCarrier, SessionKeys}
 import play.api.libs.concurrent.Execution.Implicits._
 import scala.concurrent.{Future}
+import reflect.ClassTag
 
 trait KeystoreService {
   val SOURCE = "paac-frontend"
@@ -60,11 +61,39 @@ trait KeystoreService {
     })
   }
 
+  def save[T: ClassTag ,U](values: List[Option[(U,String)]], defaultT: T)(implicit hc: HeaderCarrier, format: play.api.libs.json.Format[T], request: Request[Any]): Future[List[Option[T]]] = {
+    Future.sequence(values.filter(_ != None).map{
+      (maybePair)=>
+      val pair = maybePair.get
+      store[T](convert[T](pair._1.asInstanceOf[AnyRef], defaultT), pair._2)
+    })
+  }
+
   def save[T](values: List[(T,String)])(implicit hc: HeaderCarrier, format: play.api.libs.json.Format[T], request: Request[Any]): Future[List[Option[T]]] = {
     Future.sequence(values.map{
       (pair)=>
       store[T](pair._1, pair._2)
     })
+  }
+
+  def convert[T : ClassTag](value: AnyRef): Option[T] = {
+    val ct = implicitly[ClassTag[T]]
+    val typeStr = ct.toString()
+    value match {      
+      case ct(x) => Some(x)
+      case x if typeStr == "java.lang.String" => Some(x.toString().asInstanceOf[T])
+      case _ => None
+    }
+  }
+
+  def convert[T : ClassTag](value: AnyRef, defaultT: T): T = {
+    val ct = implicitly[ClassTag[T]]
+    val typeStr = ct.toString()
+    value match {      
+      case ct(x) => x
+      case x if typeStr == "java.lang.String" => x.toString().asInstanceOf[T]
+      case _ => defaultT
+    }
   }
 }
 
