@@ -34,15 +34,17 @@ trait PensionInputs1516Period1Controller extends BaseFrontendController {
   private val onSubmitRedirect: Call = routes.YesNo1516Period2Controller.onPageLoad()
 
   val onPageLoad = withSession { implicit request =>
-    keystore.read[String](List(KeystoreService.P1_DB_KEY, KeystoreService.P1_DC_KEY, KeystoreService.SCHEME_TYPE_KEY)).map {
+    keystore.read[String](List(KeystoreService.P1_DB_KEY, KeystoreService.P1_DC_KEY, KeystoreService.DB_KEY, KeystoreService.DC_KEY)).map {
       (fieldsMap) =>
-        Ok(views.html.pensionInputs_1516_period1(CalculatorForm.bind(fieldsMap).discardingErrors, fieldsMap(KeystoreService.SCHEME_TYPE_KEY)))
+        Ok(views.html.pensionInputs_1516_period1(CalculatorForm.bind(fieldsMap).discardingErrors,
+                                                 fieldsMap(KeystoreService.DB_KEY).toBoolean,
+                                                 fieldsMap(KeystoreService.DC_KEY).toBoolean))
     }
   }
 
   val onSubmit = withSession { implicit request =>
     CalculatorForm.form.bindFromRequest().fold(
-      // TODO: When we do validation story, please forward this to onPageLoad method with selectedSchemeType
+      // TODO: When we do validation story, please forward this to onPageLoad method with selected SchemeType flags
       formWithErrors => { Future.successful(Ok(views.html.pensionInputs_1516_period1(formWithErrors))) },
       input => {
         keystore.save(List(input.to1516Period1DefinedBenefit, input.to1516Period1DefinedContribution), "").map((_)=>Redirect(onSubmitRedirect))

@@ -57,10 +57,9 @@ trait YesNo1516Period2Controller extends RedirectController {
             if (yesOrNoP1 == "No" && input == "No") {
               wheretoNext[String](Redirect(routes.StaticPageController.onPipTaxYearPageLoad()))
             } else {
-              keystore.read[String](KeystoreService.SCHEME_TYPE_KEY).flatMap {
-                (selectedScheme) =>
-                val scheme = selectedScheme.getOrElse("")
-                if (scheme.contains("dc")){
+              keystore.read[String](KeystoreService.DC_KEY).flatMap {
+                (isDefinedContribution) =>
+                if (isDefinedContribution.get.toBoolean){
                   Future.successful(Redirect(routes.YesNoMPAATriggerEventAmountController.onPageLoad()))
                 } else {
                   wheretoNext[String](Redirect(onSubmitRedirectForNo))
