@@ -60,9 +60,9 @@ trait PensionInputsController extends RedirectController {
         input => {
           val keyStoreKey = KeystoreService.DB_PREFIX+cy
           val (amount:Long, key:String) = input.toDefinedBenefit(cy.toInt).getOrElse((keyStoreKey, 0L))
-          keystore.store[String](amount.toString, key).flatMap{ 
-            (_) => 
-            wheretoNext[String]( Redirect(onSubmitRedirect) ) 
+          keystore.store[String](amount.toString, key).flatMap{
+            (_) =>
+            wheretoNext[String]( Redirect(onSubmitRedirect))
           }
         }
       )
