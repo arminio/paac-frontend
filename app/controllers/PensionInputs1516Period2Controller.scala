@@ -31,28 +31,8 @@ trait PensionInputs1516Period2Controller extends RedirectController {
   private val onSubmitRedirect: Call = routes.YesNoMPAATriggerEventAmountController.onPageLoad()
 
   val onPageLoad = withSession { implicit request =>
-    val reads: List[Future[(String, String)]] = List(KeystoreService.P2_DB_KEY, KeystoreService.P2_DC_KEY, KeystoreService.SCHEME_TYPE_KEY).map {
-      (key) =>
-        keystore.read[String](key).map {
-          (value) =>
-            if (key == KeystoreService.SCHEME_TYPE_KEY) {
-              value match {
-                case None => (key, "")
-                case Some(v) => (key, v)
-              }
-            } else {
-              value match {
-                case None => (key, "")
-                case Some("0") => (key, "0.00")
-                case Some(v) => (key, f"${(v.toInt / 100.00)}%2.2f")
-              }
-            }
-        }
-    }
-
-    Future.sequence(reads).map {
-      (fields) =>
-        val fieldsMap = Map[String, String](fields: _*)
+    keystore.read[String](List(KeystoreService.P2_DB_KEY, KeystoreService.P2_DC_KEY, KeystoreService.SCHEME_TYPE_KEY)).map {
+      (fieldsMap) =>
         Ok(views.html.pensionInputs_1516_period2(CalculatorForm.bind(fieldsMap).discardingErrors, fieldsMap(KeystoreService.SCHEME_TYPE_KEY)))
     }
   }
@@ -65,13 +45,8 @@ trait PensionInputs1516Period2Controller extends RedirectController {
         // TODO: When we do validation story, please forward this to onPageLoad method with selectedSchemeType
         formWithErrors => { Future.successful(Ok(views.html.pensionInputs_1516_period2(formWithErrors))) },
         input => {
-          val saves = List((input.to1516Period2DefinedBenefit, KeystoreService.P2_DB_KEY), (input.to1516Period2DefinedContribution,KeystoreService.P2_DC_KEY)).map {
-            (pair)=>
-              val (dbAmount:Long, dbKey:String) = pair._1.getOrElse((0L,pair._2))
-              keystore.store[String](dbAmount.toString, dbKey)
-          }
-          Future.sequence(saves).flatMap {
-            (fields) =>
+          keystore.save(List(input.to1516Period2DefinedBenefit, input.to1516Period2DefinedContribution), "").flatMap {
+            (_)=>
             if (scheme.contains("dc")) {
               Future.successful(Redirect(onSubmitRedirect))
             } else {
@@ -83,6 +58,3 @@ trait PensionInputs1516Period2Controller extends RedirectController {
     }
   }
 }
-
-
-
