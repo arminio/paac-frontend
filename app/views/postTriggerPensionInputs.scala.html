@@ -1,4 +1,4 @@
-@(paacForm : Form[form.CalculatorFormFields], contribution: models.Contribution, id: String, value: Option[BigDecimal])(implicit request:Request[_])
+@(paacForm : Form[form.CalculatorFormFields], model: form.CalculatorFormFields)(implicit request:Request[_])
 
 @import uk.gov.hmrc.play.views.html.helpers._
 @import models._
@@ -9,7 +9,7 @@ heading = Messages("paac.post-trigger-value.page.heading"),
 backLink = Some((controllers.routes.DateOfMPAATriggerEventController.onPageLoad.url,Messages("paac.link.text.back")))
 ) {
 
-@defining(contribution.taxPeriodStart.year) { thisYear =>
+@if(model.triggerDatePeriod() != None) {
     <p id="paac.post-trigger-value.p1">@Messages("paac.post-trigger-value.p1")</p>
 
     @if(paacForm.hasErrors) {
@@ -29,8 +29,8 @@ backLink = Some((controllers.routes.DateOfMPAATriggerEventController.onPageLoad.
 
         <ul class="error-summary-list">
           @for(error <- paacForm.errors) {
-            @defining(Seq(contribution.taxYearLabel())++error.args) { args =>
-            <li><a href="#input_@thisYear" style="color:#b10e1e;font-weight: bold;">@Messages(error.message, args:_*)</a></li>
+            @defining(Seq("2015")++error.args) { args =>
+            <li><a href="input_year2015.postTriggerDcAmount2015P1" style="color:#b10e1e;font-weight: bold;">@Messages(error.message, args:_*)</a></li>
             }
           }
         </ul>
@@ -40,27 +40,51 @@ backLink = Some((controllers.routes.DateOfMPAATriggerEventController.onPageLoad.
     @form(
         action = controllers.routes.PostTriggerPensionInputsController.onSubmit,
         args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
+        <input type="hidden" id="triggerDate" name="triggerDate" value="@(model.triggerDate)"/>
         <table>
             <tbody>
-                @defining(java.text.NumberFormat.getCurrencyInstance(java.util.Locale.UK)) { currencyFormatter =>
-                <fieldset id="input_@thisYear" class="form-field-group" style="max-width:12.35em;">
+              @if(model.triggerDatePeriod.get.isPeriod1()) {
+                @defining("year2015.postTriggerDcAmount2015P1") { id =>
+                <fieldset id="input_year2015.postTriggerDcAmount2015P1" class="form-field-group" style="max-width:12.35em;">
                     <label class="form-element-bold label--full-length numeric" for="@id" style="width:150%;display: inline-block;@if(paacForm.errors.find(_.key == id)) {color:#b10e1e;}">
-                    <tr style="text-align:left;min-width: 7em">@(contribution.taxYearLabel())</tr><BR/>
+                    <tr style="text-align:left;min-width: 7em">@Messages("paac.post-trigger-value.period1.label")</tr><BR/>
 
                       <span style="float:right">
-                      @if(value != None) {
-                          <tr style="text-align:left;min-width: 7em">
-                              £&nbsp;<input type="number" name="@id" id="@id" min="0" step="1" value='@(value)' max="9999999.99" size="10" style="width:9em;@if(paacForm.errors.find(_.key == id)) {border: 4px solid #b10e1e;}"/>
-                          </tr>
-                          } else {
-                          <tr style="text-align:left;min-width: 7em">
-                              £&nbsp;<input type="number" name="@id" id="@id" min="0" step="1" value='' max="9999999.99" size="10" style="width:9em;@if(paacForm.errors.find(_.key == id)) {border: 4px solid #b10e1e;}"/>
-                          </tr>
-                          }
+                      @if(model.year2015.postTriggerDcAmount2015P1 != None) {
+                        <tr style="text-align:left;min-width: 7em">
+                            £&nbsp;<input type="number" name="@id" id="@id" min="0" step="1" value='@(model.year2015.postTriggerDcAmount2015P1.get)' max="9999999.99" size="10" style="width:9em;@if(paacForm.errors.find(_.key == id)) {border: 4px solid #b10e1e;}"/>
+                        </tr>
+                      } else {
+                        <tr style="text-align:left;min-width: 7em">
+                            £&nbsp;<input type="number" name="@id" id="@id" min="0" step="1" value='' max="9999999.99" size="10" style="width:9em;@if(paacForm.errors.find(_.key == id)) {border: 4px solid #b10e1e;}"/>
+                        </tr>
+                      }
                       </span>
                     </label>
                 </fieldset>
                 }
+              }
+              @if(model.triggerDatePeriod.get.isPeriod1() || model.triggerDatePeriod.get.isPeriod2()) {
+                @defining("year2015.postTriggerDcAmount2015P2") { id =>
+                <fieldset id="input_year2015.postTriggerDcAmount2015P2" class="form-field-group" style="max-width:12.35em;">
+                    <label class="form-element-bold label--full-length numeric" for="@id" style="width:150%;display: inline-block;@if(paacForm.errors.find(_.key == id)) {color:#b10e1e;}">
+                    <tr style="text-align:left;min-width: 7em">@Messages("paac.post-trigger-value.period2.label")</tr><BR/>
+
+                      <span style="float:right">
+                      @if(model.year2015.postTriggerDcAmount2015P2 != None) {
+                        <tr style="text-align:left;min-width: 7em">
+                            £&nbsp;<input type="number" name="@id" id="@id" min="0" step="1" value='@(model.year2015.postTriggerDcAmount2015P2.get)' max="9999999.99" size="10" style="width:9em;@if(paacForm.errors.find(_.key == id)) {border: 4px solid #b10e1e;}"/>
+                        </tr>
+                      } else {
+                        <tr style="text-align:left;min-width: 7em">
+                            £&nbsp;<input type="number" name="@id" id="@id" min="0" step="1" value='' max="9999999.99" size="10" style="width:9em;@if(paacForm.errors.find(_.key == id)) {border: 4px solid #b10e1e;}"/>
+                        </tr>
+                      }
+                      </span>
+                    </label>
+                </fieldset>
+                }
+              }
             </tbody>
         </table>
 

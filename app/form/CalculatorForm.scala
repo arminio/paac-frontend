@@ -24,6 +24,7 @@ import scala.math._
 import play.api.data.validation._
 import play.api.i18n.Messages
 import play.api.mvc._
+import service.KeystoreService
 
 case class Amounts(currentYearMinus0:Option[BigDecimal]=None,
                    currentYearMinus1:Option[BigDecimal]=None,
@@ -61,7 +62,10 @@ case class Year2015Amounts(amount2015P1:Option[BigDecimal]=None,
   def hasDefinedBenefits(): Boolean = amount2015P1 != None || amount2015P2 != None
 }
 
-case class CalculatorFormFields(definedBenefits: Amounts, definedContributions: Amounts, year2015: Year2015Amounts) {
+case class CalculatorFormFields(definedBenefits: Amounts, 
+                                definedContributions: Amounts, 
+                                year2015: Year2015Amounts,
+                                triggerDate: Option[String]) {
   val THIS_YEAR = (new java.util.GregorianCalendar()).get(java.util.Calendar.YEAR)
   val START_YEAR = THIS_YEAR-8
 
@@ -139,13 +143,26 @@ case class CalculatorFormFields(definedBenefits: Amounts, definedContributions: 
   def period1(): Contribution => Boolean = { (c) => c.taxPeriodEnd.day == 8 && c.taxPeriodEnd.year == 2015 } 
   def period2(): Contribution => Boolean = { (c) => c.taxPeriodStart.day == 9 && c.taxPeriodStart.year == 2015 } 
 
-  def to1516Period1DefinedBenefit: Option[(Long, String)] = toDefinedBenefit(period1())("definedBenefit_2015_p1")
-  def to1516Period1DefinedContribution: Option[(Long, String)] = toDefinedContribution(period1())("definedContribution_2015_p1")
-  def to1516Period2DefinedBenefit: Option[(Long, String)] = toDefinedBenefit(period2())("definedBenefit_2015_p2")
-  def to1516Period2DefinedContribution: Option[(Long, String)] = toDefinedContribution(period2())("definedContribution_2015_p2")
+  def to1516Period1DefinedBenefit: Option[(Long, String)] = toDefinedBenefit(period1())(KeystoreService.P1_DB_KEY)
+  def to1516Period1DefinedContribution: Option[(Long, String)] = toDefinedContribution(period1())(KeystoreService.P1_DC_KEY)
+  def to1516Period2DefinedBenefit: Option[(Long, String)] = toDefinedBenefit(period2())(KeystoreService.P2_DB_KEY)
+  def to1516Period2DefinedContribution: Option[(Long, String)] = toDefinedContribution(period2())(KeystoreService.P2_DC_KEY)
+
+  def toP1TriggerDefinedContribution: Option[(Long, String)] = year2015.postTriggerDcAmount2015P1.map((v:BigDecimal)=>((v*100).toLong, KeystoreService.P1_TRIGGER_DC_KEY))
+  def toP2TriggerDefinedContribution: Option[(Long, String)] = year2015.postTriggerDcAmount2015P2.map((v:BigDecimal)=>((v*100).toLong, KeystoreService.P2_TRIGGER_DC_KEY))
+
   // Useful for all years except 2015/16 Tax Year
-  def toDefinedBenefit(year: Int) : Option[(Long, String)] = toDefinedBenefit((_.taxPeriodStart.year == year))("definedBenefit_"+year)
-  def toDefinedContribution(year: Int) : Option[(Long, String)] = toDefinedContribution((_.taxPeriodStart.year == year))("definedContribution_"+year)
+  def toDefinedBenefit(year: Int) : Option[(Long, String)] = toDefinedBenefit((_.taxPeriodStart.year == year))(KeystoreService.DB_PREFIX+year)
+  def toDefinedContribution(year: Int) : Option[(Long, String)] = toDefinedContribution((_.taxPeriodStart.year == year))(KeystoreService.DC_PREFIX+year)
+
+  def triggerDatePeriod(): Option[Contribution] = {
+    triggerDate.map {
+      (jodaDateStr) =>
+      val parts = jodaDateStr.split("-")
+      val taxPeriod = TaxPeriod(parts(0).toInt, parts(1).toInt-1, parts(2).toInt)
+      Contribution(taxPeriod, taxPeriod, None)
+    }
+  }
 }
 
 object CalculatorFormFields
@@ -192,18 +209,19 @@ object CalculatorForm {
                                   "definedBenefit_2015_p2"->validator,
                                   "definedContribution_2015_p2"->validator,
                                   "postTriggerDcAmount2015P1"->validator,
-                                  "postTriggerDcAmount2015P2"->validator)(Year2015Amounts.apply)(Year2015Amounts.unapply)
+                                  "postTriggerDcAmount2015P2"->validator)(Year2015Amounts.apply)(Year2015Amounts.unapply),
+            "triggerDate" -> optional(text)
     )(CalculatorFormFields.apply)(CalculatorFormFields.unapply)
   )
 
   def bind(data: Map[String, String]): Form[CalculatorFormType] = {
-    val year2015 = List((s"year2015.definedBenefit_2015_p1", data.getOrElse("amount2015P1", data.getOrElse("definedBenefit_2015_p1",""))),
-                        (s"year2015.definedContribution_2015_p1", data.getOrElse("dcAmount2015P1", data.getOrElse("definedContribution_2015_p1",""))),
-                        (s"year2015.definedBenefit_2015_p2", data.getOrElse("amount2015P2", data.getOrElse("definedBenefit_2015_p2",""))),
-                        (s"year2015.definedContribution_2015_p2", data.getOrElse("dcAmount2015P2", data.getOrElse("definedContribution_2015_p2",""))),
-                        (s"year2015.postTriggerDcAmount2015P1", data.getOrElse("postTriggerDefinedContribution_2015_p1","")),
-                        (s"year2015.postTriggerDcAmount2015P2", data.getOrElse("postTriggerDefinedContribution_2015_p2","")))
-    val values = List.range(THIS_YEAR-8, THIS_YEAR+1).flatMap {
+    val year2015 = List(("year2015.definedBenefit_2015_p1", data.getOrElse("amount2015P1", data.getOrElse(KeystoreService.P1_DB_KEY,""))),
+                        ("year2015.definedContribution_2015_p1", data.getOrElse("dcAmount2015P1", data.getOrElse(KeystoreService.P1_DC_KEY,""))),
+                        ("year2015.definedBenefit_2015_p2", data.getOrElse("amount2015P2", data.getOrElse(KeystoreService.P2_DB_KEY,""))),
+                        ("year2015.definedContribution_2015_p2", data.getOrElse("dcAmount2015P2", data.getOrElse(KeystoreService.P2_DC_KEY,""))),
+                        ("year2015.postTriggerDcAmount2015P1", data.getOrElse(KeystoreService.P1_TRIGGER_DC_KEY,"")),
+                        ("year2015.postTriggerDcAmount2015P2", data.getOrElse(KeystoreService.P2_TRIGGER_DC_KEY,"")))
+    val yearAmounts = List.range(THIS_YEAR-8, THIS_YEAR+1).flatMap {
       (year)=>
       if (year != 2015){
         List((s"definedBenefits.amount_${year}", data.getOrElse("definedBenefit_"+year, "")),
@@ -212,6 +230,8 @@ object CalculatorForm {
         year2015
       }
     }
+    val maybeDate: Option[String] = data.get(KeystoreService.TRIGGER_DATE_KEY)
+    val values: List[(String,String)] = maybeDate.map((date)=>yearAmounts ++ List(("triggerDate", date))).getOrElse(yearAmounts)
     CalculatorForm.form.bind(Map(values: _*))
   }
 }

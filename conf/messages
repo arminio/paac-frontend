@@ -151,3 +151,5 @@ paac.results.link.new=Start Again
 paac.post-trigger-value.page.heading=How much was paid into your pension scheme after you accessed your pension savings?
 paac.post-trigger-value.page.title=Money Purchase Value After Flexi Access
 paac.post-trigger-value.p1=This is how much was paid into your pension scheme from the day after you accessed your pension savings to the end of the pension input period.
+paac.post-trigger-value.period1.label=2015/16 P1
+paac.post-trigger-value.period2.label=2015/16 P2

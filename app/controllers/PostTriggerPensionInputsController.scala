@@ -74,44 +74,46 @@ trait PostTriggerPensionInputsController extends RedirectController {
   }
 
   val onPageLoad = withSession { implicit request =>
-    keystore.read[String](KeystoreService.TRIGGER_DATE_KEY).flatMap {
-      (date) =>
-        val dateAsStr = date.getOrElse("")
+    keystore.read[String](List(KeystoreService.TRIGGER_DATE_KEY, KeystoreService.P1_TRIGGER_DC_KEY, KeystoreService.P2_TRIGGER_DC_KEY)).flatMap {
+      (values) =>
+        val dateAsStr = values(KeystoreService.TRIGGER_DATE_KEY)
         if (dateAsStr == "") {
           Future.successful(Redirect(routes.DateOfMPAATriggerEventController.onPageLoad))
         } else {
-          val c = toContribution(dateAsStr)
-          keystore.read[String](key(c)).flatMap {
-            (value) =>
-            val v = BigDecimal(value.getOrElse("0").toInt/100L)
-            Future.successful(Ok(views.html.postTriggerPensionInputs(CalculatorForm.form, c, id(c), Some(v))))
-          }
+          val f = CalculatorForm.bind(values)
+          Future.successful(Ok(views.html.postTriggerPensionInputs(f, f.get)))
         }
     }
   }
 
   val onSubmit = withSession { implicit request =>
-    keystore.read[String](KeystoreService.TRIGGER_DATE_KEY).flatMap {
-      (date) =>
-      val dateAsStr = date.getOrElse("")
-      if (dateAsStr == "") {
-        Future.successful(Redirect(routes.DateOfMPAATriggerEventController.onPageLoad))
-      } else {
-        val c = toContribution(dateAsStr)
-        CalculatorForm.form.bindFromRequest().fold(
-          formWithErrors => { 
-            val a = amount(c, formWithErrors.get)
-            Future.successful( Ok(views.html.postTriggerPensionInputs(CalculatorForm.form, c, id(c), Some(BigDecimal(a/100)))) ) 
-          },
-          input => {
-            val a = amount(c, input)
-            keystore.store[String](a.toString, key(c)).flatMap {
-              (_) => 
+    CalculatorForm.form.bindFromRequest().fold(
+      formWithErrors => { 
+        val f = formWithErrors.discardingErrors
+        println("***" +f)
+        // todo need to find bad value and get form without error
+        Future.successful( Ok(views.html.postTriggerPensionInputs(formWithErrors, f.get)) )
+      },
+      input => {
+        val maybeDate = input.triggerDate
+        if (maybeDate == None) {
+          Future.successful(Redirect(routes.DateOfMPAATriggerEventController.onPageLoad))
+        } else {
+          val triggerP1 = input.triggerDatePeriod.get.isPeriod1
+          val triggerP2 = input.triggerDatePeriod.get.isPeriod2
+          if ((triggerP1 && input.year2015.postTriggerDcAmount2015P1 == None && input.year2015.postTriggerDcAmount2015P2 == None) || 
+              (triggerP2 && input.year2015.postTriggerDcAmount2015P2 == None)
+             ) {
+            val f = CalculatorForm.form.bindFromRequest()
+            Future.successful( Ok(views.html.postTriggerPensionInputs(f, f.get)) )
+          } else {
+            keystore.save(List(input.toP1TriggerDefinedContribution, input.toP2TriggerDefinedContribution), "").flatMap {
+              (a) => 
               Future.successful(Redirect(routes.ReviewTotalAmountsController.onPageLoad))
             }
           }
-        )
+        }
       }
-    }
+    )
   }
 }

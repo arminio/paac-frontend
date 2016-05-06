@@ -87,9 +87,11 @@ trait RedirectController extends BaseFrontendController {
 trait BaseFrontendController extends SessionProvider with FrontendController {
   this: SessionProvider =>
 
+  val keys = List(KeystoreService.SCHEME_TYPE_KEY, KeystoreService.DB_KEY, KeystoreService.DC_KEY, KeystoreService.TRIGGER_DATE_KEY)
+
   implicit val marshall = {
     (key: String, value: Option[String]) =>
-      if (key == KeystoreService.SCHEME_TYPE_KEY || key == KeystoreService.DB_KEY || key == KeystoreService.DC_KEY) {
+      if (keys.contains(key)) {
         value match {
           case None => (key, "")
           case Some(v) => (key, v)
