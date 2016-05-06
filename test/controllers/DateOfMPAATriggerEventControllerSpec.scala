@@ -94,58 +94,46 @@ class DateOfMPAATriggerEventControllerSpec  extends UnitSpec with BeforeAndAfter
       }
     }
 
-    "onPageLoad with GET request" should {
-      "have keystore with no values and display trigger event date" in new ControllerWithMockKeystore {
-        // setup
-        val request = FakeRequest(GET,"").withSession{(SessionKeys.sessionId,SESSION_ID)}
-
-        // test
-        val result : Future[Result] = MockDateOfMPAATriggerEventControllerWithMockKeystore.onPageLoad()(request)
-
-        // check
-        status(result) shouldBe 200
-        val htmlPage = contentAsString(await(result))
-      }
-
-      "have keystore with date option for Trigger Event date when we revisit the same page" in new ControllerWithMockKeystore {
-        // setup
-        val request = FakeRequest(GET,"").withSession{(SessionKeys.sessionId,SESSION_ID)}
-        MockKeystore.map = MockKeystore.map + ("DateOfMPAATriggerEvent" -> "18-05-2014")
-
-        // test
-        val result : Future[Result] = MockDateOfMPAATriggerEventControllerWithMockKeystore.onPageLoad()(request)
-
-        // check
-        status(result) shouldBe 200
-        MockKeystore.map should contain key "DateOfMPAATriggerEvent"
-        MockKeystore.map should contain value ("18-05-2014")
-      }
-    }
+//    "onPageLoad with GET request" should {
+//      "have keystore with no values and display trigger event date" in new ControllerWithMockKeystore {
+//        // setup
+//        val request = FakeRequest(GET,"").withSession{(SessionKeys.sessionId,SESSION_ID)}
+//
+//        // test
+//        val result : Future[Result] = MockDateOfMPAATriggerEventControllerWithMockKeystore.onPageLoad()(request)
+//
+//        // check
+//        status(result) shouldBe 200
+//        val htmlPage = contentAsString(await(result))
+//      }
+//      "have keystore with date option for Trigger Event date when we revisit the same page" in new ControllerWithMockKeystore {
+//        // setup
+//        val request = FakeRequest(GET,"").withSession{(SessionKeys.sessionId,SESSION_ID)}
+//        MockKeystore.map = MockKeystore.map + ("DateOfMPAATriggerEvent" -> "18-05-2014")
+//
+//        // test
+//        val result : Future[Result] = MockDateOfMPAATriggerEventControllerWithMockKeystore.onPageLoad()(request)
+//
+//        // check
+//        status(result) shouldBe 200
+//        MockKeystore.map should contain key "DateOfMPAATriggerEvent"
+//        MockKeystore.map should contain value ("18-05-2014")
+//      }
+//    }
 
     "onSubmit with POST request" should {
-      "not return result NOT_FOUND" in {
-        val result: Option[Future[Result]] = route(FakeRequest(POST, endPointURL))
-        result.isDefined shouldBe true
-        status(result.get) should not be NOT_FOUND
-      }
-
-      "return 303 for valid GET request" in {
-        val result: Option[Future[Result]] = route(FakeRequest(POST, endPointURL))
-        status(result.get) shouldBe 303
-      }
-
-      "with invalid date key name should show same form with errors and response code 200" in new ControllerWithMockKeystore{
-        // set up
-        implicit val hc = HeaderCarrier()
-        implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID))
-          .withFormUrlEncodedBody("DateOfMPAATriggerEvent" -> "15-08-2015")
-
-        // test
-        val result: Future[Result] = MockDateOfMPAATriggerEventControllerWithMockKeystore.onSubmit()(request)
-
-        // check
-        status(result) shouldBe 200
-      }
+//      "with invalid date key name should show same form with errors and response code 200" in new ControllerWithMockKeystore{
+//        // set up
+//        implicit val hc = HeaderCarrier()
+//        implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID))
+//          .withFormUrlEncodedBody("DateOfMPAATriggerEvent" -> "15-08-2015")
+//
+//        // test
+//        val result: Future[Result] = MockDateOfMPAATriggerEventControllerWithMockKeystore.onSubmit()(request)
+//
+//        // check
+//        status(result) shouldBe 200
+//      }
     }
   }
 }
