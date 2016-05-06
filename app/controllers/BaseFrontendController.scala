@@ -89,7 +89,7 @@ trait BaseFrontendController extends SessionProvider with FrontendController {
 
   implicit val marshall = {
     (key: String, value: Option[String]) =>
-      if (key == KeystoreService.SCHEME_TYPE_KEY || key == KeystoreService.DB_KEY || key == KeystoreService.DC_KEY) {
+      if (key == KeystoreService.DB_KEY || key == KeystoreService.DC_KEY) {
         value match {
           case None => (key, "")
           case Some(v) => (key, v)

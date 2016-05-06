@@ -17,11 +17,11 @@
 package service
 
 import config.PaacSessionCache
-import play.api.mvc.{AnyContent, Request}
+import play.api.mvc.Request
 import uk.gov.hmrc.http.cache.client.SessionCache
 import uk.gov.hmrc.play.http.{HeaderCarrier, SessionKeys}
 import play.api.libs.concurrent.Execution.Implicits._
-import scala.concurrent.{Future}
+import scala.concurrent.Future
 import reflect.ClassTag
 
 trait KeystoreService {
@@ -103,7 +103,6 @@ object KeystoreService extends KeystoreService {
   val P1_DC_KEY = "definedContribution_2015_p1"
   val P2_DB_KEY = "definedBenefit_2015_p2"
   val P2_DC_KEY= "definedContribution_2015_p2"
-  val SCHEME_TYPE_KEY = "schemeType"
   val CURRENT_INPUT_YEAR_KEY = "Current"
   val SELECTED_INPUT_YEARS_KEY = "SelectedYears"
   val DB_PREFIX = "definedBenefit_"

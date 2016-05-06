@@ -1,10 +1,10 @@
-@(paacForm : Form[form.CalculatorFormFields],selectedSchemeType: String = "")(implicit request:Request[_])
+@(paacForm : Form[form.CalculatorFormFields],isDefinedBenefit: Boolean= false, isDefinedContribution: Boolean= false)(implicit request:Request[_])
 
 @import uk.gov.hmrc.play.views.html.helpers._
 
 @common.paacMain(
 pageTitle = Messages("paac.1516.period2.pension.inputs.pagetitle"),
-heading = Messages("paac.1516.pension.inputs.pages.heading", (if(selectedSchemeType == "db") "defined benefit" else if (selectedSchemeType == "dc") "defined contribution"  else "pension")),
+heading = Messages("paac.1516.pension.inputs.pages.heading", (if(isDefinedBenefit && isDefinedContribution) "pension" else if(isDefinedBenefit) "defined benefit" else if (isDefinedContribution) "defined contribution"  else "")),
 articleClasses=Some("full-width"),
 backLink = Some((controllers.routes.YesNo1516Period2Controller.onPageLoad.url,Messages("paac.link.text.back")))
 ) {
@@ -40,13 +40,13 @@ backLink = Some((controllers.routes.YesNo1516Period2Controller.onPageLoad.url,Me
         action = controllers.routes.PensionInputs1516Period2Controller.onSubmit,
         args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
 
-        <p class="lede text">@Messages("paac.1516.pension.inputs.period2.description", (if(selectedSchemeType == "db") "defined benefit" else if (selectedSchemeType == "dc") "defined contribution"  else "pension"))</p>
+        <p class="lede text">@Messages("paac.1516.pension.inputs.period2.description", (if(isDefinedBenefit && isDefinedContribution) "pension" else if(isDefinedBenefit) "defined benefit" else if (isDefinedContribution) "defined contribution"  else ""))</p>
         <table>
             <tbody>
                 <fieldset id="input_2015_p2" class="form-field-group" style="max-width:12.35em;">
-                    @if(selectedSchemeType == "dc" || selectedSchemeType == "dcdb"){
-                    <label class="form-element-bold label--full-length numeric" for="year2015.definedContribution_2015_p2" style="width:150%;display: inline-block;@if(paacForm.errors.find(_.key == "year2015.definedContribution_2015_p2")) {color:#b10e1e;}">
-                    <tr style="text-align:left;min-width: 7em">@Messages("paac.1516.pension.inputs.dc")</tr><BR/>
+                    @if(isDefinedContribution){
+                        <label class="form-element-bold label--full-length numeric" for="year2015.definedContribution_2015_p2" style="width:150%;display: inline-block;@if(paacForm.errors.find(_.key == "year2015.definedContribution_2015_p2")) {color:#b10e1e;}">
+                        <tr style="text-align:left;min-width: 7em">@Messages("paac.1516.pension.inputs.dc")</tr><BR/>
                           <span style="float:right">
                           @if(paacForm.data.contains("year2015.definedContribution_2015_p2")) {
                               <tr style="text-align:left;min-width: 7em">
@@ -60,7 +60,7 @@ backLink = Some((controllers.routes.YesNo1516Period2Controller.onPageLoad.url,Me
                           </span>
                     </label>
                     }
-                    @if(selectedSchemeType == "db" || selectedSchemeType == "dcdb"){
+                    @if(isDefinedBenefit){
                         <label class="form-element-bold label--full-length numeric" for="year2015.definedBenefit_2015_p2" style="width:150%;display: inline-block;@if(paacForm.errors.find(_.key == "year2015.definedBenefit_2015_p2")) {color:#b10e1e;}">
                         <tr style="text-align:left;min-width: 7em">@Messages("paac.1516.pension.inputs.db")</tr><BR/>
                           <span style="float:right">
