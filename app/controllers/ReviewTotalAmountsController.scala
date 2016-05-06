@@ -36,28 +36,17 @@ trait ReviewTotalAmountsController extends BaseFrontendController {
   val connector: CalculatorConnector
 
   def fetchAmounts()(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[Map[String,String]] = {
-    def fetchAmount(key: String) : Future[Option[(String,String)]] = keystore.read[String](key).map { (amount) =>
-        amount match {
-          case None => None
-          case Some("0") => Some((key, "0.00"))
-          case Some(value) => Some((key, f"${(value.toInt/100.00)}%2.2f"))
-        }
-      }
-    def fetchYearAmounts(year: Int) : List[Future[Option[(String,String)]]] = year match {
+    def yearAmountKeys(year: Int) : List[String] = year match {
       case y if y < 2015 =>
-        List("definedBenefit_"+y).map(fetchAmount(_))
+        List(KeystoreService.DB_PREFIX+y)
       case y if y == 2015 => 
-        List("definedBenefit_2015_p1", "definedBenefit_2015_p2", "definedContribution_2015_p1", "definedContribution_2015_p2").map(fetchAmount(_))
+        List(KeystoreService.P1_DB_KEY, KeystoreService.P1_DC_KEY, KeystoreService.P2_DB_KEY, KeystoreService.P2_DC_KEY)
       case y if y > 2015 => 
-        List("definedBenefit_"+y, "definedContribution_"+y, "thresholdIncome_"+y, "adjustedIncome_"+y, "taperedAllowance_"+y).map(fetchAmount(_))
+        List(KeystoreService.DB_PREFIX+y, KeystoreService.DC_PREFIX+y, KeystoreService.TH_PREFIX+y, KeystoreService.AI_PREFIX+y, KeystoreService.TA_PREFIX+y)
       }
 
     val currentYear = (new java.util.GregorianCalendar()).get(java.util.Calendar.YEAR)
-    val amounts : Future[List[Option[(String,String)]]] = Future.sequence(List.range(2006, currentYear+1).flatMap(fetchYearAmounts(_)))
-    amounts.map{ 
-      (maybeYearAmountTuples: List[Option[(String,String)]])  =>
-      maybeYearAmountTuples.filter(_ != None).map(_.head).toMap
-    }
+    keystore.read[String](List.range(2006, currentYear+1).flatMap(yearAmountKeys(_)))
   }
 
   val onPageLoad = withSession { implicit request =>

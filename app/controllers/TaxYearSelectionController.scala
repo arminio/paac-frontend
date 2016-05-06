@@ -18,7 +18,6 @@ package controllers
 
 import play.api.mvc._
 import service.KeystoreService
-import form.TaxYearSelectionForm
 import scala.concurrent.Future
 
 object TaxYearSelectionController extends TaxYearSelectionController {
@@ -28,26 +27,25 @@ object TaxYearSelectionController extends TaxYearSelectionController {
     val keystore: KeystoreService
     private val onSubmitRedirect: Call = routes.PensionInputsController.onPageLoad()
 
+  def onYearSelected = withSession { implicit request =>
+    val data: Map[String, Seq[String]] = request.body.asFormUrlEncoded.getOrElse(Map[String, Seq[String]]())
+    val kkey = data.view.map { case (k,v) => if (k == "csrfToken" ) "" else k.drop(7) }.drop(1) mkString (",")
 
-    def onYearSelected = withSession { implicit request =>
-      val data: Map[String, Seq[String]] = request.body.asFormUrlEncoded.getOrElse(Map[String, Seq[String]]())
-
-      val kkey = data.view.map { case (k,v) => if (k == "csrfToken" ) "" else k.drop(7) }.drop(1) mkString (",")
-      if (kkey.length() > 0) {
-        val year: String = ""
-        
-        Future.sequence(List(keystore.store[String](kkey, SelectedYears), keystore.store[String](year, CurrentYear))).map {
-          (fields) =>
-        }.flatMap{ _ => wheretoNext[String](Redirect(routes.StartPageController.startPage())) }
-      } else {
-        Future.successful(Ok(views.html.taxyearselection(Array[String](), true)))
+    if (kkey.length() > 0) {
+      val year: String = ""
+      keystore.save[String](List((kkey, KeystoreService.SELECTED_INPUT_YEARS_KEY), (year, KeystoreService.CURRENT_INPUT_YEAR_KEY))).flatMap{ 
+        _ => 
+        wheretoNext[String](Redirect(routes.StartPageController.startPage())) 
       }
+    } else {
+      Future.successful(Ok(views.html.taxyearselection(Array[String](), true)))
     }
+  }
 
-       val onPageLoad = withSession { implicit request =>
-         keystore.read[String](SelectedYears).map {
-           (taxyears) =>
-            Ok(views.html.taxyearselection(taxyears.getOrElse("").split(","), false))
-         }
-       }
+  val onPageLoad = withSession { implicit request =>
+    keystore.read[String](KeystoreService.SELECTED_INPUT_YEARS_KEY).map {
+      (taxyears) =>
+      Ok(views.html.taxyearselection(taxyears.getOrElse("").split(","), false))
+    }
+  }
 }

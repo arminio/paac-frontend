@@ -25,16 +25,15 @@ object YesNo1516Period2Controller extends YesNo1516Period2Controller {
   override val keystore: KeystoreService = KeystoreService
 }
 
-trait YesNo1516Period2Controller extends BaseFrontendController {
+trait YesNo1516Period2Controller extends RedirectController {
   val keystore: KeystoreService
 
-  private   val yesNoKesystoreKey = "yesnoFor1516P2"
-  private   val yesNoFormKey = "yesNo"
+  private val yesNoFormKey = "yesNo"
   private val onSubmitRedirectForYes: Call = routes.PensionInputs1516Period2Controller.onPageLoad()
   private val onSubmitRedirectForNo: Call = routes.PensionInputsController.onPageLoad()
 
   val onPageLoad = withSession { implicit request =>
-    keystore.read[String](yesNoKesystoreKey).map {
+    keystore.read[String](KeystoreService.P2_YES_NO_KEY).map {
       (yesNo) =>
         val fields = Map(yesNo match {
           case Some(value) => (yesNoFormKey, value)
@@ -45,15 +44,30 @@ trait YesNo1516Period2Controller extends BaseFrontendController {
   }
 
   val onSubmit = withSession { implicit request =>
-
     YesNo1516Period2Form.form.bindFromRequest().fold(
       formWithErrors => { Future.successful(Ok(views.html.yesno_1516_period2(YesNo1516Period2Form.form))) },
       input => {
-        keystore.store[String](input, YesNo1516Period2Form.yesNo)
+        keystore.store[String](input, KeystoreService.P2_YES_NO_KEY)
         if (input == "Yes") {
           Future.successful(Redirect(onSubmitRedirectForYes))
         } else {
-          Future.successful(Redirect(onSubmitRedirectForNo))
+          keystore.read[String](KeystoreService.P1_YES_NO_KEY).flatMap {
+            (yesNoP1) =>
+            val yesOrNoP1 = yesNoP1.getOrElse("No")
+            if (yesOrNoP1 == "No" && input == "No") {
+              wheretoNext[String](Redirect(routes.StaticPageController.onPipTaxYearPageLoad()))
+            } else {
+              keystore.read[String](KeystoreService.SCHEME_TYPE_KEY).flatMap {
+                (selectedScheme) =>
+                val scheme = selectedScheme.getOrElse("")
+                if (scheme.contains("dc")){
+                  Future.successful(Redirect(routes.YesNoMPAATriggerEventAmountController.onPageLoad()))
+                } else {
+                  wheretoNext[String](Redirect(onSubmitRedirectForNo))
+                }
+              }
+            }
+          }
         }
       }
     )

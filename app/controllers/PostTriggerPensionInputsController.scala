@@ -65,16 +65,16 @@ trait PostTriggerPensionInputsController extends RedirectController {
 
   def amount(c: Contribution, form: CalculatorFormFields): Long = {
     if (c.isPeriod1()) {
-      form.year2015.postTriggerDcAmount2015P1.map((_ * 100L).toLong).getOrElse(0L)
+      form.year2015.postTriggerDcAmount2015P1.map((v:BigDecimal)=>(v * 100L).toLong).getOrElse(0L)
     } else if (c.isPeriod2()) {
-      form.year2015.postTriggerDcAmount2015P2.map((_ * 100L).toLong).getOrElse(0L)
+      form.year2015.postTriggerDcAmount2015P2.map((v:BigDecimal)=>(v * 100L).toLong).getOrElse(0L)
     } else {
       0L
     }
   }
 
   val onPageLoad = withSession { implicit request =>
-    keystore.read[String](DateOfMPAATriggerEventController.dateOfMPAATEKey).flatMap {
+    keystore.read[String](KeystoreService.TRIGGER_DATE_KEY).flatMap {
       (date) =>
         val dateAsStr = date.getOrElse("")
         if (dateAsStr == "") {
@@ -83,25 +83,28 @@ trait PostTriggerPensionInputsController extends RedirectController {
           val c = toContribution(dateAsStr)
           keystore.read[String](key(c)).flatMap {
             (value) =>
-            val v = BigDecimal(value.toInt/100L)
-            Future.successful(Ok(views.html.postTriggerPensionInputs(CalculatorForm.form, c, id(c), v)))
+            val v = BigDecimal(value.getOrElse("0").toInt/100L)
+            Future.successful(Ok(views.html.postTriggerPensionInputs(CalculatorForm.form, c, id(c), Some(v))))
           }
         }
     }
   }
 
   val onSubmit = withSession { implicit request =>
-    keystore.read[String](DateOfMPAATriggerEventController.dateOfMPAATEKey).flatMap {
+    keystore.read[String](KeystoreService.TRIGGER_DATE_KEY).flatMap {
       (date) =>
       val dateAsStr = date.getOrElse("")
       if (dateAsStr == "") {
         Future.successful(Redirect(routes.DateOfMPAATriggerEventController.onPageLoad))
       } else {
         val c = toContribution(dateAsStr)
-        val a = amount(c, input)
         CalculatorForm.form.bindFromRequest().fold(
-          formWithErrors => { Future.successful( Ok(views.html.postTriggerPensionInputs(CalculatorForm.form, c, id(c), a)) ) },
+          formWithErrors => { 
+            val a = amount(c, formWithErrors.get)
+            Future.successful( Ok(views.html.postTriggerPensionInputs(CalculatorForm.form, c, id(c), Some(BigDecimal(a/100)))) ) 
+          },
           input => {
+            val a = amount(c, input)
             keystore.store[String](a.toString, key(c)).flatMap {
               (_) => 
               Future.successful(Redirect(routes.ReviewTotalAmountsController.onPageLoad))

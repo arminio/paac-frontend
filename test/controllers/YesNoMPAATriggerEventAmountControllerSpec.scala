@@ -17,22 +17,20 @@
 package controllers
 
 import java.util.UUID
-
 import org.scalatest.BeforeAndAfterAll
 import play.api.Play
-import play.api.mvc.{Request, Result}
+import play.api.mvc.{Result, Request}
 import play.api.test.Helpers._
-import play.api.test.{FakeApplication, FakeRequest}
+import play.api.test.{FakeRequest, FakeApplication}
 import service.KeystoreService
 import uk.gov.hmrc.play.http.{HeaderCarrier, SessionKeys}
 import uk.gov.hmrc.play.test.UnitSpec
-
 import scala.concurrent.Future
 
-class YesNo1516Period2ControllerSpec extends UnitSpec with BeforeAndAfterAll {
+class YesNoMPAATriggerEventAmountControllerSpec extends UnitSpec with BeforeAndAfterAll {
   val app = FakeApplication()
   val SESSION_ID = s"session-${UUID.randomUUID}"
-  val endPointURL = "/paac/yesno1516p2"
+  val endPointURL = "/paac/yesnompaate"
 
   override def beforeAll() {
     Play.start(app)
@@ -48,8 +46,8 @@ class YesNo1516Period2ControllerSpec extends UnitSpec with BeforeAndAfterAll {
   implicit val request = FakeRequest()
 
   trait ControllerWithMockKeystore extends MockKeystoreFixture{
-    object MockYesNo1516Period2ControllerrWithMockKeystore extends YesNo1516Period2Controller {
-      val yesNoKesystoreKey = "yesnoFor1516P2"
+    object MockYesNoMPAATriggerEventAmountControllerWithMockKeystore extends YesNoMPAATriggerEventAmountController {
+      val yesNoKeystoreKey = "yesnoForMPAATriggerEvent"
       val yesNoFormKey = "yesNo"
       override val keystore: KeystoreService = MockKeystore
     }
@@ -76,7 +74,7 @@ class YesNo1516Period2ControllerSpec extends UnitSpec with BeforeAndAfterAll {
     }
   }
 
-  "YesNo1516Period2Controller" when {
+  "YesNoMPAATriggerEventAmountController" when {
     "GET with routes" should {
       "not return result NOT_FOUND" in {
         val result: Option[Future[Result]] = route(FakeRequest(GET, endPointURL))
@@ -96,30 +94,29 @@ class YesNo1516Period2ControllerSpec extends UnitSpec with BeforeAndAfterAll {
     }
 
     "onPageLoad with GET request" should {
-      "have keystore with no values and display select scheme options" in new ControllerWithMockKeystore {
+      "have keystore with no values and display Yes/NO option for MPAA Trigger Event Amount" in new ControllerWithMockKeystore {
         // setup
         val request = FakeRequest(GET,"").withSession{(SessionKeys.sessionId,SESSION_ID)}
 
         // test
-        val result : Future[Result] = MockYesNo1516Period2ControllerrWithMockKeystore.onPageLoad()(request)
+        val result : Future[Result] = MockYesNoMPAATriggerEventAmountControllerWithMockKeystore.onPageLoad()(request)
 
         // check
         status(result) shouldBe 200
         val htmlPage = contentAsString(await(result))
-        //htmlPage should include ("""<input id="scheme-type" type="radio" name="schemeType" value="dc" checked >""")
       }
 
-      "have keystore with yesnoFor1516P2 value when we revisit the same page" in new ControllerWithMockKeystore {
+      "have keystore with Yes/NO option for MPAA Trigger Event Amount value when we revisit the same page" in new ControllerWithMockKeystore {
         // setup
         val request = FakeRequest(GET,"").withSession{(SessionKeys.sessionId,SESSION_ID)}
-        MockKeystore.map = MockKeystore.map + ("yesnoFor1516P2" -> "yes")
+        MockKeystore.map = MockKeystore.map + ("yesnoForMPAATriggerEvent" -> "yes")
 
         // test
-        val result : Future[Result] = MockYesNo1516Period2ControllerrWithMockKeystore.onPageLoad()(request)
+        val result : Future[Result] = MockYesNoMPAATriggerEventAmountControllerWithMockKeystore.onPageLoad()(request)
 
         // check
         status(result) shouldBe 200
-        MockKeystore.map should contain key ("yesnoFor1516P2")
+        MockKeystore.map should contain key ("yesnoForMPAATriggerEvent")
         MockKeystore.map should contain value ("yes")
       }
 
@@ -140,58 +137,61 @@ class YesNo1516Period2ControllerSpec extends UnitSpec with BeforeAndAfterAll {
       "with invalid yesno key name should show same form with errors and response code 200" in new ControllerWithMockKeystore{
         // set up
         implicit val hc = HeaderCarrier()
-        implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID)).withFormUrlEncodedBody(("yesnoFor1516P2" -> "Yes"))
+        implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID))
+          .withFormUrlEncodedBody("yesnoForMPAATriggerEvent" -> "Yes")
 
         // test
-        val result: Future[Result] = MockYesNo1516Period2ControllerrWithMockKeystore.onSubmit()(request)
+        val result: Future[Result] = MockYesNoMPAATriggerEventAmountControllerWithMockKeystore.onSubmit()(request)
 
         // check
         status(result) shouldBe 200
       }
 
-      "with valid yesNo key and value should save yesnoFor1516P2 key to keystore" in new ControllerWithMockKeystore{
+      "with valid yesNo key and value should save yesnoMPAAATriggerEventAmount key to keystore" in new ControllerWithMockKeystore{
         // set up
         implicit val hc = HeaderCarrier()
-        implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID)).withFormUrlEncodedBody(("yesNo" -> "Yes"))
+        implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID)).withFormUrlEncodedBody("yesNo" -> "Yes")
 
         // test
-        val result: Future[Result] = MockYesNo1516Period2ControllerrWithMockKeystore.onSubmit()(request)
+        val result: Future[Result] = MockYesNoMPAATriggerEventAmountControllerWithMockKeystore.onSubmit()(request)
 
         // check
         status(result) shouldBe 303
-        MockKeystore.map should contain key ("yesnoFor1516P2")
+        MockKeystore.map should contain key ("yesnoForMPAATriggerEvent")
         MockKeystore.map should contain value ("Yes")
       }
 
-      "with yesNo = Yes should forward to 2015/16 Period-1 InputPage" in new ControllerWithMockKeystore{
+      "with yesNo = Yes should forward to dateofmpaate" in new ControllerWithMockKeystore{
         // set up
         implicit val hc = HeaderCarrier()
-        implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID)).withFormUrlEncodedBody(("yesNo" -> "Yes"))
+        implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID))
+          .withFormUrlEncodedBody(("yesNo" -> "Yes"))
 
         // test
-        val result: Future[Result] = MockYesNo1516Period2ControllerrWithMockKeystore.onSubmit()(request)
+        val result: Future[Result] = MockYesNoMPAATriggerEventAmountControllerWithMockKeystore.onSubmit()(request)
 
         // check
         status(result) shouldBe 303
-        MockKeystore.map should contain key ("yesnoFor1516P2")
+        MockKeystore.map should contain key ("yesnoForMPAATriggerEvent")
         MockKeystore.map should contain value ("Yes")
-        redirectLocation(result) shouldBe Some("/paac/pensionInputs1516p2")
+        redirectLocation(result) shouldBe Some("/paac/dateofmpaate")
       }
 
-      /*"with yesNo = No should forward to 2015/16 Period-2 InputPage" in new ControllerWithMockKeystore{
+      "with yesNo = No should forward to review page" in new ControllerWithMockKeystore{
         // set up
         implicit val hc = HeaderCarrier()
-        implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID)).withFormUrlEncodedBody(("yesNo" -> "No"))
+        implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID))
+          .withFormUrlEncodedBody(("yesNo" -> "No"))
 
         // test
-        val result: Future[Result] = MockYesNo1516Period2ControllerrWithMockKeystore.onSubmit()(request)
+        val result: Future[Result] = MockYesNoMPAATriggerEventAmountControllerWithMockKeystore.onSubmit()(request)
 
         // check
         status(result) shouldBe 303
-        MockKeystore.map should contain key ("yesnoFor1516P2")
+        MockKeystore.map should contain key ("yesnoForMPAATriggerEvent")
         MockKeystore.map should contain value ("No")
-        redirectLocation(result) shouldBe Some("/paac/pensionInputs")
-      }*/
+        redirectLocation(result) shouldBe Some("/paac/review")
+      }
     }
   }
 }

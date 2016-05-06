@@ -87,9 +87,9 @@ class CalculatorFormSpec extends UnitSpec{
   "CalculatorFormFields" should {
     "convert values to pence amounts" in {
       // set up
-      val input = CalculatorFormFields(DefinedBenefits(Some(50.50), Some(90.50), Some(100.50), Some(200.50), Some(300.50), Some(400.50), Some(500.50), Some(600.50)), 
-                                       DefinedContributions(Some(700.50), Some(800.50), Some(900.50), Some(1000.50), Some(1100.50), Some(1200.50), Some(1300.50), Some(1400.50)),
-                                       Year2015Amounts(Some(1500.50), Some(1600.50), Some(1700.50), Some(1800.50)))
+      val input = CalculatorFormFields(Amounts(Some(50.50), Some(90.50), Some(100.50), Some(200.50), Some(300.50), Some(400.50), Some(500.50), Some(600.50)), 
+                                       Amounts(Some(700.50), Some(800.50), Some(900.50), Some(1000.50), Some(1100.50), Some(1200.50), Some(1300.50), Some(1400.50)),
+                                       Year2015Amounts(Some(1500.50), Some(1600.50), Some(1700.50), Some(1800.50), None, None))
       val THIS_YEAR = (new java.util.GregorianCalendar()).get(java.util.Calendar.YEAR)
 
       // test

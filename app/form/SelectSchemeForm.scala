@@ -16,25 +16,25 @@
 
 package form
 
-import models.{TaxPeriod, Contribution,InputAmounts}
+import service.KeystoreService
 import play.api.data.Form
 import play.api.data.Forms._
-import play.api.data.validation.Constraint
-import scala.math._
-import play.api.data.validation._
-import play.api.i18n.Messages
+import play.api.libs.json.Json
 
-trait SelectScheme{
-  val schemeType = "schemeType"
+case class SelectSchemeModel(definedBenefit: Boolean,definedContribution: Boolean)
+
+object SelectSchemeModel {
+  implicit val formats = Json.format[SelectSchemeModel]
 }
 
-object SelectSchemeForm extends SelectScheme {
+object SelectSchemeForm extends SelectSchemeForm
 
-  type SelectSchemeFormType = String
+trait SelectSchemeForm {
 
-  val form: Form[SelectSchemeFormType] = Form(
+  val form: Form[SelectSchemeModel] = Form(
     mapping(
-      "schemeType" -> text
-    )((schemeType) => schemeType)((schemeType: SelectSchemeFormType) => Some(schemeType))
+      KeystoreService.DB_KEY -> boolean,
+      KeystoreService.DC_KEY -> boolean
+    )(SelectSchemeModel.apply)(SelectSchemeModel.unapply)
 )
 }

@@ -57,7 +57,7 @@ case class Year2015Amounts(amount2015P1:Option[BigDecimal]=None,
                          dcAmount2015P2 == None && 
                          postTriggerDcAmount2015P1 == None && 
                          postTriggerDcAmount2015P2 == None
-  def hasDefinedContributions(): Boolean = dcAmount2015P1 != None || dcAmount2015P2 != None || postTriggerDcAmount2015P1 != None || postTriggerDcAmount2015P2 != None 
+  def hasDefinedContributions(): Boolean = dcAmount2015P1 != None || dcAmount2015P2 != None || postTriggerDcAmount2015P1 != None || postTriggerDcAmount2015P2 != None
   def hasDefinedBenefits(): Boolean = amount2015P1 != None || amount2015P2 != None
 }
 

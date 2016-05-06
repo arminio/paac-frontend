@@ -96,7 +96,7 @@ class YesNo1516Period1ControllerSpec extends UnitSpec with BeforeAndAfterAll {
     }
 
     "onPageLoad with GET request" should {
-      "have keystore with no values and display select scheme options" in new ControllerWithMockKeystore {
+      "have keystore with no values and display yes no for period 1 options" in new ControllerWithMockKeystore {
         // setup
         val request = FakeRequest(GET,"").withSession{(SessionKeys.sessionId,SESSION_ID)}
 
