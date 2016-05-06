@@ -59,7 +59,7 @@ trait YesNo1516Period2Controller extends RedirectController {
             } else {
               keystore.read[String](KeystoreService.DC_KEY).flatMap {
                 (isDefinedContribution) =>
-                if (isDefinedContribution.get.toBoolean){
+                if (isDefinedContribution.getOrElse("false").toBoolean){
                   Future.successful(Redirect(routes.YesNoMPAATriggerEventAmountController.onPageLoad()))
                 } else {
                   wheretoNext[String](Redirect(onSubmitRedirectForNo))

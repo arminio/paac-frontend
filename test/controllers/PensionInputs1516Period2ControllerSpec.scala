@@ -95,9 +95,11 @@ class PensionInputs1516Period2ControllerSpec extends UnitSpec with BeforeAndAfte
     }
 
     "onPageLoad with GET request" should {
-      "have keystore with no values and display select scheme options" in new ControllerWithMockKeystore {
+      "have keystore with definedContribution flag = true value, should have DC input field" in new ControllerWithMockKeystore {
         // setup
         val request = FakeRequest(GET,"").withSession{(SessionKeys.sessionId,SESSION_ID)}
+        MockKeystore.map = MockKeystore.map + ("definedContribution" -> "true")
+        MockKeystore.map = MockKeystore.map + ("definedBenefit" -> "false")
 
         // test
         val result : Future[Result] = MockPensionInputs1516P2ControllerWithMockKeystore.onPageLoad()(request)
@@ -105,13 +107,30 @@ class PensionInputs1516Period2ControllerSpec extends UnitSpec with BeforeAndAfte
         // check
         status(result) shouldBe 200
         val htmlPage = contentAsString(await(result))
-        //htmlPage should include ("""<input type="number" name="definedBenefit_2015_p2"""")
+        htmlPage should include ("""<input type="number" name="year2015.definedContribution_2015_p2" """)
+      }
+
+      "have keystore with definedBenefit flag = true value, should have DB input field" in new ControllerWithMockKeystore {
+        // setup
+        val request = FakeRequest(GET,"").withSession{(SessionKeys.sessionId,SESSION_ID)}
+        MockKeystore.map = MockKeystore.map + ("definedContribution" -> "false")
+        MockKeystore.map = MockKeystore.map + ("definedBenefit" -> "true")
+
+        // test
+        val result : Future[Result] = MockPensionInputs1516P2ControllerWithMockKeystore.onPageLoad()(request)
+
+        // check
+        status(result) shouldBe 200
+        val htmlPage = contentAsString(await(result))
+        htmlPage should include ("""<input type="number" name="year2015.definedBenefit_2015_p2" """)
       }
 
       "have keystore with definedBenefit_2015_p2 value when we revisit the same page" in new ControllerWithMockKeystore {
         // setup
         val request = FakeRequest(GET,"").withSession{(SessionKeys.sessionId,SESSION_ID)}
         MockKeystore.map = MockKeystore.map + ("definedBenefit_2015_p2" -> "40000")
+        MockKeystore.map = MockKeystore.map + ("definedContribution" -> "true")
+        MockKeystore.map = MockKeystore.map + ("definedBenefit" -> "true")
 
         // test
         val result : Future[Result] = MockPensionInputs1516P2ControllerWithMockKeystore.onPageLoad()(request)
