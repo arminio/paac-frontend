@@ -25,7 +25,8 @@ import play.api.test.{FakeRequest, FakeApplication}
 import service.KeystoreService
 import uk.gov.hmrc.play.http.{HeaderCarrier, SessionKeys}
 import uk.gov.hmrc.play.test.UnitSpec
-import scala.concurrent.Future
+import scala.concurrent.duration._
+import scala.concurrent.{Await, Future}
 
 class TaxYearSelectionSpec extends UnitSpec with BeforeAndAfterAll {
   val app = FakeApplication()
@@ -54,7 +55,6 @@ class TaxYearSelectionSpec extends UnitSpec with BeforeAndAfterAll {
 
 
   trait MockKeystoreFixture {
-
     object MockKeystore extends KeystoreService {
       var map = Map(SessionKeys.sessionId -> SESSION_ID)
 
@@ -79,18 +79,16 @@ class TaxYearSelectionSpec extends UnitSpec with BeforeAndAfterAll {
   }
 
   "TaxYearSelection" when {
-    "GET with routes" should {
+    "GET with routes".should {
       "not return result NOT_FOUND" in {
         val result: Option[Future[Result]] = route(FakeRequest(GET, endPointURL))
         result.isDefined shouldBe true
         status(result.get) should not be NOT_FOUND
       }
-
       "return 303 for valid GET request" in {
         val result: Option[Future[Result]] = route(FakeRequest(GET, endPointURL))
         status(result.get) shouldBe 303
       }
-
       "not return 200 for valid GET request" in {
         val result: Option[Future[Result]] = route(FakeRequest(GET, endPointURL))
         status(result.get) should not be 200
@@ -112,9 +110,9 @@ class TaxYearSelectionSpec extends UnitSpec with BeforeAndAfterAll {
 
       "have keystore with TaxYearSelection value when page is revisited" in new ControllerWithMockKeystore {
         // setup
-        val request = FakeRequest(GET,"").withSession{(SessionKeys.sessionId,SESSION_ID)}
         MockKeystore.map = MockKeystore.map + ("TaxYearSelection" -> "2015")
-
+        implicit val hc = HeaderCarrier()
+        val request = FakeRequest(GET,"").withSession{(SessionKeys.sessionId,SESSION_ID)}
         // test
         val result : Future[Result] = MockTaxYearSelectionWithMockKeystore.onPageLoad()(request)
 
@@ -122,9 +120,73 @@ class TaxYearSelectionSpec extends UnitSpec with BeforeAndAfterAll {
         status(result) shouldBe 200
         MockKeystore.map should contain key ("TaxYearSelection")
         MockKeystore.map should contain value ("2015")
-
       }
-
     }
+//
+//    "should return selected tax years" in new ControllerWithMockKeystore {
+//      // set up
+//      MockKeystore.map = MockKeystore.map ++ Map("TaxYear2016"->"2016",
+//        "TaxYear2015"->"2015",
+//        "TaxYear2013"->"2013")
+//      implicit val hc = HeaderCarrier()
+//      implicit val request = FakeRequest().withSession((SessionKeys.sessionId,SESSION_ID))
+//
+//      // test
+//      val result: Future[Map[String, Seq[String]]] = MockTaxYearSelectionWithMockKeystore.onYearSelected()
+//
+//      // check
+//      val values: Map[String, Seq[String]] = Await.result(result, Duration(1000,MILLISECONDS))
+//      values should contain key ("TaxYear2016")
+//      values should contain value ("2016")
+//      values should contain key ("TaxYear2015")
+//      values should contain value ("2015")
+//      values should contain key ("TaxYear2013")
+//      values should contain value ("2013")
+//
+//      val result: Option[Future[Result]] = route(FakeRequest(GET, endPointURL))
+//      status(result.get) should not be 200
+//    }
+
+  }
+
+  "onYearSelected with POST request" should {
+    "not return result NOT_FOUND" in {
+      val result: Option[Future[Result]] = route(FakeRequest(POST, endPointURL))
+      result.isDefined shouldBe true
+      status(result.get) should not be NOT_FOUND
+    }
+
+    "return 303 for valid GET request" in {
+      val result: Option[Future[Result]] = route(FakeRequest(POST, endPointURL))
+      status(result.get) shouldBe 303
+    }
+
+    "have valid TaxYearSelection saved to keystore" in new ControllerWithMockKeystore{
+      // set up
+      implicit val hc = HeaderCarrier()
+      implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID)).withFormUrlEncodedBody(("TaxYear2015" -> "2015"))
+      MockKeystore.map = MockKeystore.map + ("TaxYearSelection" -> "2015")
+
+      // test
+      val result: Future[Result] = MockTaxYearSelectionWithMockKeystore.onYearSelected()(request)
+
+      // check
+      status(result) shouldBe 200
+      MockKeystore.map should contain key ("TaxYearSelection")
+      MockKeystore.map should contain value ("2015")
+    }
+
+    "return TaxYearSelection results from keystore" in new ControllerWithMockKeystore {
+      // set up
+      val request = FakeRequest(POST, endPointURL).withSession {(SessionKeys.sessionId,SESSION_ID)}
+
+      // test
+      val result: Future[Result] = MockTaxYearSelectionWithMockKeystore.onYearSelected()(request)
+
+      // check
+      val htmlSummaryPage = contentAsString(await(result))
+      htmlSummaryPage should include ("Tax Year")
+    }
+
   }
 }
