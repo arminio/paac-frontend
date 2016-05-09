@@ -17,11 +17,11 @@
 package service
 
 import config.PaacSessionCache
-import play.api.mvc.{AnyContent, Request}
+import play.api.mvc.Request
 import uk.gov.hmrc.http.cache.client.SessionCache
 import uk.gov.hmrc.play.http.{HeaderCarrier, SessionKeys}
 import play.api.libs.concurrent.Execution.Implicits._
-import scala.concurrent.{Future}
+import scala.concurrent.Future
 import reflect.ClassTag
 
 trait KeystoreService {
