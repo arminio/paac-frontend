@@ -88,15 +88,22 @@ trait ReviewTotalAmountsController extends BaseFrontendController {
 
   val onSubmit = withSession { implicit request =>
     fetchAmounts().flatMap { (amounts) =>
-      CalculatorForm.bind(amounts).fold(
-        formWithErrors => {
-          val f = CalculatorForm.bind(amounts, true)
-          val model = f.get
-          val c = model.toContributions.find((c)=>c.amounts != None && c.amounts.get.triggered != None && c.amounts.get.triggered.get == true)
-          Future.successful(Ok(views.html.review_amounts(formWithErrors,  model.hasDefinedBenefits(), model.hasDefinedContributions(), model.hasTriggerDate(), c)))
-        },
-        input => connector.connectToPAACService(input.toContributions()).map(response => Ok(views.html.results(response)))
-      )
+      keystore.read[String](KeystoreService.TRIGGER_DATE_KEY).flatMap {
+        (td) =>
+        val values = amounts ++ Map((KeystoreService.TRIGGER_DATE_KEY, td.getOrElse("")))
+        CalculatorForm.bind(values).fold(
+          formWithErrors => {
+            val f = CalculatorForm.bind(amounts, true)
+            val model = f.get
+            val c = model.toContributions.find((c)=>c.amounts != None && c.amounts.get.triggered != None && c.amounts.get.triggered.get == true)
+            Future.successful(Ok(views.html.review_amounts(formWithErrors,  model.hasDefinedBenefits(), model.hasDefinedContributions(), model.hasTriggerDate(), c)))
+          },
+          input => {
+            val contributions = input.toContributions()
+            connector.connectToPAACService(contributions).map(response => Ok(views.html.results(response)))
+          }
+        )
+      }
     }
   }
 }

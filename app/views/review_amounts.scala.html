@@ -1,4 +1,4 @@
-@(reviewForm : Form[form.CalculatorFormFields], 
+@(reviewForm : Form[models.CalculatorFormFields], 
   hasBenefits: Boolean, 
   hasContributions: Boolean,
   hasTriggerDate: Boolean,
@@ -62,7 +62,7 @@ backLink = Some((controllers.routes.PensionInputsController.onPageLoad.url,Messa
     @defining(java.text.NumberFormat.getCurrencyInstance(java.util.Locale.UK)) { currencyFormatter =>
     @for(contribution <- reviewForm.get.toPageValues()) {
         @defining(contribution.amounts.getOrElse(InputAmounts())) { amounts =>
-        @if(contribution.isEmpty() == false && (triggerContribution != None && triggerContribution.get != contribution)) {
+        @if(contribution.isEmpty() == false && (triggerContribution == None || (triggerContribution != None && triggerContribution.get != contribution))) {
         <tr>
             <td class="numeric">@(contribution.taxYearLabel())</td>
             @if(hasBenefits) {
