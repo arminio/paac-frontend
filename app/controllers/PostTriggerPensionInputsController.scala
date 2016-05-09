@@ -56,13 +56,14 @@ trait PostTriggerPensionInputsController extends RedirectController {
         } else {
           val triggerP1 = input.triggerDatePeriod.get.isPeriod1
           val triggerP2 = input.triggerDatePeriod.get.isPeriod2
-          if ((triggerP1 && input.year2015.postTriggerDcAmount2015P1 == None && input.year2015.postTriggerDcAmount2015P2 == None) || 
+          if ((triggerP1 && input.year2015.postTriggerDcAmount2015P1 == None) || 
               (triggerP2 && input.year2015.postTriggerDcAmount2015P2 == None)
              ) {
             val f = CalculatorForm.nonValidatingForm.bindFromRequest()
             Future.successful( Ok(views.html.postTriggerPensionInputs(f.withError("error.bounds", "error.bounds", 0, 99999999.99), f.get)) )
           } else {
-            keystore.save(List(input.toP1TriggerDefinedContribution, input.toP2TriggerDefinedContribution), "").flatMap {
+            val toSave: Option[(Long,String)] = if (triggerP1) { input.toP1TriggerDefinedContribution } else { input.toP2TriggerDefinedContribution }
+            keystore.save[String,Long](List(toSave), "").flatMap {
               (a) => 
               Future.successful(Redirect(routes.ReviewTotalAmountsController.onPageLoad))
             }

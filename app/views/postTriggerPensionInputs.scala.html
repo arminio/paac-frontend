@@ -64,7 +64,7 @@ backLink = Some((controllers.routes.DateOfMPAATriggerEventController.onPageLoad.
                 </fieldset>
                 }
               }
-              @if(model.triggerDatePeriod.get.isPeriod1() || model.triggerDatePeriod.get.isPeriod2()) {
+              @if(model.triggerDatePeriod.get.isPeriod2()) {
                 @defining("year2015.postTriggerDcAmount2015P2") { id =>
                 <fieldset id="input_year2015.postTriggerDcAmount2015P2" class="form-field-group" style="max-width:12.35em;">
                     <label class="form-element-bold label--full-length numeric" for="@id" style="width:150%;display: inline-block;@if(paacForm.errors.find(_.key == id)) {color:#b10e1e;}">

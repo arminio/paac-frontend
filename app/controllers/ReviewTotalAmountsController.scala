@@ -40,7 +40,12 @@ trait ReviewTotalAmountsController extends BaseFrontendController {
       case y if y < 2015 =>
         List(KeystoreService.DB_PREFIX+y)
       case y if y == 2015 => 
-        List(KeystoreService.P1_DB_KEY, KeystoreService.P1_DC_KEY, KeystoreService.P2_DB_KEY, KeystoreService.P2_DC_KEY)
+        List(KeystoreService.P1_DB_KEY, 
+             KeystoreService.P1_DC_KEY, 
+             KeystoreService.P2_DB_KEY, 
+             KeystoreService.P2_DC_KEY, 
+             KeystoreService.P1_TRIGGER_DC_KEY, 
+             KeystoreService.P2_TRIGGER_DC_KEY)
       case y if y > 2015 => 
         List(KeystoreService.DB_PREFIX+y, KeystoreService.DC_PREFIX+y, KeystoreService.TH_PREFIX+y, KeystoreService.AI_PREFIX+y, KeystoreService.TA_PREFIX+y)
       }
@@ -50,14 +55,22 @@ trait ReviewTotalAmountsController extends BaseFrontendController {
   }
 
   val onPageLoad = withSession { implicit request =>
-    fetchAmounts.map { (amountsMap) =>
-      CalculatorForm.bind(amountsMap).fold(
-        formWithErrors => Ok(views.html.review_amounts(formWithErrors, true, true)),
-        form => {
-          val f = CalculatorForm.bind(amountsMap)
-          Ok(views.html.review_amounts(f, f.get.hasDefinedBenefits(), f.get.hasDefinedContributions()))
-        }
-      )
+    fetchAmounts.flatMap { (amountsMap) =>
+      keystore.read[String](KeystoreService.TRIGGER_DATE_KEY).map {
+        (td) =>
+        val values = amountsMap ++ Map((KeystoreService.TRIGGER_DATE_KEY, td.getOrElse("")))
+        val f = CalculatorForm.bind(values, true)
+        val model = f.get
+        val c = model.toContributions.find((c)=>c.amounts != None && c.amounts.get.triggered != None && c.amounts.get.triggered.get == true)
+        CalculatorForm.bind(values).fold(
+          formWithErrors => {
+            Ok(views.html.review_amounts(formWithErrors, model.hasDefinedBenefits(), model.hasDefinedContributions(), model.hasTriggerDate(), c))
+          },
+          form => {
+            Ok(views.html.review_amounts(f, model.hasDefinedBenefits(), model.hasDefinedContributions(), model.hasTriggerDate(), c))
+          }
+        )
+      }
     }
   }
 
@@ -77,7 +90,10 @@ trait ReviewTotalAmountsController extends BaseFrontendController {
     fetchAmounts().flatMap { (amounts) =>
       CalculatorForm.bind(amounts).fold(
         formWithErrors => {
-          Future.successful(Ok(views.html.review_amounts(formWithErrors, true, true)))
+          val f = CalculatorForm.bind(amounts, true)
+          val model = f.get
+          val c = model.toContributions.find((c)=>c.amounts != None && c.amounts.get.triggered != None && c.amounts.get.triggered.get == true)
+          Future.successful(Ok(views.html.review_amounts(formWithErrors,  model.hasDefinedBenefits(), model.hasDefinedContributions(), model.hasTriggerDate(), c)))
         },
         input => connector.connectToPAACService(input.toContributions()).map(response => Ok(views.html.results(response)))
       )

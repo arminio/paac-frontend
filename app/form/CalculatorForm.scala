@@ -53,11 +53,11 @@ case class Year2015Amounts(amount2015P1:Option[BigDecimal]=None,
                            postTriggerDcAmount2015P1:Option[BigDecimal]=None,
                            postTriggerDcAmount2015P2:Option[BigDecimal]=None) {
   def isEmpty(): Boolean = amount2015P1 == None && 
-                         dcAmount2015P1 == None && 
-                         amount2015P2 == None && 
-                         dcAmount2015P2 == None && 
-                         postTriggerDcAmount2015P1 == None && 
-                         postTriggerDcAmount2015P2 == None
+                           dcAmount2015P1 == None && 
+                           amount2015P2 == None && 
+                           dcAmount2015P2 == None && 
+                           postTriggerDcAmount2015P1 == None && 
+                           postTriggerDcAmount2015P2 == None
   def hasDefinedContributions(): Boolean = dcAmount2015P1 != None || dcAmount2015P2 != None || postTriggerDcAmount2015P1 != None || postTriggerDcAmount2015P2 != None
   def hasDefinedBenefits(): Boolean = amount2015P1 != None || amount2015P2 != None
 }
@@ -97,15 +97,45 @@ case class CalculatorFormFields(definedBenefits: Amounts,
     }
 
     def toInputAmounts(name1: String, name2: String): Option[InputAmounts] = {
-      val a = InputAmounts(get(name1), get(name2))
+      val a = InputAmounts(get(name1), get(name2), None, Some(false))
       if (a.isEmpty) None else Some(a)
     }
 
     List.range(START_YEAR, THIS_YEAR+1).flatMap {
       (year:Int) =>
       if (year == 2015) {
-        List(Contribution(TaxPeriod.PERIOD_1_2015_START, TaxPeriod.PERIOD_1_2015_END,toInputAmounts("amount2015P1","dcAmount2015P1")),
-             Contribution(TaxPeriod.PERIOD_2_2015_START, TaxPeriod.PERIOD_2_2015_END,toInputAmounts("amount2015P2","dcAmount2015P2")))
+        if (triggerDate != None) {
+          val c = triggerDatePeriod().get
+          if (c.isPeriod1) {
+            val preList = if (c.taxPeriodStart == TaxPeriod.PERIOD_1_2015_START) {
+              List (Contribution(TaxPeriod.PERIOD_1_2015_START, TaxPeriod.PERIOD_1_2015_END,Some(InputAmounts(None, get("ptDcAmount2015P1"), None, Some(true)))))
+            } else {
+              val date = c.taxPeriodStart.toCalendar
+              date.add(java.util.Calendar.DAY_OF_MONTH, -1)
+              val tp = TaxPeriod(date.get(java.util.Calendar.YEAR), date.get(java.util.Calendar.MONTH), date.get(java.util.Calendar.DAY_OF_MONTH))
+              List(Contribution(TaxPeriod.PERIOD_1_2015_START, tp, toInputAmounts("amount2015P1","dcAmount2015P1").map(_.copy(triggered=Some(false)))),
+                   Contribution(c.taxPeriodStart, TaxPeriod.PERIOD_1_2015_END,Some(InputAmounts(None, get("ptDcAmount2015P1"), None, Some(true)))))
+            }
+            preList ++ List(Contribution(TaxPeriod.PERIOD_2_2015_START, TaxPeriod.PERIOD_2_2015_END,toInputAmounts("amount2015P2","dcAmount2015P2").map(_.copy(triggered=Some(true)))))
+          } else if (c.isPeriod2) {
+            val preList = List(Contribution(TaxPeriod.PERIOD_1_2015_START, TaxPeriod.PERIOD_1_2015_END,toInputAmounts("amount2015P1","dcAmount2015P1").map(_.copy(triggered=Some(false)))))
+            val postList = if (c.taxPeriodStart == TaxPeriod.PERIOD_2_2015_START) {
+              List (Contribution(TaxPeriod.PERIOD_2_2015_START, TaxPeriod.PERIOD_2_2015_END,Some(InputAmounts(None, get("ptDcAmount2015P2"), None, Some(true)))))
+            } else {
+              val date = c.taxPeriodStart.toCalendar
+              date.add(java.util.Calendar.DAY_OF_MONTH, -1)
+              val tp = TaxPeriod(date.get(java.util.Calendar.YEAR), date.get(java.util.Calendar.MONTH), date.get(java.util.Calendar.DAY_OF_MONTH))
+              List(Contribution(TaxPeriod.PERIOD_2_2015_START, tp, toInputAmounts("amount2015P2","dcAmount2015P2").map(_.copy(triggered=Some(false)))),
+                   Contribution(c.taxPeriodStart, TaxPeriod.PERIOD_2_2015_END,Some(InputAmounts(None, get("ptDcAmount2015P2"), None, Some(true)))))
+            }
+            preList ++ postList
+          } else {
+            List()
+          }
+        } else {
+          List(Contribution(TaxPeriod.PERIOD_1_2015_START, TaxPeriod.PERIOD_1_2015_END,toInputAmounts("amount2015P1","dcAmount2015P1")),
+               Contribution(TaxPeriod.PERIOD_2_2015_START, TaxPeriod.PERIOD_2_2015_END,toInputAmounts("amount2015P2","dcAmount2015P2")))
+        }
       } else {
         val delta = THIS_YEAR - year
         List(Contribution(year, toInputAmounts("dbCurrentYearMinus"+delta, "dcCurrentYearMinus"+delta)))
@@ -119,6 +149,7 @@ case class CalculatorFormFields(definedBenefits: Amounts,
 
   def hasDefinedContributions(): Boolean = !definedContributions.isEmpty || year2015.hasDefinedContributions
   def hasDefinedBenefits(): Boolean = !definedBenefits.isEmpty || year2015.hasDefinedBenefits
+  def hasTriggerDate(): Boolean = triggerDate != None && triggerDate.get != ""
 
   def toDefinedBenefit(first: Contribution => Boolean)(key: String) : Option[(Long, String)] = {
     toContributions.find(first).flatMap {
@@ -243,7 +274,7 @@ object CalculatorForm {
     )(CalculatorFormFields.apply)(CalculatorFormFields.unapply)
   )
 
-  def bind(data: Map[String, String]): Form[CalculatorFormType] = {
+  def bind(data: Map[String, String], nonValidatingForm: Boolean = false): Form[CalculatorFormType] = {
     val year2015 = List(("year2015.definedBenefit_2015_p1", data.getOrElse("amount2015P1", data.getOrElse(KeystoreService.P1_DB_KEY,""))),
                         ("year2015.definedContribution_2015_p1", data.getOrElse("dcAmount2015P1", data.getOrElse(KeystoreService.P1_DC_KEY,""))),
                         ("year2015.definedBenefit_2015_p2", data.getOrElse("amount2015P2", data.getOrElse(KeystoreService.P2_DB_KEY,""))),
@@ -261,6 +292,6 @@ object CalculatorForm {
     }
     val maybeDate: Option[String] = data.get(KeystoreService.TRIGGER_DATE_KEY)
     val values: List[(String,String)] = maybeDate.map((date)=>yearAmounts ++ List(("triggerDate", date))).getOrElse(yearAmounts)
-    CalculatorForm.form.bind(Map(values: _*))
+    if (nonValidatingForm) CalculatorForm.nonValidatingForm.bind(Map(values: _*)) else CalculatorForm.form.bind(Map(values: _*))
   }
 }
