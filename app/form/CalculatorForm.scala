@@ -214,6 +214,35 @@ object CalculatorForm {
     )(CalculatorFormFields.apply)(CalculatorFormFields.unapply)
   )
 
+  val nonValidatingForm: Form[CalculatorFormType] = Form(
+    mapping("definedBenefits" -> mapping(s"amount_${CY0}"->optional(bigDecimal(10,2)),
+                                         s"amount_${CY1}"->optional(bigDecimal(10,2)),
+                                         s"amount_${CY2}"->optional(bigDecimal(10,2)),
+                                         s"amount_${CY3}"->optional(bigDecimal(10,2)),
+                                         s"amount_${CY4}"->optional(bigDecimal(10,2)),
+                                         s"amount_${CY5}"->optional(bigDecimal(10,2)),
+                                         s"amount_${CY6}"->optional(bigDecimal(10,2)),
+                                         s"amount_${CY7}"->optional(bigDecimal(10,2)),
+                                         s"amount_${CY8}"->optional(bigDecimal(10,2)))(Amounts.apply)(Amounts.unapply),
+            "definedContributions" -> mapping(s"amount_${CY0}"->optional(bigDecimal(10,2)),
+                                              s"amount_${CY1}"->optional(bigDecimal(10,2)),
+                                              s"amount_${CY2}"->optional(bigDecimal(10,2)),
+                                              s"amount_${CY3}"->optional(bigDecimal(10,2)),
+                                              s"amount_${CY4}"->optional(bigDecimal(10,2)),
+                                              s"amount_${CY5}"->optional(bigDecimal(10,2)),
+                                              s"amount_${CY6}"->optional(bigDecimal(10,2)),
+                                              s"amount_${CY7}"->optional(bigDecimal(10,2)),
+                                              s"amount_${CY8}"->optional(bigDecimal(10,2)))(Amounts.apply)(Amounts.unapply),
+            "year2015" -> mapping("definedBenefit_2015_p1"->optional(bigDecimal(10,2)),
+                                  "definedContribution_2015_p1"->optional(bigDecimal(10,2)),
+                                  "definedBenefit_2015_p2"->optional(bigDecimal(10,2)),
+                                  "definedContribution_2015_p2"->optional(bigDecimal(10,2)),
+                                  "postTriggerDcAmount2015P1"->optional(bigDecimal(10,2)),
+                                  "postTriggerDcAmount2015P2"->optional(bigDecimal(10,2)))(Year2015Amounts.apply)(Year2015Amounts.unapply),
+            "triggerDate" -> optional(text)
+    )(CalculatorFormFields.apply)(CalculatorFormFields.unapply)
+  )
+
   def bind(data: Map[String, String]): Form[CalculatorFormType] = {
     val year2015 = List(("year2015.definedBenefit_2015_p1", data.getOrElse("amount2015P1", data.getOrElse(KeystoreService.P1_DB_KEY,""))),
                         ("year2015.definedContribution_2015_p1", data.getOrElse("dcAmount2015P1", data.getOrElse(KeystoreService.P1_DC_KEY,""))),

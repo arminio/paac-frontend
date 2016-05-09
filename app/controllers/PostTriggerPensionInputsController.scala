@@ -30,49 +30,6 @@ object PostTriggerPensionInputsController extends PostTriggerPensionInputsContro
 trait PostTriggerPensionInputsController extends RedirectController {
   val keystore: KeystoreService
 
-  def toContribution(jodaDateString: String): Contribution = {
-    val parts = jodaDateString.split("-").map(_.toInt)
-    val taxPeriodDate = TaxPeriod(parts(0), parts(1)-1, parts(2))
-    val c = Contribution(taxPeriodDate, taxPeriodDate, None)
-    if (c.isPeriod1()) {
-      Contribution(TaxPeriod.PERIOD_1_2015_START, TaxPeriod.PERIOD_1_2015_END, None)
-    } else if (c.isPeriod2()) {
-      Contribution(TaxPeriod.PERIOD_2_2015_START, TaxPeriod.PERIOD_2_2015_END, None)
-    } else {
-      Contribution(parts(0), 0L)
-    }
-  }
-
-  def id(c: Contribution): String = {
-    if (c.isPeriod1()) {
-      "year2015.postTriggerDcAmount2015P1"
-    } else if (c.isPeriod2()) {
-      "year2015.postTriggerDcAmount2015P2"
-    } else {
-      "triggerAmounts.amount_"+c.taxPeriodStart.year
-    }
-  }
-
-  def key(c: Contribution): String = {
-    if (c.isPeriod1()) {
-      "postTriggerDefinedContribution_2015_p1"
-    } else if (c.isPeriod2()) {
-      "postTriggerDefinedContribution_2015_p2"
-    } else {
-      "postTriggerDefinedContribution_"+c.taxPeriodStart.year
-    }
-  }
-
-  def amount(c: Contribution, form: CalculatorFormFields): Long = {
-    if (c.isPeriod1()) {
-      form.year2015.postTriggerDcAmount2015P1.map((v:BigDecimal)=>(v * 100L).toLong).getOrElse(0L)
-    } else if (c.isPeriod2()) {
-      form.year2015.postTriggerDcAmount2015P2.map((v:BigDecimal)=>(v * 100L).toLong).getOrElse(0L)
-    } else {
-      0L
-    }
-  }
-
   val onPageLoad = withSession { implicit request =>
     keystore.read[String](List(KeystoreService.TRIGGER_DATE_KEY, KeystoreService.P1_TRIGGER_DC_KEY, KeystoreService.P2_TRIGGER_DC_KEY)).flatMap {
       (values) =>
@@ -89,9 +46,7 @@ trait PostTriggerPensionInputsController extends RedirectController {
   val onSubmit = withSession { implicit request =>
     CalculatorForm.form.bindFromRequest().fold(
       formWithErrors => { 
-        val f = formWithErrors.discardingErrors
-        println("***" +f)
-        // todo need to find bad value and get form without error
+        val f = CalculatorForm.nonValidatingForm.bindFromRequest()
         Future.successful( Ok(views.html.postTriggerPensionInputs(formWithErrors, f.get)) )
       },
       input => {
@@ -104,8 +59,8 @@ trait PostTriggerPensionInputsController extends RedirectController {
           if ((triggerP1 && input.year2015.postTriggerDcAmount2015P1 == None && input.year2015.postTriggerDcAmount2015P2 == None) || 
               (triggerP2 && input.year2015.postTriggerDcAmount2015P2 == None)
              ) {
-            val f = CalculatorForm.form.bindFromRequest()
-            Future.successful( Ok(views.html.postTriggerPensionInputs(f, f.get)) )
+            val f = CalculatorForm.nonValidatingForm.bindFromRequest()
+            Future.successful( Ok(views.html.postTriggerPensionInputs(f.withError("error.bounds", "error.bounds", 0, 99999999.99), f.get)) )
           } else {
             keystore.save(List(input.toP1TriggerDefinedContribution, input.toP2TriggerDefinedContribution), "").flatMap {
               (a) => 

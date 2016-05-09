@@ -153,3 +153,7 @@ paac.post-trigger-value.page.title=Money Purchase Value After Flexi Access
 paac.post-trigger-value.p1=This is how much was paid into your pension scheme from the day after you accessed your pension savings to the end of the pension input period.
 paac.post-trigger-value.period1.label=2015/16 P1
 paac.post-trigger-value.period2.label=2015/16 P2
+paac.post-trigger-value.error.real.precision=The amount must not be empty or negative. (Amount must have no more than {1} numbers, including {2} decimal places, and should be £0.00 or larger and smaller than £99999999.99.)
+paac.post-trigger-value.error.min={0} amount was too small and must be either £0.00 or greater.
+paac.post-trigger-value.error.max={0} amount was too large and must be either £{1} or less.
+paac.post-trigger-value.error.bounds={0} amount was empty or negative. Please provide an amount between £0.00 and £99999999.99.
