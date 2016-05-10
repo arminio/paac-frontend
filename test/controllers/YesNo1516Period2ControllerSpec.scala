@@ -26,7 +26,7 @@ import play.api.test.{FakeApplication, FakeRequest}
 import service.KeystoreService
 import uk.gov.hmrc.play.http.{HeaderCarrier, SessionKeys}
 import uk.gov.hmrc.play.test.UnitSpec
-
+import form._
 import scala.concurrent.Future
 
 class YesNo1516Period2ControllerSpec extends UnitSpec with BeforeAndAfterAll {
@@ -192,6 +192,20 @@ class YesNo1516Period2ControllerSpec extends UnitSpec with BeforeAndAfterAll {
         MockKeystore.map should contain value ("No")
         redirectLocation(result) shouldBe Some("/paac/pensionInputs")
       }*/
+    }
+  }
+
+  "YesNo1516Period2Form" should {
+    "correctly unbind" in {
+      // set up
+      val model = "Yes"
+      val theForm = YesNo1516Period2Form.form.bind(Map("yesNo" -> "No"))
+
+      // test
+      val map = theForm.mapping.unbind(model)
+
+      // check
+      map("yesNo") shouldBe "Yes"
     }
   }
 }

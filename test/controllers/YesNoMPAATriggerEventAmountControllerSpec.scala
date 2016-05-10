@@ -26,6 +26,7 @@ import service.KeystoreService
 import uk.gov.hmrc.play.http.{HeaderCarrier, SessionKeys}
 import uk.gov.hmrc.play.test.UnitSpec
 import scala.concurrent.Future
+import form._
 
 class YesNoMPAATriggerEventAmountControllerSpec extends UnitSpec with BeforeAndAfterAll {
   val app = FakeApplication()
@@ -192,6 +193,20 @@ class YesNoMPAATriggerEventAmountControllerSpec extends UnitSpec with BeforeAndA
         MockKeystore.map should contain value ("No")
         redirectLocation(result) shouldBe Some("/paac/review")
       }
+    }
+  }
+
+  "YesNoMPAATriggerEventForm" should {
+    "correctly unbind" in {
+      // set up
+      val model = "Yes"
+      val theForm = YesNoMPAATriggerEventForm.form.bind(Map("yesNo" -> "No"))
+
+      // test
+      val map = theForm.mapping.unbind(model)
+
+      // check
+      map("yesNo") shouldBe "Yes"
     }
   }
 }
