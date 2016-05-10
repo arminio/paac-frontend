@@ -20,6 +20,7 @@ import uk.gov.hmrc.play.test.UnitSpec
 import models._
 
 class CalculatorFormSpec extends UnitSpec{
+  val thisYear = (new java.util.GregorianCalendar()).get(java.util.Calendar.YEAR)
 
   "CalculatorForm" should {
 
@@ -36,10 +37,10 @@ class CalculatorFormSpec extends UnitSpec{
 
     "throw validation error when providing a value less than 0" in {
       CalculatorForm.bind(Map(
-        "definedBenefit_2008" -> "-1"
+        s"definedBenefit_$thisYear" -> "-1"
       )).fold(
         formWithErrors => {
-          formWithErrors.errors.find(_.key == "definedBenefits.amount_2008") should not be None
+          formWithErrors.errors.find(_.key == s"definedBenefits.amount_$thisYear") should not be None
         },
         success =>
           success should not be Some(-1)
@@ -48,7 +49,7 @@ class CalculatorFormSpec extends UnitSpec{
 
     "throw a ValidationError when providing a character" in {
       CalculatorForm.bind(Map(
-        "definedBenefit_2010" -> "Idontknow"
+        s"definedBenefit_$thisYear" -> "Idontknow"
       )).fold(
         formWithErrors => {
           formWithErrors.errors.head.message should not be ("character") },
@@ -59,7 +60,7 @@ class CalculatorFormSpec extends UnitSpec{
 
     "throw a ValidationError when providing special characters" in {
       CalculatorForm.bind(Map(
-        "PensionInputAmount" -> "%l&^@sl3"
+        s"definedBenefit_$thisYear" -> "%l&^@sl3"
       )).fold(
         formWithErrors =>
           {formWithErrors.errors.head should not be ("Success")},
@@ -69,18 +70,46 @@ class CalculatorFormSpec extends UnitSpec{
     }
 
     "throw validation error if defined benefit is out of bounds" in {
-      CalculatorForm.bind(Map("definedBenefit_2014" -> "100000000.01")).fold (
+      CalculatorForm.bind(Map(s"definedBenefit_$thisYear" -> "100000000.01")).fold (
         formWithErrors => {
           formWithErrors.errors should not be empty
-          formWithErrors.errors.head.key shouldBe "definedBenefits.amount_2014"
+          formWithErrors.errors.head.key shouldBe s"definedBenefits.amount_$thisYear"
           formWithErrors.errors.head.messages.head shouldBe "error.real.precision"
         },
         formWithoutErrors => formWithoutErrors should not be Some("")
       )
     }
 
-    "form correctly unbinds" in {
-      //CalculatorForm.bind(Map("definedBenefit_2014" -> "")).mapping.unbind(CalculatorFormFields(amount2014 = Some(scala.math.BigDecimal(0.0))))("definedBenefit_2014") shouldBe "0.00"
+    "validating form correctly unbinds" in {
+      // set up
+      val model = CalculatorFormFields(Amounts(Some(scala.math.BigDecimal(0.0))),
+                                       Amounts(Some(scala.math.BigDecimal(123.45))),
+                                       Year2015Amounts(),
+                                       None)
+      val form = CalculatorForm.bind(Map(s"definedBenefits.amount_$thisYear" -> ""))
+
+      // test
+      val map = form.mapping.unbind(model)
+
+      // check
+      map(s"definedBenefits.amount_$thisYear") shouldBe "0.00"
+      map(s"definedContributions.amount_$thisYear") shouldBe "123.45"
+    }
+
+    "non-validating form correctly unbinds" in {
+      // set up
+      val model = CalculatorFormFields(Amounts(Some(scala.math.BigDecimal(0.0))),
+                                       Amounts(Some(scala.math.BigDecimal(123.45))),
+                                       Year2015Amounts(),
+                                       None)
+      val form = CalculatorForm.bind(Map(s"definedBenefits.amount_$thisYear" -> ""), true)
+
+      // test
+      val map = form.mapping.unbind(model)
+
+      // check
+      map(s"definedBenefits.amount_$thisYear") shouldBe "0.00"
+      map(s"definedContributions.amount_$thisYear") shouldBe "123.45"
     }
   }
 }
