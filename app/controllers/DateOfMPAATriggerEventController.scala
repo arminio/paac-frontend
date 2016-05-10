@@ -29,7 +29,7 @@ object DateOfMPAATriggerEventController extends DateOfMPAATriggerEventController
 trait DateOfMPAATriggerEventController extends RedirectController {
   val keystore: KeystoreService
 
-  private val onSubmitRedirect: Call = routes.PensionInputsController.onPageLoad
+  private val onSubmitRedirect: Call = routes.PostTriggerPensionInputsController.onPageLoad
 
   val onPageLoad = withSession { implicit request =>
     keystore.read[String](KeystoreService.TRIGGER_DATE_KEY).map {
@@ -52,7 +52,7 @@ trait DateOfMPAATriggerEventController extends RedirectController {
         // should store as json and read out as json but sticking with string throughout
         keystore.store[String](input.dateOfMPAATriggerEvent.map(_.toString).getOrElse(""), KeystoreService.TRIGGER_DATE_KEY).flatMap{
           (_)=>
-          wheretoNext[String]( Redirect(onSubmitRedirect))
+          Future.successful(Redirect(onSubmitRedirect))
         }
       }
     )

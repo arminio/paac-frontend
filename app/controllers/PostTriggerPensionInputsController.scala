@@ -61,7 +61,7 @@ trait PostTriggerPensionInputsController extends RedirectController {
           val toSave: Option[(Long,String)] = if (triggerP1) { input.toP1TriggerDefinedContribution } else { input.toP2TriggerDefinedContribution }
           keystore.save[String,Long](List(toSave), "").flatMap {
             (a) => 
-            Future.successful(Redirect(routes.ReviewTotalAmountsController.onPageLoad))
+            wheretoNext[String](Redirect(routes.ReviewTotalAmountsController.onPageLoad))
           }
         }
       }
