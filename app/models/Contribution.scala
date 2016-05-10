@@ -81,7 +81,7 @@ case class Contribution(taxPeriodStart: TaxPeriod, taxPeriodEnd: TaxPeriod, amou
     PERIOD_END_BEFORE.add(java.util.Calendar.DAY_OF_MONTH, 1)
     val start = taxPeriodStart.toCalendar
     val end = taxPeriodEnd.toCalendar
-    start.after(PERIOD_START_AFTER) && start.before(PERIOD_END_BEFORE) && end.after(PERIOD_START_AFTER) && end.before(PERIOD_END_BEFORE) 
+    (start.after(PERIOD_START_AFTER) && start.before(PERIOD_END_BEFORE)) && (end.after(PERIOD_START_AFTER) && end.before(PERIOD_END_BEFORE))
   }
 
   def isPeriod1(): Boolean = {

@@ -671,4 +671,21 @@ class CalculatorFormFieldSpec extends ModelSpec {
       new Test().THIS_YEAR shouldBe 2016
     }
   }
+
+  "triggerDatePeriod" should {
+    "return period 1 contribution" in {
+      // set up
+      val formFields = new CalculatorFormFields(Amounts(), 
+                                                Amounts(), 
+                                                Year2015Amounts(),
+                                                Some("2015-4-15")) with Year2016
+
+      // test
+      val result = formFields.triggerDatePeriod
+
+      // check
+      result should not be None
+      result.get.isPeriod1 shouldBe true
+    }
+  }
 }
