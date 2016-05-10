@@ -20,7 +20,7 @@ import uk.gov.hmrc.play.test.UnitSpec
 import models._
 
 class CalculatorFormSpec extends UnitSpec{
-  val thisYear = (new java.util.GregorianCalendar()).get(java.util.Calendar.YEAR)
+  val thisYear = (config.PaacConfiguration.year())
 
   "CalculatorForm" should {
 

@@ -62,17 +62,13 @@ case class Year2015Amounts(amount2015P1:Option[BigDecimal]=None,
 }
 
 trait ThisYear {
-  def THIS_YEAR = 2016
-}
-
-trait CurrentYear extends ThisYear {
-  override def THIS_YEAR = (new java.util.GregorianCalendar()).get(java.util.Calendar.YEAR)
+  def THIS_YEAR = config.PaacConfiguration.year()
 }
 
 case class CalculatorFormFields(definedBenefits: Amounts, 
                                 definedContributions: Amounts, 
                                 year2015: Year2015Amounts,
-                                triggerDate: Option[String]) extends CurrentYear {
+                                triggerDate: Option[String]) extends ThisYear {
   settings: ThisYear =>
 
   val START_YEAR = settings.THIS_YEAR-8

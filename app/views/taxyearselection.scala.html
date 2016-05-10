@@ -13,7 +13,7 @@ backLink = Some((controllers.routes.StaticPageController.onPipTaxYearPageLoad.ur
 args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
 <div class="form-group">
 
-    @defining((new java.util.GregorianCalendar()).get(java.util.Calendar.YEAR)) { thisYear =>
+    @defining(config.PaacConfiguration.year()) { thisYear =>
     @for(i <- List.range(thisYear-3, thisYear+1).reverse) {
     <label class="block-label">@(i) to @(i+1) <input id="TaxYear@(i)" type="checkbox" name="TaxYear@(i)"></label>
     }

@@ -179,34 +179,6 @@ class ReviewTotalAmountsControllerSpec extends UnitSpec with BeforeAndAfterAll {
         values should contain key ("definedBenefit_2015_p1")
         values should contain value ("91234.50")
       }
-
-      "should return values when keystore has amounts for 2016" in new MockControllerFixture {
-        // set up
-        MockKeystore.map = MockKeystore.map ++ Map("definedBenefit_2016"->"100",
-                                                   "definedContribution_2016"->"200",
-                                                   "thresholdIncome_2016"->"300",
-                                                   "adjustedIncome_2016"->"400",
-                                                   "taperedAllowance_2016"->"500")
-        implicit val hc = HeaderCarrier()
-        implicit val request = FakeRequest().withSession((SessionKeys.sessionId,SESSION_ID))
-
-        // test
-        val result: Future[Map[String,String]] = MockedReviewTotalAmountsController.fetchAmounts()
-
-        // check
-        val values: Map[String,String] = Await.result(result, Duration(1000,MILLISECONDS))
-        values should contain key ("definedBenefit_2016") 
-        values should contain value ("1.00")
-        values should contain key ("definedContribution_2016") 
-        values should contain value ("2.00")
-        values should contain key ("thresholdIncome_2016") 
-        values should contain value ("3.00")
-        values should contain key ("adjustedIncome_2016") 
-        values should contain value ("4.00")
-        values should contain key ("taperedAllowance_2016") 
-        values should contain value ("5.00")
-      }
-
     }
 
     "onSubmit" can {

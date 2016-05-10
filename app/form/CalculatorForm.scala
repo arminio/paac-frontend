@@ -28,7 +28,7 @@ import service.KeystoreService
 
 object CalculatorForm {
   type CalculatorFormType = CalculatorFormFields
-  val THIS_YEAR = (new java.util.GregorianCalendar()).get(java.util.Calendar.YEAR)
+  val THIS_YEAR = config.PaacConfiguration.year()
   val CY0 = THIS_YEAR
   val CY1 = THIS_YEAR-1
   val CY2 = THIS_YEAR-2

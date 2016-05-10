@@ -50,7 +50,7 @@ trait ReviewTotalAmountsController extends BaseFrontendController {
         List(KeystoreService.DB_PREFIX+y, KeystoreService.DC_PREFIX+y, KeystoreService.TH_PREFIX+y, KeystoreService.AI_PREFIX+y, KeystoreService.TA_PREFIX+y)
       }
 
-    val currentYear = (new java.util.GregorianCalendar()).get(java.util.Calendar.YEAR)
+    val currentYear = config.PaacConfiguration.year()
     keystore.read[String](List.range(2006, currentYear+1).flatMap(yearAmountKeys(_)))
   }
 
@@ -107,4 +107,3 @@ trait ReviewTotalAmountsController extends BaseFrontendController {
     }
   }
 }
-
