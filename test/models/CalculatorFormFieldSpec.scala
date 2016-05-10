@@ -17,12 +17,30 @@
 package models
 
 import form.CalculatorForm
+import org.scalatest.BeforeAndAfterAll
+import play.api.Play
+import play.api.test.Helpers._
+import play.api.test._
+import play.api.mvc._
 
 trait Year2016 extends models.ThisYear {
   override def THIS_YEAR = 2016
 }
 
-class CalculatorFormFieldSpec extends ModelSpec {
+class CalculatorFormFieldSpec extends ModelSpec with BeforeAndAfterAll {
+  val app = FakeApplication()
+
+  override def beforeAll() {
+    Play.start(app)
+    super.beforeAll() // To be stackable, must call super.beforeEach
+  }
+
+  override def afterAll() {
+    try {
+      super.afterAll()
+    } finally Play.stop()
+  }
+
   "Amounts" should {
     "isEmpty" should {
       "return false if any of the values are not None" in {
