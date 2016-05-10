@@ -61,12 +61,21 @@ case class Year2015Amounts(amount2015P1:Option[BigDecimal]=None,
   def hasDefinedBenefits(): Boolean = amount2015P1 != None || amount2015P2 != None
 }
 
+trait ThisYear {
+  def THIS_YEAR = 2016
+}
+
+trait CurrentYear extends ThisYear {
+  override def THIS_YEAR = (new java.util.GregorianCalendar()).get(java.util.Calendar.YEAR)
+}
+
 case class CalculatorFormFields(definedBenefits: Amounts, 
                                 definedContributions: Amounts, 
                                 year2015: Year2015Amounts,
-                                triggerDate: Option[String]) {
-  val THIS_YEAR = (new java.util.GregorianCalendar()).get(java.util.Calendar.YEAR)
-  val START_YEAR = THIS_YEAR-8
+                                triggerDate: Option[String]) extends CurrentYear {
+  settings: ThisYear =>
+
+  val START_YEAR = settings.THIS_YEAR-8
 
   def toPageValues():List[Contribution] = {
     def retrieveValue(amounts: Amounts, name: String): Option[Long] = {
@@ -83,14 +92,14 @@ case class CalculatorFormFields(definedBenefits: Amounts,
         case "ptDcAmount2015P1" => year2015.postTriggerDcAmount2015P1.map(Amounts.toPence)
         case "ptDcAmount2015P2" => year2015.postTriggerDcAmount2015P2.map(Amounts.toPence)
         case _ => {
-          val amounts: Amounts = if (name.contains("dbCurrentYearMinus")) {
-            this.definedBenefits
+          val amounts: Option[Amounts] = if (name.contains("dbCurrentYearMinus")) {
+            Some(this.definedBenefits)
           } else if (name.contains("dcCurrentYearMinus")) {
-            this.definedContributions
+            Some(this.definedContributions)
           } else {
-            Amounts()
+            None
           }
-          retrieveValue(amounts, name)
+          amounts.flatMap(retrieveValue(_, name))
         }
       }
     }
@@ -100,7 +109,7 @@ case class CalculatorFormFields(definedBenefits: Amounts,
       if (a.isEmpty) None else Some(a)
     }
 
-    List.range(START_YEAR, THIS_YEAR+1).flatMap {
+    List.range(settings.START_YEAR, settings.THIS_YEAR+1).flatMap {
       (year:Int) =>
       if (year == 2015) {
         if (triggerDate != None) {
@@ -129,14 +138,15 @@ case class CalculatorFormFields(definedBenefits: Amounts,
             }
             preList ++ postList
           } else {
-            List()
+            List(Contribution(TaxPeriod.PERIOD_1_2015_START, TaxPeriod.PERIOD_1_2015_END,toInputAmounts("amount2015P1","dcAmount2015P1")),
+                Contribution(TaxPeriod.PERIOD_2_2015_START, TaxPeriod.PERIOD_2_2015_END,toInputAmounts("amount2015P2","dcAmount2015P2")))
           }
         } else {
           List(Contribution(TaxPeriod.PERIOD_1_2015_START, TaxPeriod.PERIOD_1_2015_END,toInputAmounts("amount2015P1","dcAmount2015P1")),
                Contribution(TaxPeriod.PERIOD_2_2015_START, TaxPeriod.PERIOD_2_2015_END,toInputAmounts("amount2015P2","dcAmount2015P2")))
         }
       } else {
-        val delta = THIS_YEAR - year
+        val delta = settings.THIS_YEAR - year
         List(Contribution(year, toInputAmounts("dbCurrentYearMinus"+delta, "dcCurrentYearMinus"+delta)))
       }
     }
@@ -165,8 +175,8 @@ case class CalculatorFormFields(definedBenefits: Amounts,
       (c)=>
         (for {
           amounts <- c.amounts
-          definedBenefit <- amounts.moneyPurchase
-        } yield definedBenefit).map((_,key))
+          moneyPurchase <- amounts.moneyPurchase
+        } yield moneyPurchase).map((_,key))
     }
   }
 
