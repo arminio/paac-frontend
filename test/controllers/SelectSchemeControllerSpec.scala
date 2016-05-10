@@ -26,6 +26,7 @@ import service.KeystoreService
 import uk.gov.hmrc.play.http.{HeaderCarrier, SessionKeys}
 import uk.gov.hmrc.play.test.UnitSpec
 import scala.concurrent.Future
+import form._
 
 class SelectSchemeControllerSpec extends UnitSpec with BeforeAndAfterAll {
   val app = FakeApplication()
@@ -151,6 +152,21 @@ class SelectSchemeControllerSpec extends UnitSpec with BeforeAndAfterAll {
         MockKeystore.map should contain key ("definedBenefit")
         MockKeystore.map should contain value ("true")
       }
+    }
+  }
+
+  "SelectSchemeForm" should {
+    "correctly unbind" in {
+      // set up
+      val model = SelectSchemeModel(true, true)
+      val theForm = SelectSchemeForm.form.bind(Map(KeystoreService.DB_KEY -> "false",KeystoreService.DC_KEY -> "false"))
+
+      // test
+      val map = theForm.mapping.unbind(model)
+
+      // check
+      map(KeystoreService.DB_KEY) shouldBe "true"
+      map(KeystoreService.DC_KEY) shouldBe "true"
     }
   }
 }

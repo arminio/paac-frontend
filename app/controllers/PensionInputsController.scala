@@ -69,6 +69,3 @@ trait PensionInputsController extends RedirectController {
     }
   }
 }
-
-
-

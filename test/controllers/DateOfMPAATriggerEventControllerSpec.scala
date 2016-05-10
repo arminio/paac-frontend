@@ -137,4 +137,3 @@ class DateOfMPAATriggerEventControllerSpec  extends UnitSpec with BeforeAndAfter
     }
   }
 }
-

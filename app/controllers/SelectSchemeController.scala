@@ -47,6 +47,3 @@ trait SelectSchemeController  extends BaseFrontendController {
     )
   }
 }
-
-
-

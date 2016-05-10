@@ -1,4 +1,8 @@
-@(reviewForm : Form[form.CalculatorFormFields], hasBenefits: Boolean, hasContributions: Boolean)(implicit request:Request[_])
+@(reviewForm : Form[models.CalculatorFormFields], 
+  hasBenefits: Boolean, 
+  hasContributions: Boolean,
+  hasTriggerDate: Boolean,
+  triggerContribution: Option[Contribution])(implicit request:Request[_])
 
 @import uk.gov.hmrc.play.views.html.helpers._
 @import java.math.BigDecimal
@@ -50,7 +54,7 @@ backLink = Some((controllers.routes.PensionInputsController.onPageLoad.url,Messa
         }
         @if(hasContributions) {
         <th class="numeric" scope="col">@Messages("paac.review-amounts.heading.mp")</th>
-        }
+        }        
         <th class="edit_action" scope="col"></th>
     </tr>
     </thead>
@@ -58,13 +62,13 @@ backLink = Some((controllers.routes.PensionInputsController.onPageLoad.url,Messa
     @defining(java.text.NumberFormat.getCurrencyInstance(java.util.Locale.UK)) { currencyFormatter =>
     @for(contribution <- reviewForm.get.toPageValues()) {
         @defining(contribution.amounts.getOrElse(InputAmounts())) { amounts =>
-        @if(contribution.isEmpty() == false) {
+        @if(contribution.isEmpty() == false && (triggerContribution == None || (triggerContribution != None && triggerContribution.get != contribution))) {
         <tr>
             <td class="numeric">@(contribution.taxYearLabel())</td>
             @if(hasBenefits) {
             <td class="numeric">
                 @if(amounts.definedBenefit.isDefined) {
-                    @(currencyFormatter.format(amounts.definedBenefit.get/100L))
+                    @(currencyFormatter.format(amounts.definedBenefit.get/100D))
                 } else {
                     &pound;&nbsp;&ndash;
                 }
@@ -73,7 +77,7 @@ backLink = Some((controllers.routes.PensionInputsController.onPageLoad.url,Messa
             @if(hasContributions) {
             <td class="numeric">
                 @if(amounts.moneyPurchase.isDefined){
-                    @(currencyFormatter.format(amounts.moneyPurchase.get/100L))
+                    @(currencyFormatter.format(amounts.moneyPurchase.get/100D))
                 } else {
                     &pound;&nbsp;&ndash;
                 }
