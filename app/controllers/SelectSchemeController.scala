@@ -31,7 +31,7 @@ trait SelectSchemeController  extends BaseFrontendController {
   private val onSubmitRedirect: Call = routes.StaticPageController.onPipTaxYearPageLoad()
 
   val onPageLoad = withSession { implicit request =>
-    keystore.read[String](List(KeystoreService.DB_KEY, KeystoreService.DC_KEY)).map {
+    keystore.read[String](List(KeystoreService.DB_FLAG, KeystoreService.DC_FLAG)).map {
       (fieldMap) =>
         Ok(views.html.selectScheme(SelectSchemeForm.form.bind(fieldMap).discardingErrors))
     }
@@ -41,8 +41,8 @@ trait SelectSchemeController  extends BaseFrontendController {
     SelectSchemeForm.form.bindFromRequest().fold(
       formWithErrors => Future.successful(Ok(views.html.selectScheme(SelectSchemeForm.form))),
       input => {
-        keystore.save(List((input.definedBenefit.toString, KeystoreService.DB_KEY),
-                           (input.definedContribution.toString, KeystoreService.DC_KEY))).map((_)=> Redirect(onSubmitRedirect))
+        keystore.save(List((input.definedBenefit.toString, KeystoreService.DB_FLAG),
+                           (input.definedContribution.toString, KeystoreService.DC_FLAG))).map((_)=> Redirect(onSubmitRedirect))
       }
     )
   }

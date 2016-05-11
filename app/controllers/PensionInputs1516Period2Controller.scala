@@ -31,16 +31,16 @@ trait PensionInputs1516Period2Controller extends RedirectController {
   private val onSubmitRedirect: Call = routes.YesNoMPAATriggerEventAmountController.onPageLoad()
 
   val onPageLoad = withSession { implicit request =>
-    keystore.read[String](List(KeystoreService.P2_DB_KEY, KeystoreService.P2_DC_KEY, KeystoreService.DB_KEY, KeystoreService.DC_KEY)).map {
+    keystore.read[String](List(KeystoreService.P2_DB_KEY, KeystoreService.P2_DC_KEY, KeystoreService.DB_FLAG, KeystoreService.DC_FLAG)).map {
       (fieldsMap) =>
         Ok(views.html.pensionInputs_1516_period2(CalculatorForm.bind(fieldsMap).discardingErrors,
-                                                  fieldsMap(KeystoreService.DB_KEY).toBoolean,
-                                                  fieldsMap(KeystoreService.DC_KEY).toBoolean))
+                                                  fieldsMap(KeystoreService.DB_FLAG).toBoolean,
+                                                  fieldsMap(KeystoreService.DC_FLAG).toBoolean))
     }
   }
 
   val onSubmit = withSession { implicit request =>
-    keystore.read[String](KeystoreService.DC_KEY).flatMap {
+    keystore.read[String](KeystoreService.DC_FLAG).flatMap {
       (value) =>
       CalculatorForm.form.bindFromRequest().fold(
         // TODO: When we do validation story, please forward this to onPageLoad method with selected SchemeType flags
