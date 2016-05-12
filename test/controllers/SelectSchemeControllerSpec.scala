@@ -159,14 +159,14 @@ class SelectSchemeControllerSpec extends UnitSpec with BeforeAndAfterAll {
     "correctly unbind" in {
       // set up
       val model = SelectSchemeModel(true, true)
-      val theForm = SelectSchemeForm.form.bind(Map(KeystoreService.DB_KEY -> "false",KeystoreService.DC_KEY -> "false"))
+      val theForm = SelectSchemeForm.form.bind(Map(KeystoreService.DB_FLAG -> "false",KeystoreService.DC_FLAG -> "false"))
 
       // test
       val map = theForm.mapping.unbind(model)
 
       // check
-      map(KeystoreService.DB_KEY) shouldBe "true"
-      map(KeystoreService.DC_KEY) shouldBe "true"
+      map(KeystoreService.DB_FLAG) shouldBe "true"
+      map(KeystoreService.DC_FLAG) shouldBe "true"
     }
   }
 }

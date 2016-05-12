@@ -1,4 +1,4 @@
-@(paacForm : Form[models.CalculatorFormFields], currentYear: String)(implicit request:Request[_])
+@(paacForm : Form[models.CalculatorFormFields], currentYear: String,isDefinedBenefit: Boolean= false, isDefinedContribution: Boolean= false)(implicit request:Request[_])
 
 @import uk.gov.hmrc.play.views.html.helpers._
 
@@ -46,25 +46,40 @@ backLink = Some((controllers.routes.DateOfMPAATriggerEventController.onPageLoad.
 
         <table>
             <tbody>
-                @defining(java.text.NumberFormat.getCurrencyInstance(java.util.Locale.UK)) { currencyFormatter =>
                 <fieldset id="input_@currentYear" class="form-field-group" style="max-width:12.35em;">
-                    <label class="form-element-bold label--full-length numeric" for="definedBenefits.amount_@currentYear" style="width:150%;display: inline-block;@if(paacForm.errors.find(_.key == "definedBenefits.amount_"+currentYear)) {color:#b10e1e;}">
-                    <tr style="text-align:left;min-width: 7em">@(Contribution(currentYear.toInt,0).taxYearLabel())</tr><BR/>
-
-                      <span style="float:right">
-                      @if(paacForm.data.contains("definedBenefits.amount_"+currentYear)) {
-                          <tr style="text-align:left;min-width: 7em">
-                              £&nbsp;<input type="number" name="definedBenefits.amount_@currentYear" id="definedBenefits.amount_@currentYear" min="0" step="1" value='@paacForm.data("definedBenefits.amount_"+currentYear)' max="9999999.99" size="10" style="width:9em;@if(paacForm.errors.find(_.key == "definedBenefits.amount_"+currentYear)) {border: 4px solid #b10e1e;}"/>
-                          </tr>
+                    @if(isDefinedContribution){
+                    <label class="form-element-bold label--full-length numeric" for="definedContributions.amount_@currentYear" style="width:150%;display: inline-block;@if(paacForm.errors.find(_.key == "definedContributions.amount_"+currentYear)) {color:#b10e1e;}">
+                        <tr style="text-align:left;min-width: 7em">@Messages("paac.1516.pension.inputs.dc")</tr><BR/>
+                          <span style="float:right">
+                          @if(paacForm.data.contains("definedContributions.amount_"+currentYear)) {
+                              <tr style="text-align:left;min-width: 7em">
+                                  £&nbsp;<input type="number" name="definedContributions.amount_@currentYear" id="definedContributions.amount_@currentYear" min="0" step="1" value='@paacForm.data("definedContributions.amount_"+currentYear)' max="9999999.99" size="10" style="width:9em;@if(paacForm.errors.find(_.key == "definedContributions.amount_"+currentYear)) {border: 4px solid #b10e1e;}"/>
+                              </tr>
                           } else {
-                          <tr style="text-align:left;min-width: 7em">
-                              £&nbsp;<input type="number" name="definedBenefits.amount_@currentYear" id="definedBenefits.amount_@currentYear" min="0" step="1" value='' max="9999999.99" size="10" style="width:9em;@if(paacForm.errors.find(_.key == "definedBenefits.amount_"+currentYear)) {border: 4px solid #b10e1e;}"/>
-                          </tr>
+                              <tr style="text-align:left;min-width: 7em">
+                                  £&nbsp;<input type="number" name="definedContributions.amount_@currentYear" id="definedContributions.amount_@currentYear" min="0" step="1" value='' max="9999999.99" size="10" style="width:9em;@if(paacForm.errors.find(_.key == "definedContributions.amount_"+currentYear)) {border: 4px solid #b10e1e;}"/>
+                              </tr>
                           }
-                      </span>
+                          </span>
                     </label>
+                    }
+                    @if(isDefinedBenefit){
+                    <label class="form-element-bold label--full-length numeric" for="definedBenefits.amount_@currentYear" style="width:150%;display: inline-block;@if(paacForm.errors.find(_.key == "definedBenefits.amount_"+currentYear)) {color:#b10e1e;}">
+                        <tr style="text-align:left;min-width: 7em">@Messages("paac.1516.pension.inputs.db")</tr><BR/>
+                          <span style="float:right">
+                          @if(paacForm.data.contains("definedBenefits.amount_"+currentYear)) {
+                              <tr style="text-align:left;min-width: 7em">
+                                  £&nbsp;<input type="number" name="definedBenefits.amount_@currentYear" id="definedBenefits.amount_@currentYear" min="0" step="1" value='@paacForm.data("definedBenefits.amount_"+currentYear)' max="9999999.99" size="10" style="width:9em;@if(paacForm.errors.find(_.key == "definedBenefits.amount_"+currentYear)) {border: 4px solid #b10e1e;}"/>
+                              </tr>
+                          } else {
+                              <tr style="text-align:left;min-width: 7em">
+                                  £&nbsp;<input type="number" name="definedBenefits.amount_@currentYear" id="definedBenefits.amount_@currentYear" min="0" step="1" value='' max="9999999.99" size="10" style="width:9em;@if(paacForm.errors.find(_.key == "definedBenefits.amount_"+currentYear)) {border: 4px solid #b10e1e;}"/>
+                              </tr>
+                          }
+                          </span>
+                    </label>
+                    }
                 </fieldset>
-                }
             </tbody>
         </table>
 

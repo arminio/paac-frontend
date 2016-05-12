@@ -87,7 +87,7 @@ trait RedirectController extends BaseFrontendController {
 trait BaseFrontendController extends SessionProvider with FrontendController {
   this: SessionProvider =>
 
-  val keys = List(KeystoreService.SCHEME_TYPE_KEY, KeystoreService.DB_KEY, KeystoreService.DC_KEY, KeystoreService.TRIGGER_DATE_KEY)
+  val keys = List(KeystoreService.SCHEME_TYPE_KEY, KeystoreService.DB_FLAG, KeystoreService.DC_FLAG, KeystoreService.TRIGGER_DATE_KEY)
 
   implicit val marshall = {
     (key: String, value: Option[String]) =>

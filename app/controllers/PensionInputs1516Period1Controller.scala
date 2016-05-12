@@ -34,11 +34,11 @@ trait PensionInputs1516Period1Controller extends BaseFrontendController {
   private val onSubmitRedirect: Call = routes.YesNo1516Period2Controller.onPageLoad()
 
   val onPageLoad = withSession { implicit request =>
-    keystore.read[String](List(KeystoreService.P1_DB_KEY, KeystoreService.P1_DC_KEY, KeystoreService.DB_KEY, KeystoreService.DC_KEY)).map {
+    keystore.read[String](List(KeystoreService.P1_DB_KEY, KeystoreService.P1_DC_KEY, KeystoreService.DB_FLAG, KeystoreService.DC_FLAG)).map {
       (fieldsMap) =>
         Ok(views.html.pensionInputs_1516_period1(CalculatorForm.bind(fieldsMap).discardingErrors,
-                                                 fieldsMap(KeystoreService.DB_KEY).toBoolean,
-                                                 fieldsMap(KeystoreService.DC_KEY).toBoolean))
+                                                 fieldsMap(KeystoreService.DB_FLAG).toBoolean,
+                                                 fieldsMap(KeystoreService.DC_FLAG).toBoolean))
     }
   }
 
