@@ -4,15 +4,11 @@
 
 @common.paacMain(
 pageTitle = Messages("paac.pension.inputs.pagetitle"),
-heading = Messages("paac.pension.inputs.heading", currentYear, ""+(currentYear.toInt+1)),
+heading = Messages("paac.pension.inputs.heading", (if(isDefinedContribution && isDefinedBenefit) "" else if(isDefinedContribution) "defined contribution " else if(isDefinedBenefit) "defined benefit "), currentYear, ""+(currentYear.toInt+1)),
 articleClasses=Some("full-width"),
 backLink = Some((controllers.routes.DateOfMPAATriggerEventController.onPageLoad.url,Messages("paac.link.text.back")))
 ) {
 
-  @defining(currentYear.toInt) { year =>
-    <p id="paac.pension.inputs.p1">@Messages("paac.pension.inputs.p1", currentYear, ""+(year+1))</p>
-    <p id="paac.pension.inputs.p2">@Messages("paac.pension.inputs.p2")</p>
-  }
     @if(paacForm.hasErrors) {
       <div class="error-summary" role="group" aria-labelledby="error-summary-heading-example-1" tabindex="-1" style="border: 5px solid #b10e1e;padding: 20px;padding-top: 0px;margin-bottom: 30px;">
 
@@ -43,6 +39,10 @@ backLink = Some((controllers.routes.DateOfMPAATriggerEventController.onPageLoad.
     @form(
         action = controllers.routes.PensionInputsController.onSubmit,
         args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
+
+        @defining(currentYear.toInt) { year =>
+        <p id="paac.pension.inputs.p1">@Messages("paac.pension.inputs.description", (if(isDefinedContribution && isDefinedBenefit) "" else if(isDefinedContribution) "defined contribution " else if(isDefinedBenefit) "defined benefit "), currentYear, ""+(year+1))</p>
+        }
 
         <table>
             <tbody>

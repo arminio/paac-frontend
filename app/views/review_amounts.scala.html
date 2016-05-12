@@ -49,12 +49,12 @@ backLink = Some((controllers.routes.PensionInputsController.onPageLoad.url,Messa
     <thead>
     <tr>
         <th class="numeric" scope="col">@Messages("paac.review-amounts.heading.period")</th>
+        @if(hasContributions) {
+        <th class="numeric" scope="col">@Messages("paac.review-amounts.heading.mp")</th>
+        }
         @if(hasBenefits) {
         <th class="numeric" scope="col">@Messages("paac.review-amounts.heading.db")</th>
         }
-        @if(hasContributions) {
-        <th class="numeric" scope="col">@Messages("paac.review-amounts.heading.mp")</th>
-        }        
         <th class="edit_action" scope="col"></th>
     </tr>
     </thead>
@@ -65,19 +65,19 @@ backLink = Some((controllers.routes.PensionInputsController.onPageLoad.url,Messa
         @if(contribution.isEmpty() == false && (triggerContribution == None || (triggerContribution != None && triggerContribution.get != contribution))) {
         <tr>
             <td class="numeric">@(contribution.taxYearLabel())</td>
+            @if(hasContributions) {
+            <td class="numeric">
+                @if(amounts.moneyPurchase.isDefined){
+                @(currencyFormatter.format(amounts.moneyPurchase.get/100D))
+                } else {
+                &pound;&nbsp;&ndash;
+                }
+            </td>
+            }
             @if(hasBenefits) {
             <td class="numeric">
                 @if(amounts.definedBenefit.isDefined) {
                     @(currencyFormatter.format(amounts.definedBenefit.get/100D))
-                } else {
-                    &pound;&nbsp;&ndash;
-                }
-            </td>
-            }
-            @if(hasContributions) {
-            <td class="numeric">
-                @if(amounts.moneyPurchase.isDefined){
-                    @(currencyFormatter.format(amounts.moneyPurchase.get/100D))
                 } else {
                     &pound;&nbsp;&ndash;
                 }

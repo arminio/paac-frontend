@@ -37,9 +37,7 @@ trait PensionInputsController extends RedirectController {
       if (cy == "2015" || cy == "-1") {
         Future.successful(Redirect(onSubmitRedirect))
       } else {
-        val dbKeyStoreKey = KeystoreService.DB_PREFIX + cy
-        val dcKeyStoreKey = KeystoreService.DC_PREFIX + cy
-        keystore.read[String](List(dbKeyStoreKey, dcKeyStoreKey, KeystoreService.DB_FLAG, KeystoreService.DC_FLAG)).map {
+        keystore.read[String](List((KeystoreService.DB_PREFIX + cy),(KeystoreService.DB_PREFIX + cy), KeystoreService.DB_FLAG, KeystoreService.DC_FLAG)).map {
           (fieldsMap) =>
             Ok(views.html.pensionInputs(CalculatorForm.form.bind(fieldsMap).discardingErrors, cy,
                                         fieldsMap(KeystoreService.DB_FLAG).toBoolean,
@@ -56,15 +54,6 @@ trait PensionInputsController extends RedirectController {
       CalculatorForm.form.bindFromRequest().fold(
         formWithErrors => { Future.successful(Ok(views.html.pensionInputs(formWithErrors, cy))) },
         input => {
-          val dbKeyStoreKey = KeystoreService.DB_PREFIX+cy
-          val dcKeyStoreKey = KeystoreService.DC_PREFIX+cy
-/*
-          val (amount:Long, key:String) = input.toDefinedBenefit(cy.toInt).getOrElse((keyStoreKey, 0L))
-          keystore.store[String](amount.toString, key).flatMap{
-            (_) =>
-            wheretoNext[String]( Redirect(onSubmitRedirect))
-          }*/
-
           keystore.save(List(input.toDefinedBenefit(cy.toInt), input.toDefinedContribution(cy.toInt)), "").flatMap {
             (_)=>
               wheretoNext[String]( Redirect(onSubmitRedirect))

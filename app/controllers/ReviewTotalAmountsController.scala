@@ -38,7 +38,7 @@ trait ReviewTotalAmountsController extends BaseFrontendController {
   def fetchAmounts()(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[Map[String,String]] = {
     def yearAmountKeys(year: Int) : List[String] = year match {
       case y if y < 2015 =>
-        List(KeystoreService.DB_PREFIX+y)
+        List(KeystoreService.DB_PREFIX+y, KeystoreService.DC_PREFIX+y)
       case y if y == 2015 => 
         List(KeystoreService.P1_DB_KEY, 
              KeystoreService.P1_DC_KEY, 
