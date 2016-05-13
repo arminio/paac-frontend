@@ -14,7 +14,6 @@ mainClass = "main",
 articleClasses = Some("full-width"),
 backLink = Some((controllers.routes.PensionInputsController.onPageLoad.url,Messages("paac.link.text.back")))
 ) {
-<p class="lede text">@Messages("paac.review-amounts.paragraph")</p>
 
 @if(reviewForm.hasErrors) {
 <div class="error-summary" role="group" aria-labelledby="error-summary-heading-example-1" tabindex="-1"

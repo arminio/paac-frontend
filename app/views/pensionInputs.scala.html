@@ -41,7 +41,7 @@ backLink = Some((controllers.routes.DateOfMPAATriggerEventController.onPageLoad.
         args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
 
         @defining(currentYear.toInt) { year =>
-        <p id="paac.pension.inputs.p1">@Messages("paac.pension.inputs.description", (if(isDefinedContribution && isDefinedBenefit) "" else if(isDefinedContribution) "defined contribution " else if(isDefinedBenefit) "defined benefit "), currentYear, ""+(year+1))</p>
+        <p id="paac.pension.inputs.p1" class="lede text">@Messages("paac.pension.inputs.description", (if(isDefinedContribution && isDefinedBenefit) "" else if(isDefinedContribution) "defined contribution " else if(isDefinedBenefit) "defined benefit "), currentYear, ""+(year+1))</p>
         }
 
         <table>
