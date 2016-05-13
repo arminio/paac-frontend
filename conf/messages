@@ -136,7 +136,7 @@ paac.review-amounts.heading.ta = Tapered Allowance
 paac.review-amounts.action.edit = Edit
 
 ## Results Page
-paac.results.table.col.1 = Period
+paac.results.table.col.1 = Year
 paac.results.table.col.2 = Defined Benefit
 paac.results.table.col.3 = Money Purchase
 paac.results.table.col.4 = Amount Exceeding the AA
