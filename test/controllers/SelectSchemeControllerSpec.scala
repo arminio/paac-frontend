@@ -26,6 +26,7 @@ import service.KeystoreService
 import uk.gov.hmrc.play.http.{HeaderCarrier, SessionKeys}
 import uk.gov.hmrc.play.test.UnitSpec
 import scala.concurrent.Future
+import form._
 
 class SelectSchemeControllerSpec extends UnitSpec with BeforeAndAfterAll {
   val app = FakeApplication()
@@ -102,21 +103,24 @@ class SelectSchemeControllerSpec extends UnitSpec with BeforeAndAfterAll {
         // check
         status(result) shouldBe 200
         val htmlPage = contentAsString(await(result))
-        htmlPage should include ("""<input id="scheme-type-db" type="radio" name="schemeType" value="db">""")
+        htmlPage should include (""" <input type="checkbox" id="definedBenefit"""")
+        htmlPage should include (""" <input type="checkbox" id="definedContribution"""")
       }
 
-      "have keystore with schemeType value when we revisit the same page" in new ControllerWithMockKeystore {
+      "have keystore with DB and DC schemeType flag value when we revisit the same page" in new ControllerWithMockKeystore {
         // setup
         val request = FakeRequest(GET,"").withSession{(SessionKeys.sessionId,SESSION_ID)}
-        MockKeystore.map = MockKeystore.map + ("schemeType" -> "db")
+        MockKeystore.map = MockKeystore.map + ("definedBenefit" -> "true")
+        MockKeystore.map = MockKeystore.map + ("definedContribution" -> "true")
 
         // test
         val result : Future[Result] = MockSelectSchemeControllerWithMockKeystore.onPageLoad()(request)
 
         // check
         status(result) shouldBe 200
-        MockKeystore.map should contain key ("schemeType")
-        MockKeystore.map should contain value ("db")
+        MockKeystore.map should contain key ("definedContribution")
+        MockKeystore.map should contain key ("definedBenefit")
+        MockKeystore.map should contain value ("true")
       }
 
     }
@@ -133,19 +137,36 @@ class SelectSchemeControllerSpec extends UnitSpec with BeforeAndAfterAll {
         status(result.get) shouldBe 303
       }
 
-      "with valid schemeType should save to keystore" in new ControllerWithMockKeystore{
+      "with valid DB and DC schemeType flag value should save to keystore" in new ControllerWithMockKeystore{
         // set up
         implicit val hc = HeaderCarrier()
-        implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID)).withFormUrlEncodedBody(("schemeType" -> "db"))
+        implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID))
+                                               .withFormUrlEncodedBody({"definedContribution" -> "true";"definedBenefit" -> "true"})
 
         // test
         val result: Future[Result] = MockSelectSchemeControllerWithMockKeystore.onSubmit()(request)
 
         // check
         status(result) shouldBe 303
-        MockKeystore.map should contain key ("schemeType")
-        MockKeystore.map should contain value ("db")
+        MockKeystore.map should contain key ("definedContribution")
+        MockKeystore.map should contain key ("definedBenefit")
+        MockKeystore.map should contain value ("true")
       }
+    }
+  }
+
+  "SelectSchemeForm" should {
+    "correctly unbind" in {
+      // set up
+      val model = SelectSchemeModel(true, true)
+      val theForm = SelectSchemeForm.form.bind(Map(KeystoreService.DB_FLAG -> "false",KeystoreService.DC_FLAG -> "false"))
+
+      // test
+      val map = theForm.mapping.unbind(model)
+
+      // check
+      map(KeystoreService.DB_FLAG) shouldBe "true"
+      map(KeystoreService.DC_FLAG) shouldBe "true"
     }
   }
 }

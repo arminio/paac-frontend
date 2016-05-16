@@ -25,16 +25,15 @@ object YesNoMPAATriggerEventAmountController extends YesNoMPAATriggerEventAmount
   override val keystore: KeystoreService = KeystoreService
 }
 
-trait YesNoMPAATriggerEventAmountController extends BaseFrontendController {
+trait YesNoMPAATriggerEventAmountController extends RedirectController {
   val keystore: KeystoreService
 
-  private   val yesNoKesystoreKey = "yesnoForMPAATriggerEvent"
-  private   val yesNoFormKey = "yesNo"
+  private val yesNoFormKey = "yesNo"
   private val onSubmitRedirectForYes: Call = routes.DateOfMPAATriggerEventController.onPageLoad()
-  private val onSubmitRedirectForNo: Call = routes.PensionInputsController.onPageLoad()
+  private val onSubmitRedirectForNo: Call = routes.ReviewTotalAmountsController.onPageLoad()
 
   val onPageLoad = withSession { implicit request =>
-    keystore.read[String](yesNoKesystoreKey).map {
+    keystore.read[String](KeystoreService.TE_YES_NO_KEY).map {
       (yesNo) =>
         val fields = Map(yesNo match {
           case Some(value) => (yesNoFormKey, value)
@@ -49,11 +48,11 @@ trait YesNoMPAATriggerEventAmountController extends BaseFrontendController {
     YesNoMPAATriggerEventForm.form.bindFromRequest().fold(
       formWithErrors => { Future.successful(Ok(views.html.yesno_mpaa_trigger_amount(YesNoMPAATriggerEventForm.form))) },
       input => {
-        keystore.store[String](input, YesNoMPAATriggerEventForm.yesNo)
+        keystore.store[String](input, KeystoreService.TE_YES_NO_KEY)
         if (input == "Yes") {
           Future.successful(Redirect(onSubmitRedirectForYes))
         } else {
-          Future.successful(Redirect(onSubmitRedirectForNo))
+          wheretoNext[String](Redirect(onSubmitRedirectForNo))
         }
       }
     )

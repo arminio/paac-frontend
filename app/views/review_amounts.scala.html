@@ -1,4 +1,8 @@
-@(reviewForm : Form[form.CalculatorFormFields], hasBenefits: Boolean, hasContributions: Boolean)(implicit request:Request[_])
+@(reviewForm : Form[models.CalculatorFormFields], 
+  hasBenefits: Boolean, 
+  hasContributions: Boolean,
+  hasTriggerDate: Boolean,
+  triggerContribution: Option[Contribution])(implicit request:Request[_])
 
 @import uk.gov.hmrc.play.views.html.helpers._
 @import java.math.BigDecimal
@@ -10,7 +14,6 @@ mainClass = "main",
 articleClasses = Some("full-width"),
 backLink = Some((controllers.routes.PensionInputsController.onPageLoad.url,Messages("paac.link.text.back")))
 ) {
-<p class="lede text">@Messages("paac.review-amounts.paragraph")</p>
 
 @if(reviewForm.hasErrors) {
 <div class="error-summary" role="group" aria-labelledby="error-summary-heading-example-1" tabindex="-1"
@@ -45,11 +48,11 @@ backLink = Some((controllers.routes.PensionInputsController.onPageLoad.url,Messa
     <thead>
     <tr>
         <th class="numeric" scope="col">@Messages("paac.review-amounts.heading.period")</th>
-        @if(hasBenefits) {
-        <th class="numeric" scope="col">@Messages("paac.review-amounts.heading.db")</th>
-        }
         @if(hasContributions) {
         <th class="numeric" scope="col">@Messages("paac.review-amounts.heading.mp")</th>
+        }
+        @if(hasBenefits) {
+        <th class="numeric" scope="col">@Messages("paac.review-amounts.heading.db")</th>
         }
         <th class="edit_action" scope="col"></th>
     </tr>
@@ -58,22 +61,22 @@ backLink = Some((controllers.routes.PensionInputsController.onPageLoad.url,Messa
     @defining(java.text.NumberFormat.getCurrencyInstance(java.util.Locale.UK)) { currencyFormatter =>
     @for(contribution <- reviewForm.get.toPageValues()) {
         @defining(contribution.amounts.getOrElse(InputAmounts())) { amounts =>
-        @if(contribution.isEmpty() == false) {
+        @if(contribution.isEmpty() == false && (triggerContribution == None || (triggerContribution != None && triggerContribution.get != contribution))) {
         <tr>
             <td class="numeric">@(contribution.taxYearLabel())</td>
-            @if(hasBenefits) {
-            <td class="numeric">
-                @if(amounts.definedBenefit.isDefined) {
-                    @(currencyFormatter.format(amounts.definedBenefit.get/100L))
-                } else {
-                    &pound;&nbsp;&ndash;
-                }
-            </td>
-            }
             @if(hasContributions) {
             <td class="numeric">
                 @if(amounts.moneyPurchase.isDefined){
-                    @(currencyFormatter.format(amounts.moneyPurchase.get/100L))
+                @(currencyFormatter.format(amounts.moneyPurchase.get/100D))
+                } else {
+                &pound;&nbsp;&ndash;
+                }
+            </td>
+            }
+            @if(hasBenefits) {
+            <td class="numeric">
+                @if(amounts.definedBenefit.isDefined) {
+                    @(currencyFormatter.format(amounts.definedBenefit.get/100D))
                 } else {
                     &pound;&nbsp;&ndash;
                 }

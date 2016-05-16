@@ -31,44 +31,35 @@ trait PensionInputsController extends RedirectController {
   private val onSubmitRedirect = routes.ReviewTotalAmountsController.onPageLoad
 
   val onPageLoad = withSession { implicit request =>
-    keystore.read[String]("Current").flatMap {
+    keystore.read[String](KeystoreService.CURRENT_INPUT_YEAR_KEY).flatMap {
       (currentYear) =>
       val cy = currentYear.getOrElse("2014")
       if (cy == "2015" || cy == "-1") {
         Future.successful(Redirect(onSubmitRedirect))
       } else {
-        val keyStoreKey = "definedBenefit_"+cy
-        keystore.read[String](keyStoreKey).map {
-          (amount) =>
-          val fields = Map(amount match {
-            case None => (keyStoreKey, "")
-            case Some("0") => (keyStoreKey, "0.00")
-            case Some(value) => (keyStoreKey, f"${(value.toInt/100.00)}%2.2f")
-          })
-          Ok(views.html.pensionInputs(CalculatorForm.form.bind(fields).discardingErrors, cy))
+        keystore.read[String](List((KeystoreService.DB_PREFIX + cy),(KeystoreService.DB_PREFIX + cy), KeystoreService.DB_FLAG, KeystoreService.DC_FLAG)).map {
+          (fieldsMap) =>
+            Ok(views.html.pensionInputs(CalculatorForm.form.bind(fieldsMap).discardingErrors, cy,
+                                        fieldsMap(KeystoreService.DB_FLAG).toBoolean,
+                                        fieldsMap(KeystoreService.DC_FLAG).toBoolean))
         }
       }
     }
   }
 
   val onSubmit = withSession { implicit request =>
-    keystore.read[String]("Current").flatMap {
+    keystore.read[String](KeystoreService.CURRENT_INPUT_YEAR_KEY).flatMap {
       (currentYear) =>
       val cy = currentYear.getOrElse("2014")
       CalculatorForm.form.bindFromRequest().fold(
         formWithErrors => { Future.successful(Ok(views.html.pensionInputs(formWithErrors, cy))) },
         input => {
-          val keyStoreKey = "definedBenefit_"+cy
-          val (amount:Long, key:String) = input.toDefinedBenefit(cy.toInt).getOrElse((keyStoreKey, 0L))
-          keystore.store[String](amount.toString, key).flatMap{ 
-            (_) => 
-            wheretoNext[String]( Redirect(onSubmitRedirect) ) 
+          keystore.save(List(input.toDefinedBenefit(cy.toInt), input.toDefinedContribution(cy.toInt)), "").flatMap {
+            (_)=>
+              wheretoNext[String]( Redirect(onSubmitRedirect))
           }
         }
       )
     }
   }
 }
-
-
-

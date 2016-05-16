@@ -1,4 +1,4 @@
-@(paacForm : Form[String])(implicit request:Request[_])
+@(paacForm : Form[form.SelectSchemeModel])(implicit request:Request[_])
 
 @import uk.gov.hmrc.play.views.html.helpers._
 
@@ -8,9 +8,6 @@ heading = Messages("paac.scheme.selection.heading"),
 backLink = Some((controllers.routes.StartPageController.startPage.url,Messages("paac.link.text.back")))
 ) {
 <br>
-    <p id="paac-scheme-selection-p1">@Messages("paac.scheme.selection.p1")</p>
-    <p id="paac-scheme-selection-p2">@Messages("paac.scheme.selection.p2")</p>
-
     @form(
         action = controllers.routes.SelectSchemeController.onSubmit,
         args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
@@ -18,18 +15,16 @@ backLink = Some((controllers.routes.StartPageController.startPage.url,Messages("
     <div class='form-group'>
 
         <fieldset class="inline">
-            <label for="scheme-type-dc" class="block-label">
-                <input id="scheme-type-dc" type="radio" name="schemeType" value="dc">
-                @Messages("paac.scheme.selection.dc.label")
-            </label><BR/><BR/><BR/>
-            <label for="scheme-type-db" class="block-label">
-                <input id="scheme-type-db" type="radio" name="schemeType" value="db">
-                @Messages("paac.scheme.selection.db.label")
-            </label><BR/><BR/><BR/>
-            <label for="scheme-type-dcdb" class="block-label">
-                <input id="scheme-type-dcdb" type="radio" name="schemeType" value="dcdb">
-                @Messages("paac.scheme.selection.dcdb.label")
-            </label>
+            @checkbox.singleCheckbox(
+                paacForm("definedContribution"),
+                '_label -> Html(Messages("paac.scheme.selection.dc.label"))
+            )
+        </fieldset>
+        <fieldset class="inline">
+            @checkbox.singleCheckbox(
+                paacForm("definedBenefit"),
+                '_label -> Html(Messages("paac.scheme.selection.db.label"))
+            )
         </fieldset>
 
     </div>

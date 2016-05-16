@@ -31,12 +31,9 @@ paac.startpage.beforeInfo.p4 = Find out more about <a href="https://www.gov.uk/t
 
 ## Scheme Selection Page
 paac.scheme.selection.pagetitle = Scheme Selection
-paac.scheme.selection.heading = Which type of pension scheme are you a member of?
-paac.scheme.selection.p1 = A defined contribution scheme is a pension based on how much is paid in to it. These are usually personal or stakeholder pensions, and are sometimes called ‘money purchase’ pension schemes.
-paac.scheme.selection.p2 = A defined benefit scheme is a pension based on your salary and how long you have worked for your employer. These are always workplace pensions that your employer arranges, and are sometimes called ‘final salary’ or ‘career average’ pension schemes.
-paac.scheme.selection.dc.label = Defined Contribution
-paac.scheme.selection.db.label = Defined Benefit
-paac.scheme.selection.dcdb.label = Both
+paac.scheme.selection.heading = Which types of pension schemes are you a member of?
+paac.scheme.selection.dc.label = <B>Defined contribution</B><P>A pension based on how much is paid in to it. These are usually personal or stakeholder pensions.</P>
+paac.scheme.selection.db.label = <B>Defined benefit</B><P>A pension based on your salary and how long you have worked for your employer. These are always workplace pensions.</P>
 
 ## PAAC TaxYear Text
 paac.0809.taxyear.text = 2008/09
@@ -104,9 +101,8 @@ paac.1516.pension.inputs.period2.description = This is how much you paid into yo
 
 ## Pension Inputs Page
 paac.pension.inputs.pagetitle = Pension Inputs
-paac.pension.inputs.heading = How much did you pay into your defined benefit pension schemes in the tax year {0} to {1}?
-paac.pension.inputs.p1 = This is how much pension input amount you paid into your pension scheme during the pension input period that started earlier in {0} and ended on or before 5 April {1}.
-paac.pension.inputs.p2 = If you are a member of more than one pension scheme, enter the total amount of money you paid into all your pensions in this year.
+paac.pension.inputs.heading = How much was paid into your {0} schemes in the tax year {1} to {2}?
+paac.pension.inputs.description = This is how much was paid into your {0} schemes during the pension input period that started earlier in {1} and ended on or before 5 April {2}.
 
 ## MPAA Trigger Event Yes/No Page
 paac.mpaa.te.yesno.pagetitle = MPAA TE Yes/No
@@ -128,24 +124,36 @@ paac.mpaa.ta.date.page.datehint = For example, 21 6 2015
 paac.mpaa.ta.date.page.datevalidation = Check all date of MPAA Trigger Event fields are complete and only contain numbers
 
 ## Review Amounts Page
-paac.review-amounts.page.heading=Check your answers
-paac.review-amounts.page.title=Check your answers
-paac.review-amounts.button.continue=Confirm and calculate allowances
-paac.review-amounts.paragraph=Please review pension contribution amounts below.
-paac.review-amounts.heading.period=Period
-paac.review-amounts.heading.db=Total defined benefits
-paac.review-amounts.heading.mp=Total defined contributions
-paac.review-amounts.heading.ta=Tapered Allowance
-paac.review-amounts.action.edit=Edit
+paac.review-amounts.page.heading = Check your answers
+paac.review-amounts.page.title = Check your answers
+paac.review-amounts.button.continue = Calculate
+paac.review-amounts.paragraph = Please review pension contribution amounts below.
+paac.review-amounts.heading.period = Year
+paac.review-amounts.heading.triggered = After Flexi-Access?
+paac.review-amounts.heading.db = Total defined benefit
+paac.review-amounts.heading.mp = Total defined contribution
+paac.review-amounts.heading.ta = Tapered Allowance
+paac.review-amounts.action.edit = Edit
 
 ## Results Page
-paac.results.table.col.1=Period
-paac.results.table.col.2=Defined Benefit
-paac.results.table.col.3=Money Purchase
-paac.results.table.col.4=Amount Exceeding the AA
-paac.results.table.col.5=Available Annual Allowance (Incl. Carry Fwd)
-paac.results.table.col.6=Contributions Liable to a Tax Charge
-paac.results.table.col.7=Unused AA Carried Forward to Next Year
-paac.results.table.col.8=Cumulative Carry Forward (3 Years)
-paac.results.link.new.href=new
-paac.results.link.new=Start Again
+paac.results.table.col.1 = Year
+paac.results.table.col.2 = Defined Benefit
+paac.results.table.col.3 = Money Purchase
+paac.results.table.col.4 = Amount Exceeding the AA
+paac.results.table.col.5 = Available Annual Allowance (Incl. Carry Fwd)
+paac.results.table.col.6 = Contributions Liable to a Tax Charge
+paac.results.table.col.7 = Unused AA Carried Forward to Next Year
+paac.results.table.col.8 = Cumulative Carry Forward (3 Years)
+paac.results.link.new.href = new
+paac.results.link.new = Restart Calculator
+
+## Post Trigger Pension Inputs Page
+paac.post-trigger-value.page.heading=How much was paid into your pension scheme after you accessed your pension savings?
+paac.post-trigger-value.page.title=Money Purchase Value After Flexi Access
+paac.post-trigger-value.p1=This is how much was paid into your pension scheme from the day after you accessed your pension savings to the end of the pension input period.
+paac.post-trigger-value.period1.label=2015/16 P1
+paac.post-trigger-value.period2.label=2015/16 P2
+paac.post-trigger-value.error.real.precision=The amount must not be empty or negative. (Amount must have no more than {1} numbers, including {2} decimal places, and should be £0.00 or larger and smaller than £99999999.99.)
+paac.post-trigger-value.error.min={0} amount was too small and must be either £0.00 or greater.
+paac.post-trigger-value.error.max={0} amount was too large and must be either £{1} or less.
+paac.post-trigger-value.error.bounds={0} amount was empty or negative. Please provide an amount between £0.00 and £99999999.99.

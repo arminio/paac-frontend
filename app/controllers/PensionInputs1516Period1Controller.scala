@@ -31,49 +31,23 @@ object PensionInputs1516Period1Controller extends PensionInputs1516Period1Contro
 trait PensionInputs1516Period1Controller extends BaseFrontendController {
   val keystore: KeystoreService
 
-  private val kesystoreDBKey = "definedBenefit_2015_p1"
-  private val kesystoreDCKey = "definedContribution_2015_p1"
-  private var selectedSchemeTypeKey: String = "schemeType"
   private val onSubmitRedirect: Call = routes.YesNo1516Period2Controller.onPageLoad()
 
   val onPageLoad = withSession { implicit request =>
-    val reads: List[Future[(String, String)]] = List(kesystoreDBKey, kesystoreDCKey, selectedSchemeTypeKey).map {
-      (key) =>
-        keystore.read[String](key).map {
-          (value) =>
-            if (key == selectedSchemeTypeKey) {
-              value match {
-                case None => (key, "")
-                case Some(v) => (key, v)
-              }
-            } else {
-              value match {
-                case None => (key, "")
-                case Some("0") => (key, "0.00")
-                case Some(v) => (key, f"${(v.toInt / 100.00)}%2.2f")
-              }
-            }
-        }
-    }
-
-    Future.sequence(reads).map {
-      (fields) =>
-        val fieldsMap = Map[String, String](fields: _*)
-        Ok(views.html.pensionInputs_1516_period1(CalculatorForm.bind(fieldsMap).discardingErrors, fieldsMap(selectedSchemeTypeKey)))
+    keystore.read[String](List(KeystoreService.P1_DB_KEY, KeystoreService.P1_DC_KEY, KeystoreService.DB_FLAG, KeystoreService.DC_FLAG)).map {
+      (fieldsMap) =>
+        Ok(views.html.pensionInputs_1516_period1(CalculatorForm.bind(fieldsMap).discardingErrors,
+                                                 fieldsMap(KeystoreService.DB_FLAG).toBoolean,
+                                                 fieldsMap(KeystoreService.DC_FLAG).toBoolean))
     }
   }
 
   val onSubmit = withSession { implicit request =>
     CalculatorForm.form.bindFromRequest().fold(
-      // TODO: When we do validation story, please forward this to onPageLoad method with selectedSchemeType
+      // TODO: When we do validation story, please forward this to onPageLoad method with selected SchemeType flags
       formWithErrors => { Future.successful(Ok(views.html.pensionInputs_1516_period1(formWithErrors))) },
       input => {
-        List((input.to1516Period1DefinedBenefit, kesystoreDBKey), (input.to1516Period1DefinedContribution,kesystoreDCKey)).foreach {
-          (pair)=>
-            val (dbAmount:Long, dbKey:String) = pair._1.getOrElse((0L,pair._2))
-            keystore.store[String](dbAmount.toString, dbKey)
-        }
-        Future.successful(Redirect(onSubmitRedirect))
+        keystore.save(List(input.to1516Period1DefinedBenefit, input.to1516Period1DefinedContribution), "").map((_)=>Redirect(onSubmitRedirect))
       }
     )
   }

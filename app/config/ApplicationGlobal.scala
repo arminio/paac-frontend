@@ -72,3 +72,15 @@ object AuditFilter extends FrontendAuditFilter with RunMode with AppName {
 
   override def controllerNeedsAuditing(controllerName: String) = ControllerConfiguration.paramsForController(controllerName).needsAuditing
 }
+
+object PaacConfiguration {
+  lazy val config:Option[Configuration] = Play.current.configuration.getConfig("microservice.services.paac")
+
+  def year(): Int = {
+    if (config.flatMap[Boolean](_.getBoolean("dynamic")).getOrElse(false)) {
+      (new java.util.GregorianCalendar()).get(java.util.Calendar.YEAR)
+    } else {
+      config.flatMap[Int](_.getInt("year")).getOrElse(2015)
+    }
+  }
+}

@@ -16,7 +16,6 @@
 
 package controllers
 
-
 import service.KeystoreService
 import play.api.mvc._
 import scala.concurrent.Future
@@ -32,21 +31,19 @@ trait SelectSchemeController  extends BaseFrontendController {
   private val onSubmitRedirect: Call = routes.StaticPageController.onPipTaxYearPageLoad()
 
   val onPageLoad = withSession { implicit request =>
-    Future.successful(Ok(views.html.selectScheme(SelectSchemeForm.form)))
+    keystore.read[String](List(KeystoreService.DB_FLAG, KeystoreService.DC_FLAG)).map {
+      (fieldMap) =>
+        Ok(views.html.selectScheme(SelectSchemeForm.form.bind(fieldMap).discardingErrors))
+    }
   }
 
   val onSubmit = withSession { implicit request =>
-
     SelectSchemeForm.form.bindFromRequest().fold(
-      formWithErrors => { Future.successful(Ok(views.html.selectScheme(SelectSchemeForm.form))) },
+      formWithErrors => Future.successful(Ok(views.html.selectScheme(SelectSchemeForm.form))),
       input => {
-        keystore.store[String](input, SelectSchemeForm.schemeType)
-        Future.successful(Redirect(onSubmitRedirect))
+        keystore.save(List((input.definedBenefit.toString, KeystoreService.DB_FLAG),
+                           (input.definedContribution.toString, KeystoreService.DC_FLAG))).map((_)=> Redirect(onSubmitRedirect))
       }
     )
   }
-
 }
-
-
-
