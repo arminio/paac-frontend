@@ -16,25 +16,21 @@
 
 package controllers
 
-import org.scalatest.BeforeAndAfterAll
-import org.scalatest.mock._
+import java.util.UUID
+
 import connector._
 import models._
-import play.api.libs.json._
+import org.scalatest.BeforeAndAfterAll
 import play.api.Play
-import play.api.mvc.Result
+import play.api.mvc.{Request, Result}
 import play.api.test.Helpers._
-import play.api.test.{FakeRequest, FakeApplication}
-import uk.gov.hmrc.play.test.UnitSpec
+import play.api.test.{FakeApplication, FakeRequest}
 import service._
-import play.api.mvc.{AnyContent, Request}
-import uk.gov.hmrc.http.cache.client.SessionCache
 import uk.gov.hmrc.play.http.{HeaderCarrier, SessionKeys}
-import play.api.libs.concurrent.Execution.Implicits._
-import scala.concurrent.{Future, Await}
+import uk.gov.hmrc.play.test.UnitSpec
+
 import scala.concurrent.duration._
-import uk.gov.hmrc.play.http.SessionKeys
-import java.util.UUID
+import scala.concurrent.{Await, Future}
 
 class ReviewTotalAmountsControllerSpec extends UnitSpec with BeforeAndAfterAll {
   val app = FakeApplication()
@@ -131,7 +127,7 @@ class ReviewTotalAmountsControllerSpec extends UnitSpec with BeforeAndAfterAll {
 
         // check
         val values: Map[String,String] = Await.result(result, Duration(1000,MILLISECONDS))
-        values should contain key ("definedBenefit_2011") 
+        values should contain key ("definedBenefit_2011")
         values should contain value ("12000.00")
       }
 
@@ -161,7 +157,7 @@ class ReviewTotalAmountsControllerSpec extends UnitSpec with BeforeAndAfterAll {
 
         // check
         val values: Map[String,String] = Await.result(result, Duration(1000,MILLISECONDS))
-        values should contain key ("definedContribution_2015_p1") 
+        values should contain key ("definedContribution_2015_p1")
         values should contain value ("1234.50")
       }
 

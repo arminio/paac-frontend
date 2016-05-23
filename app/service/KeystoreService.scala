@@ -79,7 +79,7 @@ trait KeystoreService {
   def convert[T : ClassTag](value: AnyRef): Option[T] = {
     val ct = implicitly[ClassTag[T]]
     val typeStr = ct.toString()
-    value match {      
+    value match {
       case ct(x) => Some(x)
       case x if typeStr == "java.lang.String" => Some(x.toString().asInstanceOf[T])
       case _ => None
@@ -89,7 +89,7 @@ trait KeystoreService {
   def convert[T : ClassTag](value: AnyRef, defaultT: T): T = {
     val ct = implicitly[ClassTag[T]]
     val typeStr = ct.toString()
-    value match {      
+    value match {
       case ct(x) => x
       case x if typeStr == "java.lang.String" => x.toString().asInstanceOf[T]
       case _ => defaultT

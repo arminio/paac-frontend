@@ -16,12 +16,10 @@
 
 package controllers
 
-import service.KeystoreService
-import play.api.mvc._
-import scala.concurrent.Future
 import form.CalculatorForm
-import models._
-import form._
+import service.KeystoreService
+
+import scala.concurrent.Future
 
 object PostTriggerPensionInputsController extends PostTriggerPensionInputsController {
   override val keystore: KeystoreService = KeystoreService
@@ -45,14 +43,14 @@ trait PostTriggerPensionInputsController extends RedirectController {
 
   val onSubmit = withSession { implicit request =>
     CalculatorForm.form.bindFromRequest().fold(
-      formWithErrors => { 
+      formWithErrors => {
         val f = CalculatorForm.nonValidatingForm.bindFromRequest()
-        Future.successful( Ok(views.html.postTriggerPensionInputs(formWithErrors, f.get)) )
+        Future.successful( Ok(views.html.postTriggerPensionInputs(formWithErrors, f.get)))
       },
       input => {
         val triggerP1 = input.triggerDatePeriod.get.isPeriod1
         val triggerP2 = input.triggerDatePeriod.get.isPeriod2
-        if ((triggerP1 && input.year2015.postTriggerDcAmount2015P1 == None) || 
+        if ((triggerP1 && input.year2015.postTriggerDcAmount2015P1 == None) ||
             (triggerP2 && input.year2015.postTriggerDcAmount2015P2 == None)
            ) {
           val f = CalculatorForm.nonValidatingForm.bindFromRequest()
@@ -60,7 +58,7 @@ trait PostTriggerPensionInputsController extends RedirectController {
         } else {
           val toSave: Option[(Long,String)] = if (triggerP1) { input.toP1TriggerDefinedContribution } else { input.toP2TriggerDefinedContribution }
           keystore.save[String,Long](List(toSave), "").flatMap {
-            (a) => 
+            (a) =>
             wheretoNext[String](Redirect(routes.ReviewTotalAmountsController.onPageLoad))
           }
         }
