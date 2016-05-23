@@ -59,7 +59,7 @@ backLink = Some((controllers.routes.PensionInputsController.onPageLoad.url,Messa
     </thead>
     <tbody>
     @defining(java.text.NumberFormat.getCurrencyInstance(java.util.Locale.UK)) { currencyFormatter =>
-    @for(contribution <- reviewForm.get.toPageValues()) {
+    @for(contribution <- reviewForm.get.toPageValues().reverse) {
         @defining(contribution.amounts.getOrElse(InputAmounts())) { amounts =>
         @if(contribution.isEmpty() == false && (triggerContribution == None || (triggerContribution != None && triggerContribution.get != contribution))) {
         <tr>

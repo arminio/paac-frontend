@@ -16,15 +16,13 @@
 
 package controllers
 
-import uk.gov.hmrc.play.frontend.controller.FrontendController
-import uk.gov.hmrc.play.http.{HeaderCarrier, HttpPost, HttpResponse}
-
-import play.api.mvc._
-import scala.concurrent.duration.Duration
-import scala.concurrent.{Await, Future}
-import form._
-import service._
 import connector.CalculatorConnector
+import form._
+import play.api.mvc._
+import service._
+import uk.gov.hmrc.play.http.HeaderCarrier
+
+import scala.concurrent.Future
 
 object ReviewTotalAmountsController extends ReviewTotalAmountsController {
   override val keystore: KeystoreService = KeystoreService
@@ -38,20 +36,21 @@ trait ReviewTotalAmountsController extends BaseFrontendController {
   def fetchAmounts()(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[Map[String,String]] = {
     def yearAmountKeys(year: Int) : List[String] = year match {
       case y if y < 2015 =>
-        List(KeystoreService.DB_PREFIX+y, KeystoreService.DC_PREFIX+y)
-      case y if y == 2015 => 
-        List(KeystoreService.P1_DB_KEY, 
-             KeystoreService.P1_DC_KEY, 
-             KeystoreService.P2_DB_KEY, 
-             KeystoreService.P2_DC_KEY, 
-             KeystoreService.P1_TRIGGER_DC_KEY, 
+        List(KeystoreService.DB_PREFIX + y, KeystoreService.DC_PREFIX + y)
+      case y if y == 2015 =>
+        List(KeystoreService.P1_DB_KEY,
+             KeystoreService.P1_DC_KEY,
+             KeystoreService.P2_DB_KEY,
+             KeystoreService.P2_DC_KEY,
+             KeystoreService.P1_TRIGGER_DC_KEY,
              KeystoreService.P2_TRIGGER_DC_KEY)
-      case y if y > 2015 => 
-        List(KeystoreService.DB_PREFIX+y, KeystoreService.DC_PREFIX+y, KeystoreService.TH_PREFIX+y, KeystoreService.AI_PREFIX+y, KeystoreService.TA_PREFIX+y)
+      case y if y > 2015 =>
+        List(KeystoreService.DB_PREFIX + y, KeystoreService.DC_PREFIX + y, KeystoreService.TH_PREFIX + y,
+          KeystoreService.AI_PREFIX + y, KeystoreService.TA_PREFIX + y)
       }
 
     val currentYear = config.PaacConfiguration.year()
-    keystore.read[String](List.range(2006, currentYear+1).flatMap(yearAmountKeys(_)))
+    keystore.read[String](List.range(2006, currentYear + 1).flatMap(yearAmountKeys(_)))
   }
 
   val onPageLoad = withSession { implicit request =>
@@ -96,7 +95,8 @@ trait ReviewTotalAmountsController extends BaseFrontendController {
             val f = CalculatorForm.bind(amounts, true)
             val model = f.get
             val c = model.toContributions.find((c)=>c.amounts != None && c.amounts.get.triggered != None && c.amounts.get.triggered.get == true)
-            Future.successful(Ok(views.html.review_amounts(formWithErrors,  model.hasDefinedBenefits(), model.hasDefinedContributions(), model.hasTriggerDate(), c)))
+            Future.successful(Ok(views.html.review_amounts(formWithErrors, model.hasDefinedBenefits(),
+              model.hasDefinedContributions(), model.hasTriggerDate(), c)))
           },
           input => {
             val contributions = input.toContributions()

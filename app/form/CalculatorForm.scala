@@ -19,11 +19,6 @@ package form
 import models._
 import play.api.data.Form
 import play.api.data.Forms._
-import play.api.data.validation.Constraint
-import scala.math._
-import play.api.data.validation._
-import play.api.i18n.Messages
-import play.api.mvc._
 import service.KeystoreService
 
 object CalculatorForm {
@@ -38,7 +33,7 @@ object CalculatorForm {
   val CY6 = THIS_YEAR-6
   val CY7 = THIS_YEAR-7
   val CY8 = THIS_YEAR-8
-  val validator = optional(bigDecimal(10,2)).verifying("error.bounds",value=>if (value.isDefined) value.get.longValue >= 0 && value.get.longValue < 100000000 else true)
+  val validator = optional(bigDecimal(10,2)).verifying("error.bounds", value=> if (value.isDefined) value.get.longValue >= 0 && value.get.longValue < 100000000 else true)
 
   val form: Form[CalculatorFormType] = Form(
     mapping("definedBenefits" -> mapping(s"amount_${CY0}"->validator,
@@ -106,11 +101,11 @@ object CalculatorForm {
                         ("year2015.definedContribution_2015_p2", data.getOrElse("dcAmount2015P2", data.getOrElse(KeystoreService.P2_DC_KEY,""))),
                         ("year2015.postTriggerDcAmount2015P1", data.getOrElse(KeystoreService.P1_TRIGGER_DC_KEY,"")),
                         ("year2015.postTriggerDcAmount2015P2", data.getOrElse(KeystoreService.P2_TRIGGER_DC_KEY,"")))
-    val yearAmounts = List.range(THIS_YEAR-8, THIS_YEAR+1).flatMap {
+    val yearAmounts = List.range(THIS_YEAR-8, THIS_YEAR + 1).flatMap {
       (year)=>
       if (year != 2015){
-        List((s"definedBenefits.amount_${year}", data.getOrElse("definedBenefit_"+year, "")),
-             (s"definedContributions.amount_${year}", data.getOrElse("definedContribution_"+year, "")))
+        List((s"definedBenefits.amount_${year}", data.getOrElse("definedBenefit_" + year, "")),
+             (s"definedContributions.amount_${year}", data.getOrElse("definedContribution_" + year, "")))
       } else {
         year2015
       }

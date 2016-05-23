@@ -69,9 +69,9 @@ case class ExtendedSummaryFields(chargableAmount: Long = 0,
 object Summary {
   implicit val summaryResultWrites: Writes[Summary] = (
     (JsPath \ "chargableAmount").write[Long] and
-    (JsPath \ "exceedingAAAmount").write[Long] and 
+    (JsPath \ "exceedingAAAmount").write[Long] and
     (JsPath \ "availableAllowance").write[Long] and
-    (JsPath \ "unusedAllowance").write[Long] and 
+    (JsPath \ "unusedAllowance").write[Long] and
     (JsPath \ "availableAAWithCF").write[Long] and
     (JsPath \ "availableAAWithCCF").write[Long] and
     (JsPath \ "unusedAllowanceCF").write[Long]
@@ -111,7 +111,7 @@ object Summary {
 object TaxYearResults {
   implicit val summaryWrites: Writes[TaxYearResults] = (
     (JsPath \ "input").write[Contribution] and
-    (JsPath \ "summaryResult").write[Summary] 
+    (JsPath \ "summaryResult").write[Summary]
   )(unlift(TaxYearResults.unapply))
 
   implicit val summaryReads: Reads[TaxYearResults] = (

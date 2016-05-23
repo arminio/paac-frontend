@@ -16,12 +16,9 @@
 
 package models
 
-import form.CalculatorForm
 import org.scalatest.BeforeAndAfterAll
 import play.api.Play
-import play.api.test.Helpers._
 import play.api.test._
-import play.api.mvc._
 
 trait Year2016 extends models.ThisYear {
   override def THIS_YEAR = 2016
@@ -214,9 +211,11 @@ class CalculatorFormFieldSpec extends ModelSpec with BeforeAndAfterAll {
   "CalculatorFormFields" should {
     "convert values to pence amounts" in {
       // set up
-      val input = CalculatorFormFields(Amounts(Some(50.50), Some(90.50), Some(100.50), Some(200.50), Some(300.50), Some(400.50), Some(500.50), Some(600.50)), 
-                                       Amounts(Some(700.50), Some(800.50), Some(900.50), Some(1000.50), Some(1100.50), Some(1200.50), Some(1300.50), Some(1400.50)),
-                                       Year2015Amounts(Some(1500.50), Some(1600.50), Some(1700.50), Some(1800.50), None, None), None)
+      val input = CalculatorFormFields(Amounts(Some(50.50), Some(90.50), Some(100.50), Some(200.50), Some(300.50),
+        Some(400.50), Some(500.50), Some(600.50)),
+        Amounts(Some(700.50), Some(800.50), Some(900.50), Some(1000.50), Some(1100.50),
+          Some(1200.50), Some(1300.50), Some(1400.50)),
+        Year2015Amounts(Some(1700.50), Some(1600.50), Some(1500.50), Some(1800.50), None, None), None)
 
       // test
       val maybeTuple = input.toDefinedBenefit(config.PaacConfiguration.year())
@@ -224,7 +223,7 @@ class CalculatorFormFieldSpec extends ModelSpec with BeforeAndAfterAll {
       // check
       maybeTuple should not be None
       maybeTuple.get._1 shouldBe 150050L
-      maybeTuple.get._2 shouldBe "definedBenefit_"+config.PaacConfiguration.year()
+      maybeTuple.get._2 shouldBe "definedBenefit_" + config.PaacConfiguration.year()
     }
   }
 
@@ -235,8 +234,8 @@ class CalculatorFormFieldSpec extends ModelSpec with BeforeAndAfterAll {
       val definedContributions = Amounts(Some(BigDecimal(456)))
       val year2015 = Year2015Amounts()
       val triggerDate = None
-      val formFields = new CalculatorFormFields(definedBenefits, 
-                                                definedContributions, 
+      val formFields = new CalculatorFormFields(definedBenefits,
+                                                definedContributions,
                                                 year2015,
                                                 triggerDate) with Year2016
 
@@ -265,8 +264,8 @@ class CalculatorFormFieldSpec extends ModelSpec with BeforeAndAfterAll {
       val definedContributions = Amounts(Some(BigDecimal(456)))
       val year2015 = Year2015Amounts(None, Some(444), None, Some(555), Some(888), None)
       val triggerDate = Some("2015-4-12")
-      val formFields = new CalculatorFormFields(definedBenefits, 
-                                                definedContributions, 
+      val formFields = new CalculatorFormFields(definedBenefits,
+                                                definedContributions,
                                                 year2015,
                                                 triggerDate) with Year2016
 
@@ -298,10 +297,10 @@ class CalculatorFormFieldSpec extends ModelSpec with BeforeAndAfterAll {
       // set up
       val definedBenefits = Amounts(Some(BigDecimal(123)))
       val definedContributions = Amounts(Some(BigDecimal(456)))
-      val year2015 = Year2015Amounts(None, Some(444), None, Some(555), None, Some(888))
+      val year2015 = Year2015Amounts(None, Some(444), None, Some(888), None, Some(555))
       val triggerDate = Some("2015-11-12")
-      val formFields = new CalculatorFormFields(definedBenefits, 
-                                                definedContributions, 
+      val formFields = new CalculatorFormFields(definedBenefits,
+                                                definedContributions,
                                                 year2015,
                                                 triggerDate) with Year2016
 
@@ -321,13 +320,13 @@ class CalculatorFormFieldSpec extends ModelSpec with BeforeAndAfterAll {
       contributions(8).taxPeriodStart.year shouldBe 2015
       contributions(9).taxPeriodStart.year shouldBe 2015
 
-      contributions(7).amounts.get.moneyPurchase.get shouldBe 44400
+      contributions(7).amounts.get.moneyPurchase.get shouldBe 88800
       contributions(7).amounts.get.triggered.get shouldBe false
       contributions(8).amounts.get.moneyPurchase.get shouldBe 55500
-      contributions(8).amounts.get.triggered.get shouldBe false
-      contributions(9).amounts.get.moneyPurchase.get shouldBe 88800
-      contributions(9).amounts.get.triggered.get shouldBe true
-    }    
+      contributions(8).amounts.get.triggered.get shouldBe true
+      contributions(9).amounts.get.moneyPurchase.get shouldBe 44400
+      contributions(9).amounts.get.triggered.get shouldBe false
+    }
 
     "return contributions for post trigger period 1 and 2 moneyPurchase amounts when trigger date is the start of period 1" in {
       // set up
@@ -335,8 +334,8 @@ class CalculatorFormFieldSpec extends ModelSpec with BeforeAndAfterAll {
       val definedContributions = Amounts(Some(BigDecimal(456)))
       val year2015 = Year2015Amounts(None, Some(444), None, Some(555), Some(888), None)
       val triggerDate = Some("2015-4-6")
-      val formFields = new CalculatorFormFields(definedBenefits, 
-                                                definedContributions, 
+      val formFields = new CalculatorFormFields(definedBenefits,
+                                                definedContributions,
                                                 year2015,
                                                 triggerDate) with Year2016
 
@@ -368,8 +367,8 @@ class CalculatorFormFieldSpec extends ModelSpec with BeforeAndAfterAll {
       val definedContributions = Amounts(Some(BigDecimal(456)))
       val year2015 = Year2015Amounts(None, Some(444), None, Some(555), None, Some(888))
       val triggerDate = Some("2015-7-9")
-      val formFields = new CalculatorFormFields(definedBenefits, 
-                                                definedContributions, 
+      val formFields = new CalculatorFormFields(definedBenefits,
+                                                definedContributions,
                                                 year2015,
                                                 triggerDate) with Year2016
 
@@ -389,10 +388,10 @@ class CalculatorFormFieldSpec extends ModelSpec with BeforeAndAfterAll {
       contributions(8).taxPeriodStart.year shouldBe 2015
       contributions(9).taxPeriodStart.year shouldBe 2016
 
-      contributions(7).amounts.get.moneyPurchase.get shouldBe 44400
-      contributions(7).amounts.get.triggered.get shouldBe false
-      contributions(8).amounts.get.moneyPurchase.get shouldBe 88800
-      contributions(8).amounts.get.triggered.get shouldBe true
+      contributions(7).amounts.get.moneyPurchase.get shouldBe 88800
+      contributions(7).amounts.get.triggered.get shouldBe true
+      contributions(8).amounts.get.moneyPurchase.get shouldBe 44400
+      contributions(8).amounts.get.triggered.get shouldBe false
     }
 
 
@@ -402,8 +401,8 @@ class CalculatorFormFieldSpec extends ModelSpec with BeforeAndAfterAll {
       val definedContributions = Amounts(Some(BigDecimal(456)))
       val year2015 = Year2015Amounts(None, Some(444), None, Some(555), None, None)
       val triggerDate = None
-      val formFields = new CalculatorFormFields(definedBenefits, 
-                                                definedContributions, 
+      val formFields = new CalculatorFormFields(definedBenefits,
+                                                definedContributions,
                                                 year2015,
                                                 triggerDate) with Year2016
 
@@ -423,9 +422,9 @@ class CalculatorFormFieldSpec extends ModelSpec with BeforeAndAfterAll {
       contributions(8).taxPeriodStart.year shouldBe 2015
       contributions(9).taxPeriodStart.year shouldBe 2016
 
-      contributions(7).amounts.get.moneyPurchase.get shouldBe 44400
+      contributions(7).amounts.get.moneyPurchase.get shouldBe 55500
       contributions(7).amounts.get.triggered.get shouldBe false
-      contributions(8).amounts.get.moneyPurchase.get shouldBe 55500
+      contributions(8).amounts.get.moneyPurchase.get shouldBe 44400
       contributions(8).amounts.get.triggered.get shouldBe false
     }
 
@@ -435,8 +434,8 @@ class CalculatorFormFieldSpec extends ModelSpec with BeforeAndAfterAll {
       val definedContributions = Amounts(Some(BigDecimal(456)))
       val year2015 = Year2015Amounts(Some(444), None, Some(555), None, None, None)
       val triggerDate = None
-      val formFields = new CalculatorFormFields(definedBenefits, 
-                                                definedContributions, 
+      val formFields = new CalculatorFormFields(definedBenefits,
+                                                definedContributions,
                                                 year2015,
                                                 triggerDate) with Year2016
 
@@ -456,9 +455,9 @@ class CalculatorFormFieldSpec extends ModelSpec with BeforeAndAfterAll {
       contributions(8).taxPeriodStart.year shouldBe 2015
       contributions(9).taxPeriodStart.year shouldBe 2016
 
-      contributions(7).amounts.get.definedBenefit.get shouldBe 44400
+      contributions(7).amounts.get.definedBenefit.get shouldBe 55500
       contributions(7).amounts.get.triggered.get shouldBe false
-      contributions(8).amounts.get.definedBenefit.get shouldBe 55500
+      contributions(8).amounts.get.definedBenefit.get shouldBe 44400
       contributions(8).amounts.get.triggered.get shouldBe false
     }
 
@@ -468,8 +467,8 @@ class CalculatorFormFieldSpec extends ModelSpec with BeforeAndAfterAll {
       val definedContributions = Amounts(Some(BigDecimal(456)))
       val year2015 = Year2015Amounts(Some(444), None, Some(555), None, None, None)
       val triggerDate = Some("2020-11-02")
-      val formFields = new CalculatorFormFields(definedBenefits, 
-                                                definedContributions, 
+      val formFields = new CalculatorFormFields(definedBenefits,
+                                                definedContributions,
                                                 year2015,
                                                 triggerDate) with Year2016
 
@@ -499,16 +498,16 @@ class CalculatorFormFieldSpec extends ModelSpec with BeforeAndAfterAll {
       val definedBenefits = Amounts()
       val definedContributions = Amounts()
       val triggerDate = None
-      val formFields1 = new CalculatorFormFields(definedBenefits, 
-                                                definedContributions, 
+      val formFields1 = new CalculatorFormFields(definedBenefits,
+                                                definedContributions,
                                                 year2015a,
                                                 triggerDate) with Year2016
-      val formFields2 = new CalculatorFormFields(definedBenefits, 
-                                                definedContributions, 
+      val formFields2 = new CalculatorFormFields(definedBenefits,
+                                                definedContributions,
                                                 year2015b,
                                                 triggerDate) with Year2016
-      val formFields3 = new CalculatorFormFields(Amounts(Some(123)), 
-                                                definedContributions, 
+      val formFields3 = new CalculatorFormFields(Amounts(Some(123)),
+                                                definedContributions,
                                                 Year2015Amounts(),
                                                 triggerDate) with Year2016
 
@@ -528,8 +527,8 @@ class CalculatorFormFieldSpec extends ModelSpec with BeforeAndAfterAll {
     "return true if any trigger date is set" in {
       // set up
       val triggerDate = Some("2015-1-3")
-      val formFields1 = new CalculatorFormFields(Amounts(), 
-                                                Amounts(), 
+      val formFields1 = new CalculatorFormFields(Amounts(),
+                                                Amounts(),
                                                 Year2015Amounts(),
                                                 triggerDate) with Year2016
 
@@ -543,8 +542,8 @@ class CalculatorFormFieldSpec extends ModelSpec with BeforeAndAfterAll {
     "return false if any trigger date is set but is empty" in {
       // set up
       val triggerDate = Some("")
-      val formFields1 = new CalculatorFormFields(Amounts(), 
-                                                Amounts(), 
+      val formFields1 = new CalculatorFormFields(Amounts(),
+                                                Amounts(),
                                                 Year2015Amounts(),
                                                 triggerDate) with Year2016
 
@@ -558,8 +557,8 @@ class CalculatorFormFieldSpec extends ModelSpec with BeforeAndAfterAll {
     "return false if any trigger date is not set" in {
       // set up
       val triggerDate = None
-      val formFields1 = new CalculatorFormFields(Amounts(), 
-                                                Amounts(), 
+      val formFields1 = new CalculatorFormFields(Amounts(),
+                                                Amounts(),
                                                 Year2015Amounts(),
                                                 triggerDate) with Year2016
 
@@ -575,8 +574,8 @@ class CalculatorFormFieldSpec extends ModelSpec with BeforeAndAfterAll {
     "return None if no period 1 trigger amount" in {
       // set up
       val triggerDate = None
-      val formFields1 = new CalculatorFormFields(Amounts(), 
-                                                Amounts(), 
+      val formFields1 = new CalculatorFormFields(Amounts(),
+                                                Amounts(),
                                                 Year2015Amounts(None, None, None, None, None, None),
                                                 triggerDate) with Year2016
 
@@ -590,8 +589,8 @@ class CalculatorFormFieldSpec extends ModelSpec with BeforeAndAfterAll {
     "return Some value in pence if period 1 trigger amount given" in {
       // set up
       val triggerDate = None
-      val formFields1 = new CalculatorFormFields(Amounts(), 
-                                                Amounts(), 
+      val formFields1 = new CalculatorFormFields(Amounts(),
+                                                Amounts(),
                                                 Year2015Amounts(None, None, None, None, Some(BigDecimal(123)), None),
                                                 triggerDate) with Year2016
 
@@ -609,8 +608,8 @@ class CalculatorFormFieldSpec extends ModelSpec with BeforeAndAfterAll {
     "return None if no period 2 trigger amount" in {
       // set up
       val triggerDate = None
-      val formFields1 = new CalculatorFormFields(Amounts(), 
-                                                Amounts(), 
+      val formFields1 = new CalculatorFormFields(Amounts(),
+                                                Amounts(),
                                                 Year2015Amounts(None, None, None, None, None, None),
                                                 triggerDate) with Year2016
 
@@ -624,8 +623,8 @@ class CalculatorFormFieldSpec extends ModelSpec with BeforeAndAfterAll {
     "return Some value in pence if period 2 trigger amount given" in {
       // set up
       val triggerDate = None
-      val formFields1 = new CalculatorFormFields(Amounts(), 
-                                                Amounts(), 
+      val formFields1 = new CalculatorFormFields(Amounts(),
+                                                Amounts(),
                                                 Year2015Amounts(None, None, None, None, None, Some(BigDecimal(123))),
                                                 triggerDate) with Year2016
 
@@ -646,8 +645,8 @@ class CalculatorFormFieldSpec extends ModelSpec with BeforeAndAfterAll {
       val definedContributions = Amounts(Some(BigDecimal(456)))
       val year2015 = Year2015Amounts(Some(444), None, Some(555), None, None, None)
       val triggerDate = None
-      val formFields = new CalculatorFormFields(definedBenefits, 
-                                                definedContributions, 
+      val formFields = new CalculatorFormFields(definedBenefits,
+                                                definedContributions,
                                                 year2015,
                                                 triggerDate) with Year2016
       def first = { (c:Contribution) => c.amounts.isDefined && c.amounts.get.moneyPurchase.isDefined && c.amounts.get.moneyPurchase.get == 45600 }
@@ -667,8 +666,8 @@ class CalculatorFormFieldSpec extends ModelSpec with BeforeAndAfterAll {
       val definedContributions = Amounts(Some(BigDecimal(456)))
       val year2015 = Year2015Amounts()
       val triggerDate = None
-      val formFields = new CalculatorFormFields(definedBenefits, 
-                                                definedContributions, 
+      val formFields = new CalculatorFormFields(definedBenefits,
+                                                definedContributions,
                                                 year2015,
                                                 triggerDate) with Year2016
 
@@ -692,8 +691,8 @@ class CalculatorFormFieldSpec extends ModelSpec with BeforeAndAfterAll {
   "triggerDatePeriod" should {
     "return period 1 contribution" in {
       // set up
-      val formFields = new CalculatorFormFields(Amounts(), 
-                                                Amounts(), 
+      val formFields = new CalculatorFormFields(Amounts(),
+                                                Amounts(),
                                                 Year2015Amounts(),
                                                 Some("2015-4-15")) with Year2016
 

@@ -33,9 +33,9 @@ object TaxYearSelectionController extends TaxYearSelectionController {
 
     if (kkey.length() > 0) {
       val year: String = ""
-      keystore.save[String](List((kkey, KeystoreService.SELECTED_INPUT_YEARS_KEY), (year, KeystoreService.CURRENT_INPUT_YEAR_KEY))).flatMap{ 
-        _ => 
-        wheretoNext[String](Redirect(routes.StartPageController.startPage())) 
+      keystore.save[String](List((kkey, KeystoreService.SELECTED_INPUT_YEARS_KEY), (year, KeystoreService.CURRENT_INPUT_YEAR_KEY))).flatMap{
+        _ =>
+        wheretoNext[String](Redirect(routes.StartPageController.startPage()))
       }
     } else {
       Future.successful(Ok(views.html.taxyearselection(Array[String](), true)))
