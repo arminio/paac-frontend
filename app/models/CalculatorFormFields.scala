@@ -103,19 +103,22 @@ case class CalculatorFormFields(definedBenefits: Amounts,
     List.range(settings.START_YEAR, settings.THIS_YEAR + 1).flatMap {
       (year:Int) =>
       if (year == 2015) {
-        if (triggerDate != None) {
+        if (triggerDate.isDefined) {
           val c = triggerDatePeriod().get
           if (c.isPeriod1) {
-            val preList = if (c.taxPeriodStart == PensionPeriod.PERIOD_1_2015_START) {
-              List (Contribution(PensionPeriod.PERIOD_1_2015_START, PensionPeriod.PERIOD_1_2015_END,Some(InputAmounts(Some(0), get("ptDcAmount2015P1"), None, Some(true)))))
+            val preAndPotList = if (c.taxPeriodStart == PensionPeriod.PERIOD_1_2015_START) {
+              List (Contribution(PensionPeriod.PERIOD_1_2015_START, PensionPeriod.PERIOD_1_2015_END,Some(InputAmounts(Some(0), get("ptDcAmount2015P1"), None, Some(true)))),
+                Contribution(PensionPeriod.PERIOD_2_2015_START, PensionPeriod.PERIOD_2_2015_END, toInputAmounts("amount2015P2","dcAmount2015P2").map(_.copy(triggered=Some(true)))))
             } else {
               val date = c.taxPeriodStart.toCalendar
               date.add(java.util.Calendar.DAY_OF_MONTH, - 1)
               val tp = PensionPeriod(date.get(java.util.Calendar.YEAR), date.get(java.util.Calendar.MONTH) + 1, date.get(java.util.Calendar.DAY_OF_MONTH))
-              List(Contribution(PensionPeriod.PERIOD_1_2015_START, tp, toInputAmounts("amount2015P1","dcAmount2015P1").map(_.copy(triggered = Some(false)))),
-                   Contribution(c.taxPeriodStart, PensionPeriod.PERIOD_1_2015_END, Some(InputAmounts(Some(0), get("ptDcAmount2015P1"), None, Some(true)))))
+              List(Contribution(c.taxPeriodStart, PensionPeriod.PERIOD_1_2015_END, Some(InputAmounts(Some(0), get("ptDcAmount2015P1"), None, Some(true)))),
+                Contribution(PensionPeriod.PERIOD_2_2015_START, PensionPeriod.PERIOD_2_2015_END, toInputAmounts("amount2015P2","dcAmount2015P2").map(_.copy(triggered=Some(true)))),
+                Contribution(PensionPeriod.PERIOD_1_2015_START, tp, toInputAmounts("amount2015P1","dcAmount2015P1").map(_.copy(triggered = Some(false))))
+              )
             }
-            preList ++ List(Contribution(PensionPeriod.PERIOD_2_2015_START, PensionPeriod.PERIOD_2_2015_END, toInputAmounts("amount2015P2","dcAmount2015P2").map(_.copy(triggered=Some(true)))))
+            preAndPotList
           } else if (c.isPeriod2) {
             val preList = List(Contribution(PensionPeriod.PERIOD_1_2015_START, PensionPeriod.PERIOD_1_2015_END, toInputAmounts("amount2015P1","dcAmount2015P1").map(_.copy(triggered=Some(false)))))
             val postList = if (c.taxPeriodStart == PensionPeriod.PERIOD_2_2015_START) {
