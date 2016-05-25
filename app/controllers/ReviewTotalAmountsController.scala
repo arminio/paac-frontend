@@ -29,7 +29,7 @@ object ReviewTotalAmountsController extends ReviewTotalAmountsController {
   override val connector: CalculatorConnector = CalculatorConnector
 }
 
-trait ReviewTotalAmountsController extends BaseFrontendController {
+trait ReviewTotalAmountsController extends RedirectController {
   val keystore: KeystoreService
   val connector: CalculatorConnector
 
@@ -113,5 +113,9 @@ trait ReviewTotalAmountsController extends BaseFrontendController {
         )
       }
     }
+  }
+
+  val onBack = withSession { implicit request =>
+    wheretoBack[String](Redirect(routes.PensionInputsController.onPageLoad))
   }
 }
