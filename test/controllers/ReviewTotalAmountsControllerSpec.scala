@@ -80,6 +80,8 @@ class ReviewTotalAmountsControllerSpec extends UnitSpec with BeforeAndAfterAll {
                     "definedBenefit_2012" -> "1100000",
                     "definedBenefit_2013" -> "1200000",
                     "definedBenefit_2014" -> "1300000",
+                    "definedBenefit" -> "true",
+                    "definedContribution" -> "true",
                     SessionKeys.sessionId -> SESSION_ID)
       override def store[T](data: T, key: String)
                   (implicit hc: HeaderCarrier,
