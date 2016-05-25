@@ -101,7 +101,7 @@ trait ReviewTotalAmountsController extends BaseFrontendController {
           input => {
             val contributions = input.toContributions()
             connector.connectToPAACService(contributions).flatMap{
-              response => 
+              response =>
               keystore.read[String](List(KeystoreService.DB_FLAG, KeystoreService.DC_FLAG)).flatMap {
                 (fieldMap) =>
                 val triggerAmountRow = response.find(_.input.amounts.getOrElse(models.InputAmounts()).triggered.getOrElse(false))
