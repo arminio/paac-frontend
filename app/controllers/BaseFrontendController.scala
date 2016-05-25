@@ -38,6 +38,56 @@ trait SessionProvider {
 trait RedirectController extends BaseFrontendController {
   def keystore: KeystoreService
 
+  def wheretoBack[T](defaultRoute: Result)(implicit hc: HeaderCarrier, format: play.api.libs.json.Format[T], request: Request[Any]) : Future[Result] = {
+    implicit val marshall = KeystoreService.toStringPair _
+
+    def previous(currentYear: String, selectedYears: String): Int = {
+      val syears = selectedYears.split(",")
+      val cy = currentYear.toInt
+      if (cy == -1) {
+        if (syears.size > 0 && selectedYears.length > 0){
+          syears.reverse(0).toInt
+        } else {
+          -2
+        }
+      } else {
+        val i = syears.indexOf(currentYear) - 1
+        if (i < 0) {
+          -2
+        } else {
+          syears(i).toInt
+        }
+      }
+    }
+
+    keystore.read(List(CURRENT_INPUT_YEAR_KEY, SELECTED_INPUT_YEARS_KEY, TE_YES_NO_KEY)).flatMap {
+      (fieldsMap) =>
+      val currentYear = fieldsMap(CURRENT_INPUT_YEAR_KEY)
+      val selectedYears = fieldsMap(SELECTED_INPUT_YEARS_KEY)
+      val previousYear = previous(currentYear, selectedYears)
+      println("-"+previousYear.toString())
+      // Save next year value to keystore with CurrentYear
+      keystore.store(previousYear.toString(), KeystoreService.CURRENT_INPUT_YEAR_KEY).map {
+        (values) =>
+        //redirect to nextYear Controller
+        if (previousYear < 0) {
+          defaultRoute
+        } else if (previousYear > 2015) {
+          //2016
+          Redirect(routes.StartPageController.startPage())
+        } else if (previousYear == 2015) {
+          if (fieldsMap(TE_YES_NO_KEY) == "Yes") {
+            Redirect(routes.PostTriggerPensionInputsController.onPageLoad())
+          } else {
+            Redirect(routes.YesNoMPAATriggerEventAmountController.onPageLoad())
+          }
+        } else {
+          Redirect(routes.PensionInputsController.onPageLoad())
+        }
+      }
+    }
+  }
+
   def wheretoNext[T](defaultRoute: Result)(implicit hc: HeaderCarrier, format: play.api.libs.json.Format[T], request: Request[Any]) : Future[Result] = {
     implicit val marshall = KeystoreService.toStringPair _
 
@@ -64,7 +114,7 @@ trait RedirectController extends BaseFrontendController {
       val currentYear = fieldsMap(KeystoreService.CURRENT_INPUT_YEAR_KEY)
       val selectedYears = fieldsMap(KeystoreService.SELECTED_INPUT_YEARS_KEY)
       val nextYear = next(currentYear, selectedYears)
-
+      println("--"+nextYear.toString())
       // Save next year value to keystore with CurrentYear
       keystore.store(nextYear.toString(), KeystoreService.CURRENT_INPUT_YEAR_KEY).map {
         (values) =>

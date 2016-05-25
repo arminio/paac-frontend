@@ -62,6 +62,7 @@ class PensionInputsControllerSpec extends UnitSpec with BeforeAndAfterAll {
                     "definedBenefit_2012" -> "1100000",
                     "definedBenefit_2013" -> "1200000",
                     "definedBenefit_2014" -> "1300000",
+                    "definedBenefit_2014" -> "1300000",
                     SessionKeys.sessionId -> SESSION_ID)
       override def store[T](data: T, key: String)
                   (implicit hc: HeaderCarrier,
@@ -162,6 +163,9 @@ class PensionInputsControllerSpec extends UnitSpec with BeforeAndAfterAll {
     "with blank value returns to page with errors" in new ControllerWithMockKeystore {
         // setup
         val request = FakeRequest(POST,"").withFormUrlEncodedBody(("definedBenefits.amount_2014"," ")).withSession{(SessionKeys.sessionId,SESSION_ID)}
+        MockKeystore.map = MockKeystore.map + ("Current" -> "2014")
+        MockKeystore.map = MockKeystore.map + ("definedBenefit" -> "true")
+        MockKeystore.map = MockKeystore.map + ("definedContribution" -> "false")
 
         // test
         val result : Future[Result] = PensionInputsControllerMockedKeystore.onSubmit()(request)
@@ -175,6 +179,10 @@ class PensionInputsControllerSpec extends UnitSpec with BeforeAndAfterAll {
     "with valid input amount should save to keystore" in new ControllerWithMockKeystore {
       // set up
       MockKeystore.map = MockKeystore.map - "definedBenefit_2014"
+      MockKeystore.map = MockKeystore.map + ("Current" -> "2014")
+      MockKeystore.map = MockKeystore.map + ("SelectedYears" -> "2014")
+      MockKeystore.map = MockKeystore.map + ("definedBenefit" -> "true")
+      MockKeystore.map = MockKeystore.map + ("definedContribution" -> "false")
       implicit val hc = HeaderCarrier()
       implicit val request = FakeRequest(POST,"/paac/pensionInputs").withSession{(SessionKeys.sessionId,SESSION_ID)}.withFormUrlEncodedBody(("definedBenefits.amount_2014"->"1234.56"))
 

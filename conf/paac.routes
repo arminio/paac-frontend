@@ -56,9 +56,11 @@ POST        /dateofmpaate                               controllers.DateOfMPAATr
 
 ## Pension Input Page
 GET         /pensionInputs                              controllers.PensionInputsController.onPageLoad
+GET         /pensionInputsBack                          controllers.PensionInputsController.onBack
 POST        /pensionInputs                              controllers.PensionInputsController.onSubmit
 
 ## Review Pension Input Amounts
 GET         /review                                     controllers.ReviewTotalAmountsController.onPageLoad
 GET         /edit/:year                                 controllers.ReviewTotalAmountsController.onEditAmount(year:Long)
 POST        /calculate                                  controllers.ReviewTotalAmountsController.onSubmit
+GET         /reviewBack                                 controllers.ReviewTotalAmountsController.onBack
