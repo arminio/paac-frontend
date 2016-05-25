@@ -41,8 +41,8 @@ backLink = Some((controllers.routes.ReviewTotalAmountsController.onPageLoad.url,
                 N/A
             }
           </td>
-          <td class="numeric">@(currencyFormatter.format(result.summaryResult.exceedingAAAmount/100.00))</td>
-          <td class="numeric">@(currencyFormatter.format(result.summaryResult.availableAAWithCF/100.00))</td>
+          <td class="numeric">@(currencyFormatter.format(result.summaryResult.exceedingAAAmount/100))</td>
+          <td class="numeric">@(currencyFormatter.format(result.summaryResult.availableAAWithCF/100))</td>
           <td class="numeric">
           @if(result.summaryResult.chargableAmount<0) {
             N/A
@@ -50,8 +50,8 @@ backLink = Some((controllers.routes.ReviewTotalAmountsController.onPageLoad.url,
             @(currencyFormatter.format(result.summaryResult.chargableAmount/100.00))
           }
           </td>
-          <td class="numeric">@(currencyFormatter.format(result.summaryResult.unusedAllowance/100.00))</td>
-          <td class="numeric">@(currencyFormatter.format(result.summaryResult.availableAAWithCCF/100.00))</td>
+          <td class="numeric">@(currencyFormatter.format(result.summaryResult.unusedAllowance/100))</td>
+          <td class="numeric">@(currencyFormatter.format(result.summaryResult.availableAAWithCCF/100))</td>
        </tr>
       }
     }
