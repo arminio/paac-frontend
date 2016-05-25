@@ -376,7 +376,7 @@ class CalculatorFormFieldSpec extends ModelSpec with BeforeAndAfterAll {
       val contributions = formFields.toPageValues
 
       // check
-      contributions.length shouldBe 10
+      contributions.length shouldBe 11
       contributions(0).taxPeriodStart.year shouldBe 2008
       contributions(1).taxPeriodStart.year shouldBe 2009
       contributions(2).taxPeriodStart.year shouldBe 2010
@@ -386,12 +386,12 @@ class CalculatorFormFieldSpec extends ModelSpec with BeforeAndAfterAll {
       contributions(6).taxPeriodStart.year shouldBe 2014
       contributions(7).taxPeriodStart.year shouldBe 2015
       contributions(8).taxPeriodStart.year shouldBe 2015
-      contributions(9).taxPeriodStart.year shouldBe 2016
+      //contributions(9).taxPeriodStart.year shouldBe 2016
 
       contributions(7).amounts.get.moneyPurchase.get shouldBe 88800
       contributions(7).amounts.get.triggered.get shouldBe true
-      contributions(8).amounts.get.moneyPurchase.get shouldBe 44400
-      contributions(8).amounts.get.triggered.get shouldBe false
+      contributions(8).amounts.get.moneyPurchase.get shouldBe 55500
+      contributions(8).amounts.get.triggered.get shouldBe true
     }
 
 

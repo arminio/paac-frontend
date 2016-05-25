@@ -106,7 +106,7 @@ case class CalculatorFormFields(definedBenefits: Amounts,
         if (triggerDate.isDefined) {
           val c = triggerDatePeriod().get
           if (c.isPeriod1) {
-            val preAndPotList = if (c.taxPeriodStart == PensionPeriod.PERIOD_1_2015_START) {
+            val preAndPostList = if (c.taxPeriodStart == PensionPeriod.PERIOD_1_2015_START) {
               List (Contribution(PensionPeriod.PERIOD_1_2015_START, PensionPeriod.PERIOD_1_2015_END,Some(InputAmounts(Some(0), get("ptDcAmount2015P1"), None, Some(true)))),
                 Contribution(PensionPeriod.PERIOD_2_2015_START, PensionPeriod.PERIOD_2_2015_END, toInputAmounts("amount2015P2","dcAmount2015P2").map(_.copy(triggered=Some(true)))))
             } else {
@@ -118,11 +118,13 @@ case class CalculatorFormFields(definedBenefits: Amounts,
                 Contribution(PensionPeriod.PERIOD_1_2015_START, tp, toInputAmounts("amount2015P1","dcAmount2015P1").map(_.copy(triggered = Some(false))))
               )
             }
-            preAndPotList
+            preAndPostList
           } else if (c.isPeriod2) {
             val preList = List(Contribution(PensionPeriod.PERIOD_1_2015_START, PensionPeriod.PERIOD_1_2015_END, toInputAmounts("amount2015P1","dcAmount2015P1").map(_.copy(triggered=Some(false)))))
             val postList = if (c.taxPeriodStart == PensionPeriod.PERIOD_2_2015_START) {
-              List (Contribution(PensionPeriod.PERIOD_2_2015_START, PensionPeriod.PERIOD_2_2015_END,Some(InputAmounts(Some(0), get("ptDcAmount2015P2"), None, Some(true)))))
+              List (Contribution(PensionPeriod.PERIOD_2_2015_START, PensionPeriod.PERIOD_2_2015_END,Some(InputAmounts(Some(0), get("ptDcAmount2015P2"), None, Some(true)))),
+                Contribution(PensionPeriod.PERIOD_2_2015_START, PensionPeriod.PERIOD_2_2015_END, toInputAmounts("amount2015P2","dcAmount2015P2").map(_.copy(triggered=Some(true))))
+              )
             } else {
               val date = c.taxPeriodStart.toCalendar
               date.add(java.util.Calendar.DAY_OF_MONTH, - 1)
