@@ -100,7 +100,12 @@ trait ReviewTotalAmountsController extends BaseFrontendController {
           },
           input => {
             val contributions = input.toContributions()
-            connector.connectToPAACService(contributions).map(response => Ok(views.html.results(response)))
+            connector.connectToPAACService(contributions).map{
+              response => 
+              val triggerAmountRow = response.find(_.input.amounts.getOrElse(models.InputAmounts()).triggered.getOrElse(false))
+              val results = if (triggerAmountRow.isDefined) response.filter(_ != triggerAmountRow.get) else response
+              Ok(views.html.results(results))
+            }
           }
         )
       }
