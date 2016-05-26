@@ -29,19 +29,7 @@ import uk.gov.hmrc.play.test.UnitSpec
 import scala.concurrent.Future
 
 
-class DevAssetsSpec extends UnitSpec with BeforeAndAfterAll {
-  val app = FakeApplication()
-  
-  override def beforeAll() {
-    Play.start(app)
-    super.beforeAll() // To be stackable, must call super.beforeEach
-  }
-
-  override def afterAll() {
-    try {
-      super.afterAll()
-    } finally Play.stop()
-  }
+class DevAssetsSpec extends test.BaseSpec {
 
   "DevAssets" should {
     "at should not serve file asset if not present with absolute path" in {
@@ -53,6 +41,7 @@ class DevAssetsSpec extends UnitSpec with BeforeAndAfterAll {
 
       println(await(result))
     }
+    
     "at should not serve file asset if not present with non absolute path" in {
       // set up
       val action = DevAssets.at("file://"+System.getProperty("user.dir"),"app.js")

@@ -47,7 +47,7 @@ trait YesNo1516Period2Controller extends RedirectController {
     YesNo1516Period2Form.form.bindFromRequest().fold(
       formWithErrors => { Future.successful(Ok(views.html.yesno_1516_period2(YesNo1516Period2Form.form))) },
       input => {
-        keystore.store[String](input, KeystoreService.P2_YES_NO_KEY)
+        keystore.store(input, KeystoreService.P2_YES_NO_KEY)
         if (input == "Yes") {
           Future.successful(Redirect(onSubmitRedirectForYes))
         } else {

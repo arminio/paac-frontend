@@ -57,7 +57,7 @@ trait ReviewTotalAmountsController extends RedirectController {
     fetchAmounts.flatMap { (amountsMap) =>
       keystore.read[String](KeystoreService.TRIGGER_DATE_KEY).map {
         (td) =>
-        keystore.store[String](false.toString(), KeystoreService.IS_EDIT_KEY)
+        keystore.store(false.toString(), KeystoreService.IS_EDIT_KEY)
         val values = amountsMap ++ Map((KeystoreService.TRIGGER_DATE_KEY, td.getOrElse("")))
         val f = CalculatorForm.bind(values, true)
         val model = f.get
@@ -75,7 +75,7 @@ trait ReviewTotalAmountsController extends RedirectController {
   }
 
   def onEditAmount(year:Int) = withSession { implicit request =>
-    keystore.store[String](true.toString(), KeystoreService.IS_EDIT_KEY)
+    keystore.store(true.toString(), KeystoreService.IS_EDIT_KEY)
     keystore.read(List(KeystoreService.TE_YES_NO_KEY)).flatMap {
       (fieldsMap) =>
       goTo(year, false, true, fieldsMap(KeystoreService.TE_YES_NO_KEY) == "Yes", Redirect(routes.ReviewTotalAmountsController.onPageLoad))

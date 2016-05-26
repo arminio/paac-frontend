@@ -48,7 +48,7 @@ trait YesNo1516Period1Controller extends BaseFrontendController {
     YesNo1516Period1Form.form.bindFromRequest().fold(
       formWithErrors => { Future.successful(Ok(views.html.yesno_1516_period1(YesNo1516Period1Form.form))) },
       input => {
-        keystore.store[String](input, KeystoreService.P1_YES_NO_KEY)
+        keystore.store(input, KeystoreService.P1_YES_NO_KEY)
         if (input == "Yes") {
           Future.successful(Redirect(onSubmitRedirectForYes))
         } else {

@@ -48,7 +48,7 @@ trait YesNoMPAATriggerEventAmountController extends RedirectController {
     YesNoMPAATriggerEventForm.form.bindFromRequest().fold(
       formWithErrors => { Future.successful(Ok(views.html.yesno_mpaa_trigger_amount(YesNoMPAATriggerEventForm.form))) },
       input => {
-        keystore.store[String](input, KeystoreService.TE_YES_NO_KEY)
+        keystore.store(input, KeystoreService.TE_YES_NO_KEY)
         if (input == "Yes") {
           Future.successful(Redirect(onSubmitRedirectForYes))
         } else {

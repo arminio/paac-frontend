@@ -28,48 +28,12 @@ import uk.gov.hmrc.play.test.UnitSpec
 import scala.concurrent.Future
 import form._
 
-class SelectSchemeControllerSpec extends UnitSpec with BeforeAndAfterAll {
-  val app = FakeApplication()
-  val SESSION_ID = s"session-${UUID.randomUUID}"
+class SelectSchemeControllerSpec extends test.BaseSpec {
   val endPointURL = "/paac/scheme"
 
-  override def beforeAll() {
-    Play.start(app)
-    super.beforeAll() // To be stackable, must call super.beforeEach
-  }
-
-  override def afterAll() {
-    try {
-      super.afterAll()
-    } finally Play.stop()
-  }
-
-  implicit val request = FakeRequest()
-
-  trait ControllerWithMockKeystore extends MockKeystoreFixture{
+  trait ControllerWithMockKeystore extends MockKeystoreFixture {
     object MockSelectSchemeControllerWithMockKeystore extends SelectSchemeController {
       override val keystore: KeystoreService = MockKeystore
-    }
-  }
-
-  trait MockKeystoreFixture {
-    object MockKeystore extends KeystoreService {
-      var map = Map(SessionKeys.sessionId -> SESSION_ID)
-      override def store[T](data: T, key: String)
-                           (implicit hc: HeaderCarrier,
-                            format: play.api.libs.json.Format[T],
-                            request: Request[Any])
-      : Future[Option[T]] = {
-        map = map + (key -> data.toString)
-        Future.successful(Some(data))
-      }
-      override def read[T](key: String)
-                          (implicit hc: HeaderCarrier,
-                           format: play.api.libs.json.Format[T],
-                           request: Request[Any])
-      : Future[Option[T]] = {
-        Future.successful((map get key).map(_.asInstanceOf[T]))
-      }
     }
   }
 

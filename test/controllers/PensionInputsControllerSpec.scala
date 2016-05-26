@@ -38,24 +38,10 @@ import uk.gov.hmrc.http.cache.client.SessionCache
 import uk.gov.hmrc.play.http.{HeaderCarrier, SessionKeys}
 
 
-class PensionInputsControllerSpec extends UnitSpec with BeforeAndAfterAll {
-  val app = FakeApplication()
-  val SESSION_ID = s"session-${UUID.randomUUID}"
+class PensionInputsControllerSpec extends test.BaseSpec {
 
-  override def beforeAll() {
-    Play.start(app)
-    super.beforeAll() // To be stackable, must call super.beforeEach
-  }
-
-  override def afterAll() {
-    try {
-      super.afterAll()
-    } finally Play.stop()
-  }
-
-  trait MockKeystoreFixture {
-    object MockKeystore extends KeystoreService {
-      var map = Map("definedBenefit_2008" -> "700000",
+  trait ControllerWithMockKeystore extends MockKeystoreFixture {
+    MockKeystore.map = Map("definedBenefit_2008" -> "700000",
                     "definedBenefit_2009" -> "800000",
                     "definedBenefit_2010" -> "900000",
                     "definedBenefit_2011" -> "1000000",
@@ -64,25 +50,6 @@ class PensionInputsControllerSpec extends UnitSpec with BeforeAndAfterAll {
                     "definedBenefit_2014" -> "1300000",
                     "definedBenefit_2014" -> "1300000",
                     SessionKeys.sessionId -> SESSION_ID)
-      override def store[T](data: T, key: String)
-                  (implicit hc: HeaderCarrier,
-                   format: play.api.libs.json.Format[T],
-                   request: Request[Any])
-                  : Future[Option[T]] = {
-        map = map + (key -> data.toString)
-        Future.successful(Some(data))
-      }
-      override def read[T](key: String)
-                 (implicit hc: HeaderCarrier,
-                  format: play.api.libs.json.Format[T],
-                  request: Request[Any])
-                 : Future[Option[T]] = {
-        Future.successful((map get key).map(_.asInstanceOf[T]))
-      }
-    }
-  }
-
-  trait ControllerWithMockKeystore extends MockKeystoreFixture {
     object PensionInputsControllerMockedKeystore extends PensionInputsController {
       override val keystore: KeystoreService = MockKeystore
     }

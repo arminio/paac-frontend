@@ -32,27 +32,13 @@ import uk.gov.hmrc.play.test.UnitSpec
 import scala.concurrent.duration._
 import scala.concurrent.{Await, Future}
 
-class ReviewTotalAmountsControllerSpec extends UnitSpec with BeforeAndAfterAll {
-  val app = FakeApplication()
+class ReviewTotalAmountsControllerSpec extends test.BaseSpec {
   val contribution0 = Contribution(2008, 500000)
   val contribution1 = Contribution(2009, 600000)
   val contribution2 = Contribution(2010, 700000)
   val contribution3 = Contribution(2011, 800000)
   val contribution4 = Contribution(2012, 900000)
   val contribution5 = Contribution(2013, 1000000)
-  val SESSION_ID = s"session-${UUID.randomUUID}"
-
-  override def beforeAll() {
-    Play.start(app)
-    super.beforeAll() // To be stackable, must call super.beforeEach
-  }
-
-  override def afterAll() {
-    try {
-      super.afterAll()
-    } finally Play.stop()
-  }
-  
 
   trait MockCalculatorConnectorFixture {
     object MockCalculatorConnector extends CalculatorConnector {
@@ -71,9 +57,8 @@ class ReviewTotalAmountsControllerSpec extends UnitSpec with BeforeAndAfterAll {
     }
   }
 
-  trait MockKeystoreFixture {
-    object MockKeystore extends KeystoreService {
-      var map = Map("definedBenefit_2008" -> "700000",
+  trait AMockKeystoreFixture extends MockKeystoreFixture {
+    MockKeystore.map = Map("definedBenefit_2008" -> "700000",
                     "definedBenefit_2009" -> "800000",
                     "definedBenefit_2010" -> "900000",
                     "definedBenefit_2011" -> "1000000",
@@ -83,25 +68,9 @@ class ReviewTotalAmountsControllerSpec extends UnitSpec with BeforeAndAfterAll {
                     "definedBenefit" -> "true",
                     "definedContribution" -> "true",
                     SessionKeys.sessionId -> SESSION_ID)
-      override def store[T](data: T, key: String)
-                  (implicit hc: HeaderCarrier,
-                   format: play.api.libs.json.Format[T],
-                   request: Request[Any])
-                  : Future[Option[T]] = {
-        map = map + (key -> data.toString)
-        Future.successful(Some(data))
-      }
-      override def read[T](key: String)
-                 (implicit hc: HeaderCarrier,
-                  format: play.api.libs.json.Format[T],
-                  request: Request[Any])
-                 : Future[Option[T]] = {
-        Future.successful((map get key).map(_.asInstanceOf[T]))
-      }
-    }
   }
 
-  trait MockControllerFixture extends MockKeystoreFixture with MockCalculatorConnectorFixture {
+  trait MockControllerFixture extends AMockKeystoreFixture with MockCalculatorConnectorFixture {
     object MockedReviewTotalAmountsController extends ReviewTotalAmountsController {
       override val connector: CalculatorConnector = MockCalculatorConnector
       override val keystore: KeystoreService = MockKeystore

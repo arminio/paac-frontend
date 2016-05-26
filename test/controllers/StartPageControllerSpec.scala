@@ -35,47 +35,7 @@ import play.api.test._
 import play.api.mvc._
 import service.KeystoreService
 
-class StartPageControllerSpec extends UnitSpec with BeforeAndAfterAll {
-  val app = FakeApplication()
-  val SESSION_ID = s"session-${UUID.randomUUID}"
-
-
-  override def beforeAll() {
-      Play.start(app)
-      super.beforeAll() // To be stackable, must call super.beforeEach
-    }
-
-    override def afterAll() {
-      try {
-        super.afterAll()
-      } finally Play.stop()
-    }
-
-    implicit val request = FakeRequest()
-
-    trait MockKeystoreFixture {
-      object MockKeystore extends KeystoreService {
-        var map = Map(SessionKeys.sessionId -> SESSION_ID)
-
-        override def store[T](data: T, key: String)
-                             (implicit hc: HeaderCarrier,
-                              format: play.api.libs.json.Format[T],
-                              request: Request[Any])
-        : Future[Option[T]] = {
-          map = map + (key -> data.toString)
-          Future.successful(Some(data))
-        }
-
-        override def read[T](key: String)
-                            (implicit hc: HeaderCarrier,
-                             format: play.api.libs.json.Format[T],
-                             request: Request[Any])
-        : Future[Option[T]] = {
-          Future.successful((map get key).map(_.asInstanceOf[T]))
-        }
-      }
-    }
-
+class StartPageControllerSpec extends test.BaseSpec {
     "StartPageController" should {
       "not return result NOT_FOUND" in {
         val result : Option[Future[Result]] = route(FakeRequest(GET, "/paac"))

@@ -33,7 +33,7 @@ trait StartPageController extends BaseFrontendController {
     private val onSubmitRedirect: Call = routes.SelectSchemeController.onPageLoad()
 
     val startPage = withSession { implicit request =>
-      keystore.store[String](false.toString(), KeystoreService.IS_EDIT_KEY).map {
+      keystore.store(false.toString(), KeystoreService.IS_EDIT_KEY).map {
         (_) =>
         Ok(views.html.startPage(""))
       }
