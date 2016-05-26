@@ -73,24 +73,24 @@ trait RedirectController extends BaseFrontendController {
     }
   }
 
-  def wheretoBack[T](defaultRoute: Result)(implicit hc: HeaderCarrier, format: play.api.libs.json.Format[T], request: Request[Any]) : Future[Result] = {
+  def wheretoBack[T](defaultRoute: Result)(implicit hc: HeaderCarrier, format: play.api.libs.json.Format[String], request: Request[Any]) : Future[Result] = {
     implicit val marshall = KeystoreService.toStringPair _
 
     def previous(currentYear: String, selectedYears: String): Int = {
-      val syears = selectedYears.split(",")
-      val cy = currentYear.toInt
-      if (cy == -1) {
-        if (syears.size > 0 && selectedYears.length > 0){
+      if (currentYear == "" || selectedYears == "") {
+        -1
+      } else {
+        val syears = selectedYears.split(",")
+        val cy = currentYear.toInt
+        if (cy == -1) {
           syears.reverse(0).toInt
         } else {
-          -2
-        }
-      } else {
-        val i = syears.indexOf(currentYear) - 1
-        if (i < 0) {
-          -2
-        } else {
-          syears(i).toInt
+          val i = syears.indexOf(currentYear) - 1
+          if (i < 0) {
+            -2
+          } else {
+            syears(i).toInt
+          }
         }
       }
     }
@@ -108,19 +108,19 @@ trait RedirectController extends BaseFrontendController {
     implicit val marshall = KeystoreService.toStringPair _
 
     def next(currentYear: String, selectedYears: String): Int = {
-      val syears = selectedYears.split(",")
-      if (currentYear == "") {
-        if (syears.size > 0 && selectedYears.length > 0){
+      if (selectedYears == "" && currentYear == "") {
+        -1
+      } else {
+        val syears = selectedYears.split(",")
+        if (currentYear == "") {
           syears(0).toInt
         } else {
-          -1
-        }
-      } else {
-        val i = syears.indexOf(currentYear) + 1
-        if (i < syears.length) {
-          syears(i).toInt
-        } else {
-          -1
+          val i = syears.indexOf(currentYear) + 1
+          if (i < syears.length) {
+            syears(i).toInt
+          } else {
+            -1
+          }
         }
       }
     }

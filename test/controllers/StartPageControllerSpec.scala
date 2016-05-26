@@ -23,10 +23,17 @@ import play.api.Play
 import play.api.mvc.Result
 import play.api.test.Helpers._
 import play.api.test.{FakeRequest, FakeApplication}
+import uk.gov.hmrc.play.http.{HeaderCarrier, HttpPost, HttpResponse}
 import uk.gov.hmrc.play.http.SessionKeys
 import uk.gov.hmrc.play.test.UnitSpec
 import scala.concurrent.Future
 import play.api.libs.concurrent.Execution.Implicits._
+import service._
+import connector._
+
+import play.api.test._
+import play.api.mvc._
+import service.KeystoreService
 
 class StartPageControllerSpec extends UnitSpec with BeforeAndAfterAll {
   val app = FakeApplication()
@@ -45,6 +52,29 @@ class StartPageControllerSpec extends UnitSpec with BeforeAndAfterAll {
     }
 
     implicit val request = FakeRequest()
+
+    trait MockKeystoreFixture {
+      object MockKeystore extends KeystoreService {
+        var map = Map(SessionKeys.sessionId -> SESSION_ID)
+
+        override def store[T](data: T, key: String)
+                             (implicit hc: HeaderCarrier,
+                              format: play.api.libs.json.Format[T],
+                              request: Request[Any])
+        : Future[Option[T]] = {
+          map = map + (key -> data.toString)
+          Future.successful(Some(data))
+        }
+
+        override def read[T](key: String)
+                            (implicit hc: HeaderCarrier,
+                             format: play.api.libs.json.Format[T],
+                             request: Request[Any])
+        : Future[Option[T]] = {
+          Future.successful((map get key).map(_.asInstanceOf[T]))
+        }
+      }
+    }
 
     "StartPageController" should {
       "not return result NOT_FOUND" in {
@@ -67,6 +97,7 @@ class StartPageControllerSpec extends UnitSpec with BeforeAndAfterAll {
         val result : Option[Future[Result]] = route(FakeRequest(GET, "/paac"))
         status(result.get) shouldBe 303
       }
+
       "create a session onSubmit" in {
         // set up
         val request = FakeRequest(GET, "/paac").withSession {(SessionKeys.sessionId,SESSION_ID)}
@@ -78,6 +109,7 @@ class StartPageControllerSpec extends UnitSpec with BeforeAndAfterAll {
         val StartPage = contentAsString(await(result))
         StartPage should include ("")
       }
+
       "create a new session" in {
         // set up
         val request = FakeRequest(GET, "/paac").withSession {(SessionKeys.sessionId,SESSION_ID)}
@@ -89,12 +121,17 @@ class StartPageControllerSpec extends UnitSpec with BeforeAndAfterAll {
         val StartPage = contentAsString(await(result))
         StartPage should include ("")
       }
-      "render the StartPage" in {
+
+      "render the StartPage" in new MockKeystoreFixture {
         // set up
         val request = FakeRequest(GET, "/paac"). withSession {(SessionKeys.sessionId,SESSION_ID)}
+        object MockedStartPageController extends StartPageController {
+          override val keystore: KeystoreService = MockKeystore
+          override val connector: CalculatorConnector = null
+        }
 
         // test
-        val result : Future[Result] = StartPageController.startPage()(request)
+        val result : Future[Result] = MockedStartPageController.startPage()(request)
 
         // check
         val StartPage = contentAsString(await(result))
