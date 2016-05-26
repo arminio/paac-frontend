@@ -238,7 +238,7 @@ class RedirectControllerSpec extends UnitSpec with BeforeAndAfterAll {
         MockKeystore.map = MockKeystore.map + (KeystoreService.TE_YES_NO_KEY -> "No")
 
         // test
-        val result: Future[Result] = RedirectController.wheretoBack[String](route)
+        val result: Future[Result] = RedirectController.wheretoBack(route)
 
         // check
         status(result) shouldBe 303
@@ -257,7 +257,7 @@ class RedirectControllerSpec extends UnitSpec with BeforeAndAfterAll {
         MockKeystore.map = MockKeystore.map + (KeystoreService.TE_YES_NO_KEY -> "No")
  
         // test
-        val result: Future[Result] = RedirectController.wheretoBack[String](route)
+        val result: Future[Result] = RedirectController.wheretoBack(route)
  
         // check
         status(result) shouldBe 303
@@ -276,7 +276,7 @@ class RedirectControllerSpec extends UnitSpec with BeforeAndAfterAll {
         MockKeystore.map = MockKeystore.map + (KeystoreService.TE_YES_NO_KEY -> "No")
  
         // test
-        val result: Future[Result] = RedirectController.wheretoBack[String](route)
+        val result: Future[Result] = RedirectController.wheretoBack(route)
  
         // check
         status(result) shouldBe 303
@@ -295,7 +295,7 @@ class RedirectControllerSpec extends UnitSpec with BeforeAndAfterAll {
         MockKeystore.map = MockKeystore.map + (KeystoreService.TE_YES_NO_KEY -> "No")
  
         // test
-        val result: Future[Result] = RedirectController.wheretoBack[String](route)
+        val result: Future[Result] = RedirectController.wheretoBack(route)
  
         // check
         status(result) shouldBe 303
@@ -319,7 +319,7 @@ class RedirectControllerSpec extends UnitSpec with BeforeAndAfterAll {
             MockKeystore.map = MockKeystore.map + (KeystoreService.IS_EDIT_KEY -> "false")
   
             // test
-            val result: Future[Result] = RedirectController.wheretoNext[String](route)
+            val result: Future[Result] = RedirectController.wheretoNext(route)
   
             // check
             status(result) shouldBe 303
@@ -339,7 +339,7 @@ class RedirectControllerSpec extends UnitSpec with BeforeAndAfterAll {
             MockKeystore.map = MockKeystore.map + (KeystoreService.IS_EDIT_KEY -> "false")
   
             // test
-            val result: Future[Result] = RedirectController.wheretoNext[String](route)
+            val result: Future[Result] = RedirectController.wheretoNext(route)
   
             // check
             status(result) shouldBe 303
@@ -359,7 +359,7 @@ class RedirectControllerSpec extends UnitSpec with BeforeAndAfterAll {
             MockKeystore.map = MockKeystore.map + (KeystoreService.IS_EDIT_KEY -> "false")
   
             // test
-            val result: Future[Result] = RedirectController.wheretoNext[String](route)
+            val result: Future[Result] = RedirectController.wheretoNext(route)
     
              // check
              status(result) shouldBe 303
@@ -379,7 +379,7 @@ class RedirectControllerSpec extends UnitSpec with BeforeAndAfterAll {
             MockKeystore.map = MockKeystore.map + (KeystoreService.IS_EDIT_KEY -> "false")
   
             // test
-            val result: Future[Result] = RedirectController.wheretoNext[String](route)
+            val result: Future[Result] = RedirectController.wheretoNext(route)
     
              // check
              status(result) shouldBe 303
@@ -399,7 +399,7 @@ class RedirectControllerSpec extends UnitSpec with BeforeAndAfterAll {
             MockKeystore.map = MockKeystore.map + (KeystoreService.IS_EDIT_KEY -> "false")
   
             // test
-            val result: Future[Result] = RedirectController.wheretoNext[String](route)
+            val result: Future[Result] = RedirectController.wheretoNext(route)
     
              // check
              status(result) shouldBe 303
@@ -421,7 +421,7 @@ class RedirectControllerSpec extends UnitSpec with BeforeAndAfterAll {
           MockKeystore.map = MockKeystore.map + (KeystoreService.IS_EDIT_KEY -> "true")
   
             // test
-            val result: Future[Result] = RedirectController.wheretoNext[String](route)
+            val result: Future[Result] = RedirectController.wheretoNext(route)
   
             // check
             status(result) shouldBe 303
@@ -441,7 +441,7 @@ class RedirectControllerSpec extends UnitSpec with BeforeAndAfterAll {
             MockKeystore.map = MockKeystore.map + (KeystoreService.IS_EDIT_KEY -> "true")
   
             // test
-            val result: Future[Result] = RedirectController.wheretoNext[String](route)
+            val result: Future[Result] = RedirectController.wheretoNext(route)
     
              // check
              status(result) shouldBe 303
@@ -461,7 +461,7 @@ class RedirectControllerSpec extends UnitSpec with BeforeAndAfterAll {
             MockKeystore.map = MockKeystore.map + (KeystoreService.IS_EDIT_KEY -> "true")
   
             // test
-            val result: Future[Result] = RedirectController.wheretoNext[String](route)
+            val result: Future[Result] = RedirectController.wheretoNext(route)
     
              // check
              status(result) shouldBe 303
@@ -481,7 +481,7 @@ class RedirectControllerSpec extends UnitSpec with BeforeAndAfterAll {
             MockKeystore.map = MockKeystore.map + (KeystoreService.IS_EDIT_KEY -> "true")
   
             // test
-            val result: Future[Result] = RedirectController.wheretoNext[String](route)
+            val result: Future[Result] = RedirectController.wheretoNext(route)
     
              // check
              status(result) shouldBe 303

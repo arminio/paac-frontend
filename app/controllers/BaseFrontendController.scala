@@ -73,7 +73,7 @@ trait RedirectController extends BaseFrontendController {
     }
   }
 
-  def wheretoBack[T](defaultRoute: Result)(implicit hc: HeaderCarrier, format: play.api.libs.json.Format[String], request: Request[Any]) : Future[Result] = {
+  def wheretoBack(defaultRoute: Result)(implicit hc: HeaderCarrier, format: play.api.libs.json.Format[String], request: Request[Any]) : Future[Result] = {
     implicit val marshall = KeystoreService.toStringPair _
 
     def previous(currentYear: String, selectedYears: String): Int = {
@@ -104,7 +104,7 @@ trait RedirectController extends BaseFrontendController {
     }
   }
 
-  def wheretoNext[T](defaultRoute: Result)(implicit hc: HeaderCarrier, format: play.api.libs.json.Format[T], request: Request[Any]) : Future[Result] = {
+  def wheretoNext(defaultRoute: Result)(implicit hc: HeaderCarrier, format: play.api.libs.json.Format[String], request: Request[Any]) : Future[Result] = {
     implicit val marshall = KeystoreService.toStringPair _
 
     def next(currentYear: String, selectedYears: String): Int = {

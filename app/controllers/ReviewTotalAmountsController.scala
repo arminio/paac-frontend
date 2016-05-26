@@ -113,6 +113,6 @@ trait ReviewTotalAmountsController extends RedirectController {
   }
 
   val onBack = withSession { implicit request =>
-    wheretoBack[String](Redirect(routes.PensionInputsController.onPageLoad))
+    wheretoBack(Redirect(routes.PensionInputsController.onPageLoad))
   }
 }

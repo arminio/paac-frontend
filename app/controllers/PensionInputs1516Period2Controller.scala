@@ -49,9 +49,9 @@ trait PensionInputs1516Period2Controller extends RedirectController {
           keystore.save(List(input.to1516Period2DefinedBenefit, input.to1516Period2DefinedContribution), "").flatMap {
             (_)=>
             if (value.getOrElse("false").toBoolean) {
-              wheretoNext[String](Redirect(onSubmitRedirect))
+              wheretoNext(Redirect(onSubmitRedirect))
             } else {
-              wheretoNext[String](Redirect(routes.ReviewTotalAmountsController.onPageLoad()))
+              wheretoNext(Redirect(routes.ReviewTotalAmountsController.onPageLoad()))
             }
           }
         }

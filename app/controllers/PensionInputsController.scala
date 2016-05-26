@@ -61,7 +61,7 @@ trait PensionInputsController extends RedirectController {
         input => {
           keystore.save(List(input.toDefinedBenefit(cy), input.toDefinedContribution(cy)), "").flatMap {
             (_)=>
-            wheretoNext[String](Redirect(onSubmitRedirect))
+            wheretoNext(Redirect(onSubmitRedirect))
           }
         }
       )
@@ -69,6 +69,6 @@ trait PensionInputsController extends RedirectController {
   }
 
   val onBack = withSession { implicit request =>
-    wheretoBack[String](Redirect(routes.TaxYearSelectionController.onPageLoad))
+    wheretoBack(Redirect(routes.TaxYearSelectionController.onPageLoad))
   }
 }

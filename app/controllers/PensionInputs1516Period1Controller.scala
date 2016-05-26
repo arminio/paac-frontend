@@ -47,7 +47,7 @@ trait PensionInputs1516Period1Controller extends RedirectController {
       // TODO: When we do validation story, please forward this to onPageLoad method with selected SchemeType flags
       formWithErrors => { Future.successful(Ok(views.html.pensionInputs_1516_period1(formWithErrors))) },
       input => {
-        keystore.save(List(input.to1516Period1DefinedBenefit, input.to1516Period1DefinedContribution), "").flatMap((_)=>wheretoNext[String](Redirect(onSubmitRedirect)))
+        keystore.save(List(input.to1516Period1DefinedBenefit, input.to1516Period1DefinedContribution), "").flatMap((_)=>wheretoNext(Redirect(onSubmitRedirect)))
       }
     )
   }

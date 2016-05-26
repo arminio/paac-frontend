@@ -52,7 +52,7 @@ trait YesNoMPAATriggerEventAmountController extends RedirectController {
         if (input == "Yes") {
           Future.successful(Redirect(onSubmitRedirectForYes))
         } else {
-          wheretoNext[String](Redirect(onSubmitRedirectForNo))
+          wheretoNext(Redirect(onSubmitRedirectForNo))
         }
       }
     )

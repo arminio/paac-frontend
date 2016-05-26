@@ -55,14 +55,14 @@ trait YesNo1516Period2Controller extends RedirectController {
             (yesNoP1) =>
             val yesOrNoP1 = yesNoP1.getOrElse("No")
             if (yesOrNoP1 == "No" && input == "No") {
-              wheretoNext[String](Redirect(routes.StaticPageController.onPipTaxYearPageLoad()))
+              wheretoNext(Redirect(routes.StaticPageController.onPipTaxYearPageLoad()))
             } else {
               keystore.read[String](KeystoreService.DC_FLAG).flatMap {
                 (isDefinedContribution) =>
                 if (isDefinedContribution.getOrElse("false").toBoolean){
                   Future.successful(Redirect(routes.YesNoMPAATriggerEventAmountController.onPageLoad()))
                 } else {
-                  wheretoNext[String](Redirect(onSubmitRedirectForNo))
+                  wheretoNext(Redirect(onSubmitRedirectForNo))
                 }
               }
             }
