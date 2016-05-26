@@ -19,18 +19,24 @@ package controllers
 import connector.CalculatorConnector
 import play.api.mvc._
 import scala.concurrent.Future
+import service._
 
 object StartPageController extends StartPageController{
     override val connector: CalculatorConnector = CalculatorConnector
+    override val keystore: KeystoreService = KeystoreService
 }
 
 trait StartPageController extends BaseFrontendController {
     val connector: CalculatorConnector
+    val keystore: KeystoreService
 
     private val onSubmitRedirect: Call = routes.SelectSchemeController.onPageLoad()
 
     val startPage = withSession { implicit request =>
-      Future.successful(Ok(views.html.startPage("")))
+      keystore.store[String](false.toString(), KeystoreService.IS_EDIT_KEY).map {
+        (_) =>
+        Ok(views.html.startPage(""))
+      }
     }
 
     val newSession = withSession { implicit request =>

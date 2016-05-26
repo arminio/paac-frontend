@@ -183,6 +183,7 @@ class PensionInputsControllerSpec extends UnitSpec with BeforeAndAfterAll {
       MockKeystore.map = MockKeystore.map + ("SelectedYears" -> "2014")
       MockKeystore.map = MockKeystore.map + ("definedBenefit" -> "true")
       MockKeystore.map = MockKeystore.map + ("definedContribution" -> "false")
+      MockKeystore.map = MockKeystore.map + ("isEdit" -> "false")
       implicit val hc = HeaderCarrier()
       implicit val request = FakeRequest(POST,"/paac/pensionInputs").withSession{(SessionKeys.sessionId,SESSION_ID)}.withFormUrlEncodedBody(("definedBenefits.amount_2014"->"1234.56"))
 

@@ -161,6 +161,7 @@ class PostTriggerPensionInputsControllerSpec extends UnitSpec with BeforeAndAfte
     "saves p2 amount in keystore if valid form" in new ControllerWithMockKeystore {
       // set up
       MockKeystore.map = MockKeystore.map + (KeystoreService.TRIGGER_DATE_KEY -> "2015-11-15")
+      MockKeystore.map = MockKeystore.map + ("isEdit" -> "false")
       implicit val hc = HeaderCarrier()
       implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID)).withFormUrlEncodedBody(("year2015.postTriggerDcAmount2015P2" -> "40000"),
                                ("triggerDate", "2015-11-15"))
@@ -177,6 +178,7 @@ class PostTriggerPensionInputsControllerSpec extends UnitSpec with BeforeAndAfte
     "saves p1 amount in keystore if valid form" in new ControllerWithMockKeystore {
       // set up
       MockKeystore.map = MockKeystore.map + (KeystoreService.TRIGGER_DATE_KEY -> "2015-4-15")
+      MockKeystore.map = MockKeystore.map + ("isEdit" -> "false")
       implicit val hc = HeaderCarrier()
       implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID)).withFormUrlEncodedBody(("year2015.postTriggerDcAmount2015P1" -> "40000"),
                                ("triggerDate", "2015-4-15"))

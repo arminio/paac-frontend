@@ -118,6 +118,7 @@ object KeystoreService extends KeystoreService {
   val P1_YES_NO_KEY = "yesnoFor1516P1"
   val P2_YES_NO_KEY = "yesnoFor1516P2"
   val TE_YES_NO_KEY = "yesnoForMPAATriggerEvent"
+  val IS_EDIT_KEY = "isEdit"
 
   def toStringPair(key: String, value: Option[String]): (String, String) = value match {
     case None => (key, "")

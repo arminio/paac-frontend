@@ -180,6 +180,7 @@ class YesNoMPAATriggerEventAmountControllerSpec extends UnitSpec with BeforeAndA
 
       "with yesNo = No should forward to review page" in new ControllerWithMockKeystore{
         // set up
+        MockKeystore.map = MockKeystore.map + ("isEdit" -> "false")
         implicit val hc = HeaderCarrier()
         implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID))
           .withFormUrlEncodedBody(("yesNo" -> "No"))

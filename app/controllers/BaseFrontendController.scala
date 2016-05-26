@@ -38,6 +38,41 @@ trait SessionProvider {
 trait RedirectController extends BaseFrontendController {
   def keystore: KeystoreService
 
+  def goTo(year: Int, isForward: Boolean, isEdit: Boolean, isTE: Boolean, defaultRoute: Result)
+          (implicit hc: HeaderCarrier, format: play.api.libs.json.Format[String], request: Request[Any]): Future[Result] = {
+    keystore.store(year.toString(), KeystoreService.CURRENT_INPUT_YEAR_KEY).map {
+      (values) =>
+      //redirect to nextYear Controller
+      if (isForward && isEdit) {
+        Results.Redirect(routes.ReviewTotalAmountsController.onPageLoad())
+      } else if (isEdit) {
+        if (year == 20151) {
+          Results.Redirect(routes.PensionInputs1516Period1Controller.onPageLoad())
+        } else if (year == 20152) {
+          Results.Redirect(routes.PensionInputs1516Period2Controller.onPageLoad())
+        } else {
+          Redirect(routes.PensionInputsController.onPageLoad())
+        }
+      } else if (year < 0) {
+        defaultRoute
+      } else if (year > 2015) {
+        Redirect(routes.StartPageController.startPage())//2016
+      } else if (year == 2015) {
+        if (isForward) {
+          Redirect(routes.StaticPageController.onPipPageLoad())
+        } else {
+          if (isTE) {
+            Redirect(routes.PostTriggerPensionInputsController.onPageLoad())
+          } else {
+            Redirect(routes.YesNoMPAATriggerEventAmountController.onPageLoad())
+          }
+        }
+      } else {
+        Redirect(routes.PensionInputsController.onPageLoad())
+      }
+    }
+  }
+
   def wheretoBack[T](defaultRoute: Result)(implicit hc: HeaderCarrier, format: play.api.libs.json.Format[T], request: Request[Any]) : Future[Result] = {
     implicit val marshall = KeystoreService.toStringPair _
 
@@ -65,26 +100,7 @@ trait RedirectController extends BaseFrontendController {
       val currentYear = fieldsMap(CURRENT_INPUT_YEAR_KEY)
       val selectedYears = fieldsMap(SELECTED_INPUT_YEARS_KEY)
       val previousYear = previous(currentYear, selectedYears)
-      println("-"+previousYear.toString())
-      // Save next year value to keystore with CurrentYear
-      keystore.store(previousYear.toString(), KeystoreService.CURRENT_INPUT_YEAR_KEY).map {
-        (values) =>
-        //redirect to nextYear Controller
-        if (previousYear < 0) {
-          defaultRoute
-        } else if (previousYear > 2015) {
-          //2016
-          Redirect(routes.StartPageController.startPage())
-        } else if (previousYear == 2015) {
-          if (fieldsMap(TE_YES_NO_KEY) == "Yes") {
-            Redirect(routes.PostTriggerPensionInputsController.onPageLoad())
-          } else {
-            Redirect(routes.YesNoMPAATriggerEventAmountController.onPageLoad())
-          }
-        } else {
-          Redirect(routes.PensionInputsController.onPageLoad())
-        }
-      }
+      goTo(previousYear, false, false, fieldsMap(TE_YES_NO_KEY) == "Yes", defaultRoute)
     }
   }
 
@@ -109,27 +125,12 @@ trait RedirectController extends BaseFrontendController {
       }
     }
 
-    keystore.read(List(CURRENT_INPUT_YEAR_KEY, SELECTED_INPUT_YEARS_KEY)).flatMap {
+    keystore.read(List(CURRENT_INPUT_YEAR_KEY, SELECTED_INPUT_YEARS_KEY,IS_EDIT_KEY,TE_YES_NO_KEY)).flatMap {
       (fieldsMap) =>
       val currentYear = fieldsMap(KeystoreService.CURRENT_INPUT_YEAR_KEY)
       val selectedYears = fieldsMap(KeystoreService.SELECTED_INPUT_YEARS_KEY)
       val nextYear = next(currentYear, selectedYears)
-      println("--"+nextYear.toString())
-      // Save next year value to keystore with CurrentYear
-      keystore.store(nextYear.toString(), KeystoreService.CURRENT_INPUT_YEAR_KEY).map {
-        (values) =>
-        //redirect to nextYear Controller
-        if (nextYear == -1) {
-          defaultRoute
-        } else if (nextYear > 2015) {
-          //2016
-          Redirect(routes.StartPageController.startPage())
-        } else if (nextYear == 2015) {
-          Redirect(routes.StaticPageController.onPipPageLoad())
-        } else {
-          Redirect(routes.PensionInputsController.onPageLoad())
-        }
-      }
+      goTo(nextYear, true, fieldsMap(IS_EDIT_KEY).toBoolean, fieldsMap(TE_YES_NO_KEY) == "Yes", defaultRoute)
     }
   }
 }
@@ -137,8 +138,17 @@ trait RedirectController extends BaseFrontendController {
 trait BaseFrontendController extends SessionProvider with FrontendController {
   this: SessionProvider =>
 
-  val keys = List(KeystoreService.SCHEME_TYPE_KEY, KeystoreService.DB_FLAG, KeystoreService.DC_FLAG, KeystoreService.TRIGGER_DATE_KEY)
-
+  val keys = List(KeystoreService.SCHEME_TYPE_KEY, 
+                  KeystoreService.DB_FLAG, 
+                  KeystoreService.DC_FLAG, 
+                  KeystoreService.TRIGGER_DATE_KEY,
+                  KeystoreService.CURRENT_INPUT_YEAR_KEY,
+                  KeystoreService.SELECTED_INPUT_YEARS_KEY,
+                  KeystoreService.P1_YES_NO_KEY,
+                  KeystoreService.P2_YES_NO_KEY,
+                  KeystoreService.TE_YES_NO_KEY,
+                  KeystoreService.IS_EDIT_KEY
+                  )
   implicit val marshall = {
     (key: String, value: Option[String]) =>
       if (keys.contains(key)) {

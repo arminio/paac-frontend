@@ -157,6 +157,7 @@ class PensionInputs1516Period2ControllerSpec extends UnitSpec with BeforeAndAfte
 
       "with valid definedBenefit_2015_p2 should save to keystore" in new ControllerWithMockKeystore{
         // set up
+        MockKeystore.map = MockKeystore.map + ("isEdit" -> "false")
         implicit val hc = HeaderCarrier()
         implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID)).withFormUrlEncodedBody(("year2015.definedBenefit_2015_p2" -> "40000.00"))
 

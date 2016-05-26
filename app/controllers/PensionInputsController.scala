@@ -61,7 +61,7 @@ trait PensionInputsController extends RedirectController {
         input => {
           keystore.save(List(input.toDefinedBenefit(cy), input.toDefinedContribution(cy)), "").flatMap {
             (_)=>
-            wheretoNext[String]( Redirect(onSubmitRedirect))
+            wheretoNext[String](Redirect(onSubmitRedirect))
           }
         }
       )

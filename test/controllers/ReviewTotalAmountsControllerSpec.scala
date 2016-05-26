@@ -228,7 +228,7 @@ class ReviewTotalAmountsControllerSpec extends UnitSpec with BeforeAndAfterAll {
     "onEditAmount" can {
       "redirect to pension inputs controller when year is less than 2015" in new MockControllerFixture {
         // set up
-        val request = FakeRequest(GET, "/paac/calculate").withSession {(SessionKeys.sessionId,SESSION_ID)}
+        val request = FakeRequest(GET, "/paac/edit").withSession {(SessionKeys.sessionId,SESSION_ID)}
 
         // test
         val result: Future[Result] = MockedReviewTotalAmountsController.onEditAmount(2014)(request)
@@ -238,17 +238,30 @@ class ReviewTotalAmountsControllerSpec extends UnitSpec with BeforeAndAfterAll {
         redirectLocation(result) shouldBe Some("/paac/pensionInputs")
       }
 
-      // TODO: Need to update this scenario with 2015 tax year
-      "redirect to on page load when year is 2015" in new MockControllerFixture {
+      "redirect to pension inputs 1516 period 1 controller on page load when year is 2015 p1" in new MockControllerFixture {
         // set up
-        val request = FakeRequest(GET, "/paac/calculate").withSession {(SessionKeys.sessionId,SESSION_ID)}
+        val request = FakeRequest(GET, "/paac/edit").withSession {(SessionKeys.sessionId,SESSION_ID)}
+        MockKeystore.map = MockKeystore.map + ("isEdit" -> "false")
 
         // test
-        val result: Future[Result] = MockedReviewTotalAmountsController.onEditAmount(2015)(request)
+        val result: Future[Result] = MockedReviewTotalAmountsController.onEditAmount(20151)(request)
 
         // check
         status(result) shouldBe 303
-        redirectLocation(result) shouldBe Some("/paac/review")
+        redirectLocation(result) shouldBe Some("/paac/pensionInputs1516p1")
+      }
+
+      "redirect to pension inputs 1516 period 2 controller on page load when year is 2015 p2" in new MockControllerFixture {
+        // set up
+        val request = FakeRequest(GET, "/paac/edit").withSession {(SessionKeys.sessionId,SESSION_ID)}
+        MockKeystore.map = MockKeystore.map + ("isEdit" -> "false")
+
+        // test
+        val result: Future[Result] = MockedReviewTotalAmountsController.onEditAmount(20152)(request)
+
+        // check
+        status(result) shouldBe 303
+        redirectLocation(result) shouldBe Some("/paac/pensionInputs1516p2")
       }
     }
   }

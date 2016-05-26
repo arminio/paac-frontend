@@ -28,7 +28,7 @@ object PensionInputs1516Period1Controller extends PensionInputs1516Period1Contro
   override val keystore: KeystoreService = KeystoreService
 }
 
-trait PensionInputs1516Period1Controller extends BaseFrontendController {
+trait PensionInputs1516Period1Controller extends RedirectController {
   val keystore: KeystoreService
 
   private val onSubmitRedirect: Call = routes.YesNo1516Period2Controller.onPageLoad()
@@ -47,7 +47,7 @@ trait PensionInputs1516Period1Controller extends BaseFrontendController {
       // TODO: When we do validation story, please forward this to onPageLoad method with selected SchemeType flags
       formWithErrors => { Future.successful(Ok(views.html.pensionInputs_1516_period1(formWithErrors))) },
       input => {
-        keystore.save(List(input.to1516Period1DefinedBenefit, input.to1516Period1DefinedContribution), "").map((_)=>Redirect(onSubmitRedirect))
+        keystore.save(List(input.to1516Period1DefinedBenefit, input.to1516Period1DefinedContribution), "").flatMap((_)=>wheretoNext[String](Redirect(onSubmitRedirect)))
       }
     )
   }
