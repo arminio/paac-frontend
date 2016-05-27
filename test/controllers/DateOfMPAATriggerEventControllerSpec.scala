@@ -20,9 +20,9 @@ import java.util.UUID
 
 import org.scalatest.BeforeAndAfterAll
 import play.api.Play
-import play.api.mvc.{Result, Request}
+import play.api.mvc.{Request, Result}
 import play.api.test.Helpers._
-import play.api.test.{FakeRequest, FakeApplication}
+import play.api.test.{FakeApplication, FakeRequest}
 import service.KeystoreService
 import uk.gov.hmrc.play.http.{HeaderCarrier, SessionKeys}
 import uk.gov.hmrc.play.test.UnitSpec
@@ -30,74 +30,78 @@ import uk.gov.hmrc.play.test.UnitSpec
 import scala.concurrent.Future
 
 class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
-  val endPointURL = "/paac/dateofmpaate"
 
-  trait ControllerWithMockKeystore extends MockKeystoreFixture{
-    object MockDateOfMPAATriggerEventControllerWithMockKeystore extends YesNoMPAATriggerEventAmountController {
-      val yesNoKeystoreKey = "TRIGGER_DATE_KEY"
+  trait ControllerWithMockKeystore extends MockKeystoreFixture {
+    object ControllerWithMockKeystore extends DateOfMPAATriggerEventController {
       override val keystore: KeystoreService = MockKeystore
     }
   }
 
-  "DateOfMPAATriggerEventController" when {
-    "GET with routes" should {
-      "not return result NOT_FOUND" in {
-        val result: Option[Future[Result]] = route(FakeRequest(GET, endPointURL))
-        result.isDefined shouldBe true
-        status(result.get) should not be NOT_FOUND
+  "DateOfMPAATriggerEventControllerSpec" when {
+    "onPageLoad" should {
+      "display form page with no date if no keystore value" in new ControllerWithMockKeystore {
+        // setup
+        val request = FakeRequest(GET,"").withSession{(SessionKeys.sessionId,SESSION_ID)}
+        MockKeystore.map = MockKeystore.map + (KeystoreService.TRIGGER_DATE_KEY -> "")
+
+        // do it
+        val result : Future[Result] = ControllerWithMockKeystore.onPageLoad()(request)
+
+        // check
+        status(result) shouldBe 200
+        val htmlPage = contentAsString(await(result))
+        htmlPage should include ("""value=""""")
       }
 
-      "return 303 for valid GET request" in {
-        val result: Option[Future[Result]] = route(FakeRequest(GET, endPointURL))
-        status(result.get) shouldBe 303
-      }
+      "display form page with date if keystore value exists" in new ControllerWithMockKeystore {
+        // setup
+        val request = FakeRequest(GET,"").withSession{(SessionKeys.sessionId,SESSION_ID)}
+        MockKeystore.map = MockKeystore.map + (KeystoreService.TRIGGER_DATE_KEY -> "2015-11-1")
 
-      "not return 200 for valid GET request" in {
-        val result: Option[Future[Result]] = route(FakeRequest(GET, endPointURL))
-        status(result.get) should not be 200
+        // do it
+        val result : Future[Result] = ControllerWithMockKeystore.onPageLoad()(request)
+
+        // check
+        status(result) shouldBe 200
+        val htmlPage = contentAsString(await(result))
+        htmlPage should include ("""value="2015"""")
+        htmlPage should include ("""value="11"""")
+        htmlPage should include ("""value="1"""")
       }
     }
 
-//    "onPageLoad with GET request" should {
-//      "have keystore with no values and display trigger event date" in new ControllerWithMockKeystore {
-//        // setup
-//        val request = FakeRequest(GET,"").withSession{(SessionKeys.sessionId,SESSION_ID)}
-//
-//        // test
-//        val result : Future[Result] = MockDateOfMPAATriggerEventControllerWithMockKeystore.onPageLoad()(request)
-//
-//        // check
-//        status(result) shouldBe 200
-//        val htmlPage = contentAsString(await(result))
-//      }
-//      "have keystore with date option for Trigger Event date when we revisit the same page" in new ControllerWithMockKeystore {
-//        // setup
-//        val request = FakeRequest(GET,"").withSession{(SessionKeys.sessionId,SESSION_ID)}
-//        MockKeystore.map = MockKeystore.map + ("DateOfMPAATriggerEvent" -> "18-05-2014")
-//
-//        // test
-//        val result : Future[Result] = MockDateOfMPAATriggerEventControllerWithMockKeystore.onPageLoad()(request)
-//
-//        // check
-//        status(result) shouldBe 200
-//        MockKeystore.map should contain key "DateOfMPAATriggerEvent"
-//        MockKeystore.map should contain value ("18-05-2014")
-//      }
-//    }
+    "onSubmit" should {
+      "with valid form save date into keystore" in new ControllerWithMockKeystore {
+        // set up
+        implicit val hc = HeaderCarrier()
+        implicit val request = FakeRequest(POST, "/paac/d").withSession((SessionKeys.sessionId,SESSION_ID)).withFormUrlEncodedBody(("dateOfMPAATriggerEvent.day" -> "4"),
+                                    ("dateOfMPAATriggerEvent.month" -> "7"),
+                                    ("dateOfMPAATriggerEvent.year" -> "2015"))
 
-    "onSubmit with POST request" should {
-//      "with invalid date key name should show same form with errors and response code 200" in new ControllerWithMockKeystore{
-//        // set up
-//        implicit val hc = HeaderCarrier()
-//        implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID))
-//          .withFormUrlEncodedBody("DateOfMPAATriggerEvent" -> "15-08-2015")
-//
-//        // test
-//        val result: Future[Result] = MockDateOfMPAATriggerEventControllerWithMockKeystore.onSubmit()(request)
-//
-//        // check
-//        status(result) shouldBe 200
-//      }
+        // test
+        val result : Future[Result] = ControllerWithMockKeystore.onSubmit()(request)
+
+        // check
+        status(result) shouldBe 303
+        MockKeystore.map should contain key (KeystoreService.TRIGGER_DATE_KEY)
+        MockKeystore.map should contain value ("2015-07-04")
+      }
+
+      "with invalid form display page again" in new ControllerWithMockKeystore {
+        // set up
+        implicit val hc = HeaderCarrier()
+        implicit val request = FakeRequest(POST, "/paac/d").withSession((SessionKeys.sessionId,SESSION_ID)).withFormUrlEncodedBody(("dateOfMPAATriggerEvent.day" -> "4"),
+                                    ("dateOfMPAATriggerEvent.month" -> "7"),
+                                    ("dateOfMPAATriggerEvent.year" -> ""))
+
+        // test
+        val result : Future[Result] = ControllerWithMockKeystore.onSubmit()(request)
+
+        // check
+        status(result) shouldBe 200
+        val htmlPage = contentAsString(await(result))
+        // page should contain errors TODO
+      }
     }
   }
 }

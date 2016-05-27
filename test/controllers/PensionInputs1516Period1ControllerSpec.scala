@@ -32,7 +32,7 @@ import scala.concurrent.Future
 class PensionInputs1516Period1ControllerSpec extends test.BaseSpec {
   val endPointURL = "/paac/pensionInputs1516p1"
 
-  trait ControllerWithMockKeystore extends MockKeystoreFixture{
+  trait ControllerWithMockKeystore extends MockKeystoreFixture {
     object MockPensionInputs1516P1ControllerWithMockKeystore extends PensionInputs1516Period1Controller {
       val kesystoreKey = "definedBenefit_2015_p1"
       override val keystore: KeystoreService = MockKeystore
