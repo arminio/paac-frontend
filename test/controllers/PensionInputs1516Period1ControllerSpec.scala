@@ -119,11 +119,13 @@ class PensionInputs1516Period1ControllerSpec extends test.BaseSpec {
         status(result.get) shouldBe 303
       }
 
-      "with valid definedBenefit_2015_p1 should save to keystore" in new ControllerWithMockKeystore{
+      "with valid definedBenefit_2015_p1 should save to keystore" in new ControllerWithMockKeystore {
         // set up
         MockKeystore.map = MockKeystore.map + ("isEdit" -> "false")
+        MockKeystore.map = MockKeystore.map + (KeystoreService.DB_FLAG -> "true")
+        MockKeystore.map = MockKeystore.map + (KeystoreService.DC_FLAG -> "false")
         implicit val hc = HeaderCarrier()
-        implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID)).withFormUrlEncodedBody(("year2015.definedBenefit_2015_p1" -> "40000.00"))
+        implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID)).withFormUrlEncodedBody(("year2015.definedBenefit_2015_p1" -> "40000.00"),("year2015.definedContribution_2015_p1" -> ""))
 
         // test
         val result: Future[Result] = MockPensionInputs1516P1ControllerWithMockKeystore.onSubmit()(request)
@@ -132,6 +134,54 @@ class PensionInputs1516Period1ControllerSpec extends test.BaseSpec {
         status(result) shouldBe 303
         MockKeystore.map should contain key ("definedBenefit_2015_p1")
         MockKeystore.map should contain value ("4000000")
+      }
+
+      "with invalid request redisplay page with errors" in new ControllerWithMockKeystore {
+        MockKeystore.map = MockKeystore.map + ("isEdit" -> "false")
+        MockKeystore.map = MockKeystore.map + (KeystoreService.DB_FLAG -> "true")
+        MockKeystore.map = MockKeystore.map + (KeystoreService.DC_FLAG -> "false")
+        implicit val hc = HeaderCarrier()
+        implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID)).withFormUrlEncodedBody(("year2015.definedBenefit_2015_p1" -> "-40000.00"))
+
+        // test
+        val result: Future[Result] = MockPensionInputs1516P1ControllerWithMockKeystore.onSubmit()(request)
+
+        // check
+        status(result) shouldBe 200
+        val htmlPage = contentAsString(await(result))
+        htmlPage should include ("2015 P1 amount was incorrect or empty.")
+      }
+
+      "with empty db amount redisplay page with errors" in new ControllerWithMockKeystore {
+        MockKeystore.map = MockKeystore.map + ("isEdit" -> "false")
+        MockKeystore.map = MockKeystore.map + (KeystoreService.DB_FLAG -> "true")
+        MockKeystore.map = MockKeystore.map + (KeystoreService.DC_FLAG -> "false")
+        implicit val hc = HeaderCarrier()
+        implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID)).withFormUrlEncodedBody(("year2015.definedBenefit_2015_p1" -> ""))
+
+        // test
+        val result: Future[Result] = MockPensionInputs1516P1ControllerWithMockKeystore.onSubmit()(request)
+
+        // check
+        status(result) shouldBe 200
+        val htmlPage = contentAsString(await(result))
+        htmlPage should include ("2015 P1 amount was incorrect or empty.")
+      }
+
+      "with empty dc amount redisplay page with errors" in new ControllerWithMockKeystore {
+        MockKeystore.map = MockKeystore.map + ("isEdit" -> "false")
+        MockKeystore.map = MockKeystore.map + (KeystoreService.DB_FLAG -> "false")
+        MockKeystore.map = MockKeystore.map + (KeystoreService.DC_FLAG -> "true")
+        implicit val hc = HeaderCarrier()
+        implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID)).withFormUrlEncodedBody(("year2015.definedContribution_2015_p1" -> ""))
+
+        // test
+        val result: Future[Result] = MockPensionInputs1516P1ControllerWithMockKeystore.onSubmit()(request)
+
+        // check
+        status(result) shouldBe 200
+        val htmlPage = contentAsString(await(result))
+        htmlPage should include ("2015 P1 amount was incorrect or empty.")
       }
     }
   }

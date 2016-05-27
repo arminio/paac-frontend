@@ -26,10 +26,8 @@ backLink = Some((controllers.routes.YesNo1516Period1Controller.onPageLoad.url,Me
 
         <ul class="error-summary-list">
           @for(error <- paacForm.errors) {
-            @defining(error.key.drop(15).toInt) { year =>
-              @defining(Seq(models.Contribution(year,0).taxYearLabel())++error.args) { args =>
-                <li><a href="#input_@year" style="color:#b10e1e;font-weight: bold;">@Messages(error.message, args:_*)</a></li>
-              }
+            @defining(Seq("2015 P1")++error.args) { args =>
+              <li><a href="#input_2015_p1" style="color:#b10e1e;font-weight: bold;">@Messages(error.message, args:_*)</a></li>
             }
           }
         </ul>
