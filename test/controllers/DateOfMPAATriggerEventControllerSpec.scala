@@ -78,6 +78,8 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
         implicit val request = FakeRequest(POST, "/paac/d").withSession((SessionKeys.sessionId,SESSION_ID)).withFormUrlEncodedBody(("dateOfMPAATriggerEvent.day" -> "4"),
                                     ("dateOfMPAATriggerEvent.month" -> "7"),
                                     ("dateOfMPAATriggerEvent.year" -> "2015"))
+        MockKeystore.map = MockKeystore.map + (KeystoreService.IS_EDIT_KEY -> "false")
+        MockKeystore.map = MockKeystore.map + (KeystoreService.TE_YES_NO_KEY -> "true")
 
         // test
         val result : Future[Result] = ControllerWithMockKeystore.onSubmit()(request)

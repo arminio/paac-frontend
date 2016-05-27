@@ -150,6 +150,7 @@ class RedirectControllerSpec extends test.BaseSpec {
         // set up
         implicit val hc = HeaderCarrier()
         implicit val request = FakeRequest().withSession { (SessionKeys.sessionId, "session-test") }
+        MockKeystore.map = MockKeystore.map + (KeystoreService.TRIGGER_DATE_KEY -> "2015-06-01")
 
         // test
         val result: Future[Result] = RedirectController.goTo(2015, false, false, true, Redirect(routes.YesNoMPAATriggerEventAmountController.onPageLoad()))

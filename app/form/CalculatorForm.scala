@@ -33,27 +33,29 @@ object CalculatorForm {
   val CY6 = THIS_YEAR-6
   val CY7 = THIS_YEAR-7
   val CY8 = THIS_YEAR-8
+  val dbValidator = optional(bigDecimal(10,2)).verifying("db.error.bounds", value=> if (value.isDefined) value.get.longValue >= 0 && value.get.longValue < 100000000 else true)
+  val dcValidator = optional(bigDecimal(10,2)).verifying("dc.error.bounds", value=> if (value.isDefined) value.get.longValue >= 0 && value.get.longValue < 100000000 else true)
   val validator = optional(bigDecimal(10,2)).verifying("error.bounds", value=> if (value.isDefined) value.get.longValue >= 0 && value.get.longValue < 100000000 else true)
 
   val form: Form[CalculatorFormType] = Form(
-    mapping("definedBenefits" -> mapping(s"amount_${CY0}"->validator,
-                                         s"amount_${CY1}"->validator,
-                                         s"amount_${CY2}"->validator,
-                                         s"amount_${CY3}"->validator,
-                                         s"amount_${CY4}"->validator,
-                                         s"amount_${CY5}"->validator,
-                                         s"amount_${CY6}"->validator,
-                                         s"amount_${CY7}"->validator,
-                                         s"amount_${CY8}"->validator)(Amounts.apply)(Amounts.unapply),
-            "definedContributions" -> mapping(s"amount_${CY0}"->validator,
-                                              s"amount_${CY1}"->validator,
-                                              s"amount_${CY2}"->validator,
-                                              s"amount_${CY3}"->validator,
-                                              s"amount_${CY4}"->validator,
-                                              s"amount_${CY5}"->validator,
-                                              s"amount_${CY6}"->validator,
-                                              s"amount_${CY7}"->validator,
-                                              s"amount_${CY8}"->validator)(Amounts.apply)(Amounts.unapply),
+    mapping("definedBenefits" -> mapping(s"amount_${CY0}"->dbValidator,
+                                         s"amount_${CY1}"->dbValidator,
+                                         s"amount_${CY2}"->dbValidator,
+                                         s"amount_${CY3}"->dbValidator,
+                                         s"amount_${CY4}"->dbValidator,
+                                         s"amount_${CY5}"->dbValidator,
+                                         s"amount_${CY6}"->dbValidator,
+                                         s"amount_${CY7}"->dbValidator,
+                                         s"amount_${CY8}"->dbValidator)(Amounts.apply)(Amounts.unapply),
+            "definedContributions" -> mapping(s"amount_${CY0}"->dcValidator,
+                                              s"amount_${CY1}"->dcValidator,
+                                              s"amount_${CY2}"->dcValidator,
+                                              s"amount_${CY3}"->dcValidator,
+                                              s"amount_${CY4}"->dcValidator,
+                                              s"amount_${CY5}"->dcValidator,
+                                              s"amount_${CY6}"->dcValidator,
+                                              s"amount_${CY7}"->dcValidator,
+                                              s"amount_${CY8}"->dcValidator)(Amounts.apply)(Amounts.unapply),
             "year2015" -> mapping("definedBenefit_2015_p1"->validator,
                                   "definedContribution_2015_p1"->validator,
                                   "definedBenefit_2015_p2"->validator,

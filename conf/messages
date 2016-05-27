@@ -50,7 +50,9 @@ paac.calculator.error.number=Use whole numbers only, not decimals or characters
 paac.calculator.error.number.zero= Enter a number greater than 0
 error.min={0} amount was too small and must be either £0.00 or greater.
 error.max={0} amount was too large and must be either £{1} or less.
-error.bounds={0} amount was incorrect or empty. Please provide an amount between £0.00 and £99999999.99.
+error.bounds={0} {1} amount was incorrect or empty. Please provide an amount between £0.00 and £99999999.99.
+db.error.bounds={0} defined benefit amount was incorrect or empty. Please provide an amount between £0.00 and £99999999.99.
+dc.error.bounds={0} defined contribution amount was incorrect or empty. Please provide an amount between £0.00 and £99999999.99.
 error.real.precision={0} amount must not be empty. (Amount must have no more than {1} numbers, including {2} decimal places, and should be £0.00 or larger and under £99999999.99.)
 
 ## Understand What Pension Input Periods are
@@ -122,6 +124,7 @@ paac.mpaa.ta.date.page.heading = When did you access your savings?
 paac.mpaa.ta.date.page.description = This is the date you first accessed your savings. You will have received a statement from your scheme administrator informing you that your defined contribution scheme was flexibily accessed.
 paac.mpaa.ta.date.page.datehint = For example, 21 6 2015
 paac.mpaa.ta.date.page.datevalidation = Check all date of MPAA Trigger Event fields are complete and only contain numbers
+paac.mpaa.ta.date.page.invalid.date = The date must fall within or after 2015
 
 ## Review Amounts Page
 paac.review-amounts.page.heading = Check your answers
@@ -157,3 +160,6 @@ paac.post-trigger-value.error.real.precision=The amount must not be empty or neg
 paac.post-trigger-value.error.min={0} amount was too small and must be either £0.00 or greater.
 paac.post-trigger-value.error.max={0} amount was too large and must be either £{1} or less.
 paac.post-trigger-value.error.bounds={0} amount was empty or negative. Please provide an amount between £0.00 and £99999999.99.
+
+db=defined benefit
+dc=defined contribution

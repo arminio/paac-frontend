@@ -149,7 +149,7 @@ class PensionInputs1516Period1ControllerSpec extends test.BaseSpec {
         // check
         status(result) shouldBe 200
         val htmlPage = contentAsString(await(result))
-        htmlPage should include ("2015 P1 amount was incorrect or empty.")
+        htmlPage should include ("2015 P1 {1} amount was incorrect or empty.")
       }
 
       "with empty db amount redisplay page with errors" in new ControllerWithMockKeystore {
@@ -165,7 +165,7 @@ class PensionInputs1516Period1ControllerSpec extends test.BaseSpec {
         // check
         status(result) shouldBe 200
         val htmlPage = contentAsString(await(result))
-        htmlPage should include ("2015 P1 amount was incorrect or empty.")
+        htmlPage should include ("2015 P1 defined benefit amount was incorrect or empty.")
       }
 
       "with empty dc amount redisplay page with errors" in new ControllerWithMockKeystore {
@@ -181,7 +181,7 @@ class PensionInputs1516Period1ControllerSpec extends test.BaseSpec {
         // check
         status(result) shouldBe 200
         val htmlPage = contentAsString(await(result))
-        htmlPage should include ("2015 P1 amount was incorrect or empty.")
+        htmlPage should include ("2015 P1 defined contribution amount was incorrect or empty.")
       }
     }
   }

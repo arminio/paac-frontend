@@ -53,10 +53,10 @@ trait PensionInputs1516Period2Controller extends RedirectController {
           if (isDBError || isDCError) {
             var form = CalculatorForm.form.bindFromRequest()
             if (isDBError) {
-              form = form.withError("year2015.definedBenefit_2015_p2", "error.bounds")
+              form = form.withError("year2015.definedBenefit_2015_p2", "error.bounds", play.api.i18n.Messages("db"))
             }
             if (isDCError) {
-              form = form.withError("year2015.definedContribution_2015_p2", "error.bounds")
+              form = form.withError("year2015.definedContribution_2015_p2", "error.bounds", play.api.i18n.Messages("dc"))
             }
             Future.successful(Ok(views.html.pensionInputs_1516_period2(form, isDB, isDC)))
           } else {

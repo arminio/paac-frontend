@@ -40,35 +40,48 @@ trait RedirectController extends BaseFrontendController {
 
   def goTo(year: Int, isForward: Boolean, isEdit: Boolean, isTE: Boolean, defaultRoute: Result)
           (implicit hc: HeaderCarrier, format: play.api.libs.json.Format[String], request: Request[Any]): Future[Result] = {
-    keystore.store(year.toString(), KeystoreService.CURRENT_INPUT_YEAR_KEY).map {
+    keystore.store(year.toString(), KeystoreService.CURRENT_INPUT_YEAR_KEY).flatMap {
       (values) =>
+      println(s"********* $year")
       //redirect to nextYear Controller
       if (isForward && isEdit) {
-        Results.Redirect(routes.ReviewTotalAmountsController.onPageLoad())
+        Future.successful(Results.Redirect(routes.ReviewTotalAmountsController.onPageLoad()))
       } else if (isEdit) {
         if (year == 20151) {
-          Results.Redirect(routes.PensionInputs1516Period1Controller.onPageLoad())
+          Future.successful(Results.Redirect(routes.PensionInputs1516Period1Controller.onPageLoad()))
         } else if (year == 20152) {
-          Results.Redirect(routes.PensionInputs1516Period2Controller.onPageLoad())
+          Future.successful(Results.Redirect(routes.PensionInputs1516Period2Controller.onPageLoad()))
         } else {
-          Redirect(routes.PensionInputsController.onPageLoad())
+          Future.successful(Redirect(routes.PensionInputsController.onPageLoad()))
         }
       } else if (year < 0) {
-        defaultRoute
+        Future.successful(defaultRoute)
       } else if (year > 2015) {
-        Redirect(routes.StartPageController.startPage())//2016
+        Future.successful(Redirect(routes.StartPageController.startPage()))//2016
       } else if (year == 2015) {
         if (isForward) {
-          Redirect(routes.StaticPageController.onPipPageLoad())
+          Future.successful(Redirect(routes.StaticPageController.onPipPageLoad()))
         } else {
           if (isTE) {
-            Redirect(routes.PostTriggerPensionInputsController.onPageLoad())
+            keystore.read[String](KeystoreService.TRIGGER_DATE_KEY).flatMap {
+              (dateAsStr)=>
+              if (dateAsStr.isDefined) {
+                val parts = dateAsStr.get.split("-").map(_.toInt)
+                if (parts(0) > 2016 || (parts(0) == 2016 && parts(1) > 4) || (parts(0) == 2016 && parts(1) == 4 && parts(2) > 5) ) {
+                  Future.successful(Redirect(routes.DateOfMPAATriggerEventController.onPageLoad()))
+                } else {
+                  Future.successful(Redirect(routes.PostTriggerPensionInputsController.onPageLoad()))
+                }
+              } else {
+                Future.successful(Redirect(routes.DateOfMPAATriggerEventController.onPageLoad()))
+              }
+            }
           } else {
-            Redirect(routes.YesNoMPAATriggerEventAmountController.onPageLoad())
+            Future.successful(Redirect(routes.YesNoMPAATriggerEventAmountController.onPageLoad()))
           }
         }
       } else {
-        Redirect(routes.PensionInputsController.onPageLoad())
+        Future.successful(Redirect(routes.PensionInputsController.onPageLoad()))
       }
     }
   }

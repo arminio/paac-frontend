@@ -47,12 +47,25 @@ trait DateOfMPAATriggerEventController extends RedirectController {
 
   val onSubmit = withSession { implicit request =>
     DateOfMPAATriggerEventForm.form.bindFromRequest().fold(
-      formWithErrors => { Future.successful(Ok(views.html.date_of_mpaa_trigger_event(DateOfMPAATriggerEventForm.form))) },
+      formWithErrors => { 
+        Future.successful(Ok(views.html.date_of_mpaa_trigger_event(formWithErrors))) 
+      },
       input => {
         // should store as json and read out as json but sticking with string throughout
         keystore.store(input.dateOfMPAATriggerEvent.map(_.toString).getOrElse(""), KeystoreService.TRIGGER_DATE_KEY).flatMap{
           (_)=>
-          Future.successful(Redirect(onSubmitRedirect))
+          if (input.dateOfMPAATriggerEvent.isDefined) {
+            val date = input.dateOfMPAATriggerEvent.get
+            if (date.getYear() < 2015 || (date.getYear() == 2015 && date.getMonthOfYear() < 4)) {
+              val form = DateOfMPAATriggerEventForm.form.bindFromRequest().withError("dateOfMPAATriggerEvent", "paac.mpaa.ta.date.page.invalid.date")
+              Future.successful(Ok(views.html.date_of_mpaa_trigger_event(form)))
+            } else {
+              wheretoNext(Redirect(onSubmitRedirect))
+            }
+          } else {
+            val form = DateOfMPAATriggerEventForm.form.bindFromRequest().withError("dateOfMPAATriggerEvent", "error.invalid.date.format")
+            Future.successful(Ok(views.html.date_of_mpaa_trigger_event(form)))
+          }
         }
       }
     )
