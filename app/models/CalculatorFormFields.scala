@@ -112,7 +112,7 @@ case class CalculatorFormFields(definedBenefits: Amounts,
             } else {
               val date = c.taxPeriodStart.toCalendar
               date.add(java.util.Calendar.DAY_OF_MONTH, - 1)
-              val tp = PensionPeriod(date.get(java.util.Calendar.YEAR), date.get(java.util.Calendar.MONTH) + 1, date.get(java.util.Calendar.DAY_OF_MONTH))
+              val tp = PensionPeriod(date.get(java.util.Calendar.YEAR), date.get(java.util.Calendar.MONTH), date.get(java.util.Calendar.DAY_OF_MONTH))
               List(Contribution(c.taxPeriodStart, PensionPeriod.PERIOD_1_2015_END, Some(InputAmounts(Some(0), get("ptDcAmount2015P1"), None, Some(true)))),
                 Contribution(PensionPeriod.PERIOD_2_2015_START, PensionPeriod.PERIOD_2_2015_END, toInputAmounts("amount2015P2","dcAmount2015P2").map(_.copy(triggered=Some(true)))),
                 Contribution(PensionPeriod.PERIOD_1_2015_START, tp, toInputAmounts("amount2015P1","dcAmount2015P1").map(_.copy(triggered = Some(false))))
@@ -128,7 +128,7 @@ case class CalculatorFormFields(definedBenefits: Amounts,
             } else {
               val date = c.taxPeriodStart.toCalendar
               date.add(java.util.Calendar.DAY_OF_MONTH, - 1)
-              val tp = PensionPeriod(date.get(java.util.Calendar.YEAR), date.get(java.util.Calendar.MONTH) + 1, date.get(java.util.Calendar.DAY_OF_MONTH))
+              val tp = PensionPeriod(date.get(java.util.Calendar.YEAR), date.get(java.util.Calendar.MONTH), date.get(java.util.Calendar.DAY_OF_MONTH))
               List(Contribution(PensionPeriod.PERIOD_2_2015_START, tp, toInputAmounts("amount2015P2","dcAmount2015P2").map(_.copy(triggered=Some(false)))),
                    Contribution(c.taxPeriodStart, PensionPeriod.PERIOD_2_2015_END,Some(InputAmounts(Some(0), get("ptDcAmount2015P2"), None, Some(true)))))
             }
