@@ -602,7 +602,7 @@ class ContributionSpec extends ModelSpec {
         Contribution(2014, 123L).isPeriod1 shouldBe false
       }
 
-      "return true!!!!!!!!!!!!!!!!!!!!!!!!!!!!! if is period 1" in {
+      "return true if contribution falls in period 1" in {
         Contribution(PensionPeriod(2015,4,6),PensionPeriod(2015,6,9),Some(InputAmounts(Some(2000000),Some(0),None,Some(true)))).isPeriod1 shouldBe true
       }
     }
