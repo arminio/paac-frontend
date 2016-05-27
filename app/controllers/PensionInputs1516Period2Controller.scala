@@ -40,18 +40,33 @@ trait PensionInputs1516Period2Controller extends RedirectController {
   }
 
   val onSubmit = withSession { implicit request =>
-    keystore.read[String](KeystoreService.DC_FLAG).flatMap {
-      (value) =>
+    keystore.read[String](List(KeystoreService.DB_FLAG, KeystoreService.DC_FLAG)).flatMap {
+      (fieldsMap) =>
+      val isDB = fieldsMap(KeystoreService.DB_FLAG).toBoolean
+      val isDC = fieldsMap(KeystoreService.DC_FLAG).toBoolean
+
       CalculatorForm.form.bindFromRequest().fold(
-        // TODO: When we do validation story, please forward this to onPageLoad method with selected SchemeType flags
-        formWithErrors => { Future.successful(Ok(views.html.pensionInputs_1516_period2(formWithErrors))) },
+        formWithErrors => { Future.successful(Ok(views.html.pensionInputs_1516_period2(formWithErrors, isDB, isDC))) },
         input => {
-          keystore.save(List(input.to1516Period2DefinedBenefit, input.to1516Period2DefinedContribution), "").flatMap {
-            (_)=>
-            if (value.getOrElse("false").toBoolean) {
-              wheretoNext(Redirect(onSubmitRedirect))
-            } else {
-              wheretoNext(Redirect(routes.ReviewTotalAmountsController.onPageLoad()))
+          val isDBError = !input.to1516Period2DefinedBenefit.isDefined && isDB
+          val isDCError = !input.to1516Period2DefinedContribution.isDefined && isDC
+          if (isDBError || isDCError) {
+            var form = CalculatorForm.form.bindFromRequest()
+            if (isDBError) {
+              form = form.withError("year2015.definedBenefit_2015_p2", "error.bounds")
+            }
+            if (isDCError) {
+              form = form.withError("year2015.definedContribution_2015_p2", "error.bounds")
+            }
+            Future.successful(Ok(views.html.pensionInputs_1516_period2(form, isDB, isDC)))
+          } else {
+            keystore.save(List(input.to1516Period2DefinedBenefit, input.to1516Period2DefinedContribution), "").flatMap{
+              (_)=>
+              if (isDC) {
+                Future.successful(Redirect(onSubmitRedirect))
+              } else {
+                wheretoNext(Redirect(routes.ReviewTotalAmountsController.onPageLoad()))
+              }
             }
           }
         }
