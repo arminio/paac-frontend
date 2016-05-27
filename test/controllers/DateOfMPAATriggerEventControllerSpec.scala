@@ -28,6 +28,7 @@ import uk.gov.hmrc.play.http.{HeaderCarrier, SessionKeys}
 import uk.gov.hmrc.play.test.UnitSpec
 
 import scala.concurrent.Future
+import form._
 
 class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
 
@@ -101,6 +102,37 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
         status(result) shouldBe 200
         val htmlPage = contentAsString(await(result))
         // page should contain errors TODO
+      }
+    }
+  }
+
+  "DateOfMPAATriggerEventForm" when {
+    "on validate" should {
+      "return false when year is negative" in new ControllerWithMockKeystore {
+        DateOfMPAATriggerEventForm.form.bind(Map(
+          "dateOfMPAATriggerEvent.day" -> "-1",
+          "dateOfMPAATriggerEvent.month" -> "-1",
+          "dateOfMPAATriggerEvent.year" -> "-1111"
+        )).fold(
+          formWithErrors => {
+            formWithErrors.errors.find(_.key == "dateOfMPAATriggerEvent") should not be None
+          },
+          success =>
+            success should not be Some(-1)
+        )
+      }
+      "return false when year is short" in new ControllerWithMockKeystore {
+        DateOfMPAATriggerEventForm.form.bind(Map(
+          "dateOfMPAATriggerEvent.day" -> "-1",
+          "dateOfMPAATriggerEvent.month" -> "-1",
+          "dateOfMPAATriggerEvent.year" -> "9"
+        )).fold(
+          formWithErrors => {
+            formWithErrors.errors.find(_.key == "dateOfMPAATriggerEvent") should not be None
+          },
+          success =>
+            success should not be Some(-1)
+        )
       }
     }
   }
