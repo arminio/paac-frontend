@@ -11,6 +11,31 @@ articleClasses=Some("full-width"),
 backLink = Some((controllers.routes.YesNoMPAATriggerEventAmountController.onPageLoad.url,Messages("paac.link.text.back")))
 ) {
 
+    @if(paacForm.hasErrors) {
+      <div class="error-summary" role="group" aria-labelledby="error-summary-heading-example-1" tabindex="-1" style="border: 5px solid #b10e1e;padding: 20px;padding-top: 0px;margin-bottom: 30px;">
+
+        <h1 class="heading-medium error-summary-heading">
+          There was a problem with the date you reported to us
+        </h1>
+
+        @if(paacForm.hasGlobalErrors) {
+          <ul>
+          @for(error <- paacForm.globalErrors) {
+            <li>@error.message</li>
+          }
+          </ul>
+        }
+
+        <ul class="error-summary-list">
+          @for(error <- paacForm.errors) {
+            @defining(error.args) { args =>
+              <li><a href="#dateOfMPAATriggerEvent" style="color:#b10e1e;font-weight: bold;">@Messages(error.message, args:_*)</a></li>
+            }
+          }
+        </ul>
+      </div>
+    }
+
     @form(
         action = controllers.routes.DateOfMPAATriggerEventController.onSubmit,
         args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {

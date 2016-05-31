@@ -29,50 +29,14 @@ import uk.gov.hmrc.play.test.UnitSpec
 import form._
 import scala.concurrent.Future
 
-class YesNo1516Period2ControllerSpec extends UnitSpec with BeforeAndAfterAll {
-  val app = FakeApplication()
-  val SESSION_ID = s"session-${UUID.randomUUID}"
+class YesNo1516Period2ControllerSpec extends test.BaseSpec {
   val endPointURL = "/paac/yesno1516p2"
 
-  override def beforeAll() {
-    Play.start(app)
-    super.beforeAll() // To be stackable, must call super.beforeEach
-  }
-
-  override def afterAll() {
-    try {
-      super.afterAll()
-    } finally Play.stop()
-  }
-
-  implicit val request = FakeRequest()
-
   trait ControllerWithMockKeystore extends MockKeystoreFixture{
-    object MockYesNo1516Period2ControllerrWithMockKeystore extends YesNo1516Period2Controller {
+    object ControllerrWithMockKeystore extends YesNo1516Period2Controller {
       val yesNoKesystoreKey = "yesnoFor1516P2"
       val yesNoFormKey = "yesNo"
       override val keystore: KeystoreService = MockKeystore
-    }
-  }
-
-  trait MockKeystoreFixture {
-    object MockKeystore extends KeystoreService {
-      var map = Map(SessionKeys.sessionId -> SESSION_ID)
-      override def store[T](data: T, key: String)
-                           (implicit hc: HeaderCarrier,
-                            format: play.api.libs.json.Format[T],
-                            request: Request[Any])
-      : Future[Option[T]] = {
-        map = map + (key -> data.toString)
-        Future.successful(Some(data))
-      }
-      override def read[T](key: String)
-                          (implicit hc: HeaderCarrier,
-                           format: play.api.libs.json.Format[T],
-                           request: Request[Any])
-      : Future[Option[T]] = {
-        Future.successful((map get key).map(_.asInstanceOf[T]))
-      }
     }
   }
 
@@ -101,7 +65,7 @@ class YesNo1516Period2ControllerSpec extends UnitSpec with BeforeAndAfterAll {
         val request = FakeRequest(GET,"").withSession{(SessionKeys.sessionId,SESSION_ID)}
 
         // test
-        val result : Future[Result] = MockYesNo1516Period2ControllerrWithMockKeystore.onPageLoad()(request)
+        val result : Future[Result] = ControllerrWithMockKeystore.onPageLoad()(request)
 
         // check
         status(result) shouldBe 200
@@ -115,7 +79,7 @@ class YesNo1516Period2ControllerSpec extends UnitSpec with BeforeAndAfterAll {
         MockKeystore.map = MockKeystore.map + ("yesnoFor1516P2" -> "yes")
 
         // test
-        val result : Future[Result] = MockYesNo1516Period2ControllerrWithMockKeystore.onPageLoad()(request)
+        val result : Future[Result] = ControllerrWithMockKeystore.onPageLoad()(request)
 
         // check
         status(result) shouldBe 200
@@ -143,7 +107,7 @@ class YesNo1516Period2ControllerSpec extends UnitSpec with BeforeAndAfterAll {
         implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID)).withFormUrlEncodedBody(("yesnoFor1516P2" -> "Yes"))
 
         // test
-        val result: Future[Result] = MockYesNo1516Period2ControllerrWithMockKeystore.onSubmit()(request)
+        val result: Future[Result] = ControllerrWithMockKeystore.onSubmit()(request)
 
         // check
         status(result) shouldBe 200
@@ -155,7 +119,7 @@ class YesNo1516Period2ControllerSpec extends UnitSpec with BeforeAndAfterAll {
         implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID)).withFormUrlEncodedBody(("yesNo" -> "Yes"))
 
         // test
-        val result: Future[Result] = MockYesNo1516Period2ControllerrWithMockKeystore.onSubmit()(request)
+        val result: Future[Result] = ControllerrWithMockKeystore.onSubmit()(request)
 
         // check
         status(result) shouldBe 303
@@ -169,7 +133,7 @@ class YesNo1516Period2ControllerSpec extends UnitSpec with BeforeAndAfterAll {
         implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID)).withFormUrlEncodedBody(("yesNo" -> "Yes"))
 
         // test
-        val result: Future[Result] = MockYesNo1516Period2ControllerrWithMockKeystore.onSubmit()(request)
+        val result: Future[Result] = ControllerrWithMockKeystore.onSubmit()(request)
 
         // check
         status(result) shouldBe 303
@@ -178,20 +142,67 @@ class YesNo1516Period2ControllerSpec extends UnitSpec with BeforeAndAfterAll {
         redirectLocation(result) shouldBe Some("/paac/pensionInputs1516p2")
       }
 
-      /*"with yesNo = No should forward to 2015/16 Period-2 InputPage" in new ControllerWithMockKeystore{
+      "with yesNo = No for P2 and yesNo = No for p1 should forward to static page" in new ControllerWithMockKeystore{
         // set up
         implicit val hc = HeaderCarrier()
         implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID)).withFormUrlEncodedBody(("yesNo" -> "No"))
+        MockKeystore.map = MockKeystore.map + ("yesnoFor1516P1" -> "No")
+        MockKeystore.map = MockKeystore.map + (KeystoreService.CURRENT_INPUT_YEAR_KEY -> "2015")
+        MockKeystore.map = MockKeystore.map + (KeystoreService.SELECTED_INPUT_YEARS_KEY -> "2015")
+        MockKeystore.map = MockKeystore.map + (KeystoreService.IS_EDIT_KEY -> "false")
+        MockKeystore.map = MockKeystore.map + (KeystoreService.TE_YES_NO_KEY -> "false")
 
         // test
-        val result: Future[Result] = MockYesNo1516Period2ControllerrWithMockKeystore.onSubmit()(request)
+        val result: Future[Result] = ControllerrWithMockKeystore.onSubmit()(request)
+
+        // check
+        status(result) shouldBe 303
+        MockKeystore.map should contain key ("yesnoFor1516P2")
+        MockKeystore.map should contain value ("No")
+        redirectLocation(result) shouldBe Some("/paac/pip-tax-years")
+      }
+
+      "with yesNo = No for P2 and yesNo = Yes for p1 should forward to trigger yes/no page if dc scheme flag is set" in new ControllerWithMockKeystore{
+        // set up
+        implicit val hc = HeaderCarrier()
+        implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID)).withFormUrlEncodedBody(("yesNo" -> "No"))
+        MockKeystore.map = MockKeystore.map + ("yesnoFor1516P1" -> "Yes")
+        MockKeystore.map = MockKeystore.map + (KeystoreService.CURRENT_INPUT_YEAR_KEY -> "2015")
+        MockKeystore.map = MockKeystore.map + (KeystoreService.SELECTED_INPUT_YEARS_KEY -> "2015")
+        MockKeystore.map = MockKeystore.map + (KeystoreService.IS_EDIT_KEY -> "false")
+        MockKeystore.map = MockKeystore.map + (KeystoreService.TE_YES_NO_KEY -> "false")
+        MockKeystore.map = MockKeystore.map + (KeystoreService.DC_FLAG -> "true")
+
+        // test
+        val result: Future[Result] = ControllerrWithMockKeystore.onSubmit()(request)
+
+        // check
+        status(result) shouldBe 303
+        MockKeystore.map should contain key ("yesnoFor1516P2")
+        MockKeystore.map should contain value ("No")
+        redirectLocation(result) shouldBe Some("/paac/yesnompaate")
+      }
+
+      "with yesNo = No for P2 and yesNo = Yes for p1 should forward to inputs page if dc scheme flag is not set" in new ControllerWithMockKeystore {
+        // set up
+        implicit val hc = HeaderCarrier()
+        implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID)).withFormUrlEncodedBody(("yesNo" -> "No"))
+        MockKeystore.map = MockKeystore.map + ("yesnoFor1516P1" -> "Yes")
+        MockKeystore.map = MockKeystore.map + (KeystoreService.CURRENT_INPUT_YEAR_KEY -> "2015")
+        MockKeystore.map = MockKeystore.map + (KeystoreService.SELECTED_INPUT_YEARS_KEY -> "2015")
+        MockKeystore.map = MockKeystore.map + (KeystoreService.IS_EDIT_KEY -> "false")
+        MockKeystore.map = MockKeystore.map + (KeystoreService.TE_YES_NO_KEY -> "false")
+        MockKeystore.map = MockKeystore.map + (KeystoreService.DC_FLAG -> "false")
+
+        // test
+        val result: Future[Result] = ControllerrWithMockKeystore.onSubmit()(request)
 
         // check
         status(result) shouldBe 303
         MockKeystore.map should contain key ("yesnoFor1516P2")
         MockKeystore.map should contain value ("No")
         redirectLocation(result) shouldBe Some("/paac/pensionInputs")
-      }*/
+      }
     }
   }
 

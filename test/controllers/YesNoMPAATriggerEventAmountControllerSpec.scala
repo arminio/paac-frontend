@@ -28,50 +28,14 @@ import uk.gov.hmrc.play.test.UnitSpec
 import scala.concurrent.Future
 import form._
 
-class YesNoMPAATriggerEventAmountControllerSpec extends UnitSpec with BeforeAndAfterAll {
-  val app = FakeApplication()
-  val SESSION_ID = s"session-${UUID.randomUUID}"
+class YesNoMPAATriggerEventAmountControllerSpec extends test.BaseSpec {
   val endPointURL = "/paac/yesnompaate"
-
-  override def beforeAll() {
-    Play.start(app)
-    super.beforeAll() // To be stackable, must call super.beforeEach
-  }
-
-  override def afterAll() {
-    try {
-      super.afterAll()
-    } finally Play.stop()
-  }
-
-  implicit val request = FakeRequest()
 
   trait ControllerWithMockKeystore extends MockKeystoreFixture{
     object MockYesNoMPAATriggerEventAmountControllerWithMockKeystore extends YesNoMPAATriggerEventAmountController {
       val yesNoKeystoreKey = "yesnoForMPAATriggerEvent"
       val yesNoFormKey = "yesNo"
       override val keystore: KeystoreService = MockKeystore
-    }
-  }
-
-  trait MockKeystoreFixture {
-    object MockKeystore extends KeystoreService {
-      var map = Map(SessionKeys.sessionId -> SESSION_ID)
-      override def store[T](data: T, key: String)
-                           (implicit hc: HeaderCarrier,
-                            format: play.api.libs.json.Format[T],
-                            request: Request[Any])
-      : Future[Option[T]] = {
-        map = map + (key -> data.toString)
-        Future.successful(Some(data))
-      }
-      override def read[T](key: String)
-                          (implicit hc: HeaderCarrier,
-                           format: play.api.libs.json.Format[T],
-                           request: Request[Any])
-      : Future[Option[T]] = {
-        Future.successful((map get key).map(_.asInstanceOf[T]))
-      }
     }
   }
 
@@ -180,6 +144,7 @@ class YesNoMPAATriggerEventAmountControllerSpec extends UnitSpec with BeforeAndA
 
       "with yesNo = No should forward to review page" in new ControllerWithMockKeystore{
         // set up
+        MockKeystore.map = MockKeystore.map + ("isEdit" -> "false")
         implicit val hc = HeaderCarrier()
         implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID))
           .withFormUrlEncodedBody(("yesNo" -> "No"))

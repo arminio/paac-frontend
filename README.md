@@ -26,3 +26,8 @@ and then access the application at
 ```
 http://localhost:9000/paac
 ```
+
+
+## SBT Testing
+
+Turn on full stacktrace in sbt console using `set testOptions in "paac-frontend" += Tests.Argument("-oF")`

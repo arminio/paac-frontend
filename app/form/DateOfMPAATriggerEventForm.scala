@@ -39,16 +39,7 @@ trait DateOfMPAATriggerEventForm extends DateOfMPAATriggerEvent {
 
   val form: Form[DateOfMPAATriggerEventPageModel] = Form(
     mapping(
-      mpaaDate -> dateTuple(validate = true).verifying(Messages("paac.mpaa.ta.date.page.datevalidation"), data => {
-        data match
-        {
-          case Some(x) =>
-            if (x.year().get() < 0 || x.year().get().toString.length != 4)
-              false
-            else
-              true
-          case _ => false
-        }})
+      mpaaDate -> dateTuple(validate = true)
     )(DateOfMPAATriggerEventPageModel.apply)(DateOfMPAATriggerEventPageModel.unapply)
   )
 }

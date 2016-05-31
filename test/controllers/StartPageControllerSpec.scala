@@ -23,29 +23,19 @@ import play.api.Play
 import play.api.mvc.Result
 import play.api.test.Helpers._
 import play.api.test.{FakeRequest, FakeApplication}
+import uk.gov.hmrc.play.http.{HeaderCarrier, HttpPost, HttpResponse}
 import uk.gov.hmrc.play.http.SessionKeys
 import uk.gov.hmrc.play.test.UnitSpec
 import scala.concurrent.Future
 import play.api.libs.concurrent.Execution.Implicits._
+import service._
+import connector._
 
-class StartPageControllerSpec extends UnitSpec with BeforeAndAfterAll {
-  val app = FakeApplication()
-  val SESSION_ID = s"session-${UUID.randomUUID}"
+import play.api.test._
+import play.api.mvc._
+import service.KeystoreService
 
-
-  override def beforeAll() {
-      Play.start(app)
-      super.beforeAll() // To be stackable, must call super.beforeEach
-    }
-
-    override def afterAll() {
-      try {
-        super.afterAll()
-      } finally Play.stop()
-    }
-
-    implicit val request = FakeRequest()
-
+class StartPageControllerSpec extends test.BaseSpec {
     "StartPageController" should {
       "not return result NOT_FOUND" in {
         val result : Option[Future[Result]] = route(FakeRequest(GET, "/paac"))
@@ -67,6 +57,7 @@ class StartPageControllerSpec extends UnitSpec with BeforeAndAfterAll {
         val result : Option[Future[Result]] = route(FakeRequest(GET, "/paac"))
         status(result.get) shouldBe 303
       }
+
       "create a session onSubmit" in {
         // set up
         val request = FakeRequest(GET, "/paac").withSession {(SessionKeys.sessionId,SESSION_ID)}
@@ -78,6 +69,7 @@ class StartPageControllerSpec extends UnitSpec with BeforeAndAfterAll {
         val StartPage = contentAsString(await(result))
         StartPage should include ("")
       }
+
       "create a new session" in {
         // set up
         val request = FakeRequest(GET, "/paac").withSession {(SessionKeys.sessionId,SESSION_ID)}
@@ -89,12 +81,17 @@ class StartPageControllerSpec extends UnitSpec with BeforeAndAfterAll {
         val StartPage = contentAsString(await(result))
         StartPage should include ("")
       }
-      "render the StartPage" in {
+
+      "render the StartPage" in new MockKeystoreFixture {
         // set up
         val request = FakeRequest(GET, "/paac"). withSession {(SessionKeys.sessionId,SESSION_ID)}
+        object MockedStartPageController extends StartPageController {
+          override val keystore: KeystoreService = MockKeystore
+          override val connector: CalculatorConnector = null
+        }
 
         // test
-        val result : Future[Result] = StartPageController.startPage()(request)
+        val result : Future[Result] = MockedStartPageController.startPage()(request)
 
         // check
         val StartPage = contentAsString(await(result))

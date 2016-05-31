@@ -31,9 +31,19 @@ trait KeystoreService {
   /**
    * Store data to Keystore using a key
    */
-  def store[T](data: T, key: String)(implicit hc: HeaderCarrier, format: play.api.libs.json.Format[T], request: Request[Any]): Future[Option[T]] = {
+  def storeValue[T](data: T, key: String)(implicit hc: HeaderCarrier, format: play.api.libs.json.Format[T], request: Request[Any]): Future[Option[T]] = {
     request.session.get(SessionKeys.sessionId) match {
       case Some(id) => sessionCache.cache[T](SOURCE, id, key, data) map { case x => x.getEntry[T](key) }
+      case None => Future.successful(None)
+    }
+  }
+
+  /**
+   * Store data to Keystore using a key
+   */
+  def store(data: String, key: String)(implicit hc: HeaderCarrier, request: Request[Any]): Future[Option[String]] = {
+    request.session.get(SessionKeys.sessionId) match {
+      case Some(id) => sessionCache.cache[String](SOURCE, id, key, data) map { case x => x.getEntry[String](key) }
       case None => Future.successful(None)
     }
   }
@@ -57,7 +67,7 @@ trait KeystoreService {
     Future.sequence(values.map{
       (pair)=>
       val v = pair._1.getOrElse(defaultT)
-      store[T](v, pair._2)
+      storeValue[T](v, pair._2)
     })
   }
 
@@ -65,14 +75,14 @@ trait KeystoreService {
     Future.sequence(values.filter(_ != None).map{
       (maybePair)=>
       val pair = maybePair.get
-      store[T](convert[T](pair._1.asInstanceOf[AnyRef], defaultT), pair._2)
+      storeValue[T](convert[T](pair._1.asInstanceOf[AnyRef], defaultT), pair._2)
     })
   }
 
   def save[T](values: List[(T,String)])(implicit hc: HeaderCarrier, format: play.api.libs.json.Format[T], request: Request[Any]): Future[List[Option[T]]] = {
     Future.sequence(values.map{
       (pair)=>
-      store[T](pair._1, pair._2)
+      storeValue[T](pair._1, pair._2)
     })
   }
 
@@ -118,6 +128,7 @@ object KeystoreService extends KeystoreService {
   val P1_YES_NO_KEY = "yesnoFor1516P1"
   val P2_YES_NO_KEY = "yesnoFor1516P2"
   val TE_YES_NO_KEY = "yesnoForMPAATriggerEvent"
+  val IS_EDIT_KEY = "isEdit"
 
   def toStringPair(key: String, value: Option[String]): (String, String) = value match {
     case None => (key, "")

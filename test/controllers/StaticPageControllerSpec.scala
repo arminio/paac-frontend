@@ -28,23 +28,7 @@ import uk.gov.hmrc.play.test.UnitSpec
 import scala.concurrent.Future
 import play.api.libs.concurrent.Execution.Implicits._
 
-class StaticPageControllerSpec extends UnitSpec with BeforeAndAfterAll {
-  val app = FakeApplication()
-  val SESSION_ID = s"session-${UUID.randomUUID}"
-
-
-  override def beforeAll() {
-    Play.start(app)
-    super.beforeAll() // To be stackable, must call super.beforeEach
-  }
-
-  override def afterAll() {
-    try {
-      super.afterAll()
-    } finally Play.stop()
-  }
-
-  implicit val request = FakeRequest()
+class StaticPageControllerSpec extends test.BaseSpec {
   
   "StaticPageController" should {
     "pipOnPageLoad" should {

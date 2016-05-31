@@ -29,7 +29,9 @@ object ReviewTotalAmountsController extends ReviewTotalAmountsController {
   override val connector: CalculatorConnector = CalculatorConnector
 }
 
-trait ReviewTotalAmountsController extends RedirectController {
+trait ReviewTotalAmountsController extends RedirectController with models.ThisYear {
+  settings: models.ThisYear =>
+
   val keystore: KeystoreService
   val connector: CalculatorConnector
 
@@ -49,14 +51,14 @@ trait ReviewTotalAmountsController extends RedirectController {
           KeystoreService.AI_PREFIX + y, KeystoreService.TA_PREFIX + y)
       }
 
-    val currentYear = config.PaacConfiguration.year()
-    keystore.read[String](List.range(2006, currentYear + 1).flatMap(yearAmountKeys(_)))
+    keystore.read[String](List.range(2008, settings.THIS_YEAR + 1).flatMap(yearAmountKeys(_)))
   }
 
   val onPageLoad = withSession { implicit request =>
     fetchAmounts.flatMap { (amountsMap) =>
       keystore.read[String](KeystoreService.TRIGGER_DATE_KEY).map {
         (td) =>
+        keystore.store(false.toString(), KeystoreService.IS_EDIT_KEY)
         val values = amountsMap ++ Map((KeystoreService.TRIGGER_DATE_KEY, td.getOrElse("")))
         val f = CalculatorForm.bind(values, true)
         val model = f.get
@@ -73,15 +75,11 @@ trait ReviewTotalAmountsController extends RedirectController {
     }
   }
 
-  def onEditAmount(year:Long) = withSession { implicit request =>
-    if (year < 2015) {
-      Future.successful(Results.Redirect(routes.PensionInputsController.onPageLoad()))
-    } else if (year == 20151) {
-      Future.successful(Results.Redirect(routes.PensionInputs1516Period1Controller.onPageLoad()))
-    } else if (year == 20152) {
-      Future.successful(Results.Redirect(routes.PensionInputs1516Period2Controller.onPageLoad()))
-    } else {
-      Future.successful(Results.Redirect(routes.ReviewTotalAmountsController.onPageLoad()))
+  def onEditAmount(year:Int) = withSession { implicit request =>
+    keystore.store(true.toString(), KeystoreService.IS_EDIT_KEY)
+    keystore.read(List(KeystoreService.TE_YES_NO_KEY)).flatMap {
+      (fieldsMap) =>
+      goTo(year, false, true, fieldsMap(KeystoreService.TE_YES_NO_KEY) == "Yes", Redirect(routes.ReviewTotalAmountsController.onPageLoad))
     }
   }
 
@@ -116,6 +114,6 @@ trait ReviewTotalAmountsController extends RedirectController {
   }
 
   val onBack = withSession { implicit request =>
-    wheretoBack[String](Redirect(routes.PensionInputsController.onPageLoad))
+    wheretoBack(Redirect(routes.PensionInputsController.onPageLoad))
   }
 }

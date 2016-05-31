@@ -53,15 +53,29 @@ trait PensionInputsController extends RedirectController {
     keystore.read[String](List(CURRENT_INPUT_YEAR_KEY, DB_FLAG, DC_FLAG)).flatMap {
       (fieldsMap) =>
       val cy = fieldsMap(CURRENT_INPUT_YEAR_KEY).toInt
+      val isDB = fieldsMap(DB_FLAG).toBoolean
+      val isDC = fieldsMap(DC_FLAG).toBoolean
       CalculatorForm.form.bindFromRequest().fold(
-        formWithErrors => { Future.successful(Ok(views.html.pensionInputs(formWithErrors, 
-                                                                          cy.toString(),
-                                                                          fieldsMap(DB_FLAG).toBoolean,
-                                                                          fieldsMap(DC_FLAG).toBoolean))) },
+        formWithErrors => { 
+          Future.successful(Ok(views.html.pensionInputs(formWithErrors, cy.toString(), isDB, isDC))) 
+        },
         input => {
-          keystore.save(List(input.toDefinedBenefit(cy), input.toDefinedContribution(cy)), "").flatMap {
-            (_)=>
-            wheretoNext[String]( Redirect(onSubmitRedirect))
+          val isDBError = !input.toDefinedBenefit(cy).isDefined && isDB
+          val isDCError = !input.toDefinedContribution(cy).isDefined && isDC
+          if (isDBError || isDCError) {
+            var form = CalculatorForm.form.bindFromRequest()
+            if (isDBError) {
+              form = form.withError("definedBenefits.amount_"+cy, "db.error.bounds")
+            }
+            if (isDCError) {
+              form = form.withError("definedContributions.amount_"+cy, "dc.error.bounds")
+            }
+            Future.successful(Ok(views.html.pensionInputs(form, cy.toString(), isDB, isDC)))
+          } else {
+            keystore.save(List(input.toDefinedBenefit(cy), input.toDefinedContribution(cy)), "").flatMap {
+              (_)=>
+              wheretoNext(Redirect(onSubmitRedirect))
+            }
           }
         }
       )
@@ -69,6 +83,6 @@ trait PensionInputsController extends RedirectController {
   }
 
   val onBack = withSession { implicit request =>
-    wheretoBack[String](Redirect(routes.TaxYearSelectionController.onPageLoad))
+    wheretoBack(Redirect(routes.TaxYearSelectionController.onPageLoad))
   }
 }

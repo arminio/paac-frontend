@@ -61,6 +61,6 @@ POST        /pensionInputs                              controllers.PensionInput
 
 ## Review Pension Input Amounts
 GET         /review                                     controllers.ReviewTotalAmountsController.onPageLoad
-GET         /edit/:year                                 controllers.ReviewTotalAmountsController.onEditAmount(year:Long)
+GET         /edit/:year                                 controllers.ReviewTotalAmountsController.onEditAmount(year:Int)
 POST        /calculate                                  controllers.ReviewTotalAmountsController.onSubmit
 GET         /reviewBack                                 controllers.ReviewTotalAmountsController.onBack

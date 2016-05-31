@@ -5,9 +5,34 @@
 @common.paacMain(
 pageTitle = Messages("paac.scheme.selection.pagetitle"),
 heading = Messages("paac.scheme.selection.heading"),
-backLink = Some((controllers.routes.StartPageController.startPage.url,Messages("paac.link.text.back")))
+backLink = Some((controllers.routes.StartPageController.newSession.url,Messages("paac.link.text.back")))
 ) {
 <br>
+    @if(paacForm.hasErrors) {
+      <div class="error-summary" role="group" aria-labelledby="error-summary-heading-example-1" tabindex="-1" style="border: 5px solid #b10e1e;padding: 20px;padding-top: 0px;margin-bottom: 30px;">
+
+        <h1 class="heading-medium error-summary-heading">
+          There was a problem
+        </h1>
+
+        @if(paacForm.hasGlobalErrors) {
+          <ul>
+          @for(error <- paacForm.globalErrors) {
+            <li>@error.message</li>
+          }
+          </ul>
+        }
+
+        <ul class="error-summary-list">
+          @for(error <- paacForm.errors) {
+            @defining(error.args) { args =>
+              <li><a href="#" style="color:#b10e1e;font-weight: bold;">@Messages(error.message, args:_*)</a></li>
+            }
+          }
+        </ul>
+      </div>
+    }
+
     @form(
         action = controllers.routes.SelectSchemeController.onSubmit,
         args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {

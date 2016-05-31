@@ -28,7 +28,7 @@ object PensionInputs1516Period1Controller extends PensionInputs1516Period1Contro
   override val keystore: KeystoreService = KeystoreService
 }
 
-trait PensionInputs1516Period1Controller extends BaseFrontendController {
+trait PensionInputs1516Period1Controller extends RedirectController {
   val keystore: KeystoreService
 
   private val onSubmitRedirect: Call = routes.YesNo1516Period2Controller.onPageLoad()
@@ -43,12 +43,38 @@ trait PensionInputs1516Period1Controller extends BaseFrontendController {
   }
 
   val onSubmit = withSession { implicit request =>
-    CalculatorForm.form.bindFromRequest().fold(
-      // TODO: When we do validation story, please forward this to onPageLoad method with selected SchemeType flags
-      formWithErrors => { Future.successful(Ok(views.html.pensionInputs_1516_period1(formWithErrors))) },
-      input => {
-        keystore.save(List(input.to1516Period1DefinedBenefit, input.to1516Period1DefinedContribution), "").map((_)=>Redirect(onSubmitRedirect))
-      }
-    )
+    keystore.read[String](List(KeystoreService.DB_FLAG, KeystoreService.DC_FLAG, KeystoreService.IS_EDIT_KEY)).flatMap {
+      (fieldsMap) =>
+      val isDB = fieldsMap(KeystoreService.DB_FLAG).toBoolean
+      val isDC = fieldsMap(KeystoreService.DC_FLAG).toBoolean
+      val isEdit = fieldsMap(KeystoreService.IS_EDIT_KEY).toBoolean
+
+      CalculatorForm.form.bindFromRequest().fold(
+        formWithErrors => { Future.successful(Ok(views.html.pensionInputs_1516_period1(formWithErrors, isDB, isDC))) },
+        input => {
+          val isDBError = !input.to1516Period1DefinedBenefit.isDefined && isDB
+          val isDCError = !input.to1516Period1DefinedContribution.isDefined && isDC
+          if (isDBError || isDCError) {
+            var form = CalculatorForm.form.bindFromRequest()
+            if (isDBError) {
+              form = form.withError("year2015.definedBenefit_2015_p1", "db.error.bounds")
+            }
+            if (isDCError) {
+              form = form.withError("year2015.definedContribution_2015_p1", "dc.error.bounds")
+            }
+            Future.successful(Ok(views.html.pensionInputs_1516_period1(form, isDB, isDC)))
+          } else {
+            keystore.save(List(input.to1516Period1DefinedBenefit, input.to1516Period1DefinedContribution), "").flatMap{
+              (_)=>
+              if (isEdit) {
+                goTo(-1, true, isEdit, false, Redirect(onSubmitRedirect))
+              } else {
+                Future.successful(Redirect(onSubmitRedirect))
+              }
+            }
+          }
+        }
+      )
+    }
   }
 }

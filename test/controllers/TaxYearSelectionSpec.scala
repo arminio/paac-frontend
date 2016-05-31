@@ -28,54 +28,14 @@ import uk.gov.hmrc.play.test.UnitSpec
 import scala.concurrent.duration._
 import scala.concurrent.{Await, Future}
 
-class TaxYearSelectionSpec extends UnitSpec with BeforeAndAfterAll {
-  val app = FakeApplication()
-  val SESSION_ID = s"session-${UUID.randomUUID}"
+class TaxYearSelectionSpec extends test.BaseSpec {
   val endPointURL = "/paac/taxyearselection"
 
-  override def beforeAll() {
-    Play.start(app)
-    super.beforeAll() // To be stackable, must call super.beforeEach
-  }
-
-  override def afterAll() {
-    try {
-      super.afterAll()
-    } finally Play.stop()
-  }
-
-  implicit val request = FakeRequest()
-
   trait ControllerWithMockKeystore extends MockKeystoreFixture {
-    object MockTaxYearSelectionWithMockKeystore extends TaxYearSelectionController {
+    object ControllerWithMockKeystore extends TaxYearSelectionController {
       val keystorekey = "TaxYearSelection"
       override val keystore: KeystoreService = MockKeystore
     }
-  }
-
-
-  trait MockKeystoreFixture {
-    object MockKeystore extends KeystoreService {
-      var map = Map(SessionKeys.sessionId -> SESSION_ID)
-
-      override def store[T](data: T, key: String)
-                           (implicit hc: HeaderCarrier,
-                            format: play.api.libs.json.Format[T],
-                            request: Request[Any])
-      : Future[Option[T]] = {
-        map = map + (key -> data.toString)
-        Future.successful(Some(data))
-      }
-
-      override def read[T](key: String)
-                          (implicit hc: HeaderCarrier,
-                           format: play.api.libs.json.Format[T],
-                           request: Request[Any])
-      : Future[Option[T]] = {
-        Future.successful((map get key).map(_.asInstanceOf[T]))
-      }
-    }
-
   }
 
   "TaxYearSelection" when {
@@ -101,7 +61,7 @@ class TaxYearSelectionSpec extends UnitSpec with BeforeAndAfterAll {
         val request = FakeRequest(GET,"").withSession{(SessionKeys.sessionId,SESSION_ID)}
 
         // test
-        val result : Future[Result] = MockTaxYearSelectionWithMockKeystore.onPageLoad()(request)
+        val result : Future[Result] = ControllerWithMockKeystore.onPageLoad()(request)
 
         // check
         status(result) shouldBe 200
@@ -114,7 +74,7 @@ class TaxYearSelectionSpec extends UnitSpec with BeforeAndAfterAll {
         implicit val hc = HeaderCarrier()
         val request = FakeRequest(GET,"").withSession{(SessionKeys.sessionId,SESSION_ID)}
         // test
-        val result : Future[Result] = MockTaxYearSelectionWithMockKeystore.onPageLoad()(request)
+        val result : Future[Result] = ControllerWithMockKeystore.onPageLoad()(request)
 
         // check
         status(result) shouldBe 200
@@ -122,31 +82,6 @@ class TaxYearSelectionSpec extends UnitSpec with BeforeAndAfterAll {
         MockKeystore.map should contain value ("2015")
       }
     }
-//
-//    "should return selected tax years" in new ControllerWithMockKeystore {
-//      // set up
-//      MockKeystore.map = MockKeystore.map ++ Map("TaxYear2016"->"2016",
-//        "TaxYear2015"->"2015",
-//        "TaxYear2013"->"2013")
-//      implicit val hc = HeaderCarrier()
-//      implicit val request = FakeRequest().withSession((SessionKeys.sessionId,SESSION_ID))
-//
-//      // test
-//      val result: Future[Map[String, Seq[String]]] = MockTaxYearSelectionWithMockKeystore.onYearSelected()
-//
-//      // check
-//      val values: Map[String, Seq[String]] = Await.result(result, Duration(1000,MILLISECONDS))
-//      values should contain key ("TaxYear2016")
-//      values should contain value ("2016")
-//      values should contain key ("TaxYear2015")
-//      values should contain value ("2015")
-//      values should contain key ("TaxYear2013")
-//      values should contain value ("2013")
-//
-//      val result: Option[Future[Result]] = route(FakeRequest(GET, endPointURL))
-//      status(result.get) should not be 200
-//    }
-
   }
 
   "onYearSelected with POST request" should {
@@ -161,19 +96,22 @@ class TaxYearSelectionSpec extends UnitSpec with BeforeAndAfterAll {
       status(result.get) shouldBe 303
     }
 
-    "have valid TaxYearSelection saved to keystore" in new ControllerWithMockKeystore{
+    "have valid TaxYearSelection saved to keystore" in new ControllerWithMockKeystore {
       // set up
       implicit val hc = HeaderCarrier()
-      implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID)).withFormUrlEncodedBody(("TaxYear2015" -> "2015"))
+      implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID)).withFormUrlEncodedBody(("csrfToken" -> "blah"),("TaxYear2015" -> "2015"))
       MockKeystore.map = MockKeystore.map + ("TaxYearSelection" -> "2015")
+      MockKeystore.map = MockKeystore.map + (KeystoreService.IS_EDIT_KEY -> "false")
+      MockKeystore.map = MockKeystore.map + (KeystoreService.TE_YES_NO_KEY -> "false")
 
       // test
-      val result: Future[Result] = MockTaxYearSelectionWithMockKeystore.onYearSelected()(request)
+      val result: Future[Result] = ControllerWithMockKeystore.onYearSelected()(request)
 
       // check
-      status(result) shouldBe 200
-      MockKeystore.map should contain key ("TaxYearSelection")
-      MockKeystore.map should contain value ("2015")
+      status(result) shouldBe 303
+      MockKeystore.map(KeystoreService.CURRENT_INPUT_YEAR_KEY) shouldBe ("2015")
+      MockKeystore.map(KeystoreService.SELECTED_INPUT_YEARS_KEY) shouldBe ("2015")
+      redirectLocation(result) shouldBe Some("/paac/changes-to-pip")
     }
 
     "return TaxYearSelection results from keystore" in new ControllerWithMockKeystore {
@@ -181,7 +119,7 @@ class TaxYearSelectionSpec extends UnitSpec with BeforeAndAfterAll {
       val request = FakeRequest(POST, endPointURL).withSession {(SessionKeys.sessionId,SESSION_ID)}
 
       // test
-      val result: Future[Result] = MockTaxYearSelectionWithMockKeystore.onYearSelected()(request)
+      val result: Future[Result] = ControllerWithMockKeystore.onYearSelected()(request)
 
       // check
       val htmlSummaryPage = contentAsString(await(result))
