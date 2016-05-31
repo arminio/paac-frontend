@@ -21,18 +21,19 @@ import play.api.data.Form
 import play.api.data.Forms._
 import service.KeystoreService
 
-object CalculatorForm {
+object CalculatorForm extends models.ThisYear {
+  settings: ThisYear =>
+
   type CalculatorFormType = CalculatorFormFields
-  val THIS_YEAR = config.PaacConfiguration.year()
-  val CY0 = THIS_YEAR
-  val CY1 = THIS_YEAR-1
-  val CY2 = THIS_YEAR-2
-  val CY3 = THIS_YEAR-3
-  val CY4 = THIS_YEAR-4
-  val CY5 = THIS_YEAR-5
-  val CY6 = THIS_YEAR-6
-  val CY7 = THIS_YEAR-7
-  val CY8 = THIS_YEAR-8
+  val CY0 = settings.THIS_YEAR
+  val CY1 = settings.THIS_YEAR-1
+  val CY2 = settings.THIS_YEAR-2
+  val CY3 = settings.THIS_YEAR-3
+  val CY4 = settings.THIS_YEAR-4
+  val CY5 = settings.THIS_YEAR-5
+  val CY6 = settings.THIS_YEAR-6
+  val CY7 = settings.THIS_YEAR-7
+  val CY8 = settings.THIS_YEAR-8
   val dbValidator = optional(bigDecimal(10,2)).verifying("db.error.bounds", value=> if (value.isDefined) value.get.longValue >= 0 && value.get.longValue < 100000000 else true)
   val dcValidator = optional(bigDecimal(10,2)).verifying("dc.error.bounds", value=> if (value.isDefined) value.get.longValue >= 0 && value.get.longValue < 100000000 else true)
   val validator = optional(bigDecimal(10,2)).verifying("error.bounds", value=> if (value.isDefined) value.get.longValue >= 0 && value.get.longValue < 100000000 else true)
@@ -103,7 +104,7 @@ object CalculatorForm {
                         ("year2015.definedContribution_2015_p2", data.getOrElse("dcAmount2015P2", data.getOrElse(KeystoreService.P2_DC_KEY,""))),
                         ("year2015.postTriggerDcAmount2015P1", data.getOrElse(KeystoreService.P1_TRIGGER_DC_KEY,"")),
                         ("year2015.postTriggerDcAmount2015P2", data.getOrElse(KeystoreService.P2_TRIGGER_DC_KEY,"")))
-    val yearAmounts = List.range(THIS_YEAR-8, THIS_YEAR + 1).flatMap {
+    val yearAmounts = List.range(settings.THIS_YEAR-8, settings.THIS_YEAR + 1).flatMap {
       (year)=>
       if (year != 2015){
         List((s"definedBenefits.amount_${year}", data.getOrElse("definedBenefit_" + year, "")),
