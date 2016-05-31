@@ -43,10 +43,11 @@ trait PensionInputs1516Period1Controller extends RedirectController {
   }
 
   val onSubmit = withSession { implicit request =>
-    keystore.read[String](List(KeystoreService.DB_FLAG, KeystoreService.DC_FLAG)).flatMap {
+    keystore.read[String](List(KeystoreService.DB_FLAG, KeystoreService.DC_FLAG, KeystoreService.IS_EDIT_KEY)).flatMap {
       (fieldsMap) =>
       val isDB = fieldsMap(KeystoreService.DB_FLAG).toBoolean
       val isDC = fieldsMap(KeystoreService.DC_FLAG).toBoolean
+      val isEdit = fieldsMap(KeystoreService.IS_EDIT_KEY).toBoolean
 
       CalculatorForm.form.bindFromRequest().fold(
         formWithErrors => { Future.successful(Ok(views.html.pensionInputs_1516_period1(formWithErrors, isDB, isDC))) },
@@ -63,7 +64,14 @@ trait PensionInputs1516Period1Controller extends RedirectController {
             }
             Future.successful(Ok(views.html.pensionInputs_1516_period1(form, isDB, isDC)))
           } else {
-            keystore.save(List(input.to1516Period1DefinedBenefit, input.to1516Period1DefinedContribution), "").flatMap((_)=>wheretoNext(Redirect(onSubmitRedirect)))
+            keystore.save(List(input.to1516Period1DefinedBenefit, input.to1516Period1DefinedContribution), "").flatMap{
+              (_)=>
+              if (isEdit) {
+                goTo(-1, true, isEdit, false, Redirect(onSubmitRedirect))
+              } else {
+                Future.successful(Redirect(onSubmitRedirect))
+              }
+            }
           }
         }
       )

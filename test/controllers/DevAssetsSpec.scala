@@ -39,7 +39,7 @@ class DevAssetsSpec extends test.BaseSpec {
       // test
       val result: Future[Result] = action()(FakeRequest(GET, "/some/path"))
 
-      println(await(result))
+      //info(await(result))
     }
     
     "at should not serve file asset if not present with non absolute path" in {
@@ -49,7 +49,7 @@ class DevAssetsSpec extends test.BaseSpec {
       // test
       val result: Future[Result] = action()(FakeRequest(GET, "/some/path"))
 
-      println(await(result))
+      //info(await(result))
     }
   }
 }

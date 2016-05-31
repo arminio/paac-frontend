@@ -42,7 +42,6 @@ trait RedirectController extends BaseFrontendController {
           (implicit hc: HeaderCarrier, format: play.api.libs.json.Format[String], request: Request[Any]): Future[Result] = {
     keystore.store(year.toString(), KeystoreService.CURRENT_INPUT_YEAR_KEY).flatMap {
       (values) =>
-      println(s"********* $year")
       //redirect to nextYear Controller
       if (isForward && isEdit) {
         Future.successful(Results.Redirect(routes.ReviewTotalAmountsController.onPageLoad()))
@@ -66,8 +65,9 @@ trait RedirectController extends BaseFrontendController {
             keystore.read[String](KeystoreService.TRIGGER_DATE_KEY).flatMap {
               (dateAsStr)=>
               if (dateAsStr.isDefined) {
-                val parts = dateAsStr.get.split("-").map(_.toInt)
-                if (parts(0) > 2016 || (parts(0) == 2016 && parts(1) > 4) || (parts(0) == 2016 && parts(1) == 4 && parts(2) > 5) ) {
+                val parts = dateAsStr.getOrElse("2000-01-01").split("-").map(_.toInt)
+                if (parts(0) > 2016 || (parts(0) == 2016 && parts(1) > 4) || (parts(0) == 2016 && parts(1) == 4 && parts(2) > 5) ||
+                    parts(0) < 2015 || (parts(0) == 2015 && parts(1) < 4) || (parts(0) == 2015 && parts(1) == 4 && parts(2) < 5)) {
                   Future.successful(Redirect(routes.DateOfMPAATriggerEventController.onPageLoad()))
                 } else {
                   Future.successful(Redirect(routes.PostTriggerPensionInputsController.onPageLoad()))

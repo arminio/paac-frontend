@@ -52,15 +52,30 @@ trait DateOfMPAATriggerEventController extends RedirectController {
       },
       input => {
         // should store as json and read out as json but sticking with string throughout
-        keystore.store(input.dateOfMPAATriggerEvent.map(_.toString).getOrElse(""), KeystoreService.TRIGGER_DATE_KEY).flatMap{
+        keystore.store(input.dateOfMPAATriggerEvent.map(_.toString).getOrElse(""), KeystoreService.TRIGGER_DATE_KEY).flatMap {
           (_)=>
           if (input.dateOfMPAATriggerEvent.isDefined) {
             val date = input.dateOfMPAATriggerEvent.get
-            if (date.getYear() < 2015 || (date.getYear() == 2015 && date.getMonthOfYear() < 4)) {
+
+            if ((date.getYear() < 2015) || 
+                (date.getYear() == 2015 && date.getMonthOfYear() < 4) || 
+                (date.getYear() == 2015 && date.getMonthOfYear() == 4 && date.getDayOfMonth() < 6)) {
               val form = DateOfMPAATriggerEventForm.form.bindFromRequest().withError("dateOfMPAATriggerEvent", "paac.mpaa.ta.date.page.invalid.date")
               Future.successful(Ok(views.html.date_of_mpaa_trigger_event(form)))
+            } else if ((date.getYear() > 2016) || 
+                       (date.getYear() == 2016 && date.getMonthOfYear() > 4) || 
+                       (date.getYear() == 2016 && date.getMonthOfYear() == 4 && date.getDayOfMonth() > 5)) {
+              keystore.read[String](KeystoreService.SELECTED_INPUT_YEARS_KEY).flatMap {
+                (selectedYears) =>
+                val years = selectedYears.getOrElse("2015").split(",")
+                if (years.size > 1) {
+                  wheretoNext(Redirect(onSubmitRedirect))
+                } else {
+                  goTo(-1, true, true, true, Redirect(onSubmitRedirect))
+                }
+              }
             } else {
-              wheretoNext(Redirect(onSubmitRedirect))
+              Future.successful(Redirect(onSubmitRedirect))
             }
           } else {
             val form = DateOfMPAATriggerEventForm.form.bindFromRequest().withError("dateOfMPAATriggerEvent", "error.invalid.date.format")
