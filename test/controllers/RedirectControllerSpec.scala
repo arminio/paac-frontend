@@ -146,6 +146,33 @@ class RedirectControllerSpec extends test.BaseSpec {
         redirectLocation(result) shouldBe Some("/paac/changes-to-pip")
       }
 
+      "redirect to PostTriggerPensionInputsController if forward is false and edit are false, te is true and year is 2014" in new ControllerWithMockKeystore {
+        // set up
+        implicit val hc = HeaderCarrier()
+        implicit val request = FakeRequest().withSession { (SessionKeys.sessionId, "session-test") }
+        MockKeystore.map = MockKeystore.map + (KeystoreService.TRIGGER_DATE_KEY -> "2014-06-01")
+
+        // test
+        val result: Future[Result] = RedirectController.goTo(2015, false, false, true, Redirect(routes.YesNoMPAATriggerEventAmountController.onPageLoad()))
+
+        // check
+        status(result) shouldBe 303
+        redirectLocation(result) shouldBe Some("/paac/dateofmpaate")
+      }
+
+      "redirect to PostTriggerPensionInputsController if forward is false and edit are false, te is true and year is not defined" in new ControllerWithMockKeystore {
+        // set up
+        implicit val hc = HeaderCarrier()
+        implicit val request = FakeRequest().withSession { (SessionKeys.sessionId, "session-test") }
+
+        // test
+        val result: Future[Result] = RedirectController.goTo(2015, false, false, true, Redirect(routes.YesNoMPAATriggerEventAmountController.onPageLoad()))
+
+        // check
+        status(result) shouldBe 303
+        redirectLocation(result) shouldBe Some("/paac/dateofmpaate")
+      }
+
       "redirect to PostTriggerPensionInputsController if forward is false and edit are false, te is true and year is 2015" in new ControllerWithMockKeystore {
         // set up
         implicit val hc = HeaderCarrier()
