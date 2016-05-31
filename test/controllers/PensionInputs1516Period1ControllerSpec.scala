@@ -33,7 +33,7 @@ class PensionInputs1516Period1ControllerSpec extends test.BaseSpec {
   val endPointURL = "/paac/pensionInputs1516p1"
 
   trait ControllerWithMockKeystore extends MockKeystoreFixture {
-    object MockPensionInputs1516P1ControllerWithMockKeystore extends PensionInputs1516Period1Controller {
+    object ControllerWithMockKeystore extends PensionInputs1516Period1Controller {
       val kesystoreKey = "definedBenefit_2015_p1"
       override val keystore: KeystoreService = MockKeystore
     }
@@ -66,7 +66,7 @@ class PensionInputs1516Period1ControllerSpec extends test.BaseSpec {
         MockKeystore.map = MockKeystore.map + ("definedBenefit" -> "false")
 
         // test
-        val result : Future[Result] = MockPensionInputs1516P1ControllerWithMockKeystore.onPageLoad()(request)
+        val result : Future[Result] = ControllerWithMockKeystore.onPageLoad()(request)
 
         // check
         status(result) shouldBe 200
@@ -81,7 +81,7 @@ class PensionInputs1516Period1ControllerSpec extends test.BaseSpec {
         MockKeystore.map = MockKeystore.map + ("definedBenefit" -> "true")
 
         // test
-        val result : Future[Result] = MockPensionInputs1516P1ControllerWithMockKeystore.onPageLoad()(request)
+        val result : Future[Result] = ControllerWithMockKeystore.onPageLoad()(request)
 
         // check
         status(result) shouldBe 200
@@ -97,7 +97,7 @@ class PensionInputs1516Period1ControllerSpec extends test.BaseSpec {
         MockKeystore.map = MockKeystore.map + ("definedBenefit" -> "true")
 
         // test
-        val result : Future[Result] = MockPensionInputs1516P1ControllerWithMockKeystore.onPageLoad()(request)
+        val result : Future[Result] = ControllerWithMockKeystore.onPageLoad()(request)
 
         // check
         status(result) shouldBe 200
@@ -119,6 +119,38 @@ class PensionInputs1516Period1ControllerSpec extends test.BaseSpec {
         status(result.get) shouldBe 303
       }
 
+      "with valid definedBenefit_2015_p1 should redirect to p2" in new ControllerWithMockKeystore {
+        // set up
+        MockKeystore.map = MockKeystore.map + ("isEdit" -> "false")
+        MockKeystore.map = MockKeystore.map + (KeystoreService.DB_FLAG -> "true")
+        MockKeystore.map = MockKeystore.map + (KeystoreService.DC_FLAG -> "false")
+        implicit val hc = HeaderCarrier()
+        implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID)).withFormUrlEncodedBody(("year2015.definedBenefit_2015_p1" -> "40000.00"),("year2015.definedContribution_2015_p1" -> ""))
+
+        // test
+        val result: Future[Result] = ControllerWithMockKeystore.onSubmit()(request)
+
+        // check
+        status(result) shouldBe 303
+        redirectLocation(result) shouldBe Some("/paac/yesno1516p2")
+      }
+
+      "with valid definedBenefit_2015_p1 and in edit mode should redirect to review" in new ControllerWithMockKeystore {
+        // set up
+        MockKeystore.map = MockKeystore.map + ("isEdit" -> "true")
+        MockKeystore.map = MockKeystore.map + (KeystoreService.DB_FLAG -> "true")
+        MockKeystore.map = MockKeystore.map + (KeystoreService.DC_FLAG -> "false")
+        implicit val hc = HeaderCarrier()
+        implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID)).withFormUrlEncodedBody(("year2015.definedBenefit_2015_p1" -> "40000.00"),("year2015.definedContribution_2015_p1" -> ""))
+
+        // test
+        val result: Future[Result] = ControllerWithMockKeystore.onSubmit()(request)
+
+        // check
+        status(result) shouldBe 303
+        redirectLocation(result) shouldBe Some("/paac/review")
+      }
+
       "with valid definedBenefit_2015_p1 should save to keystore" in new ControllerWithMockKeystore {
         // set up
         MockKeystore.map = MockKeystore.map + ("isEdit" -> "false")
@@ -128,7 +160,7 @@ class PensionInputs1516Period1ControllerSpec extends test.BaseSpec {
         implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID)).withFormUrlEncodedBody(("year2015.definedBenefit_2015_p1" -> "40000.00"),("year2015.definedContribution_2015_p1" -> ""))
 
         // test
-        val result: Future[Result] = MockPensionInputs1516P1ControllerWithMockKeystore.onSubmit()(request)
+        val result: Future[Result] = ControllerWithMockKeystore.onSubmit()(request)
 
         // check
         status(result) shouldBe 303
@@ -144,7 +176,7 @@ class PensionInputs1516Period1ControllerSpec extends test.BaseSpec {
         implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID)).withFormUrlEncodedBody(("year2015.definedBenefit_2015_p1" -> "-40000.00"))
 
         // test
-        val result: Future[Result] = MockPensionInputs1516P1ControllerWithMockKeystore.onSubmit()(request)
+        val result: Future[Result] = ControllerWithMockKeystore.onSubmit()(request)
 
         // check
         status(result) shouldBe 200
@@ -160,7 +192,7 @@ class PensionInputs1516Period1ControllerSpec extends test.BaseSpec {
         implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID)).withFormUrlEncodedBody(("year2015.definedBenefit_2015_p1" -> ""))
 
         // test
-        val result: Future[Result] = MockPensionInputs1516P1ControllerWithMockKeystore.onSubmit()(request)
+        val result: Future[Result] = ControllerWithMockKeystore.onSubmit()(request)
 
         // check
         status(result) shouldBe 200
@@ -176,7 +208,7 @@ class PensionInputs1516Period1ControllerSpec extends test.BaseSpec {
         implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID)).withFormUrlEncodedBody(("year2015.definedContribution_2015_p1" -> ""))
 
         // test
-        val result: Future[Result] = MockPensionInputs1516P1ControllerWithMockKeystore.onSubmit()(request)
+        val result: Future[Result] = ControllerWithMockKeystore.onSubmit()(request)
 
         // check
         status(result) shouldBe 200
