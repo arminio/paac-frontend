@@ -40,6 +40,10 @@ class ReviewTotalAmountsControllerSpec extends test.BaseSpec {
   val contribution4 = Contribution(2012, 900000)
   val contribution5 = Contribution(2013, 1000000)
 
+  trait Year2016 extends models.ThisYear {
+    override def THIS_YEAR = 2016
+  }
+
   trait MockCalculatorConnectorFixture {
     object MockCalculatorConnector extends CalculatorConnector {
       val tyr0 = TaxYearResults(contribution0, SummaryResult(-1,0,5000000,4500000,5000000,4500000,4500000))
@@ -65,13 +69,21 @@ class ReviewTotalAmountsControllerSpec extends test.BaseSpec {
                     "definedBenefit_2012" -> "1100000",
                     "definedBenefit_2013" -> "1200000",
                     "definedBenefit_2014" -> "1300000",
+                    "definedBenefit_2016" -> "1300000",
                     "definedBenefit" -> "true",
                     "definedContribution" -> "true",
                     SessionKeys.sessionId -> SESSION_ID)
   }
 
   trait MockControllerFixture extends AMockKeystoreFixture with MockCalculatorConnectorFixture {
-    object MockedReviewTotalAmountsController extends ReviewTotalAmountsController {
+    object ControllerWithMocks extends ReviewTotalAmountsController {
+      override val connector: CalculatorConnector = MockCalculatorConnector
+      override val keystore: KeystoreService = MockKeystore
+    }
+  }
+
+  trait Mock2016ControllerFixture extends AMockKeystoreFixture with MockCalculatorConnectorFixture {
+    object ControllerWithMocks extends ReviewTotalAmountsController with Year2016 {
       override val connector: CalculatorConnector = MockCalculatorConnector
       override val keystore: KeystoreService = MockKeystore
     }
@@ -87,19 +99,32 @@ class ReviewTotalAmountsControllerSpec extends test.BaseSpec {
     }
 
     "fetch amounts" can {
-
       "should return values for all years in keystore" in new MockControllerFixture {
         // set up
         implicit val hc = HeaderCarrier()
         implicit val request = FakeRequest().withSession((SessionKeys.sessionId,SESSION_ID))
 
         // test
-        val result: Future[Map[String,String]] = MockedReviewTotalAmountsController.fetchAmounts()
+        val result: Future[Map[String,String]] = ControllerWithMocks.fetchAmounts()
 
         // check
         val values: Map[String,String] = Await.result(result, Duration(1000,MILLISECONDS))
         values should contain key ("definedBenefit_2011")
         values should contain value ("12000.00")
+      }
+
+      "should return values for 2016 values in keystore" in new Mock2016ControllerFixture {
+        // set up
+        implicit val hc = HeaderCarrier()
+        implicit val request = FakeRequest().withSession((SessionKeys.sessionId,SESSION_ID))
+
+        // test
+        val result: Future[Map[String,String]] = ControllerWithMocks.fetchAmounts()
+
+        // check
+        val values: Map[String,String] = Await.result(result, Duration(1000,MILLISECONDS))
+        values should contain key ("definedBenefit_2016")
+        values("definedBenefit_2016") shouldBe "13000.00"
       }
 
       /*"should return 0.00 when keystore has 0 as an amount" in new MockControllerFixture {
@@ -124,7 +149,7 @@ class ReviewTotalAmountsControllerSpec extends test.BaseSpec {
         implicit val request = FakeRequest().withSession((SessionKeys.sessionId,SESSION_ID))
 
         // test
-        val result: Future[Map[String,String]] = MockedReviewTotalAmountsController.fetchAmounts()
+        val result: Future[Map[String,String]] = ControllerWithMocks.fetchAmounts()
 
         // check
         val values: Map[String,String] = Await.result(result, Duration(1000,MILLISECONDS))
@@ -139,7 +164,7 @@ class ReviewTotalAmountsControllerSpec extends test.BaseSpec {
         implicit val request = FakeRequest().withSession((SessionKeys.sessionId,SESSION_ID))
 
         // test
-        val result: Future[Map[String,String]] = MockedReviewTotalAmountsController.fetchAmounts()
+        val result: Future[Map[String,String]] = ControllerWithMocks.fetchAmounts()
 
         // check
         val values: Map[String,String] = Await.result(result, Duration(1000,MILLISECONDS))
@@ -154,7 +179,7 @@ class ReviewTotalAmountsControllerSpec extends test.BaseSpec {
         val endpoint = "/paac/review"
 
         // test
-        val result : Future[Result] = MockedReviewTotalAmountsController.onSubmit()(FakeRequest(GET, endpoint).withSession {(SessionKeys.sessionId,SESSION_ID)})
+        val result : Future[Result] = ControllerWithMocks.onSubmit()(FakeRequest(GET, endpoint).withSession {(SessionKeys.sessionId,SESSION_ID)})
 
         // check
         status(result) shouldBe 200
@@ -165,11 +190,25 @@ class ReviewTotalAmountsControllerSpec extends test.BaseSpec {
         val request = FakeRequest(GET, "/paac/calculate").withSession {(SessionKeys.sessionId,SESSION_ID)}
 
         // test
-        val result: Future[Result] = MockedReviewTotalAmountsController.onSubmit()(request)
+        val result: Future[Result] = ControllerWithMocks.onSubmit()(request)
 
         // check
         val htmlSummaryPage = contentAsString(await(result))
         htmlSummaryPage should include ("Tax Year Results")
+      }
+
+      "display errors if errors in keystore" in new MockControllerFixture {
+        // set up
+        val request = FakeRequest(GET, "/paac/calculate").withSession {(SessionKeys.sessionId,SESSION_ID)}
+        MockKeystore.map = MockKeystore.map - "definedBenefit_2009"
+        MockKeystore.map = MockKeystore.map + ("definedBenefit_2009" -> "-800000")
+
+        // test
+        val result: Future[Result] = ControllerWithMocks.onSubmit()(request)
+
+        // check
+        val htmlSummaryPage = contentAsString(await(result))
+        htmlSummaryPage should include ("definedBenefits.amount_2009 defined benefit amount was incorrect or empty.")
       }
     }
 
@@ -180,7 +219,7 @@ class ReviewTotalAmountsControllerSpec extends test.BaseSpec {
         val request = FakeRequest(GET, "/paac/calculate").withSession {(SessionKeys.sessionId,SESSION_ID)}
 
         // test
-        val result: Future[Result] = MockedReviewTotalAmountsController.onPageLoad()(request)
+        val result: Future[Result] = ControllerWithMocks.onPageLoad()(request)
 
         // check
         val htmlSummaryPage = contentAsString(await(result))
@@ -192,6 +231,20 @@ class ReviewTotalAmountsControllerSpec extends test.BaseSpec {
         htmlSummaryPage should include ("£12,000.00")
         htmlSummaryPage should include ("£13,000.00")
       }
+
+      "display errors if errors in keystore" in new MockControllerFixture {
+        // set up
+        val request = FakeRequest(GET, "/paac/calculate").withSession {(SessionKeys.sessionId,SESSION_ID)}
+        MockKeystore.map = MockKeystore.map - "definedBenefit_2009"
+        MockKeystore.map = MockKeystore.map + ("definedBenefit_2009" -> "-800000")
+
+        // test
+        val result: Future[Result] = ControllerWithMocks.onPageLoad()(request)
+
+        // check
+        val htmlSummaryPage = contentAsString(await(result))
+        htmlSummaryPage should include ("definedBenefits.amount_2009 defined benefit amount was incorrect or empty.")
+      }
     }
 
     "onEditAmount" can {
@@ -200,7 +253,7 @@ class ReviewTotalAmountsControllerSpec extends test.BaseSpec {
         val request = FakeRequest(GET, "/paac/edit").withSession {(SessionKeys.sessionId,SESSION_ID)}
 
         // test
-        val result: Future[Result] = MockedReviewTotalAmountsController.onEditAmount(2014)(request)
+        val result: Future[Result] = ControllerWithMocks.onEditAmount(2014)(request)
 
         // check
         status(result) shouldBe 303
@@ -213,7 +266,7 @@ class ReviewTotalAmountsControllerSpec extends test.BaseSpec {
         MockKeystore.map = MockKeystore.map + ("isEdit" -> "false")
 
         // test
-        val result: Future[Result] = MockedReviewTotalAmountsController.onEditAmount(20151)(request)
+        val result: Future[Result] = ControllerWithMocks.onEditAmount(20151)(request)
 
         // check
         status(result) shouldBe 303
@@ -226,11 +279,26 @@ class ReviewTotalAmountsControllerSpec extends test.BaseSpec {
         MockKeystore.map = MockKeystore.map + ("isEdit" -> "false")
 
         // test
-        val result: Future[Result] = MockedReviewTotalAmountsController.onEditAmount(20152)(request)
+        val result: Future[Result] = ControllerWithMocks.onEditAmount(20152)(request)
 
         // check
         status(result) shouldBe 303
         redirectLocation(result) shouldBe Some("/paac/pensionInputs1516p2")
+      }
+    }
+
+    "onBack" should {
+      "redirect to pension input" in new MockControllerFixture {
+        // set up
+        implicit val hc = HeaderCarrier()
+        implicit val request = FakeRequest(GET,"/paac/backreview").withSession{(SessionKeys.sessionId,SESSION_ID)}
+  
+          // test
+          val result : Future[Result] = ControllerWithMocks.onBack()(request)
+  
+          // check
+          status(result) shouldBe 303
+          redirectLocation(result) shouldBe Some("/paac/pensionInputs")
       }
     }
   }

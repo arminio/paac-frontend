@@ -29,7 +29,9 @@ object ReviewTotalAmountsController extends ReviewTotalAmountsController {
   override val connector: CalculatorConnector = CalculatorConnector
 }
 
-trait ReviewTotalAmountsController extends RedirectController {
+trait ReviewTotalAmountsController extends RedirectController with models.ThisYear {
+  settings: models.ThisYear =>
+
   val keystore: KeystoreService
   val connector: CalculatorConnector
 
@@ -49,8 +51,7 @@ trait ReviewTotalAmountsController extends RedirectController {
           KeystoreService.AI_PREFIX + y, KeystoreService.TA_PREFIX + y)
       }
 
-    val currentYear = config.PaacConfiguration.year()
-    keystore.read[String](List.range(2006, currentYear + 1).flatMap(yearAmountKeys(_)))
+    keystore.read[String](List.range(2008, settings.THIS_YEAR + 1).flatMap(yearAmountKeys(_)))
   }
 
   val onPageLoad = withSession { implicit request =>

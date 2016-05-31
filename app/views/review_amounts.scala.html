@@ -33,10 +33,8 @@ backLink = Some((controllers.routes.ReviewTotalAmountsController.onBack.url,Mess
 
     <ul class="error-summary-list">
         @for(error <- reviewForm.errors) {
-        @defining(error.key.drop(15).toInt) { year =>
-        @defining(Seq(models.Contribution(year,0).taxYearLabel())++error.args) { args =>
-        <li><a href="#input_@year" style="color:#b10e1e;font-weight: bold;">@Messages(error.message, args:_*)</a></li>
-        }
+        @defining(Seq(error.key)++error.args) { args =>
+        <li><a href="#" style="color:#b10e1e;font-weight: bold;">@Messages(error.message, args:_*)</a></li>
         }
         }
     </ul>
