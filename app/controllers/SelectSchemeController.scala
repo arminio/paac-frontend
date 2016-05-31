@@ -39,7 +39,7 @@ trait SelectSchemeController  extends BaseFrontendController {
 
   val onSubmit = withSession { implicit request =>
     SelectSchemeForm.form.bindFromRequest().fold(
-      formWithErrors => Future.successful(Ok(views.html.selectScheme(SelectSchemeForm.form))),
+      formWithErrors => Future.successful(Ok(views.html.selectScheme(formWithErrors))),
       input => {
         keystore.save(List((input.definedBenefit.toString, KeystoreService.DB_FLAG),
                            (input.definedContribution.toString, KeystoreService.DC_FLAG))).map((_)=> Redirect(onSubmitRedirect))
