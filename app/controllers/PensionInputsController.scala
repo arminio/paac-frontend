@@ -65,10 +65,10 @@ trait PensionInputsController extends RedirectController {
           if (isDBError || isDCError) {
             var form = CalculatorForm.form.bindFromRequest()
             if (isDBError) {
-              form = form.withError("definedBenefits.amount_"+cy, "error.bounds", play.api.i18n.Messages("db"))
+              form = form.withError("definedBenefits.amount_"+cy, "db.error.bounds")
             }
             if (isDCError) {
-              form = form.withError("definedContributions.amount_"+cy, "error.bounds", play.api.i18n.Messages("dc"))
+              form = form.withError("definedContributions.amount_"+cy, "dc.error.bounds")
             }
             Future.successful(Ok(views.html.pensionInputs(form, cy.toString(), isDB, isDC)))
           } else {

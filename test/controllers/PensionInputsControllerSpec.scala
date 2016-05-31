@@ -123,6 +123,32 @@ class PensionInputsControllerSpec extends test.BaseSpec {
         val htmlPage = contentAsString(await(result))
         htmlPage should include("""<button id="submit" type="submit" class="button" value="Continue">Continue</button>""")
       }
+
+      "with current year 2015 redirect to review" in new ControllerWithMockKeystore {
+        // setup
+        MockKeystore.map = MockKeystore.map + (KeystoreService.CURRENT_INPUT_YEAR_KEY -> "2015")
+        val request = FakeRequest(GET,"").withSession{(SessionKeys.sessionId,SESSION_ID)}
+
+        // test
+        val result : Future[Result] = PensionInputsControllerMockedKeystore.onPageLoad()(request)
+
+        // check
+        status(result) shouldBe 303
+        redirectLocation(result) shouldBe Some("/paac/review")
+      }
+
+      "with current year -1 redirect to review" in new ControllerWithMockKeystore {
+        // setup
+        MockKeystore.map = MockKeystore.map + (KeystoreService.CURRENT_INPUT_YEAR_KEY -> "-1")
+        val request = FakeRequest(GET,"").withSession{(SessionKeys.sessionId,SESSION_ID)}
+
+        // test
+        val result : Future[Result] = PensionInputsControllerMockedKeystore.onPageLoad()(request)
+
+        // check
+        status(result) shouldBe 303
+        redirectLocation(result) shouldBe Some("/paac/review")
+      }
     }
   }
 
@@ -143,6 +169,38 @@ class PensionInputsControllerSpec extends test.BaseSpec {
         htmlPage should include ("""2014/15 amount must not be empty. (Amount must have no more than 10 numbers, including 2 decimal places, and should be £0.00 or larger and under £99999999.99.)""")
     }
 
+    "with empty db value returns to page with errors" in new ControllerWithMockKeystore {
+        // setup
+        val request = FakeRequest(POST,"").withFormUrlEncodedBody(("definedBenefits.amount_2014","")).withSession{(SessionKeys.sessionId,SESSION_ID)}
+        MockKeystore.map = MockKeystore.map + ("Current" -> "2014")
+        MockKeystore.map = MockKeystore.map + ("definedBenefit" -> "true")
+        MockKeystore.map = MockKeystore.map + ("definedContribution" -> "false")
+
+        // test
+        val result : Future[Result] = PensionInputsControllerMockedKeystore.onSubmit()(request)
+
+        // check
+        status(result) shouldBe 200
+        val htmlPage = contentAsString(await(result))
+        htmlPage should include ("2014/15 defined benefit amount was incorrect or empty.")
+    }
+
+    "with empty dc value returns to page with errors" in new ControllerWithMockKeystore {
+        // setup
+        val request = FakeRequest(POST,"").withFormUrlEncodedBody(("definedContributions.amount_2014","")).withSession{(SessionKeys.sessionId,SESSION_ID)}
+        MockKeystore.map = MockKeystore.map + ("Current" -> "2014")
+        MockKeystore.map = MockKeystore.map + ("definedBenefit" -> "false")
+        MockKeystore.map = MockKeystore.map + ("definedContribution" -> "true")
+
+        // test
+        val result : Future[Result] = PensionInputsControllerMockedKeystore.onSubmit()(request)
+
+        // check
+        status(result) shouldBe 200
+        val htmlPage = contentAsString(await(result))
+        htmlPage should include ("2014/15 defined contribution amount was incorrect or empty.")
+    }
+
     "with valid input amount should save to keystore" in new ControllerWithMockKeystore {
       // set up
       MockKeystore.map = MockKeystore.map - "definedBenefit_2014"
@@ -161,6 +219,21 @@ class PensionInputsControllerSpec extends test.BaseSpec {
       status(result) shouldBe 303
       MockKeystore.map should contain key ("definedBenefit_2014")
       MockKeystore.map should contain value ("123456") // big decimal converted to pence value
+    }
+  }
+
+  "onBack" should {
+    "redirect to tax year selection" in new ControllerWithMockKeystore {
+      // set up
+      implicit val hc = HeaderCarrier()
+      implicit val request = FakeRequest(GET,"/paac/backpensionInputs").withSession{(SessionKeys.sessionId,SESSION_ID)}
+
+      // test
+      val result : Future[Result] = PensionInputsControllerMockedKeystore.onBack()(request)
+
+      // check
+      status(result) shouldBe 303
+      redirectLocation(result) shouldBe Some("/paac/taxyearselection")
     }
   }
 }
