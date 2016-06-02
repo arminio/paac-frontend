@@ -21,7 +21,7 @@ import form._
 import play.api.mvc._
 import service._
 import uk.gov.hmrc.play.http.HeaderCarrier
-
+import models._
 import scala.concurrent.Future
 
 object ReviewTotalAmountsController extends ReviewTotalAmountsController {
@@ -84,6 +84,7 @@ trait ReviewTotalAmountsController extends RedirectController with models.ThisYe
   }
 
   val onSubmit = withSession { implicit request =>
+    def fetch(l:Option[List[TaxYearResults]]):Option[TaxYearResults] = l.flatMap(_.toList.find(_.input.isTriggered))
     fetchAmounts().flatMap { (amounts) =>
       keystore.read[String](KeystoreService.TRIGGER_DATE_KEY).flatMap {
         (td) =>
@@ -102,8 +103,16 @@ trait ReviewTotalAmountsController extends RedirectController with models.ThisYe
               response =>
               keystore.read[String](List(KeystoreService.DB_FLAG, KeystoreService.DC_FLAG)).flatMap {
                 (fieldMap) =>
-                val triggerAmountRow = response.find(_.input.amounts.getOrElse(models.InputAmounts()).triggered.getOrElse(false))
-                val results = if (triggerAmountRow.isDefined) response.filter(_ != triggerAmountRow.get) else response
+                val triggerAmountRow = response.find(_.input.isTriggered)
+                val results = if (triggerAmountRow.isDefined) {
+                  val year2015ResultsMap = response.groupBy(_.input.taxPeriodStart.year)(2015).groupBy(_.input.isPeriod1)
+                  val period1 = fetch(year2015ResultsMap.get(true))
+                  val period2 = fetch(year2015ResultsMap.get(false))
+                  val maybePeriod = if (period1.isDefined) period1 else if (period2.isDefined) period2 else None
+                  maybePeriod.map((v)=>response.filterNot(_ == v)).getOrElse(response)
+                } else {
+                  response
+                }
                 Future.successful(Ok(views.html.results(results, fieldMap(KeystoreService.DB_FLAG).toBoolean, fieldMap(KeystoreService.DC_FLAG).toBoolean)))
               }
             }
