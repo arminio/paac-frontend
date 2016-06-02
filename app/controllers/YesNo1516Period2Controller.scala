@@ -57,6 +57,9 @@ trait YesNo1516Period2Controller extends RedirectController {
             if (yesOrNoP1 == "No" && input == "No") {
               wheretoNext(Redirect(routes.StaticPageController.onPipTaxYearPageLoad()))
             } else {
+              if (input == "No") {
+                keystore.save(List(Some(("0",KeystoreService.P2_DB_KEY)), Some(("0",KeystoreService.P2_DC_KEY))), "")
+              }
               keystore.read[String](KeystoreService.DC_FLAG).flatMap {
                 (isDefinedContribution) =>
                 if (isDefinedContribution.getOrElse("false").toBoolean){

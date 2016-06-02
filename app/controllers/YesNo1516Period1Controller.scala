@@ -52,7 +52,10 @@ trait YesNo1516Period1Controller extends BaseFrontendController {
         if (input == "Yes") {
           Future.successful(Redirect(onSubmitRedirectForYes))
         } else {
-          Future.successful(Redirect(onSubmitRedirectForNo))
+          keystore.save(List(Some(("0",KeystoreService.P1_DB_KEY)), Some(("0",KeystoreService.P1_DC_KEY))), "").flatMap {
+            (_)=>
+            Future.successful(Redirect(onSubmitRedirectForNo))
+          }
         }
       }
     )
