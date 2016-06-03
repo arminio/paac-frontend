@@ -232,6 +232,34 @@ class ReviewTotalAmountsControllerSpec extends test.BaseSpec {
         htmlSummaryPage should include ("£13,000.00")
       }
 
+      "display p1 trigger amount row if in keystore" in new MockControllerFixture {
+        // set up
+        val request = FakeRequest(GET, "/paac/calculate").withSession {(SessionKeys.sessionId,SESSION_ID)}
+        MockKeystore.map = MockKeystore.map + (KeystoreService.P1_TRIGGER_DC_KEY -> "123456")
+        MockKeystore.map = MockKeystore.map + (KeystoreService.TRIGGER_DATE_KEY -> "2015-5-10")
+
+        // test
+        val result: Future[Result] = ControllerWithMocks.onPageLoad()(request)
+
+        // check
+        val htmlSummaryPage = contentAsString(await(result))
+        htmlSummaryPage should include ("£1,234.56")
+      }
+
+      "display p2 trigger amount row if in keystore" in new MockControllerFixture {
+        // set up
+        val request = FakeRequest(GET, "/paac/calculate").withSession {(SessionKeys.sessionId,SESSION_ID)}
+        MockKeystore.map = MockKeystore.map + (KeystoreService.P2_TRIGGER_DC_KEY -> "123456")
+        MockKeystore.map = MockKeystore.map + (KeystoreService.TRIGGER_DATE_KEY -> "2015-11-5")
+
+        // test
+        val result: Future[Result] = ControllerWithMocks.onPageLoad()(request)
+
+        // check
+        val htmlSummaryPage = contentAsString(await(result))
+        htmlSummaryPage should include ("£1,234.56")
+      }
+
       "display errors if errors in keystore" in new MockControllerFixture {
         // set up
         val request = FakeRequest(GET, "/paac/calculate").withSession {(SessionKeys.sessionId,SESSION_ID)}

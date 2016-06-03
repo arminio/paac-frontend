@@ -50,6 +50,8 @@ trait RedirectController extends BaseFrontendController {
           Future.successful(Results.Redirect(routes.PensionInputs1516Period1Controller.onPageLoad()))
         } else if (year == 20152) {
           Future.successful(Results.Redirect(routes.PensionInputs1516Period2Controller.onPageLoad()))
+        } else if (year == 0) {
+          Future.successful(Redirect(routes.PostTriggerPensionInputsController.onPageLoad()))
         } else {
           Future.successful(Redirect(routes.PensionInputsController.onPageLoad()))
         }

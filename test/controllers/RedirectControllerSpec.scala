@@ -187,6 +187,19 @@ class RedirectControllerSpec extends test.BaseSpec {
         redirectLocation(result) shouldBe Some("/paac/moneyPurchasePostTriggerValue")
       }
 
+      "redirect to PostTriggerPensionInputsController if forward is false and edit is true, and year is 0" in new ControllerWithMockKeystore {
+        // set up
+        implicit val hc = HeaderCarrier()
+        implicit val request = FakeRequest().withSession { (SessionKeys.sessionId, "session-test") }
+
+        // test
+        val result: Future[Result] = RedirectController.goTo(0, false, true, true, Redirect(routes.YesNoMPAATriggerEventAmountController.onPageLoad()))
+
+        // check
+        status(result) shouldBe 303
+        redirectLocation(result) shouldBe Some("/paac/moneyPurchasePostTriggerValue")
+      }
+
       "redirect to YesNoMPAATriggerEventAmountController if forward, edit, te are false and year is 2015" in new ControllerWithMockKeystore {
         // set up
         implicit val hc = HeaderCarrier()

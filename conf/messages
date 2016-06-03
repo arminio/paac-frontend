@@ -155,3 +155,4 @@ paac.post-trigger-value.error.bounds={0} amount was empty or negative. Please pr
 
 db=defined benefit
 dc=defined contribution
+trigger=Post Flex-access savings
