@@ -19,6 +19,7 @@ package models
 import service.KeystoreService
 
 import scala.math._
+import PensionPeriod._
 
 case class Amounts(currentYearMinus0:Option[BigDecimal]=None,
                    currentYearMinus1:Option[BigDecimal]=None,
@@ -67,25 +68,33 @@ case class CalculatorFormFields(definedBenefits: Amounts,
   settings: ThisYear =>
 
   val START_YEAR = settings.THIS_YEAR-8
-
+  val P1_DB_AMOUNT = "amount2015P1"
+  val P1_DC_AMOUNT = "dcAmount2015P1"
+  val P2_DB_AMOUNT = "amount2015P2"
+  val P2_DC_AMOUNT = "dcAmount2015P2"
+  val P1_TRIGGER_AMOUNT = "ptDcAmount2015P1"
+  val P2_TRIGGER_AMOUNT = "ptDcAmount2015P2"
+  val DB_PREFIX = "dbCurrentYearMinus"
+  val DC_PREFIX = "dcCurrentYearMinus"
   def toPageValues():List[Contribution] = {
     def retrieveValue(amounts: Amounts, name: String): Option[Long] = {
       val fieldValueMap: Map[String,Any]= amounts.getClass.getDeclaredFields.map(_.getName).zip(amounts.productIterator.toList).toMap
-      fieldValueMap.get("c" + name.drop(3)).map(_.asInstanceOf[Option[BigDecimal]]).flatMap(_.map(Amounts.toPence))
+      val fieldName = "c" + name.drop(3)
+      fieldValueMap.get(fieldName).map(_.asInstanceOf[Option[BigDecimal]]).flatMap(_.map(Amounts.toPence))
     }
 
     def get(name:String): Option[Long] = {
       name match {
-        case "amount2015P1" => year2015.amount2015P1.map(Amounts.toPence)
-        case "dcAmount2015P1" => year2015.dcAmount2015P1.map(Amounts.toPence)
-        case "amount2015P2" => year2015.amount2015P2.map(Amounts.toPence)
-        case "dcAmount2015P2" => year2015.dcAmount2015P2.map(Amounts.toPence)
-        case "ptDcAmount2015P1" => year2015.postTriggerDcAmount2015P1.map(Amounts.toPence)
-        case "ptDcAmount2015P2" => year2015.postTriggerDcAmount2015P2.map(Amounts.toPence)
+        case P1_DB_AMOUNT => year2015.amount2015P1.map(Amounts.toPence)
+        case P1_DC_AMOUNT => year2015.dcAmount2015P1.map(Amounts.toPence)
+        case P2_DB_AMOUNT => year2015.amount2015P2.map(Amounts.toPence)
+        case P2_DC_AMOUNT => year2015.dcAmount2015P2.map(Amounts.toPence)
+        case P1_TRIGGER_AMOUNT => year2015.postTriggerDcAmount2015P1.map(Amounts.toPence)
+        case P2_TRIGGER_AMOUNT => year2015.postTriggerDcAmount2015P2.map(Amounts.toPence)
         case _ => {
-          val amounts: Option[Amounts] = if (name.contains("dbCurrentYearMinus")) {
+          val amounts: Option[Amounts] = if (name.contains(DB_PREFIX)) {
             Some(this.definedBenefits)
-          } else if (name.contains("dcCurrentYearMinus")) {
+          } else if (name.contains(DC_PREFIX)) {
             Some(this.definedContributions)
           } else {
             None
@@ -100,51 +109,45 @@ case class CalculatorFormFields(definedBenefits: Amounts,
       if (a.isEmpty) None else Some(a)
     }
 
+    def p1Contribution(): List[Contribution] = {
+      val contribution = Contribution(PERIOD_1_2015_START, PERIOD_1_2015_END, toInputAmounts(P1_DB_AMOUNT,P1_DC_AMOUNT))
+      if (triggerDate.isDefined) {
+        val c = triggerDatePeriod().get
+        if (c.isPeriod1) {
+          List(contribution.copy(taxPeriodEnd=c.taxPeriodStart),Contribution(c.taxPeriodStart, PERIOD_1_2015_END, Some(InputAmounts(Some(0), get(P1_TRIGGER_AMOUNT), None, Some(true)))))
+        } else if (c.isPeriod2) {
+          List(contribution)
+        } else {
+          List(contribution)
+        }
+      } else {
+        List(contribution)
+      }
+    }
+
+    def p2Contribution(): List[Contribution] = {
+      val contribution = Contribution(PERIOD_2_2015_START, PERIOD_2_2015_END, toInputAmounts(P2_DB_AMOUNT,P2_DC_AMOUNT))
+      if (triggerDate.isDefined) {
+        val c = triggerDatePeriod().get
+        if (c.isPeriod1) {
+          List(contribution.copy(amounts=contribution.amounts.map(_.copy(triggered=Some(true)))))
+        } else if (c.isPeriod2) {
+          List(contribution.copy(taxPeriodEnd=c.taxPeriodStart), Contribution(c.taxPeriodStart, PERIOD_2_2015_END, Some(InputAmounts(Some(0), get(P2_TRIGGER_AMOUNT), None, Some(true)))))
+        } else {
+          List(contribution)
+        }
+      } else {
+        List(contribution)
+      }
+    }
+
     List.range(settings.START_YEAR, settings.THIS_YEAR + 1).flatMap {
       (year:Int) =>
       if (year == 2015) {
-        if (triggerDate.isDefined) {
-          val c = triggerDatePeriod().get
-          if (c.isPeriod1) {
-            val preAndPostList = if (c.taxPeriodStart == PensionPeriod.PERIOD_1_2015_START) {
-              List (Contribution(PensionPeriod.PERIOD_1_2015_START, PensionPeriod.PERIOD_1_2015_END,Some(InputAmounts(Some(0), get("ptDcAmount2015P1"), None, Some(true)))),
-                Contribution(PensionPeriod.PERIOD_2_2015_START, PensionPeriod.PERIOD_2_2015_END, toInputAmounts("amount2015P2","dcAmount2015P2").map(_.copy(triggered=Some(true)))))
-            } else {
-              val date = c.taxPeriodStart.toCalendar
-              date.add(java.util.Calendar.DAY_OF_MONTH, - 1)
-              val tp = PensionPeriod(date.get(java.util.Calendar.YEAR), date.get(java.util.Calendar.MONTH), date.get(java.util.Calendar.DAY_OF_MONTH))
-              List(Contribution(c.taxPeriodStart, PensionPeriod.PERIOD_1_2015_END, Some(InputAmounts(Some(0), get("ptDcAmount2015P1"), None, Some(true)))),
-                Contribution(PensionPeriod.PERIOD_2_2015_START, PensionPeriod.PERIOD_2_2015_END, toInputAmounts("amount2015P2","dcAmount2015P2").map(_.copy(triggered=Some(true)))),
-                Contribution(PensionPeriod.PERIOD_1_2015_START, tp, toInputAmounts("amount2015P1","dcAmount2015P1").map(_.copy(triggered = Some(false))))
-              )
-            }
-            preAndPostList
-          } else if (c.isPeriod2) {
-            val preList = List(Contribution(PensionPeriod.PERIOD_1_2015_START, PensionPeriod.PERIOD_1_2015_END, toInputAmounts("amount2015P1","dcAmount2015P1").map(_.copy(triggered=Some(false)))))
-            val postList = if (c.taxPeriodStart == PensionPeriod.PERIOD_2_2015_START) {
-              List (Contribution(PensionPeriod.PERIOD_2_2015_START, PensionPeriod.PERIOD_2_2015_END,Some(InputAmounts(Some(0), get("ptDcAmount2015P2"), None, Some(true)))),
-                Contribution(PensionPeriod.PERIOD_2_2015_START, PensionPeriod.PERIOD_2_2015_END, toInputAmounts("amount2015P2","dcAmount2015P2").map(_.copy(triggered=Some(true))))
-              )
-            } else {
-              val date = c.taxPeriodStart.toCalendar
-              date.add(java.util.Calendar.DAY_OF_MONTH, - 1)
-              val tp = PensionPeriod(date.get(java.util.Calendar.YEAR), date.get(java.util.Calendar.MONTH), date.get(java.util.Calendar.DAY_OF_MONTH))
-              List(Contribution(PensionPeriod.PERIOD_2_2015_START, tp, toInputAmounts("amount2015P2","dcAmount2015P2").map(_.copy(triggered=Some(false)))),
-                   Contribution(c.taxPeriodStart, PensionPeriod.PERIOD_2_2015_END,Some(InputAmounts(Some(0), get("ptDcAmount2015P2"), None, Some(true)))))
-            }
-            postList ++ preList
-          } else {
-            List(Contribution(PensionPeriod.PERIOD_2_2015_START, PensionPeriod.PERIOD_2_2015_END, toInputAmounts("amount2015P2","dcAmount2015P2")),
-              Contribution(PensionPeriod.PERIOD_1_2015_START, PensionPeriod.PERIOD_1_2015_END, toInputAmounts("amount2015P1","dcAmount2015P1")))
-          }
-        } else {
-          List(
-               Contribution(PensionPeriod.PERIOD_2_2015_START, PensionPeriod.PERIOD_2_2015_END, toInputAmounts("amount2015P2","dcAmount2015P2")),
-            Contribution(PensionPeriod.PERIOD_1_2015_START, PensionPeriod.PERIOD_1_2015_END, toInputAmounts("amount2015P1","dcAmount2015P1")))
-        }
+        p1Contribution ++ p2Contribution
       } else {
         val delta = settings.THIS_YEAR - year
-        List(Contribution(year, toInputAmounts("dbCurrentYearMinus" + delta, "dcCurrentYearMinus" + delta)))
+        List(Contribution(year, toInputAmounts(DB_PREFIX + delta, DC_PREFIX + delta)))
       }
     }
   }
