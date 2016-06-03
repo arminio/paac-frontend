@@ -165,8 +165,6 @@ trait BaseFrontendController extends SessionProvider with FrontendController {
                   KeystoreService.TRIGGER_DATE_KEY,
                   KeystoreService.CURRENT_INPUT_YEAR_KEY,
                   KeystoreService.SELECTED_INPUT_YEARS_KEY,
-                  KeystoreService.P1_YES_NO_KEY,
-                  KeystoreService.P2_YES_NO_KEY,
                   KeystoreService.TE_YES_NO_KEY,
                   KeystoreService.IS_EDIT_KEY
                   )
