@@ -77,7 +77,15 @@ trait RedirectController extends BaseFrontendController {
               }
             }
           } else {
-            Future.successful(Redirect(routes.YesNoMPAATriggerEventAmountController.onPageLoad()))
+            keystore.read[String](KeystoreService.DC_FLAG).flatMap {
+              (isDCStr)=>
+              val isDC = isDCStr.getOrElse("false").toBoolean
+              if (isDC) {
+                Future.successful(Redirect(routes.YesNoMPAATriggerEventAmountController.onPageLoad()))
+              } else {
+                Future.successful(Results.Redirect(routes.PensionInputs1516Period2Controller.onPageLoad()))
+              }
+            }
           }
         }
       } else {

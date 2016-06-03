@@ -191,6 +191,7 @@ class RedirectControllerSpec extends test.BaseSpec {
         // set up
         implicit val hc = HeaderCarrier()
         implicit val request = FakeRequest().withSession { (SessionKeys.sessionId, "session-test") }
+        MockKeystore.map = MockKeystore.map + (KeystoreService.DC_FLAG -> "true")
 
         // test
         val result: Future[Result] = RedirectController.goTo(2015, false, false, false, Redirect(routes.YesNoMPAATriggerEventAmountController.onPageLoad()))
@@ -198,6 +199,19 @@ class RedirectControllerSpec extends test.BaseSpec {
         // check
         status(result) shouldBe 303
         redirectLocation(result) shouldBe Some("/paac/yesnompaate")
+      }
+
+      "redirect to PensionInputs1516Period2Controller on page load if forward, edit, dc, te are false and year is 2015" in new ControllerWithMockKeystore {
+        // set up
+        implicit val hc = HeaderCarrier()
+        implicit val request = FakeRequest().withSession { (SessionKeys.sessionId, "session-test") }
+
+        // test
+        val result: Future[Result] = RedirectController.goTo(2015, false, false, false, Redirect(routes.YesNoMPAATriggerEventAmountController.onPageLoad()))
+
+        // check
+        status(result) shouldBe 303
+        redirectLocation(result) shouldBe Some("/paac/pensionInputs1516p2")
       }
 
       "redirect to PensionInputsController if year is 2013" in new ControllerWithMockKeystore {
