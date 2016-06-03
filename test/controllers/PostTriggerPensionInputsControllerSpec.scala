@@ -66,7 +66,7 @@ class PostTriggerPensionInputsControllerSpec extends test.BaseSpec {
       // check
       status(result) shouldBe 200
       val htmlPage = contentAsString(await(result))
-      htmlPage should include ("""<input type="number" name="year2015.postTriggerDcAmount2015P1" id="year2015.postTriggerDcAmount2015P1" min="0" step="1" value='12.34' max="9999999.99" size="10" """)
+      htmlPage should include ("""<input type="number" name="year2015.postTriggerDcAmount2015P1" id="year2015.postTriggerDcAmount2015P1" min="0" step="1" value='12.34' max="5000000.00" size="10" """)
     }
 
     "display p2 input amount page with previous value if trigger date was period 2" in new ControllerWithMockKeystore {
@@ -82,7 +82,7 @@ class PostTriggerPensionInputsControllerSpec extends test.BaseSpec {
       // check
       status(result) shouldBe 200
       val htmlPage = contentAsString(await(result))
-      htmlPage should include ("""<input type="number" name="year2015.postTriggerDcAmount2015P2" id="year2015.postTriggerDcAmount2015P2" min="0" step="1" value='56.78' max="9999999.99" size="10" """)
+      htmlPage should include ("""<input type="number" name="year2015.postTriggerDcAmount2015P2" id="year2015.postTriggerDcAmount2015P2" min="0" step="1" value='56.78' max="5000000.00" size="10" """)
     }
   }
 
@@ -102,7 +102,7 @@ class PostTriggerPensionInputsControllerSpec extends test.BaseSpec {
       // check
       status(result) shouldBe 200
       val htmlPage = contentAsString(await(result))
-      htmlPage should include ("""<a href="input_year2015.postTriggerDcAmount2015P1" style="color:#b10e1e;font-weight: bold;">2015 amount was empty or negative. Please provide an amount between £0.00 and £99999999.99.</a>""")
+      htmlPage should include ("""<a href="input_year2015.postTriggerDcAmount2015P1" style="color:#b10e1e;font-weight: bold;">2015 amount was empty or negative. Please provide an amount between £0.00 and £5,000,000.00.</a>""")
     }
 
     "display errors if amount is blank" in new ControllerWithMockKeystore {
@@ -120,7 +120,7 @@ class PostTriggerPensionInputsControllerSpec extends test.BaseSpec {
       // check
       status(result) shouldBe 200
       val htmlPage = contentAsString(await(result))
-      htmlPage should include ("""<a href="input_year2015.postTriggerDcAmount2015P1" style="color:#b10e1e;font-weight: bold;">2015 amount was empty or negative. Please provide an amount between £0.00 and £99999999.99.</a>""")
+      htmlPage should include ("""<a href="input_year2015.postTriggerDcAmount2015P1" style="color:#b10e1e;font-weight: bold;">2015 amount was empty or negative. Please provide an amount between £0.00 and £5,000,000.00.</a>""")
     }
 
     "saves p2 amount in keystore if valid form" in new ControllerWithMockKeystore {

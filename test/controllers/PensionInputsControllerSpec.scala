@@ -74,8 +74,8 @@ class PensionInputsControllerSpec extends test.BaseSpec {
         // check
         status(result) shouldBe 200
         val htmlPage = contentAsString(await(result))
-        htmlPage should include ("""<input type="number" name="definedBenefits.amount_2014" id="definedBenefits.amount_2014" min="0" step="1" value='' max="9999999.99" size="10" style="width:9em;"/>""")
-        htmlPage should include ("""<input type="number" name="definedContributions.amount_2014" id="definedContributions.amount_2014" min="0" step="1" value='' max="9999999.99" size="10" style="width:9em;"/>""")
+        htmlPage should include ("""<input type="number" name="definedBenefits.amount_2014" id="definedBenefits.amount_2014" min="0" step="1" value='' max="5000000.00" size="10" style="width:9em;"/>""")
+        htmlPage should include ("""<input type="number" name="definedContributions.amount_2014" id="definedContributions.amount_2014" min="0" step="1" value='' max="5000000.00" size="10" style="width:9em;"/>""")
       }
 
       "with keystore containing DB = true and DC = false values display only DB blank fields" in new ControllerWithMockKeystore {
@@ -91,7 +91,7 @@ class PensionInputsControllerSpec extends test.BaseSpec {
         // check
         status(result) shouldBe 200
         val htmlPage = contentAsString(await(result))
-        htmlPage should include ("""<input type="number" name="definedBenefits.amount_2014" id="definedBenefits.amount_2014" min="0" step="1" value='' max="9999999.99" size="10" style="width:9em;"/>""")
+        htmlPage should include ("""<input type="number" name="definedBenefits.amount_2014" id="definedBenefits.amount_2014" min="0" step="1" value='' max="5000000.00" size="10" style="width:9em;"/>""")
       }
 
       "with keystore containing DB = false and DC = true values display only DC blank fields" in new ControllerWithMockKeystore {
@@ -106,7 +106,7 @@ class PensionInputsControllerSpec extends test.BaseSpec {
         // check 
         status(result) shouldBe 200
         val htmlPage = contentAsString(await(result))
-        htmlPage should include("""<input type="number" name="definedContributions.amount_2014" id="definedContributions.amount_2014" min="0" step="1" value='' max="9999999.99" size="10" style="width:9em;"/>""")
+        htmlPage should include("""<input type="number" name="definedContributions.amount_2014" id="definedContributions.amount_2014" min="0" step="1" value='' max="5000000.00" size="10" style="width:9em;"/>""")
       }
 
       "with keystore containing DB = false and DC = false values, NOT display DB and DC fields, display only submit button" in new ControllerWithMockKeystore {
@@ -166,7 +166,7 @@ class PensionInputsControllerSpec extends test.BaseSpec {
         // check
         status(result) shouldBe 200
         val htmlPage = contentAsString(await(result))
-        htmlPage should include ("""2014/15 amount must not be empty. (Amount must have no more than 10 numbers, including 2 decimal places, and should be £0.00 or larger and under £99999999.99.)""")
+        htmlPage should include ("""2014/15 amount must not be empty. (Amount must have no more than 10 numbers, including 2 decimal places, and should be £0.00 or larger and under £5,000,000.00.)""")
     }
 
     "with empty db value returns to page with errors" in new ControllerWithMockKeystore {
