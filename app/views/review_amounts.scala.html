@@ -57,6 +57,32 @@ backLink = Some((controllers.routes.ReviewTotalAmountsController.onBack.url,Mess
     </thead>
     <tbody>
     @defining(java.text.NumberFormat.getCurrencyInstance(java.util.Locale.UK)) { currencyFormatter =>
+    @if(triggerContribution != None && triggerContribution.isDefined) {
+    @defining(triggerContribution.get.amounts.getOrElse(InputAmounts())) { amounts =>
+    <tr>
+        <td class="numeric">@Messages("trigger")</td>
+        @if(hasContributions) {
+        <td class="numeric">
+            @if(amounts.moneyPurchase.isDefined){
+            @(currencyFormatter.format(amounts.moneyPurchase.get/100D))
+            } else {
+            &pound;&nbsp;&ndash;
+            }
+        </td>
+        }
+        @if(hasBenefits) {
+        <td class="numeric">
+            &pound;&nbsp;&ndash;
+        </td>
+        }
+        <td class="edit_action">
+            <a href="edit/0">
+             @Messages("paac.review-amounts.action.edit") <span class="visuallyhidden">@Messages("trigger")</span>
+            </a>
+        </td>
+    </tr>
+    }
+    }
     @for(contribution <- reviewForm.get.toPageValues().reverse) {
         @defining(contribution.amounts.getOrElse(InputAmounts())) { amounts =>
         @if(contribution.isEmpty() == false && (triggerContribution == None || (triggerContribution != None && triggerContribution.get != contribution))) {
