@@ -34,9 +34,9 @@ object CalculatorForm extends models.ThisYear {
   val CY6 = settings.THIS_YEAR-6
   val CY7 = settings.THIS_YEAR-7
   val CY8 = settings.THIS_YEAR-8
-  val dbValidator = optional(bigDecimal(10,2)).verifying("db.error.bounds", value=> if (value.isDefined) value.get.longValue >= 0 && value.get.longValue < 100000000 else true)
-  val dcValidator = optional(bigDecimal(10,2)).verifying("dc.error.bounds", value=> if (value.isDefined) value.get.longValue >= 0 && value.get.longValue < 100000000 else true)
-  val validator = optional(bigDecimal(10,2)).verifying("error.bounds", value=> if (value.isDefined) value.get.longValue >= 0 && value.get.longValue < 100000000 else true)
+  val dbValidator = optional(bigDecimal(10,2)).verifying("db.error.bounds", value=> if (value.isDefined) value.get.longValue >= 0 && value.get.longValue <= 5000000 else true)
+  val dcValidator = optional(bigDecimal(10,2)).verifying("dc.error.bounds", value=> if (value.isDefined) value.get.longValue >= 0 && value.get.longValue <= 5000000 else true)
+  val validator = optional(bigDecimal(10,2)).verifying("error.bounds", value=> if (value.isDefined) value.get.longValue >= 0 && value.get.longValue <= 5000000 else true)
 
   val form: Form[CalculatorFormType] = Form(
     mapping("definedBenefits" -> mapping(s"amount_${CY0}"->dbValidator,
