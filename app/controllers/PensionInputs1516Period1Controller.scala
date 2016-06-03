@@ -31,7 +31,7 @@ object PensionInputs1516Period1Controller extends PensionInputs1516Period1Contro
 trait PensionInputs1516Period1Controller extends RedirectController {
   val keystore: KeystoreService
 
-  private val onSubmitRedirect: Call = routes.YesNo1516Period2Controller.onPageLoad()
+  private val onSubmitRedirect: Call = routes.PensionInputs1516Period2Controller.onPageLoad()
 
   val onPageLoad = withSession { implicit request =>
     keystore.read[String](List(KeystoreService.P1_DB_KEY, KeystoreService.P1_DC_KEY, KeystoreService.DB_FLAG, KeystoreService.DC_FLAG)).map {
