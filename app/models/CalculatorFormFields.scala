@@ -144,7 +144,7 @@ case class CalculatorFormFields(definedBenefits: Amounts,
     List.range(settings.START_YEAR, settings.THIS_YEAR + 1).flatMap {
       (year:Int) =>
       if (year == 2015) {
-        p1Contribution ++ p2Contribution
+        p2Contribution ++ p1Contribution
       } else {
         val delta = settings.THIS_YEAR - year
         List(Contribution(year, toInputAmounts(DB_PREFIX + delta, DC_PREFIX + delta)))
