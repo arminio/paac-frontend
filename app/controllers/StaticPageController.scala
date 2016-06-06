@@ -16,7 +16,6 @@
 
 package controllers
 
-import play.api.mvc._
 import scala.concurrent.Future
 
 object StaticPageController extends StaticPageController {
@@ -28,7 +27,7 @@ trait StaticPageController extends BaseFrontendController {
   }
 
   val onPipSubmit = withSession { implicit request =>
-    Future.successful(Redirect(routes.YesNo1516Period1Controller.onPageLoad()))
+    Future.successful(Redirect(routes.PensionInputs1516Period1Controller.onPageLoad()))
   }
 
   val onPipTaxYearPageLoad = withSession { implicit request =>

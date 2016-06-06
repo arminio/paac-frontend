@@ -125,8 +125,6 @@ object KeystoreService extends KeystoreService {
   val TH_PREFIX = "thresholdIncome_"
   val AI_PREFIX = "adjustedIncome_"
   val TA_PREFIX = "taperedAllowance_"
-  val P1_YES_NO_KEY = "yesnoFor1516P1"
-  val P2_YES_NO_KEY = "yesnoFor1516P2"
   val TE_YES_NO_KEY = "yesnoForMPAATriggerEvent"
   val IS_EDIT_KEY = "isEdit"
 
