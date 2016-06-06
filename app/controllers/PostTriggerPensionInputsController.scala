@@ -54,7 +54,7 @@ trait PostTriggerPensionInputsController extends RedirectController {
             (triggerP2 && input.year2015.postTriggerDcAmount2015P2 == None)
            ) {
           val f = CalculatorForm.nonValidatingForm.bindFromRequest()
-          Future.successful( Ok(views.html.postTriggerPensionInputs(f.withError("error.bounds", "error.bounds", 0, 99999999.99), f.get)) )
+          Future.successful( Ok(views.html.postTriggerPensionInputs(f.withError("error.bounds", "error.bounds", 0, 5000000.00), f.get)) )
         } else {
           val toSave: Option[(Long,String)] = if (triggerP1) { input.toP1TriggerDefinedContribution } else { input.toP2TriggerDefinedContribution }
           keystore.save[String,Long](List(toSave), "").flatMap {
