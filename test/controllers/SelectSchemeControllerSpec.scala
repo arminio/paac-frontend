@@ -131,6 +131,21 @@ class SelectSchemeControllerSpec extends test.BaseSpec {
         val htmlPage = contentAsString(await(result))
         htmlPage should include ("There was a problem")
       }
+
+      "with false DB and DC schemeType flag value should show errors" in new ControllerWithMockKeystore{
+        // set up
+        implicit val hc = HeaderCarrier()
+        implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID))
+                                               .withFormUrlEncodedBody({"definedContribution" -> "false";"definedBenefit" -> "false"})
+
+        // test
+        val result: Future[Result] = MockSelectSchemeControllerWithMockKeystore.onSubmit()(request)
+
+        // check
+        status(result) shouldBe 200
+        val htmlPage = contentAsString(await(result))
+        htmlPage should include ("Please select each pension scheme type you are a member of.")
+      }
     }
   }
 
