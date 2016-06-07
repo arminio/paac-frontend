@@ -158,6 +158,22 @@ class YesNoMPAATriggerEventAmountControllerSpec extends test.BaseSpec {
         MockKeystore.map should contain value ("No")
         redirectLocation(result) shouldBe Some("/paac/review")
       }
+
+      "with yesNo = No should set trigger values to empty string" in new ControllerWithMockKeystore{
+        // set up
+        MockKeystore.map = MockKeystore.map + ("isEdit" -> "false")
+        implicit val hc = HeaderCarrier()
+        implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID))
+          .withFormUrlEncodedBody(("yesNo" -> "No"))
+
+        // test
+        val result: Future[Result] = MockYesNoMPAATriggerEventAmountControllerWithMockKeystore.onSubmit()(request)
+
+        // check
+        MockKeystore.map(KeystoreService.P1_TRIGGER_DC_KEY) shouldBe ("")
+        MockKeystore.map(KeystoreService.P2_TRIGGER_DC_KEY) shouldBe ("")
+        MockKeystore.map(KeystoreService.TRIGGER_DATE_KEY) shouldBe ("")
+      }
     }
   }
 

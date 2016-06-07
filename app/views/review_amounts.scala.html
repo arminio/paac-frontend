@@ -84,7 +84,8 @@ backLink = Some((controllers.routes.ReviewTotalAmountsController.onBack.url,Mess
                 }
             </td>
             }
-            @if(triggerContribution.isDefined && (triggerContribution.get.isPeriod1 && contribution.isPeriod1 || triggerContribution.get.isPeriod2 && contribution.isPeriod2)) {
+            @if(triggerContribution.isDefined) {
+            @if(triggerContribution.get.isPeriod1 && contribution.isPeriod1 || triggerContribution.get.isPeriod2 && contribution.isPeriod2) {
             <td class="numeric">
             @defining(triggerContribution.get.amounts.getOrElse(InputAmounts())) { amounts2 =>
             @(currencyFormatter.format(amounts2.moneyPurchase.get/100D))
@@ -98,6 +99,7 @@ backLink = Some((controllers.routes.ReviewTotalAmountsController.onBack.url,Mess
             } else {
             <td class="numeric"></td>
             <td class="numeric"></td>
+            }
             }
             <td class="edit_action">
                 @if(contribution.taxPeriodStart.year < 2015) {

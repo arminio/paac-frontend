@@ -19,6 +19,7 @@ package controllers
 import form.YesNoMPAATriggerEventForm
 import play.api.mvc._
 import service.KeystoreService
+import service.KeystoreService._
 import scala.concurrent.Future
 
 object YesNoMPAATriggerEventAmountController extends YesNoMPAATriggerEventAmountController {
@@ -33,7 +34,7 @@ trait YesNoMPAATriggerEventAmountController extends RedirectController {
   private val onSubmitRedirectForNo: Call = routes.ReviewTotalAmountsController.onPageLoad()
 
   val onPageLoad = withSession { implicit request =>
-    keystore.read[String](KeystoreService.TE_YES_NO_KEY).map {
+    keystore.read[String](TE_YES_NO_KEY).map {
       (yesNo) =>
         val fields = Map(yesNo match {
           case Some(value) => (yesNoFormKey, value)
@@ -44,15 +45,17 @@ trait YesNoMPAATriggerEventAmountController extends RedirectController {
   }
 
   val onSubmit = withSession { implicit request =>
-
     YesNoMPAATriggerEventForm.form.bindFromRequest().fold(
       formWithErrors => { Future.successful(Ok(views.html.yesno_mpaa_trigger_amount(YesNoMPAATriggerEventForm.form))) },
       input => {
-        keystore.store(input, KeystoreService.TE_YES_NO_KEY)
+        keystore.store(input, TE_YES_NO_KEY)
         if (input == "Yes") {
           Future.successful(Redirect(onSubmitRedirectForYes))
         } else {
-          wheretoNext(Redirect(onSubmitRedirectForNo))
+          keystore.save(List((None,P1_TRIGGER_DC_KEY),(None,P2_TRIGGER_DC_KEY),(None,TRIGGER_DATE_KEY)),"").flatMap {
+            _ =>
+            wheretoNext(Redirect(onSubmitRedirectForNo))
+          }
         }
       }
     )
