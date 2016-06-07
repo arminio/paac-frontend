@@ -38,7 +38,6 @@ case class InputAmounts(definedBenefit: Option[Long] = None,
 }
 
 case class PensionPeriod(year: Int, month: Int, day: Int) {
-  def toCalendar() : java.util.GregorianCalendar = new java.util.GregorianCalendar(year, month, day)
   def <(that: PensionPeriod): Boolean = if (year == that.year && month == that.month && day == that.day) false else
                                     year < that.year || (year == that.year && month < that.month) || (year == that.year && month == that.month && day < that.day)
   def >(that: PensionPeriod): Boolean = if (year == that.year && month == that.month && day == that.day) false else

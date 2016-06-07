@@ -12,6 +12,7 @@ backLink = Some((controllers.routes.StaticPageController.onPipTaxYearPageLoad.ur
 @form(action = controllers.routes.TaxYearSelectionController.onYearSelected,
 args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
 <div class="form-group">
+  <input name="previous" type="hidden" value="@(selectedYears.mkString(","))">
   @defining(config.PaacConfiguration.year()) { thisYear =>
     @for(i <- List.range(thisYear-3, thisYear+1).reverse) {
     <label class="block-label">@(i) to @(i+1) <input id="TaxYear@(i)" type="checkbox" name="TaxYear@(i)" @if(selectedYears.contains(i.toString())){checked}></label>

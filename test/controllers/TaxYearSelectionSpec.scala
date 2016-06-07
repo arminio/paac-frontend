@@ -116,7 +116,7 @@ class TaxYearSelectionSpec extends test.BaseSpec {
     "have valid TaxYearSelection saved to keystore" in new ControllerWithMockKeystore {
       // set up
       implicit val hc = HeaderCarrier()
-      implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID)).withFormUrlEncodedBody(("csrfToken" -> "blah"),("TaxYear2015" -> "2015"))
+      implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID)).withFormUrlEncodedBody(("csrfToken" -> "blah"),("TaxYear2015" -> "2015"),("previous"->""))
       MockKeystore.map = MockKeystore.map + ("TaxYearSelection" -> "2015")
       MockKeystore.map = MockKeystore.map + (KeystoreService.IS_EDIT_KEY -> "false")
       MockKeystore.map = MockKeystore.map + (KeystoreService.TE_YES_NO_KEY -> "false")
@@ -129,6 +129,63 @@ class TaxYearSelectionSpec extends test.BaseSpec {
       MockKeystore.map(KeystoreService.CURRENT_INPUT_YEAR_KEY) shouldBe ("2015")
       MockKeystore.map(KeystoreService.SELECTED_INPUT_YEARS_KEY) shouldBe ("2015")
       redirectLocation(result) shouldBe Some("/paac/changes-to-pip")
+    }
+
+    "when unselecting a previously selected year reset year's data value" in new ControllerWithMockKeystore {
+      // set up
+      implicit val hc = HeaderCarrier()
+      implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID)).withFormUrlEncodedBody(("csrfToken" -> "blah"),("TaxYear2014" -> "2014"),("previous"->"2014,2013"))
+      MockKeystore.map = MockKeystore.map + ("TaxYearSelection" -> "2014,2013")
+      MockKeystore.map = MockKeystore.map + (KeystoreService.IS_EDIT_KEY -> "false")
+      MockKeystore.map = MockKeystore.map + (KeystoreService.TE_YES_NO_KEY -> "false")
+      MockKeystore.map = MockKeystore.map + (KeystoreService.DB_PREFIX + "2013" -> "100")
+      MockKeystore.map = MockKeystore.map + (KeystoreService.DC_PREFIX + "2013" -> "200")
+
+      // test
+      val result: Future[Result] = ControllerWithMockKeystore.onYearSelected()(request)
+
+      // check
+      status(result) shouldBe 303
+      MockKeystore.map(KeystoreService.DB_PREFIX + "2013") shouldBe ("")
+      MockKeystore.map(KeystoreService.DC_PREFIX + "2013") shouldBe ("")
+      MockKeystore.map(KeystoreService.CURRENT_INPUT_YEAR_KEY) shouldBe ("2014")
+      MockKeystore.map(KeystoreService.SELECTED_INPUT_YEARS_KEY) shouldBe ("2014")
+    }
+
+    "when unselecting 2015 when previously selected reset 2015's data values" in new ControllerWithMockKeystore {
+      // set up
+      implicit val hc = HeaderCarrier()
+      implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID)).withFormUrlEncodedBody(("csrfToken" -> "blah"),("TaxYear2014" -> "2014"),("previous"->"2015,2013"))
+      MockKeystore.map = MockKeystore.map + ("TaxYearSelection" -> "2014")
+      MockKeystore.map = MockKeystore.map + (KeystoreService.IS_EDIT_KEY -> "false")
+      MockKeystore.map = MockKeystore.map + (KeystoreService.P1_DB_KEY -> "100")
+      MockKeystore.map = MockKeystore.map + (KeystoreService.P1_DC_KEY -> "200")
+      MockKeystore.map = MockKeystore.map + (KeystoreService.P2_DB_KEY -> "300")
+      MockKeystore.map = MockKeystore.map + (KeystoreService.P2_DC_KEY -> "400")
+      MockKeystore.map = MockKeystore.map + (KeystoreService.P1_TRIGGER_DC_KEY -> "500")
+      MockKeystore.map = MockKeystore.map + (KeystoreService.P2_TRIGGER_DC_KEY -> "600")
+      MockKeystore.map = MockKeystore.map + (KeystoreService.TRIGGER_DATE_KEY -> "2015-11-1")
+      MockKeystore.map = MockKeystore.map + (KeystoreService.TE_YES_NO_KEY -> "Yes")
+      MockKeystore.map = MockKeystore.map + (KeystoreService.P1_YES_NO_KEY -> "Yes")
+      MockKeystore.map = MockKeystore.map + (KeystoreService.P2_YES_NO_KEY -> "Yes")
+
+      // test
+      val result: Future[Result] = ControllerWithMockKeystore.onYearSelected()(request)
+
+      // check
+      status(result) shouldBe 303
+      MockKeystore.map(KeystoreService.CURRENT_INPUT_YEAR_KEY) shouldBe ("2014")
+      MockKeystore.map(KeystoreService.SELECTED_INPUT_YEARS_KEY) shouldBe ("2014")
+      MockKeystore.map(KeystoreService.P1_DB_KEY) shouldBe ("")
+      MockKeystore.map(KeystoreService.P1_DC_KEY) shouldBe ("")
+      MockKeystore.map(KeystoreService.P2_DB_KEY) shouldBe ("")
+      MockKeystore.map(KeystoreService.P2_DC_KEY) shouldBe ("")
+      MockKeystore.map(KeystoreService.P1_TRIGGER_DC_KEY) shouldBe ("")
+      MockKeystore.map(KeystoreService.P2_TRIGGER_DC_KEY) shouldBe ("")
+      MockKeystore.map(KeystoreService.TRIGGER_DATE_KEY) shouldBe ("")
+      MockKeystore.map(KeystoreService.TE_YES_NO_KEY) shouldBe ("")
+      MockKeystore.map(KeystoreService.P1_YES_NO_KEY) shouldBe ("")
+      MockKeystore.map(KeystoreService.P2_YES_NO_KEY) shouldBe ("")
     }
 
     "return TaxYearSelection results from keystore" in new ControllerWithMockKeystore {
