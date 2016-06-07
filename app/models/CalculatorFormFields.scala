@@ -114,7 +114,7 @@ case class CalculatorFormFields(definedBenefits: Amounts,
       if (triggerDate.isDefined) {
         val c = triggerDatePeriod().get
         if (c.isPeriod1) {
-          List(contribution.copy(taxPeriodEnd=c.taxPeriodStart),Contribution(c.taxPeriodStart, PERIOD_1_2015_END, Some(InputAmounts(Some(0), get(P1_TRIGGER_AMOUNT), None, Some(true)))))
+          List(Contribution(c.taxPeriodStart, PERIOD_1_2015_END, Some(InputAmounts(Some(0), get(P1_TRIGGER_AMOUNT), None, Some(true)))),contribution.copy(taxPeriodEnd=c.taxPeriodStart))
         } else if (c.isPeriod2) {
           List(contribution)
         } else {
@@ -132,7 +132,7 @@ case class CalculatorFormFields(definedBenefits: Amounts,
         if (c.isPeriod1) {
           List(contribution.copy(amounts=contribution.amounts.map(_.copy(triggered=Some(true)))))
         } else if (c.isPeriod2) {
-          List(contribution.copy(taxPeriodEnd=c.taxPeriodStart), Contribution(c.taxPeriodStart, PERIOD_2_2015_END, Some(InputAmounts(Some(0), get(P2_TRIGGER_AMOUNT), None, Some(true)))))
+          List(Contribution(c.taxPeriodStart, PERIOD_2_2015_END, Some(InputAmounts(Some(0), get(P2_TRIGGER_AMOUNT), None, Some(true)))),contribution.copy(taxPeriodEnd=c.taxPeriodStart))
         } else {
           List(contribution)
         }
@@ -180,8 +180,8 @@ case class CalculatorFormFields(definedBenefits: Amounts,
     }
   }
 
-  def period1(): Contribution => Boolean = { (c) => c.taxPeriodEnd.day == 8 && c.taxPeriodEnd.year == 2015 }
-  def period2(): Contribution => Boolean = { (c) => c.taxPeriodStart.day == 9 && c.taxPeriodStart.year == 2015 }
+  def period1(): Contribution => Boolean = { (c) => c.isPeriod1 }
+  def period2(): Contribution => Boolean = { (c) => c.isPeriod2 }
 
   def to1516Period1DefinedBenefit: Option[(Long, String)] = toDefinedBenefit(period1())(KeystoreService.P1_DB_KEY)
   def to1516Period1DefinedContribution: Option[(Long, String)] = toDefinedContribution(period1())(KeystoreService.P1_DC_KEY)

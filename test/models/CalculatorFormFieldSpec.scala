@@ -286,10 +286,10 @@ class CalculatorFormFieldSpec extends ModelSpec with BeforeAndAfterAll {
 
       contributions(7).amounts.get.moneyPurchase.get shouldBe 55500
       contributions(7).amounts.get.triggered.get shouldBe true
-      contributions(8).amounts.get.moneyPurchase.get shouldBe 44400 
-      contributions(8).amounts.get.triggered.get shouldBe false
-      contributions(9).amounts.get.moneyPurchase.get shouldBe 88800
-      contributions(9).amounts.get.triggered.get shouldBe true
+      contributions(8).amounts.get.moneyPurchase.get shouldBe 88800 
+      contributions(8).amounts.get.triggered.get shouldBe true
+      contributions(9).amounts.get.moneyPurchase.get shouldBe 44400
+      contributions(9).amounts.get.triggered.get shouldBe false
     }
 
     "return contributions for post trigger period 2 moneyPurchase amounts" in {
@@ -319,10 +319,10 @@ class CalculatorFormFieldSpec extends ModelSpec with BeforeAndAfterAll {
       contributions(8).taxPeriodStart.year shouldBe 2015
       contributions(9).taxPeriodStart.year shouldBe 2015
 
-      contributions(7).amounts.get.moneyPurchase.get shouldBe 88800 
-      contributions(7).amounts.get.triggered.get shouldBe false
-      contributions(8).amounts.get.moneyPurchase.get shouldBe 55500
-      contributions(8).amounts.get.triggered.get shouldBe true
+      contributions(7).amounts.get.moneyPurchase.get shouldBe 55500 
+      contributions(7).amounts.get.triggered.get shouldBe true
+      contributions(8).amounts.get.moneyPurchase.get shouldBe 88800
+      contributions(8).amounts.get.triggered.get shouldBe false
       contributions(9).amounts.get.moneyPurchase.get shouldBe 44400
       contributions(9).amounts.get.triggered.get shouldBe false
     }
@@ -357,10 +357,10 @@ class CalculatorFormFieldSpec extends ModelSpec with BeforeAndAfterAll {
 
       contributions(7).amounts.get.moneyPurchase.get shouldBe 55500  
       contributions(7).amounts.get.triggered.get shouldBe true
-      contributions(8).amounts.get.moneyPurchase.get shouldBe 44400   
-      contributions(8).amounts.get.triggered.get shouldBe false
-      contributions(9).amounts.get.moneyPurchase.get shouldBe 88800
-      contributions(9).amounts.get.triggered.get shouldBe true
+      contributions(8).amounts.get.moneyPurchase.get shouldBe 88800    
+      contributions(8).amounts.get.triggered.get shouldBe true
+      contributions(9).amounts.get.moneyPurchase.get shouldBe 44400
+      contributions(9).amounts.get.triggered.get shouldBe false
     }
 
     "return contributions for post trigger period 2 moneyPurchase amounts when trigger date is start of period 2" in {
@@ -391,10 +391,10 @@ class CalculatorFormFieldSpec extends ModelSpec with BeforeAndAfterAll {
       contributions(9).taxPeriodStart.year shouldBe 2015
       contributions(10).taxPeriodStart.year shouldBe 2016
 
-      contributions(7).amounts.get.moneyPurchase.get shouldBe 55500
-      contributions(7).amounts.get.triggered.get shouldBe false
-      contributions(8).amounts.get.moneyPurchase.get shouldBe 88800
-      contributions(8).amounts.get.triggered.get shouldBe true
+      contributions(7).amounts.get.moneyPurchase.get shouldBe 88800 
+      contributions(7).amounts.get.triggered.get shouldBe true
+      contributions(8).amounts.get.moneyPurchase.get shouldBe 55500
+      contributions(8).amounts.get.triggered.get shouldBe false
       contributions(9).amounts.get.moneyPurchase.get shouldBe 44400
       contributions(9).amounts.get.triggered.get shouldBe false
     }

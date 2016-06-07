@@ -52,40 +52,18 @@ backLink = Some((controllers.routes.ReviewTotalAmountsController.onBack.url,Mess
         @if(hasBenefits) {
         <th class="numeric" scope="col">@Messages("paac.review-amounts.heading.db")</th>
         }
+        @if(triggerContribution.isDefined) {
+        <th class="numeric" scope="col">@Messages("paac.review-amounts.heading.trigger.savings")</th>
+        <th class="numeric" scope="col">@Messages("paac.review-amounts.heading.trigger.date")</th>
+        }
         <th class="edit_action" scope="col"></th>
     </tr>
     </thead>
     <tbody>
     @defining(java.text.NumberFormat.getCurrencyInstance(java.util.Locale.UK)) { currencyFormatter =>
-    @if(triggerContribution != None && triggerContribution.isDefined) {
-    @defining(triggerContribution.get.amounts.getOrElse(InputAmounts())) { amounts =>
-    <tr>
-        <td class="numeric">@Messages("trigger")</td>
-        @if(hasContributions) {
-        <td class="numeric">
-            @if(amounts.moneyPurchase.isDefined){
-            @(currencyFormatter.format(amounts.moneyPurchase.get/100D))
-            } else {
-            &pound;&nbsp;&ndash;
-            }
-        </td>
-        }
-        @if(hasBenefits) {
-        <td class="numeric">
-            &pound;&nbsp;&ndash;
-        </td>
-        }
-        <td class="edit_action">
-            <a href="edit/0">
-             @Messages("paac.review-amounts.action.edit") <span class="visuallyhidden">@Messages("trigger")</span>
-            </a>
-        </td>
-    </tr>
-    }
-    }
-    @for(contribution <- reviewForm.get.toPageValues().reverse) {
+    @for(contribution <- (if (triggerContribution.isDefined) reviewForm.get.toPageValues.reverse.filterNot((c1)=>c1==triggerContribution.get) else reviewForm.get.toPageValues.reverse)) {
         @defining(contribution.amounts.getOrElse(InputAmounts())) { amounts =>
-        @if(contribution.isEmpty() == false && (triggerContribution == None || (triggerContribution != None && triggerContribution.get != contribution))) {
+        @if(contribution.isEmpty() == false) {
         <tr>
             <td class="numeric">@(contribution.taxYearLabel())</td>
             @if(hasContributions) {
@@ -105,6 +83,21 @@ backLink = Some((controllers.routes.ReviewTotalAmountsController.onBack.url,Mess
                     &pound;&nbsp;&ndash;
                 }
             </td>
+            }
+            @if(triggerContribution.isDefined && (triggerContribution.get.isPeriod1 && contribution.isPeriod1 || triggerContribution.get.isPeriod2 && contribution.isPeriod2)) {
+            <td class="numeric">
+            @defining(triggerContribution.get.amounts.getOrElse(InputAmounts())) { amounts2 =>
+            @(currencyFormatter.format(amounts2.moneyPurchase.get/100D))
+            }
+            </td>
+            <td class="numeric">
+            @defining(reviewForm.get.triggerDate.get.split("-")) { dateParts =>
+            @(dateParts(2))-@(dateParts(1))-@(dateParts(0))
+            }
+            </td>
+            } else {
+            <td class="numeric"></td>
+            <td class="numeric"></td>
             }
             <td class="edit_action">
                 @if(contribution.taxPeriodStart.year < 2015) {

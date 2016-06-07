@@ -128,6 +128,8 @@ paac.review-amounts.heading.triggered = After Flexi-Access?
 paac.review-amounts.heading.db = Total defined benefit
 paac.review-amounts.heading.mp = Total defined contribution
 paac.review-amounts.heading.ta = Tapered Allowance
+paac.review-amounts.heading.trigger.savings=Post flexi-access savings
+paac.review-amounts.heading.trigger.date=Flexi-access Date
 paac.review-amounts.action.edit = Edit
 
 ## Results Page
@@ -156,3 +158,4 @@ paac.post-trigger-value.error.bounds={0} amount was empty or negative. Please pr
 db=defined benefit
 dc=defined contribution
 trigger=Post Flexi-access savings
+trigger.date=Post Flexi-access date
