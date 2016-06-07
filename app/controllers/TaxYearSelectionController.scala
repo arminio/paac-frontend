@@ -37,7 +37,7 @@ trait TaxYearSelectionController extends RedirectController {
         (year)=>
         if (year.size > 0) {
           if (year == "2015") {
-            List(P1_DB_KEY, P1_DC_KEY, P2_DB_KEY, P2_DC_KEY, P1_TRIGGER_DC_KEY, P2_TRIGGER_DC_KEY, TRIGGER_DATE_KEY, TE_YES_NO_KEY, P1_YES_NO_KEY, P2_YES_NO_KEY)
+            List(P1_DB_KEY, P1_DC_KEY, P2_DB_KEY, P2_DC_KEY, P1_TRIGGER_DC_KEY, P2_TRIGGER_DC_KEY, TRIGGER_DATE_KEY, TE_YES_NO_KEY)
           } else {
             List(DB_PREFIX+year, DC_PREFIX+year)
           }

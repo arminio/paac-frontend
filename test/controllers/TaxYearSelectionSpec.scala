@@ -166,8 +166,6 @@ class TaxYearSelectionSpec extends test.BaseSpec {
       MockKeystore.map = MockKeystore.map + (KeystoreService.P2_TRIGGER_DC_KEY -> "600")
       MockKeystore.map = MockKeystore.map + (KeystoreService.TRIGGER_DATE_KEY -> "2015-11-1")
       MockKeystore.map = MockKeystore.map + (KeystoreService.TE_YES_NO_KEY -> "Yes")
-      MockKeystore.map = MockKeystore.map + (KeystoreService.P1_YES_NO_KEY -> "Yes")
-      MockKeystore.map = MockKeystore.map + (KeystoreService.P2_YES_NO_KEY -> "Yes")
 
       // test
       val result: Future[Result] = ControllerWithMockKeystore.onYearSelected()(request)
@@ -184,8 +182,6 @@ class TaxYearSelectionSpec extends test.BaseSpec {
       MockKeystore.map(KeystoreService.P2_TRIGGER_DC_KEY) shouldBe ("")
       MockKeystore.map(KeystoreService.TRIGGER_DATE_KEY) shouldBe ("")
       MockKeystore.map(KeystoreService.TE_YES_NO_KEY) shouldBe ("")
-      MockKeystore.map(KeystoreService.P1_YES_NO_KEY) shouldBe ("")
-      MockKeystore.map(KeystoreService.P2_YES_NO_KEY) shouldBe ("")
     }
 
     "return TaxYearSelection results from keystore" in new ControllerWithMockKeystore {
