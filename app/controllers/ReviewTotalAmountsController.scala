@@ -84,8 +84,6 @@ trait ReviewTotalAmountsController extends RedirectController with models.ThisYe
   }
 
   val onSubmit = withSession { implicit request =>
-    def fetchTriggered(l:List[TaxYearResults]):Option[TaxYearResults] = l.find(_.input.isTriggered)
-    def fetchNotTriggered(l:List[TaxYearResults]):Option[TaxYearResults] = l.find(!_.input.isTriggered)
     fetchAmounts().flatMap { (amounts) =>
       keystore.read[String](KeystoreService.TRIGGER_DATE_KEY).flatMap {
         (td) =>
@@ -104,31 +102,7 @@ trait ReviewTotalAmountsController extends RedirectController with models.ThisYe
               response =>
               keystore.read[String](List(KeystoreService.DB_FLAG, KeystoreService.DC_FLAG)).flatMap {
                 (fieldMap) =>
-                // TO DO move to paac backend service
-                val triggerAmountRow = response.find(_.input.isTriggered)
-                val results = if (triggerAmountRow.isDefined) {
-                  val year2015ResultsMap = response.groupBy(_.input.taxPeriodStart.year)(2015).groupBy(_.input.isPeriod1)
-                  val period1Results = year2015ResultsMap.get(true).get
-                  val period2Results = year2015ResultsMap.get(false).get
-                  val non2015Results = response.filterNot((t)=>t.input.isPeriod1||t.input.isPeriod2)
-                  val results: List[TaxYearResults] = if (period1Results.size == 2) {
-                    val p1Triggered = fetchTriggered(period1Results).get
-                    val p1NotTriggered = fetchNotTriggered(period1Results).get
-                    val newP1 = p1Triggered.copy(input=p1NotTriggered.input)
-                    non2015Results ++ List(newP1) ++ List(fetchTriggered(period2Results).get)
-                  } else if (period2Results.size == 2) {
-                    val p2Triggered = fetchTriggered(period2Results).get
-                    val p2NotTriggered = fetchNotTriggered(period2Results).get
-                    val newP2 = p2Triggered.copy(input=p2NotTriggered.input)
-                    non2015Results ++ List(fetchNotTriggered(period1Results).get) ++ List(newP2)
-                  } else {
-                    response
-                  }
-                  results
-                } else {
-                  response
-                }
-                Future.successful(Ok(views.html.results(results, fieldMap(KeystoreService.DB_FLAG).toBoolean, fieldMap(KeystoreService.DC_FLAG).toBoolean)))
+                Future.successful(Ok(views.html.results(response, fieldMap(KeystoreService.DB_FLAG).toBoolean, fieldMap(KeystoreService.DC_FLAG).toBoolean)))
               }
             }
           }
