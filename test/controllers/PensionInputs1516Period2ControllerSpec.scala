@@ -219,4 +219,19 @@ class PensionInputs1516Period2ControllerSpec extends test.BaseSpec {
       }
     }
   }
+
+  "onBack" should {
+    "redirect to period 1 input" in new ControllerWithMockKeystore {
+      // set up
+      implicit val hc = HeaderCarrier()
+      implicit val request = FakeRequest(GET,"/paac/back").withSession{(SessionKeys.sessionId,SESSION_ID)}
+
+      // test
+      val result : Future[Result] = ControllerWithMockKeystore.onBack()(request)
+
+      // check
+      status(result) shouldBe 303
+      redirectLocation(result) shouldBe Some("/paac/pensionInputs1516p1")
+    }
+  }
 }

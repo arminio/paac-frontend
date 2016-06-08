@@ -30,6 +30,10 @@ trait PensionInputs1516Period2Controller extends RedirectController {
 
   private val onSubmitRedirect: Call = routes.YesNoMPAATriggerEventAmountController.onPageLoad()
 
+  val onBack = withSession { implicit request =>
+    wheretoBack(Redirect(routes.PensionInputs1516Period1Controller.onPageLoad))
+  }
+
   val onPageLoad = withSession { implicit request =>
     keystore.read[String](List(KeystoreService.P2_DB_KEY, KeystoreService.P2_DC_KEY, KeystoreService.DB_FLAG, KeystoreService.DC_FLAG)).map {
       (fieldsMap) =>
