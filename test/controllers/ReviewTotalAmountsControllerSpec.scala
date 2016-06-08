@@ -214,6 +214,19 @@ class ReviewTotalAmountsControllerSpec extends test.BaseSpec {
 
     "onPageLoad" can {
 
+      "reset isEdit and CurrentYear in keystore" in new MockControllerFixture {
+        // set up
+        val request = FakeRequest(GET, "/paac/calculate").withSession {(SessionKeys.sessionId,SESSION_ID)}
+
+        // test
+        val result: Future[Result] = ControllerWithMocks.onPageLoad()(request)
+
+        // check
+        await(result)
+        MockKeystore.map(KeystoreService.IS_EDIT_KEY) shouldBe "false"
+        MockKeystore.map(KeystoreService.CURRENT_INPUT_YEAR_KEY) shouldBe "-1"
+      }
+
       "display table of values that are present in keystore" in new MockControllerFixture {
         // set up
         val request = FakeRequest(GET, "/paac/calculate").withSession {(SessionKeys.sessionId,SESSION_ID)}
