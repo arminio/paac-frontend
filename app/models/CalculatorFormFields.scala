@@ -114,7 +114,8 @@ case class CalculatorFormFields(definedBenefits: Amounts,
       if (triggerDate.isDefined) {
         val c = triggerDatePeriod().get
         if (c.isPeriod1) {
-          List(Contribution(c.taxPeriodStart, PERIOD_1_2015_END, Some(InputAmounts(Some(0), get(P1_TRIGGER_AMOUNT), None, Some(true)))),contribution.copy(taxPeriodEnd=c.taxPeriodStart))
+          val db = get(P1_DB_AMOUNT).map((_)=>0L) // if db == NONE then will be group 2 calculation otherwise will be group 3
+          List(Contribution(c.taxPeriodStart, PERIOD_1_2015_END, Some(InputAmounts(db, get(P1_TRIGGER_AMOUNT), None, Some(true)))),contribution.copy(taxPeriodEnd=c.taxPeriodStart))
         } else if (c.isPeriod2) {
           List(contribution)
         } else {
@@ -132,7 +133,8 @@ case class CalculatorFormFields(definedBenefits: Amounts,
         if (c.isPeriod1) {
           List(contribution.copy(amounts=contribution.amounts.map(_.copy(triggered=Some(true)))))
         } else if (c.isPeriod2) {
-          List(Contribution(c.taxPeriodStart, PERIOD_2_2015_END, Some(InputAmounts(Some(0), get(P2_TRIGGER_AMOUNT), None, Some(true)))),contribution.copy(taxPeriodEnd=c.taxPeriodStart))
+          val db = get(P2_DB_AMOUNT).map((_)=>0L) // if db == NONE then will be group 2 calculation otherwise will be group 3
+          List(Contribution(c.taxPeriodStart, PERIOD_2_2015_END, Some(InputAmounts(db, get(P2_TRIGGER_AMOUNT), None, Some(true)))),contribution.copy(taxPeriodEnd=c.taxPeriodStart))
         } else {
           List(contribution)
         }
