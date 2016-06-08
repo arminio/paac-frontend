@@ -33,6 +33,10 @@ trait PensionInputs1516Period1Controller extends RedirectController {
 
   private val onSubmitRedirect: Call = routes.PensionInputs1516Period2Controller.onPageLoad()
 
+  val onBack = withSession { implicit request =>
+    wheretoBack(Redirect(routes.StaticPageController.onPipPageLoad))
+  }
+
   val onPageLoad = withSession { implicit request =>
     keystore.read[String](List(KeystoreService.P1_DB_KEY, KeystoreService.P1_DC_KEY, KeystoreService.DB_FLAG, KeystoreService.DC_FLAG)).map {
       (fieldsMap) =>

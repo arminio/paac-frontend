@@ -76,6 +76,7 @@ paac.pip.subheading=The tax year 2015 to 2016 is split into 2 periods.
 paac.taxyear.selection.pagetitle = Tax Year Selection
 paac.taxyear.selection.heading = Which tax years were you a member of a registered pension scheme?
 paac.taxyear.selection.p1  = A tax year is 6 April to 5 April. The tax year that your pension input period is for is based on the date your pension input period ends.
+paac.taxyear.selection.error = Please select years you were a member of a pension scheme.
 
 ## 2015/16 Period-1 and Period-2 Common messages
 paac.1516.yesno.yes = Yes

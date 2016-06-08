@@ -118,12 +118,17 @@ trait RedirectController extends BaseFrontendController {
       }
     }
 
-    keystore.read(List(CURRENT_INPUT_YEAR_KEY, SELECTED_INPUT_YEARS_KEY, TE_YES_NO_KEY)).flatMap {
+    keystore.read(List(CURRENT_INPUT_YEAR_KEY, SELECTED_INPUT_YEARS_KEY, TE_YES_NO_KEY, IS_EDIT_KEY)).flatMap {
       (fieldsMap) =>
-      val currentYear = fieldsMap(CURRENT_INPUT_YEAR_KEY)
-      val selectedYears = fieldsMap(SELECTED_INPUT_YEARS_KEY)
-      val previousYear = previous(currentYear, selectedYears)
-      goTo(previousYear, false, false, fieldsMap(TE_YES_NO_KEY) == "Yes", defaultRoute)
+      val isEdit = if (fieldsMap(IS_EDIT_KEY) == "") false else fieldsMap(IS_EDIT_KEY).toBoolean
+      if (isEdit) {
+        Future.successful(Results.Redirect(routes.ReviewTotalAmountsController.onPageLoad()))
+      } else {
+        val currentYear = fieldsMap(CURRENT_INPUT_YEAR_KEY)
+        val selectedYears = fieldsMap(SELECTED_INPUT_YEARS_KEY)
+        val previousYear = previous(currentYear, selectedYears)
+        goTo(previousYear, false, false, fieldsMap(TE_YES_NO_KEY) == "Yes", defaultRoute)
+      }
     }
   }
 
@@ -153,7 +158,8 @@ trait RedirectController extends BaseFrontendController {
       val currentYear = fieldsMap(KeystoreService.CURRENT_INPUT_YEAR_KEY)
       val selectedYears = fieldsMap(KeystoreService.SELECTED_INPUT_YEARS_KEY)
       val nextYear = next(currentYear, selectedYears)
-      goTo(nextYear, true, fieldsMap(IS_EDIT_KEY).toBoolean, fieldsMap(TE_YES_NO_KEY) == "Yes", defaultRoute)
+      val isEdit = if (fieldsMap(IS_EDIT_KEY) == "") false else fieldsMap(IS_EDIT_KEY).toBoolean
+      goTo(nextYear, true, isEdit, fieldsMap(TE_YES_NO_KEY) == "Yes", defaultRoute)
     }
   }
 }

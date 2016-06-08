@@ -102,6 +102,20 @@ class TaxYearSelectionSpec extends test.BaseSpec {
   }
 
   "onYearSelected with POST request" should {
+    "display error message if no years selected" in new ControllerWithMockKeystore {
+      // set up
+      implicit val hc = HeaderCarrier()
+      implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID)).withFormUrlEncodedBody(("csrfToken" -> "blah"),("previous"->""))
+
+      // test
+      val result: Future[Result] = ControllerWithMockKeystore.onYearSelected()(request)
+
+      // check
+      status(result) shouldBe 200
+      val htmlPage = contentAsString(await(result))
+      htmlPage should include ("""Please select years you were a member of a pension scheme.""")
+    }
+
     "not return result NOT_FOUND" in {
       val result: Option[Future[Result]] = route(FakeRequest(POST, endPointURL))
       result.isDefined shouldBe true
