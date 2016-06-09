@@ -213,4 +213,53 @@ object CalculatorFormFields
 
 object Amounts {
   def toPence(value: BigDecimal): Long = (value * 100).longValue
+  /* Form for now takes whole pounds as numbers instead of bigdecimal to represent pounds and pence. Simply chop off the pence.*/
+  def applyFromInt(cy0: Option[Int], 
+                   cy1: Option[Int], 
+                   cy2: Option[Int], 
+                   cy3: Option[Int], 
+                   cy4: Option[Int], 
+                   cy5: Option[Int], 
+                   cy6: Option[Int], 
+                   cy7: Option[Int], 
+                   cy8: Option[Int]): Amounts = {
+    Amounts(cy0.map(BigDecimal(_)), cy1.map(BigDecimal(_)), cy2.map(BigDecimal(_)), cy3.map(BigDecimal(_)), cy4.map(BigDecimal(_)), cy5.map(BigDecimal(_)), cy6.map(BigDecimal(_)), cy7.map(BigDecimal(_)), cy8.map(BigDecimal(_)))
+  }
+  def unapplyToInt(amounts: Amounts): Option[(Option[Int], Option[Int], Option[Int], Option[Int], Option[Int], Option[Int], Option[Int], Option[Int], Option[Int])] = {
+    Amounts.unapply(amounts).map {
+      (tuple)=>
+      (tuple._1.map(_.intValue),
+       tuple._2.map(_.intValue),
+       tuple._3.map(_.intValue),
+       tuple._4.map(_.intValue),
+       tuple._5.map(_.intValue),
+       tuple._6.map(_.intValue),
+       tuple._7.map(_.intValue),
+       tuple._8.map(_.intValue),
+       tuple._9.map(_.intValue))
+    }
+  }
+}
+
+object Year2015Amounts {
+  /* Form for now takes whole pounds as numbers instead of bigdecimal to represent pounds and pence. Simply chop off the pence.*/
+  def applyFromInt(n1: Option[Int], 
+                   n2: Option[Int], 
+                   n3: Option[Int], 
+                   n4: Option[Int], 
+                   n5: Option[Int], 
+                   n6: Option[Int]): Year2015Amounts = {
+    Year2015Amounts(n1.map(BigDecimal(_)), n2.map(BigDecimal(_)), n3.map(BigDecimal(_)), n4.map(BigDecimal(_)), n5.map(BigDecimal(_)), n6.map(BigDecimal(_)))
+  }
+  def unapplyToInt(amounts: Year2015Amounts): Option[(Option[Int], Option[Int], Option[Int], Option[Int], Option[Int], Option[Int])] = {
+    Year2015Amounts.unapply(amounts).map {
+      (tuple)=>
+      (tuple._1.map(_.intValue),
+       tuple._2.map(_.intValue),
+       tuple._3.map(_.intValue),
+       tuple._4.map(_.intValue),
+       tuple._5.map(_.intValue),
+       tuple._6.map(_.intValue))
+    }
+  }
 }

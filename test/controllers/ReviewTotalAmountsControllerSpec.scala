@@ -110,7 +110,7 @@ class ReviewTotalAmountsControllerSpec extends test.BaseSpec {
         // check
         val values: Map[String,String] = Await.result(result, Duration(1000,MILLISECONDS))
         values should contain key ("definedBenefit_2011")
-        values should contain value ("12000.00")
+        values should contain value ("12000")
       }
 
       "should return values for 2016 values in keystore" in new Mock2016ControllerFixture {
@@ -124,7 +124,7 @@ class ReviewTotalAmountsControllerSpec extends test.BaseSpec {
         // check
         val values: Map[String,String] = Await.result(result, Duration(1000,MILLISECONDS))
         values should contain key ("definedBenefit_2016")
-        values("definedBenefit_2016") shouldBe "13000.00"
+        values("definedBenefit_2016") shouldBe "13000"
       }
 
       /*"should return 0.00 when keystore has 0 as an amount" in new MockControllerFixture {
@@ -144,7 +144,7 @@ class ReviewTotalAmountsControllerSpec extends test.BaseSpec {
 
       "should return money purchase when keystore has money purchase amount for 2015" in new MockControllerFixture {
         // set up
-        MockKeystore.map = MockKeystore.map + ("definedContribution_2015_p1"->"123450")
+        MockKeystore.map = MockKeystore.map + ("definedContribution_2015_p1"->"123400")
         implicit val hc = HeaderCarrier()
         implicit val request = FakeRequest().withSession((SessionKeys.sessionId,SESSION_ID))
 
@@ -154,12 +154,12 @@ class ReviewTotalAmountsControllerSpec extends test.BaseSpec {
         // check
         val values: Map[String,String] = Await.result(result, Duration(1000,MILLISECONDS))
         values should contain key ("definedContribution_2015_p1")
-        values should contain value ("1234.50")
+        values should contain value ("1234")
       }
 
       "should return defined benefit when keystore has money purchase amount for 2015" in new MockControllerFixture {
         // set up
-        MockKeystore.map = MockKeystore.map + ("definedBenefit_2015_p1"->"9123450")
+        MockKeystore.map = MockKeystore.map + ("definedBenefit_2015_p1"->"9123400")
         implicit val hc = HeaderCarrier()
         implicit val request = FakeRequest().withSession((SessionKeys.sessionId,SESSION_ID))
 
@@ -169,7 +169,7 @@ class ReviewTotalAmountsControllerSpec extends test.BaseSpec {
         // check
         val values: Map[String,String] = Await.result(result, Duration(1000,MILLISECONDS))
         values should contain key ("definedBenefit_2015_p1")
-        values should contain value ("91234.50")
+        values should contain value ("91234")
       }
     }
 
@@ -208,7 +208,7 @@ class ReviewTotalAmountsControllerSpec extends test.BaseSpec {
 
         // check
         val htmlSummaryPage = contentAsString(await(result))
-        htmlSummaryPage should include ("definedBenefits.amount_2009 defined benefit amount was incorrect or empty.")
+        htmlSummaryPage should include ("definedBenefits.amount_2009 amount was too small and must be either £0 or greater.")
       }
     }
 
@@ -248,9 +248,9 @@ class ReviewTotalAmountsControllerSpec extends test.BaseSpec {
       "display p1 trigger amount columns if in keystore" in new MockControllerFixture {
         // set up
         val request = FakeRequest(GET, "/paac/calculate").withSession {(SessionKeys.sessionId,SESSION_ID)}
-        MockKeystore.map = MockKeystore.map + (KeystoreService.P1_TRIGGER_DC_KEY -> "123456")
-        MockKeystore.map = MockKeystore.map + (KeystoreService.P1_DB_KEY -> "9")
-        MockKeystore.map = MockKeystore.map + (KeystoreService.P1_DC_KEY -> "10")
+        MockKeystore.map = MockKeystore.map + (KeystoreService.P1_TRIGGER_DC_KEY -> "123400")
+        MockKeystore.map = MockKeystore.map + (KeystoreService.P1_DB_KEY -> "9000")
+        MockKeystore.map = MockKeystore.map + (KeystoreService.P1_DC_KEY -> "10000")
         MockKeystore.map = MockKeystore.map + (KeystoreService.TRIGGER_DATE_KEY -> "2015-5-10")
 
         // test
@@ -258,24 +258,24 @@ class ReviewTotalAmountsControllerSpec extends test.BaseSpec {
 
         // check
         val htmlSummaryPage = contentAsString(await(result))
-        htmlSummaryPage should include ("£1,234.56")
+        htmlSummaryPage should include ("£1,234.00")
         htmlSummaryPage should include ("10-5-2015")
       }
 
       "display p2 trigger amount columns if in keystore" in new MockControllerFixture {
         // set up
         val request = FakeRequest(GET, "/paac/calculate").withSession {(SessionKeys.sessionId,SESSION_ID)}
-        MockKeystore.map = MockKeystore.map + (KeystoreService.P2_TRIGGER_DC_KEY -> "123456")
+        MockKeystore.map = MockKeystore.map + (KeystoreService.P2_TRIGGER_DC_KEY -> "123400")
         MockKeystore.map = MockKeystore.map + (KeystoreService.TRIGGER_DATE_KEY -> "2015-11-5")
-        MockKeystore.map = MockKeystore.map + (KeystoreService.P2_DB_KEY -> "9")
-        MockKeystore.map = MockKeystore.map + (KeystoreService.P2_DC_KEY -> "10")
+        MockKeystore.map = MockKeystore.map + (KeystoreService.P2_DB_KEY -> "9000")
+        MockKeystore.map = MockKeystore.map + (KeystoreService.P2_DC_KEY -> "10000")
 
         // test
         val result: Future[Result] = ControllerWithMocks.onPageLoad()(request)
 
         // check
         val htmlSummaryPage = contentAsString(await(result))
-        htmlSummaryPage should include ("£1,234.56")
+        htmlSummaryPage should include ("£1,234.00")
         htmlSummaryPage should include ("5-11-2015")
       }
 
@@ -290,7 +290,7 @@ class ReviewTotalAmountsControllerSpec extends test.BaseSpec {
 
         // check
         val htmlSummaryPage = contentAsString(await(result))
-        htmlSummaryPage should include ("definedBenefits.amount_2009 defined benefit amount was incorrect or empty.")
+        htmlSummaryPage should include ("definedBenefits.amount_2009 amount was too small and must be either £0 or greater.")
       }
     }
 

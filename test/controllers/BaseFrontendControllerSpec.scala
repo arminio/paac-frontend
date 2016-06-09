@@ -118,14 +118,14 @@ class BaseFrontendControllerSpec extends test.BaseSpec {
     }
 
     "marshall" should {
-      "return 0.00 when value is Some(0)" in {
+      "return 0 when value is Some(0)" in {
         // set up
         object BaseFrontendController extends BaseFrontendController with SessionProvider {
           override def getSessionId()(implicit request : Request[AnyContent]) : Option[String] = Some("NOSESSION")
         }
 
         // test
-        BaseFrontendController.marshall("theKeyToEverything", Some("0")) shouldBe (("theKeyToEverything", "0.00"))
+        BaseFrontendController.marshall("theKeyToEverything", Some("0")) shouldBe (("theKeyToEverything", "0"))
       }
     }
   }
