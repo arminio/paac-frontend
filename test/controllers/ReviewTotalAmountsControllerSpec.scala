@@ -236,13 +236,13 @@ class ReviewTotalAmountsControllerSpec extends test.BaseSpec {
 
         // check
         val htmlSummaryPage = contentAsString(await(result))
-        htmlSummaryPage should include ("£7,000.00")
-        htmlSummaryPage should include ("£8,000.00")
-        htmlSummaryPage should include ("£9,000.00")
-        htmlSummaryPage should include ("£10,000.00")
-        htmlSummaryPage should include ("£11,000.00")
-        htmlSummaryPage should include ("£12,000.00")
-        htmlSummaryPage should include ("£13,000.00")
+        htmlSummaryPage should include ("&pound;7,000")
+        htmlSummaryPage should include ("&pound;8,000")
+        htmlSummaryPage should include ("&pound;9,000")
+        htmlSummaryPage should include ("&pound;10,000")
+        htmlSummaryPage should include ("&pound;11,000")
+        htmlSummaryPage should include ("&pound;12,000")
+        htmlSummaryPage should include ("&pound;13,000")
       }
 
       "display p1 trigger amount columns if in keystore" in new MockControllerFixture {
@@ -258,7 +258,7 @@ class ReviewTotalAmountsControllerSpec extends test.BaseSpec {
 
         // check
         val htmlSummaryPage = contentAsString(await(result))
-        htmlSummaryPage should include ("£1,234.00")
+        htmlSummaryPage should include ("&pound;1,234")
         htmlSummaryPage should include ("10-5-2015")
       }
 
@@ -275,7 +275,7 @@ class ReviewTotalAmountsControllerSpec extends test.BaseSpec {
 
         // check
         val htmlSummaryPage = contentAsString(await(result))
-        htmlSummaryPage should include ("£1,234.00")
+        htmlSummaryPage should include ("&pound;1,234")
         htmlSummaryPage should include ("5-11-2015")
       }
 
