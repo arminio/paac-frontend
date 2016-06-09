@@ -79,7 +79,7 @@ class StartPageControllerSpec extends test.BaseSpec {
         }
 
         // test
-        val result : Future[Result] = StartPageController.newSession()(request)
+        val result : Future[Result] = MockedStartPageController.newSession()(request)
 
         // check
         val StartPage = contentAsString(await(result))
