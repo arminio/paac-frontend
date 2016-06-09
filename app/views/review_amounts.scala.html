@@ -60,7 +60,7 @@ backLink = Some((controllers.routes.ReviewTotalAmountsController.onBack.url,Mess
     </tr>
     </thead>
     <tbody>
-    @defining(java.text.NumberFormat.getCurrencyInstance(java.util.Locale.UK)) { currencyFormatter =>
+    @defining(java.text.NumberFormat.getNumberInstance(java.util.Locale.UK)) { currencyFormatter =>
     @for(contribution <- (if (triggerContribution.isDefined) reviewForm.get.toPageValues.reverse.filterNot((c1)=>c1==triggerContribution.get) else reviewForm.get.toPageValues.reverse)) {
         @defining(contribution.amounts.getOrElse(InputAmounts())) { amounts =>
         @if(contribution.isEmpty() == false) {
@@ -69,7 +69,7 @@ backLink = Some((controllers.routes.ReviewTotalAmountsController.onBack.url,Mess
             @if(hasContributions) {
             <td class="numeric">
                 @if(amounts.moneyPurchase.isDefined){
-                @(currencyFormatter.format(amounts.moneyPurchase.get/100D))
+                &pound;@(currencyFormatter.format(amounts.moneyPurchase.get/100D))
                 } else {
                 &pound;&nbsp;&ndash;
                 }
@@ -78,7 +78,7 @@ backLink = Some((controllers.routes.ReviewTotalAmountsController.onBack.url,Mess
             @if(hasBenefits) {
             <td class="numeric">
                 @if(amounts.definedBenefit.isDefined) {
-                    @(currencyFormatter.format(amounts.definedBenefit.get/100D))
+                    &pound;@(currencyFormatter.format(amounts.definedBenefit.get/100D))
                 } else {
                     &pound;&nbsp;&ndash;
                 }
@@ -88,7 +88,7 @@ backLink = Some((controllers.routes.ReviewTotalAmountsController.onBack.url,Mess
             @if(triggerContribution.get.isPeriod1 && contribution.isPeriod1 || triggerContribution.get.isPeriod2 && contribution.isPeriod2) {
             <td class="numeric">
             @defining(triggerContribution.get.amounts.getOrElse(InputAmounts())) { amounts2 =>
-            @(currencyFormatter.format(amounts2.moneyPurchase.get/100D))
+            &pound;@(currencyFormatter.format(amounts2.moneyPurchase.get/100D))
             }
             </td>
             <td class="numeric">
