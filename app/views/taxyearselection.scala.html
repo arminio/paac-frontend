@@ -8,13 +8,27 @@ heading = Messages("paac.taxyear.selection.heading"),
 backLink = Some((controllers.routes.StaticPageController.onPipTaxYearPageLoad.url,Messages("paac.link.text.back")))
 ) {
 
+@if(isError) {
+  <div class="error-summary" role="group" aria-labelledby="error-summary-heading-example-1" tabindex="-1" style="border: 5px solid #b10e1e;padding: 20px;padding-top: 0px;margin-bottom: 30px;">
+
+    <h1 class="heading-medium error-summary-heading">
+      There was a problem
+    </h1>
+
+    <ul class="error-summary-list">
+      <li><a href="#yearSelectGroup" style="color:#b10e1e;font-weight: bold;">@Messages("paac.taxyear.selection.error")</a></li>
+    </ul>
+  </div>
+}
+
 <p class="">@Messages("paac.taxyear.selection.p1")</p>
 @form(action = controllers.routes.TaxYearSelectionController.onYearSelected,
 args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
-<div class="form-group">
+<div class="form-group" id="yearSelectGroup">
+  <input name="previous" type="hidden" value="@(selectedYears.mkString(","))">
   @defining(config.PaacConfiguration.year()) { thisYear =>
     @for(i <- List.range(thisYear-3, thisYear+1).reverse) {
-    <label class="block-label">@(i) to @(i+1) <input id="TaxYear@(i)" type="checkbox" name="TaxYear@(i)" @if(selectedYears.contains(i.toString())){checked}></label>
+    <label class="block-label" style="@if(isError) {border: 4px solid #b10e1e;}">@(i) to @(i+1) <input id="TaxYear@(i)" type="checkbox" name="TaxYear@(i)" @if(selectedYears.contains(i.toString())){checked}></label>
     }
   }
 </div>

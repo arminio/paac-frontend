@@ -242,6 +242,22 @@ class RedirectControllerSpec extends test.BaseSpec {
     }
 
     "wheretoBack" should {
+      "not fail if values not in keystore" in new ControllerWithMockKeystore {
+        // set up
+        implicit val hc = HeaderCarrier()
+        implicit val request = FakeRequest().withSession { (SessionKeys.sessionId, "session-test") }
+        val route = Redirect(routes.YesNoMPAATriggerEventAmountController.onPageLoad())
+
+        // test
+        val result: Future[Result] = RedirectController.wheretoBack(route)
+
+        // check
+        status(result) shouldBe 303
+        redirectLocation(result) shouldBe Some("/paac/yesnompaate")
+        MockKeystore.map should contain key (KeystoreService.CURRENT_INPUT_YEAR_KEY)
+        MockKeystore.map should contain value ("-1")
+      }      
+
       "redirect to default route if empty current year and selected years" in new ControllerWithMockKeystore {
         // set up
         implicit val hc = HeaderCarrier()
@@ -318,9 +334,40 @@ class RedirectControllerSpec extends test.BaseSpec {
         MockKeystore.map should contain value ("2014")
       }
 
+      "redirect to review page if isEdit == true" in new ControllerWithMockKeystore {
+        // set up
+        implicit val hc = HeaderCarrier()
+        implicit val request = FakeRequest().withSession { (SessionKeys.sessionId, "sesion-test") }
+        val route = Redirect(routes.YesNoMPAATriggerEventAmountController.onPageLoad())
+        MockKeystore.map = MockKeystore.map + (KeystoreService.IS_EDIT_KEY -> "true")
+ 
+        // test
+        val result: Future[Result] = RedirectController.wheretoBack(route)
+ 
+        // check
+        status(result) shouldBe 303
+        redirectLocation(result) shouldBe Some("/paac/review")
+      }
+
     }
 
     "wheretoNext" should {
+      "not fail when values not in keystore" in new ControllerWithMockKeystore {
+        // set up
+        implicit val hc = HeaderCarrier()
+        implicit val request = FakeRequest().withSession { (SessionKeys.sessionId, "session-test") }
+        val route = Redirect(routes.YesNoMPAATriggerEventAmountController.onPageLoad())
+
+        // test
+        val result: Future[Result] = RedirectController.wheretoNext(route)
+
+        // check
+        status(result) shouldBe 303
+        redirectLocation(result) shouldBe Some("/paac/yesnompaate")
+        MockKeystore.map should contain key (KeystoreService.CURRENT_INPUT_YEAR_KEY)
+        MockKeystore.map should contain value ("-1")
+      }
+
       "when isEdit is false" should {
           "redirect to default route if empty current year and selected years" in new ControllerWithMockKeystore {
             // set up

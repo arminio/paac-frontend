@@ -114,7 +114,8 @@ case class CalculatorFormFields(definedBenefits: Amounts,
       if (triggerDate.isDefined) {
         val c = triggerDatePeriod().get
         if (c.isPeriod1) {
-          List(contribution.copy(taxPeriodEnd=c.taxPeriodStart),Contribution(c.taxPeriodStart, PERIOD_1_2015_END, Some(InputAmounts(Some(0), get(P1_TRIGGER_AMOUNT), None, Some(true)))))
+          val db = get(P1_DB_AMOUNT).map((_)=>0L) // if db == NONE then will be group 2 calculation otherwise will be group 3
+          List(Contribution(c.taxPeriodStart, PERIOD_1_2015_END, Some(InputAmounts(db, get(P1_TRIGGER_AMOUNT), None, Some(true)))),contribution.copy(taxPeriodEnd=c.taxPeriodStart))
         } else if (c.isPeriod2) {
           List(contribution)
         } else {
@@ -132,7 +133,8 @@ case class CalculatorFormFields(definedBenefits: Amounts,
         if (c.isPeriod1) {
           List(contribution.copy(amounts=contribution.amounts.map(_.copy(triggered=Some(true)))))
         } else if (c.isPeriod2) {
-          List(contribution.copy(taxPeriodEnd=c.taxPeriodStart), Contribution(c.taxPeriodStart, PERIOD_2_2015_END, Some(InputAmounts(Some(0), get(P2_TRIGGER_AMOUNT), None, Some(true)))))
+          val db = get(P2_DB_AMOUNT).map((_)=>0L) // if db == NONE then will be group 2 calculation otherwise will be group 3
+          List(Contribution(c.taxPeriodStart, PERIOD_2_2015_END, Some(InputAmounts(db, get(P2_TRIGGER_AMOUNT), None, Some(true)))),contribution.copy(taxPeriodEnd=c.taxPeriodStart))
         } else {
           List(contribution)
         }
@@ -144,7 +146,7 @@ case class CalculatorFormFields(definedBenefits: Amounts,
     List.range(settings.START_YEAR, settings.THIS_YEAR + 1).flatMap {
       (year:Int) =>
       if (year == 2015) {
-        p1Contribution ++ p2Contribution
+        p2Contribution ++ p1Contribution
       } else {
         val delta = settings.THIS_YEAR - year
         List(Contribution(year, toInputAmounts(DB_PREFIX + delta, DC_PREFIX + delta)))
@@ -180,8 +182,8 @@ case class CalculatorFormFields(definedBenefits: Amounts,
     }
   }
 
-  def period1(): Contribution => Boolean = { (c) => c.taxPeriodEnd.day == 8 && c.taxPeriodEnd.year == 2015 }
-  def period2(): Contribution => Boolean = { (c) => c.taxPeriodStart.day == 9 && c.taxPeriodStart.year == 2015 }
+  def period1(): Contribution => Boolean = { (c) => c.isPeriod1 }
+  def period2(): Contribution => Boolean = { (c) => c.isPeriod2 }
 
   def to1516Period1DefinedBenefit: Option[(Long, String)] = toDefinedBenefit(period1())(KeystoreService.P1_DB_KEY)
   def to1516Period1DefinedContribution: Option[(Long, String)] = toDefinedContribution(period1())(KeystoreService.P1_DC_KEY)
@@ -211,4 +213,53 @@ object CalculatorFormFields
 
 object Amounts {
   def toPence(value: BigDecimal): Long = (value * 100).longValue
+  /* Form for now takes whole pounds as numbers instead of bigdecimal to represent pounds and pence. Simply chop off the pence.*/
+  def applyFromInt(cy0: Option[Int], 
+                   cy1: Option[Int], 
+                   cy2: Option[Int], 
+                   cy3: Option[Int], 
+                   cy4: Option[Int], 
+                   cy5: Option[Int], 
+                   cy6: Option[Int], 
+                   cy7: Option[Int], 
+                   cy8: Option[Int]): Amounts = {
+    Amounts(cy0.map(BigDecimal(_)), cy1.map(BigDecimal(_)), cy2.map(BigDecimal(_)), cy3.map(BigDecimal(_)), cy4.map(BigDecimal(_)), cy5.map(BigDecimal(_)), cy6.map(BigDecimal(_)), cy7.map(BigDecimal(_)), cy8.map(BigDecimal(_)))
+  }
+  def unapplyToInt(amounts: Amounts): Option[(Option[Int], Option[Int], Option[Int], Option[Int], Option[Int], Option[Int], Option[Int], Option[Int], Option[Int])] = {
+    Amounts.unapply(amounts).map {
+      (tuple)=>
+      (tuple._1.map(_.intValue),
+       tuple._2.map(_.intValue),
+       tuple._3.map(_.intValue),
+       tuple._4.map(_.intValue),
+       tuple._5.map(_.intValue),
+       tuple._6.map(_.intValue),
+       tuple._7.map(_.intValue),
+       tuple._8.map(_.intValue),
+       tuple._9.map(_.intValue))
+    }
+  }
+}
+
+object Year2015Amounts {
+  /* Form for now takes whole pounds as numbers instead of bigdecimal to represent pounds and pence. Simply chop off the pence.*/
+  def applyFromInt(n1: Option[Int], 
+                   n2: Option[Int], 
+                   n3: Option[Int], 
+                   n4: Option[Int], 
+                   n5: Option[Int], 
+                   n6: Option[Int]): Year2015Amounts = {
+    Year2015Amounts(n1.map(BigDecimal(_)), n2.map(BigDecimal(_)), n3.map(BigDecimal(_)), n4.map(BigDecimal(_)), n5.map(BigDecimal(_)), n6.map(BigDecimal(_)))
+  }
+  def unapplyToInt(amounts: Year2015Amounts): Option[(Option[Int], Option[Int], Option[Int], Option[Int], Option[Int], Option[Int])] = {
+    Year2015Amounts.unapply(amounts).map {
+      (tuple)=>
+      (tuple._1.map(_.intValue),
+       tuple._2.map(_.intValue),
+       tuple._3.map(_.intValue),
+       tuple._4.map(_.intValue),
+       tuple._5.map(_.intValue),
+       tuple._6.map(_.intValue))
+    }
+  }
 }

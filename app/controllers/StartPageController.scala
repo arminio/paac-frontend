@@ -40,7 +40,10 @@ trait StartPageController extends BaseFrontendController {
     }
 
     val newSession = withSession { implicit request =>
-      Future.successful(Redirect(routes.StartPageController.startPage()).withNewSession.withSession(createSessionId()))
+      keystore.clear.map {
+        (_)=>
+        Redirect(routes.StartPageController.startPage()).withNewSession.withSession(createSessionId())
+      }
     }
 
     val onSubmit = withSession { implicit request =>

@@ -125,7 +125,7 @@ class PensionInputs1516Period2ControllerSpec extends test.BaseSpec {
         MockKeystore.map = MockKeystore.map + (KeystoreService.DB_FLAG -> "true")
         MockKeystore.map = MockKeystore.map + (KeystoreService.DC_FLAG -> "false")
         implicit val hc = HeaderCarrier()
-        implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID)).withFormUrlEncodedBody(("year2015.definedBenefit_2015_p2" -> "40000.00"),("year2015.definedContribution_2015_p2" -> ""))
+        implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID)).withFormUrlEncodedBody(("year2015.definedBenefit_2015_p2" -> "40000"),("year2015.definedContribution_2015_p2" -> ""))
 
         // test
         val result: Future[Result] = ControllerWithMockKeystore.onSubmit()(request)
@@ -142,7 +142,7 @@ class PensionInputs1516Period2ControllerSpec extends test.BaseSpec {
         MockKeystore.map = MockKeystore.map + (KeystoreService.DB_FLAG -> "false")
         MockKeystore.map = MockKeystore.map + (KeystoreService.DC_FLAG -> "true")
         implicit val hc = HeaderCarrier()
-        implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID)).withFormUrlEncodedBody(("year2015.definedContribution_2015_p2" -> "40000.00"),("year2015.definedBenefit_2015_p2" -> ""))
+        implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID)).withFormUrlEncodedBody(("year2015.definedContribution_2015_p2" -> "40000"),("year2015.definedBenefit_2015_p2" -> ""))
 
         // test
         val result: Future[Result] = ControllerWithMockKeystore.onSubmit()(request)
@@ -160,7 +160,7 @@ class PensionInputs1516Period2ControllerSpec extends test.BaseSpec {
         MockKeystore.map = MockKeystore.map + (KeystoreService.CURRENT_INPUT_YEAR_KEY -> "2015")
         MockKeystore.map = MockKeystore.map + (KeystoreService.SELECTED_INPUT_YEARS_KEY -> "2015")
         implicit val hc = HeaderCarrier()
-        implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID)).withFormUrlEncodedBody(("year2015.definedBenefit_2015_p2" -> "40000.00"),("year2015.definedContribution_2015_p2" -> ""))
+        implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID)).withFormUrlEncodedBody(("year2015.definedBenefit_2015_p2" -> "40000"),("year2015.definedContribution_2015_p2" -> ""))
 
         // test
         val result: Future[Result] = ControllerWithMockKeystore.onSubmit()(request)
@@ -175,7 +175,7 @@ class PensionInputs1516Period2ControllerSpec extends test.BaseSpec {
         MockKeystore.map = MockKeystore.map + (KeystoreService.DB_FLAG -> "true")
         MockKeystore.map = MockKeystore.map + (KeystoreService.DC_FLAG -> "false")
         implicit val hc = HeaderCarrier()
-        implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID)).withFormUrlEncodedBody(("year2015.definedBenefit_2015_p2" -> "-40000.00"))
+        implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID)).withFormUrlEncodedBody(("year2015.definedBenefit_2015_p2" -> "-40000"))
 
         // test
         val result: Future[Result] = ControllerWithMockKeystore.onSubmit()(request)
@@ -183,7 +183,7 @@ class PensionInputs1516Period2ControllerSpec extends test.BaseSpec {
         // check
         status(result) shouldBe 200
         val htmlPage = contentAsString(await(result))
-        htmlPage should include ("2015 P2 defined benefit amount was incorrect or empty.")
+        htmlPage should include ("2015 P2 amount was too small and must be either £0 or greater.")
       }
 
       "with empty db amount redisplay page with errors" in new ControllerWithMockKeystore {
@@ -217,6 +217,21 @@ class PensionInputs1516Period2ControllerSpec extends test.BaseSpec {
         val htmlPage = contentAsString(await(result))
         htmlPage should include ("2015 P2 defined contribution amount was incorrect or empty.")
       }
+    }
+  }
+
+  "onBack" should {
+    "redirect to period 1 input" in new ControllerWithMockKeystore {
+      // set up
+      implicit val hc = HeaderCarrier()
+      implicit val request = FakeRequest(GET,"/paac/back").withSession{(SessionKeys.sessionId,SESSION_ID)}
+
+      // test
+      val result : Future[Result] = ControllerWithMockKeystore.onBack()(request)
+
+      // check
+      status(result) shouldBe 303
+      redirectLocation(result) shouldBe Some("/paac/pensionInputs1516p1")
     }
   }
 }

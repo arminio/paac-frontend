@@ -23,6 +23,9 @@ import uk.gov.hmrc.play.http.{HeaderCarrier, SessionKeys}
 import play.api.libs.concurrent.Execution.Implicits._
 import scala.concurrent.Future
 import reflect.ClassTag
+import uk.gov.hmrc.play.http._
+import scala.util.{Failure, Success}
+import uk.gov.hmrc.http.cache.client._
 
 trait KeystoreService {
   val SOURCE = "paac-frontend"
@@ -53,14 +56,33 @@ trait KeystoreService {
    */
   def read[T](key: String)(implicit hc: HeaderCarrier, format: play.api.libs.json.Format[T], request: Request[Any]): Future[Option[T]] = {
     request.session.get(SessionKeys.sessionId) match {
-      case Some(id) => sessionCache.fetchAndGetEntry[T](SOURCE, id, key)
+      case Some(id) => {
+        sessionCache.fetchAndGetEntry[T](SOURCE, id, key).map {
+          (maybeValue)=>
+          maybeValue match {
+            case Some("") => None
+            case Some(x) => Some(x)
+            case None => None
+          }
+        }
+      }
       case None => Future.successful(None)
     }
   }
 
   def read[T](keys: List[String])(implicit marshall: (String, Option[T]) => (String, T), hc: HeaderCarrier, format: play.api.libs.json.Format[T], request: Request[Any]): Future[Map[String, T]] = {
     val reads: List[Future[(String, T)]] = keys.map((key)=>read[T](key).map(marshall(key,_)))
-    Future.sequence(reads).map((fields) =>Map[String, T](fields: _*))
+    Future.sequence(reads).map {
+      (fields) =>
+      Map[String, T](fields: _*)
+    }
+  }
+
+  def clear()(implicit hc: HeaderCarrier, request: Request[Any]): Future[Option[Boolean]] = {
+    request.session.get(SessionKeys.sessionId) match {
+      case Some(id) => sessionCache.delete(buildUri(sessionCache.defaultSource, id)).map((r)=>Some(true))
+      case None => Future.successful(None)
+    }
   }
 
   def save[T](values: List[(Option[T],String)], defaultT: T)(implicit hc: HeaderCarrier, format: play.api.libs.json.Format[T], request: Request[Any]): Future[List[Option[T]]] = {
@@ -85,6 +107,8 @@ trait KeystoreService {
       storeValue[T](pair._1, pair._2)
     })
   }
+
+  protected def buildUri(source: String, id: String): String = s"${sessionCache.baseUri}/${sessionCache.domain}/${source}/${id}"
 
   def convert[T : ClassTag](value: AnyRef): Option[T] = {
     val ct = implicitly[ClassTag[T]]

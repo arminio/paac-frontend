@@ -41,8 +41,12 @@ trait SelectSchemeController  extends BaseFrontendController {
     SelectSchemeForm.form.bindFromRequest().fold(
       formWithErrors => Future.successful(Ok(views.html.selectScheme(formWithErrors))),
       input => {
-        keystore.save(List((input.definedBenefit.toString, KeystoreService.DB_FLAG),
-                           (input.definedContribution.toString, KeystoreService.DC_FLAG))).map((_)=> Redirect(onSubmitRedirect))
+        if (!input.definedBenefit && !input.definedContribution) {
+          Future.successful(Ok(views.html.selectScheme(SelectSchemeForm.form.withError("paac.scheme.selection.error","paac.scheme.selection.error"))))
+        } else {
+          keystore.save(List((input.definedBenefit.toString, KeystoreService.DB_FLAG),
+                             (input.definedContribution.toString, KeystoreService.DC_FLAG))).map((_)=> Redirect(onSubmitRedirect))
+        }
       }
     )
   }

@@ -27,6 +27,7 @@ POST        /taxyearselection                           controllers.TaxYearSelec
 
 ## 2015/16 Period-1 Pension Input Page
 GET         /pensionInputs1516p1                        controllers.PensionInputs1516Period1Controller.onPageLoad
+GET         /pensionInputs1516p1Back                    controllers.PensionInputs1516Period1Controller.onBack
 POST        /pensionInputs1516p1                        controllers.PensionInputs1516Period1Controller.onSubmit
 
 ## Post Trigger Pension Input Page
@@ -35,6 +36,7 @@ POST        /moneyPurchasePostTriggerValue              controllers.PostTriggerP
 
 ## 2015/16 Period-2 Pension Input Page
 GET         /pensionInputs1516p2                        controllers.PensionInputs1516Period2Controller.onPageLoad
+GET         /pensionInputs1516p2Back                    controllers.PensionInputs1516Period2Controller.onBack
 POST        /pensionInputs1516p2                        controllers.PensionInputs1516Period2Controller.onSubmit
 
 ## MPAA Trigger Event Yes/No Page

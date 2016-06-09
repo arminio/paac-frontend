@@ -34,6 +34,7 @@ paac.scheme.selection.pagetitle = Scheme Selection
 paac.scheme.selection.heading = Which types of pension schemes are you a member of?
 paac.scheme.selection.dc.label = <B>Defined contribution</B><P>A pension based on how much is paid in to it. These are usually personal or stakeholder pensions.</P>
 paac.scheme.selection.db.label = <B>Defined benefit</B><P>A pension based on your salary and how long you have worked for your employer. These are always workplace pensions.</P>
+paac.scheme.selection.error = Please select each pension scheme type you are a member of.
 
 ## PAAC TaxYear Text
 paac.0809.taxyear.text = 2008/09
@@ -47,13 +48,15 @@ paac.1516.taxyear.text = 2015/16
 
 paac.calculator.form.error = This field is required
 paac.calculator.error.number=Use whole numbers only, not decimals or characters
+error.number=Use whole numbers only, not decimals or characters
 paac.calculator.error.number.zero= Enter a number greater than 0
-error.min={0} amount was too small and must be either £0.00 or greater.
+error.number.zero= Enter a number greater than 0
+error.min={0} amount was too small and must be either £0 or greater.
 error.max={0} amount was too large and must be either £{1} or less.
-error.bounds={0} amount was incorrect or empty. Please provide an amount between £0.00 and £5,000,000.00.
-db.error.bounds={0} defined benefit amount was incorrect or empty. Please provide an amount between £0.00 and £5,000,000.00.
-dc.error.bounds={0} defined contribution amount was incorrect or empty. Please provide an amount between £0.00 and £5,000,000.00.
-error.real.precision={0} amount must not be empty. (Amount must have no more than {1} numbers, including {2} decimal places, and should be £0.00 or larger and under £5,000,000.00.)
+error.bounds={0} amount was incorrect or empty. Please provide an amount between £0 and £5,000,000.
+db.error.bounds={0} defined benefit amount was incorrect or empty. Please provide an amount between £0 and £5,000,000.
+dc.error.bounds={0} defined contribution amount was incorrect or empty. Please provide an amount between £0 and £5,000,000.
+error.real.precision={0} amount must not be empty. (Amount must have no more than {1} numbers, including {2} decimal places, and should be £0 or larger and under £5,000,000.)
 
 ## Understand What Pension Input Periods are
 paac.pip.taxyear.pagetitle = Pension Input Periods and Tax Years
@@ -75,6 +78,7 @@ paac.pip.subheading=The tax year 2015 to 2016 is split into 2 periods.
 paac.taxyear.selection.pagetitle = Tax Year Selection
 paac.taxyear.selection.heading = Which tax years were you a member of a registered pension scheme?
 paac.taxyear.selection.p1  = A tax year is 6 April to 5 April. The tax year that your pension input period is for is based on the date your pension input period ends.
+paac.taxyear.selection.error = Please select years you were a member of a pension scheme.
 
 ## 2015/16 Period-1 and Period-2 Common messages
 paac.1516.yesno.yes = Yes
@@ -128,6 +132,8 @@ paac.review-amounts.heading.triggered = After Flexi-Access?
 paac.review-amounts.heading.db = Total defined benefit
 paac.review-amounts.heading.mp = Total defined contribution
 paac.review-amounts.heading.ta = Tapered Allowance
+paac.review-amounts.heading.trigger.savings=Post flexi-access savings
+paac.review-amounts.heading.trigger.date=Flexi-access Date
 paac.review-amounts.action.edit = Edit
 
 ## Results Page
@@ -148,11 +154,12 @@ paac.post-trigger-value.page.title=Money Purchase Value After Flexi Access
 paac.post-trigger-value.p1=This is how much was paid into your pension scheme from the day after you accessed your pension savings to the end of the pension input period.
 paac.post-trigger-value.period1.label=2015/16 P1
 paac.post-trigger-value.period2.label=2015/16 P2
-paac.post-trigger-value.error.real.precision=The amount must not be empty or negative. (Amount must have no more than {1} numbers, including {2} decimal places, and should be £0.00 or larger and smaller than £5,000,000.00.)
-paac.post-trigger-value.error.min={0} amount was too small and must be either £0.00 or greater.
+paac.post-trigger-value.error.real.precision=The amount must not be empty or negative. (Amount must have no more than {1} numbers, including {2} decimal places, and should be £0 or larger and smaller than £5,000,000.)
+paac.post-trigger-value.error.min={0} amount was too small and must be either £0 or greater.
 paac.post-trigger-value.error.max={0} amount was too large and must be either £{1} or less.
-paac.post-trigger-value.error.bounds={0} amount was empty or negative. Please provide an amount between £0.00 and £5,000,000.00.
+paac.post-trigger-value.error.bounds={0} amount was empty or negative. Please provide an amount between £0 and £5,000,000.
 
 db=defined benefit
 dc=defined contribution
 trigger=Post Flexi-access savings
+trigger.date=Post Flexi-access date

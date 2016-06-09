@@ -6,7 +6,7 @@
 pageTitle = Messages("paac.1516.period1.pension.inputs.pagetitle"),
 heading = Messages("paac.1516.pension.inputs.pages.heading", (if(isDefinedBenefit && isDefinedContribution) "pension" else if(isDefinedBenefit) "defined benefit" else if (isDefinedContribution) "defined contribution"  else "")),
 articleClasses=Some("full-width"),
-backLink = Some((controllers.routes.StaticPageController.onPipPageLoad.url,Messages("paac.link.text.back")))
+backLink = Some((controllers.routes.PensionInputs1516Period1Controller.onBack.url,Messages("paac.link.text.back")))
 ) {
 
     @if(paacForm.hasErrors) {

@@ -21,7 +21,7 @@ backLink = Some((controllers.routes.ReviewTotalAmountsController.onPageLoad.url,
        </tr>
        </thead>
        <tbody>
-  @defining(java.text.NumberFormat.getCurrencyInstance(java.util.Locale.UK)) { currencyFormatter =>
+  @defining(java.text.NumberFormat.getNumberInstance(java.util.Locale.UK)) { currencyFormatter =>
   @defining(results.sortWith(_.input.taxPeriodStart.year < _.input.taxPeriodStart.year).dropWhile((v)=>v.input.isEmpty)) { sortedResults =>
     @sortedResults.map { result =>
       @if(result.input.amounts.isDefined) {
@@ -30,7 +30,7 @@ backLink = Some((controllers.routes.ReviewTotalAmountsController.onPageLoad.url,
           <td class="numeric">
             @if(isDB) {
               @if(result.input.amounts.get.definedBenefit.isDefined && result.input.amounts.get.definedBenefit.get >= 0) {
-                @(currencyFormatter.format(result.input.amounts.get.definedBenefit.get/100.00))
+                &pound;@(currencyFormatter.format(result.input.amounts.get.definedBenefit.get/100.00))
               } else {
                 &pound;&nbsp;0.00
               }
@@ -41,7 +41,7 @@ backLink = Some((controllers.routes.ReviewTotalAmountsController.onPageLoad.url,
           <td class="numeric">
             @if(isDC) {
               @if(result.input.amounts.get.moneyPurchase.isDefined && result.input.amounts.get.moneyPurchase.get >= 0) {
-                @(currencyFormatter.format(result.input.amounts.get.moneyPurchase.get/100.00))
+                &pound;@(currencyFormatter.format(result.input.amounts.get.moneyPurchase.get/100.00))
               } else {
                 &pound;&nbsp;0.00
               }
@@ -49,17 +49,17 @@ backLink = Some((controllers.routes.ReviewTotalAmountsController.onPageLoad.url,
                 N/A
             }
           </td>
-          <td class="numeric">@(currencyFormatter.format(result.summaryResult.exceedingAAAmount/100))</td>
-          <td class="numeric">@(currencyFormatter.format(result.summaryResult.availableAAWithCF/100))</td>
+          <td class="numeric">&pound;@(currencyFormatter.format(result.summaryResult.exceedingAAAmount/100))</td>
+          <td class="numeric">&pound;@(currencyFormatter.format(result.summaryResult.availableAAWithCF/100))</td>
           <td class="numeric">
           @if(result.summaryResult.chargableAmount<0) {
             N/A
           } else {
-            @(currencyFormatter.format(result.summaryResult.chargableAmount/100))
+            &pound;@(currencyFormatter.format(result.summaryResult.chargableAmount/100))
           }
           </td>
-          <td class="numeric">@(currencyFormatter.format(result.summaryResult.unusedAllowance/100))</td>
-          <td class="numeric">@(currencyFormatter.format(result.summaryResult.availableAAWithCCF/100))</td>
+          <td class="numeric">&pound;@(currencyFormatter.format(result.summaryResult.unusedAllowance/100))</td>
+          <td class="numeric">&pound;@(currencyFormatter.format(result.summaryResult.availableAAWithCCF/100))</td>
        </tr>
       }
     }
