@@ -70,9 +70,13 @@ class StartPageControllerSpec extends test.BaseSpec {
         StartPage should include ("")
       }
 
-      "create a new session" in {
+      "create a new session" in new MockKeystoreFixture {
         // set up
         val request = FakeRequest(GET, "/paac").withSession {(SessionKeys.sessionId,SESSION_ID)}
+        object MockedStartPageController extends StartPageController {
+          override val keystore: KeystoreService = MockKeystore
+          override val connector: CalculatorConnector = null
+        }
 
         // test
         val result : Future[Result] = StartPageController.newSession()(request)
