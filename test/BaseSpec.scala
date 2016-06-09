@@ -62,6 +62,11 @@ class SimpleBaseSpec extends UnitSpec {
       : Future[Option[T]] = {
         Future.successful((map get key).map(_.asInstanceOf[T]))
       }
+
+      override def clear()(implicit hc: HeaderCarrier, request: Request[Any]): Future[Option[Boolean]] = {
+        map = Map()
+        Future.successful(Some(true))
+      }
     }
   }
 }

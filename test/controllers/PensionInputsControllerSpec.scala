@@ -166,7 +166,7 @@ class PensionInputsControllerSpec extends test.BaseSpec {
         // check
         status(result) shouldBe 200
         val htmlPage = contentAsString(await(result))
-        htmlPage should include ("""2014/15 amount must not be empty. (Amount must have no more than 10 numbers, including 2 decimal places, and should be £0.00 or larger and under £5,000,000.00.)""")
+        htmlPage should include ("""Use whole numbers only, not decimals or characters""")
     }
 
     "with empty db value returns to page with errors" in new ControllerWithMockKeystore {
@@ -210,7 +210,7 @@ class PensionInputsControllerSpec extends test.BaseSpec {
       MockKeystore.map = MockKeystore.map + ("definedContribution" -> "false")
       MockKeystore.map = MockKeystore.map + ("isEdit" -> "false")
       implicit val hc = HeaderCarrier()
-      implicit val request = FakeRequest(POST,"/paac/pensionInputs").withSession{(SessionKeys.sessionId,SESSION_ID)}.withFormUrlEncodedBody(("definedBenefits.amount_2014"->"1234.56"))
+      implicit val request = FakeRequest(POST,"/paac/pensionInputs").withSession{(SessionKeys.sessionId,SESSION_ID)}.withFormUrlEncodedBody(("definedBenefits.amount_2014"->"1234"))
 
       // test
       val result : Future[Result] = PensionInputsControllerMockedKeystore.onSubmit()(request)
@@ -218,7 +218,7 @@ class PensionInputsControllerSpec extends test.BaseSpec {
       // check
       status(result) shouldBe 303
       MockKeystore.map should contain key ("definedBenefit_2014")
-      MockKeystore.map should contain value ("123456") // big decimal converted to pence value
+      MockKeystore.map should contain value ("123400") // big decimal converted to pence value
     }
   }
 

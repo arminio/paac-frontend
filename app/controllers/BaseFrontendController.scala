@@ -136,7 +136,7 @@ trait RedirectController extends BaseFrontendController {
     implicit val marshall = KeystoreService.toStringPair _
 
     def next(currentYear: String, selectedYears: String): Int = {
-      if (selectedYears == "" && currentYear == "") {
+      if ((selectedYears == "" && currentYear == "") || (currentYear == "-2")) {
         -1
       } else {
         val syears = selectedYears.split(",")
@@ -186,8 +186,8 @@ trait BaseFrontendController extends SessionProvider with FrontendController {
       } else {
         value match {
           case None => (key, "")
-          case Some("0") => (key, "0.00")
-          case Some(v) => (key, f"${(v.toInt / 100.00)}%2.2f")
+          case Some("0") => (key, "0")
+          case Some(v) => (key, f"${(v.toInt / 100.00)}%2.0f".trim)
         }
       }
   }
