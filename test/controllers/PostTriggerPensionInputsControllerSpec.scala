@@ -66,7 +66,7 @@ class PostTriggerPensionInputsControllerSpec extends test.BaseSpec {
       // check
       status(result) shouldBe 200
       val htmlPage = contentAsString(await(result))
-      htmlPage should include ("""<input type="number" name="year2015.postTriggerDcAmount2015P1" id="year2015.postTriggerDcAmount2015P1" min="0" step="1" value='12' max="5000000.00" size="10" """)
+      htmlPage should include ("""<input type="number" name="year2015.postTriggerDcAmount2015P1" id="year2015.postTriggerDcAmount2015P1" min="0" step="1" value='12' max="5000000" size="7" """)
     }
 
     "display p2 input amount page with previous value if trigger date was period 2" in new ControllerWithMockKeystore {
@@ -82,7 +82,7 @@ class PostTriggerPensionInputsControllerSpec extends test.BaseSpec {
       // check
       status(result) shouldBe 200
       val htmlPage = contentAsString(await(result))
-      htmlPage should include ("""<input type="number" name="year2015.postTriggerDcAmount2015P2" id="year2015.postTriggerDcAmount2015P2" min="0" step="1" value='56' max="5000000.00" size="10" """)
+      htmlPage should include ("""<input type="number" name="year2015.postTriggerDcAmount2015P2" id="year2015.postTriggerDcAmount2015P2" min="0" step="1" value='56' max="5000000" size="7" """)
     }
   }
 
