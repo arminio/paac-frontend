@@ -1,4 +1,4 @@
-@(paacForm : Form[models.CalculatorFormFields], model: models.CalculatorFormFields)(implicit request:Request[_])
+@(paacForm : Form[models.CalculatorFormFields])(implicit request:Request[_])
 
 @import uk.gov.hmrc.play.views.html.helpers._
 @import models._
@@ -9,7 +9,6 @@ heading = Messages("paac.post-trigger-value.page.heading"),
 backLink = Some((controllers.routes.DateOfMPAATriggerEventController.onPageLoad.url,Messages("paac.link.text.back")))
 ) {
 
-@if(model.triggerDatePeriod() != None) {
     <p id="paac.post-trigger-value.p1">@Messages("paac.post-trigger-value.p1")</p>
 
     @if(paacForm.hasErrors) {
@@ -40,6 +39,13 @@ backLink = Some((controllers.routes.DateOfMPAATriggerEventController.onPageLoad.
     @form(
         action = controllers.routes.PostTriggerPensionInputsController.onSubmit,
         args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
+        
+        @defining(CalculatorFormFields(Amounts(), Amounts(), Year2015Amounts(
+          postTriggerDcAmount2015P1=paacForm.data.get("year2015.postTriggerDcAmount2015P1").flatMap((v) =>if (v == "") None else Some(BigDecimal(v.toDouble))),
+          postTriggerDcAmount2015P2=paacForm.data.get("year2015.postTriggerDcAmount2015P2").flatMap((v) =>if (v == "") None else Some(BigDecimal(v.toDouble))) ), 
+          Some(paacForm.data("triggerDate")))){ errorModel =>
+
+        @defining(paacForm.value.getOrElse(errorModel)) { model =>
         <input type="hidden" id="triggerDate" name="triggerDate" value="@(model.triggerDate)"/>
         <table>
             <tbody>
@@ -49,11 +55,11 @@ backLink = Some((controllers.routes.DateOfMPAATriggerEventController.onPageLoad.
                       <span style="float:right">
                       @if(model.year2015.postTriggerDcAmount2015P1 != None) {
                         <tr style="text-align:left;min-width: 7em">
-                            £&nbsp;<input type="number" name="@id" id="@id" min="0" step="1" value='@(model.year2015.postTriggerDcAmount2015P1.get)' max="5000000.00" size="10" style="width:9em;@if(paacForm.errors.find(_.key == id)) {border: 4px solid #b10e1e;}"/>
+                            &pound;&nbsp;<input type="number" name="@id" id="@id" min="0" step="1" value='@(model.year2015.postTriggerDcAmount2015P1.get)' max="5000000" size="7" style="width:9em;@if(paacForm.errors.find(_.key == id)) {border: 4px solid #b10e1e;}"/>
                         </tr>
                       } else {
                         <tr style="text-align:left;min-width: 7em">
-                            £&nbsp;<input type="number" name="@id" id="@id" min="0" step="1" value='' max="5000000.00" size="10" style="width:9em;@if(paacForm.errors.find(_.key == id)) {border: 4px solid #b10e1e;}"/>
+                            &pound;&nbsp;<input type="number" name="@id" id="@id" min="0" step="1" value='' max="5000000" size="7" style="width:9em;@if(paacForm.errors.find(_.key == id)) {border: 4px solid #b10e1e;}"/>
                         </tr>
                       }
                       </span>
@@ -66,11 +72,11 @@ backLink = Some((controllers.routes.DateOfMPAATriggerEventController.onPageLoad.
                       <span style="float:right">
                       @if(model.year2015.postTriggerDcAmount2015P2 != None) {
                         <tr style="text-align:left;min-width: 7em">
-                            £&nbsp;<input type="number" name="@id" id="@id" min="0" step="1" value='@(model.year2015.postTriggerDcAmount2015P2.get)' max="5000000.00" size="10" style="width:9em;@if(paacForm.errors.find(_.key == id)) {border: 4px solid #b10e1e;}"/>
+                            &pound;&nbsp;<input type="number" name="@id" id="@id" min="0" step="1" value='@(model.year2015.postTriggerDcAmount2015P2.get)' max="5000000" size="7" style="width:9em;@if(paacForm.errors.find(_.key == id)) {border: 4px solid #b10e1e;}"/>
                         </tr>
                       } else {
                         <tr style="text-align:left;min-width: 7em">
-                            £&nbsp;<input type="number" name="@id" id="@id" min="0" step="1" value='' max="5000000.00" size="10" style="width:9em;@if(paacForm.errors.find(_.key == id)) {border: 4px solid #b10e1e;}"/>
+                            &pound;&nbsp;<input type="number" name="@id" id="@id" min="0" step="1" value='' max="5000000" size="7" style="width:9em;@if(paacForm.errors.find(_.key == id)) {border: 4px solid #b10e1e;}"/>
                         </tr>
                       }
                       </span>
@@ -78,10 +84,10 @@ backLink = Some((controllers.routes.DateOfMPAATriggerEventController.onPageLoad.
                 }
               }
             </tbody>
-        </table>
-
+          </table>
+          }
+          }
         <br/>
         <button id="submit" type="submit" class="button" value="Continue">@Messages("paac.calculator.button.continue")</button>
     }
-  }
 }

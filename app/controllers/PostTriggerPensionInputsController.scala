@@ -35,17 +35,16 @@ trait PostTriggerPensionInputsController extends RedirectController {
         if (dateAsStr == "") {
           Future.successful(Redirect(routes.DateOfMPAATriggerEventController.onPageLoad))
         } else {
-          val f = CalculatorForm.bind(values)
-          Future.successful(Ok(views.html.postTriggerPensionInputs(f, f.get)))
+          Future.successful(Ok(views.html.postTriggerPensionInputs(CalculatorForm.bind(values))))
         }
     }
   }
 
   val onSubmit = withSession { implicit request =>
-    CalculatorForm.form.bindFromRequest().fold(
+    val f = CalculatorForm.form.bindFromRequest()
+    f.fold(
       formWithErrors => {
-        val f = CalculatorForm.nonValidatingForm.bindFromRequest()
-        Future.successful( Ok(views.html.postTriggerPensionInputs(formWithErrors, f.get)))
+        Future.successful(Ok(views.html.postTriggerPensionInputs(formWithErrors)))
       },
       input => {
         val triggerP1 = input.triggerDatePeriod.get.isPeriod1
@@ -53,8 +52,7 @@ trait PostTriggerPensionInputsController extends RedirectController {
         if ((triggerP1 && input.year2015.postTriggerDcAmount2015P1 == None) ||
             (triggerP2 && input.year2015.postTriggerDcAmount2015P2 == None)
            ) {
-          val f = CalculatorForm.nonValidatingForm.bindFromRequest()
-          Future.successful( Ok(views.html.postTriggerPensionInputs(f.withError("error.bounds", "error.bounds", 0, 5000000.00), f.get)) )
+          Future.successful( Ok(views.html.postTriggerPensionInputs(f.withError("error.bounds", "error.bounds", 0, 5000000.00))) )
         } else {
           val toSave: Option[(Long,String)] = if (triggerP1) { input.toP1TriggerDefinedContribution } else { input.toP2TriggerDefinedContribution }
           keystore.save[String,Long](List(toSave), "").flatMap {

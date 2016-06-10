@@ -34,66 +34,51 @@ object CalculatorForm extends models.ThisYear {
   val CY6 = settings.THIS_YEAR-6
   val CY7 = settings.THIS_YEAR-7
   val CY8 = settings.THIS_YEAR-8
-  val optionalPoundsWithValidator = optional(number(min=0,max=5000000))
-  val optionalPoundsWithoutValidator = optional(number)
 
-  val form: Form[CalculatorFormType] = Form(
-    mapping("definedBenefits" -> mapping(s"amount_${CY0}"->optionalPoundsWithValidator,
-                                         s"amount_${CY1}"->optionalPoundsWithValidator,
-                                         s"amount_${CY2}"->optionalPoundsWithValidator,
-                                         s"amount_${CY3}"->optionalPoundsWithValidator,
-                                         s"amount_${CY4}"->optionalPoundsWithValidator,
-                                         s"amount_${CY5}"->optionalPoundsWithValidator,
-                                         s"amount_${CY6}"->optionalPoundsWithValidator,
-                                         s"amount_${CY7}"->optionalPoundsWithValidator,
-                                         s"amount_${CY8}"->optionalPoundsWithValidator)(Amounts.applyFromInt)(Amounts.unapplyToInt),
-            "definedContributions" -> mapping(s"amount_${CY0}"->optionalPoundsWithValidator,
-                                              s"amount_${CY1}"->optionalPoundsWithValidator,
-                                              s"amount_${CY2}"->optionalPoundsWithValidator,
-                                              s"amount_${CY3}"->optionalPoundsWithValidator,
-                                              s"amount_${CY4}"->optionalPoundsWithValidator,
-                                              s"amount_${CY5}"->optionalPoundsWithValidator,
-                                              s"amount_${CY6}"->optionalPoundsWithValidator,
-                                              s"amount_${CY7}"->optionalPoundsWithValidator,
-                                              s"amount_${CY8}"->optionalPoundsWithValidator)(Amounts.applyFromInt)(Amounts.unapplyToInt),
-            "year2015" -> mapping("definedBenefit_2015_p1"->optionalPoundsWithValidator,
-                                  "definedContribution_2015_p1"->optionalPoundsWithValidator,
-                                  "definedBenefit_2015_p2"->optionalPoundsWithValidator,
-                                  "definedContribution_2015_p2"->optionalPoundsWithValidator,
-                                  "postTriggerDcAmount2015P1"->optionalPoundsWithValidator,
-                                  "postTriggerDcAmount2015P2"->optionalPoundsWithValidator)(Year2015Amounts.applyFromInt)(Year2015Amounts.unapplyToInt),
-            "triggerDate" -> optional(text)
-    )(CalculatorFormFields.apply)(CalculatorFormFields.unapply)
-  )
+  def formDef(isValidating: Boolean = false): Form[CalculatorFormType] = {
+    val t = if (isValidating) 
+          //optional(bigDecimal(10,2)).verifying(" errorbounds", value=> if (value.isDefined) value.get.longValue >= 0 && value.get.longValue <= 5000000 else true)
+          optional(number(min=0,max=5000000)) 
+        else 
+          //optional(bigDecimal(10,2))
+          optional(number)
 
-  val nonValidatingForm: Form[CalculatorFormType] = Form(
-    mapping("definedBenefits" -> mapping(s"amount_${CY0}"->optionalPoundsWithoutValidator,
-                                         s"amount_${CY1}"->optionalPoundsWithoutValidator,
-                                         s"amount_${CY2}"->optionalPoundsWithoutValidator,
-                                         s"amount_${CY3}"->optionalPoundsWithoutValidator,
-                                         s"amount_${CY4}"->optionalPoundsWithoutValidator,
-                                         s"amount_${CY5}"->optionalPoundsWithoutValidator,
-                                         s"amount_${CY6}"->optionalPoundsWithoutValidator,
-                                         s"amount_${CY7}"->optionalPoundsWithoutValidator,
-                                         s"amount_${CY8}"->optionalPoundsWithoutValidator)(Amounts.applyFromInt)(Amounts.unapplyToInt),
-            "definedContributions" -> mapping(s"amount_${CY0}"->optionalPoundsWithoutValidator,
-                                              s"amount_${CY1}"->optionalPoundsWithoutValidator,
-                                              s"amount_${CY2}"->optionalPoundsWithoutValidator,
-                                              s"amount_${CY3}"->optionalPoundsWithoutValidator,
-                                              s"amount_${CY4}"->optionalPoundsWithoutValidator,
-                                              s"amount_${CY5}"->optionalPoundsWithoutValidator,
-                                              s"amount_${CY6}"->optionalPoundsWithoutValidator,
-                                              s"amount_${CY7}"->optionalPoundsWithoutValidator,
-                                              s"amount_${CY8}"->optionalPoundsWithoutValidator)(Amounts.applyFromInt)(Amounts.unapplyToInt),
-            "year2015" -> mapping("definedBenefit_2015_p1"->optionalPoundsWithoutValidator,
-                                  "definedContribution_2015_p1"->optionalPoundsWithoutValidator,
-                                  "definedBenefit_2015_p2"->optionalPoundsWithoutValidator,
-                                  "definedContribution_2015_p2"->optionalPoundsWithoutValidator,
-                                  "postTriggerDcAmount2015P1"->optionalPoundsWithoutValidator,
-                                  "postTriggerDcAmount2015P2"->optionalPoundsWithoutValidator)(Year2015Amounts.applyFromInt)(Year2015Amounts.unapplyToInt),
-            "triggerDate" -> optional(text)
-    )(CalculatorFormFields.apply)(CalculatorFormFields.unapply)
-  )
+    // need to figure out the types here so that form can be truly dynamic at present requires recompilation for apply and unapply 
+    //val amountsApply = if (isPence) Amounts.apply _ else Amounts.applyFromInt _
+    //val amountsUnapply = if (isPence) Amounts.unapply _ else Amounts.unapplyFromInt _
+    Form(mapping("definedBenefits" -> mapping(s"amount_${CY0}"->t,
+                                              s"amount_${CY1}"->t,
+                                              s"amount_${CY2}"->t,
+                                              s"amount_${CY3}"->t,
+                                              s"amount_${CY4}"->t,
+                                              s"amount_${CY5}"->t,
+                                              s"amount_${CY6}"->t,
+                                              s"amount_${CY7}"->t,
+                                              s"amount_${CY8}"->t)(Amounts.applyFromInt)(Amounts.unapplyToInt),
+              "definedContributions" -> mapping(s"amount_${CY0}"->t,
+                                                s"amount_${CY1}"->t,
+                                                s"amount_${CY2}"->t,
+                                                s"amount_${CY3}"->t,
+                                                s"amount_${CY4}"->t,
+                                                s"amount_${CY5}"->t,
+                                                s"amount_${CY6}"->t,
+                                                s"amount_${CY7}"->t,
+                                                s"amount_${CY8}"->t)(Amounts.applyFromInt)(Amounts.unapplyToInt),
+              "year2015" -> mapping("definedBenefit_2015_p1"->t,
+                                    "definedContribution_2015_p1"->t,
+                                    "definedBenefit_2015_p2"->t,
+                                    "definedContribution_2015_p2"->t,
+                                    "postTriggerDcAmount2015P1"->t,
+                                    "postTriggerDcAmount2015P2"->t)
+                                    (Year2015Amounts.applyFromInt)
+                                    (Year2015Amounts.unapplyToInt),
+              "triggerDate" -> optional(text)
+      )(CalculatorFormFields.apply)(CalculatorFormFields.unapply)
+    )
+  }
+
+  val form = formDef(true)
+  val nonValidatingForm = formDef(false)
 
   /** Utility method to aid marshalling keystore values into form either with or without validation. */
   def bind(data: Map[String, String], nonValidatingForm: Boolean = false): Form[CalculatorFormType] = {
