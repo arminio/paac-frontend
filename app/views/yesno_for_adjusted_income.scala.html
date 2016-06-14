@@ -1,0 +1,39 @@
+@(paacForm : Form[String])(implicit request:Request[_])
+
+@import uk.gov.hmrc.play.views.html.helpers._
+
+@common.paacMain(
+pageTitle = Messages("paac.1617.adjusted.income.pagetitle"),
+heading = Messages("paac.1617.adjusted.income.question"),
+backLink = Some((controllers.routes.YesNoThresholdIncomeController.onPageLoad.url,Messages("paac.link.text.back")))
+) {
+
+    @form(
+        action = controllers.routes.YesNoAdjustedIncomeController.onSubmit,
+        args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
+
+    <p class="lede text">@Messages("paac.1617.adjusted.income.description1")</p>
+    <p class="lede text">@Messages("paac.1617.adjusted.income.description2")</p>
+    <div class='form-group'>
+
+        <div class='form-group'>
+            <fieldset class="inline">
+                @inputRadioGroup(
+                    paacForm("yesNo"), Seq(
+                        ("Yes", Messages("paac.yesno.yes")),
+                        ("No", Messages("paac.yesno.no"))
+                        ),
+                        '_legend -> Messages("paac.1617.adjusted.income.question"),
+                        '_legendClass -> "hidden",
+                        '_labelAfter -> true,
+                        '_labelClass -> "block-label",
+                        '_groupClass -> "inline-block"
+                )
+            </fieldset>
+        </div>
+
+    </div>
+    <br/>
+    <button id="submit" type="submit" class="button" value="Continue">@Messages("paac.calculator.button.continue")</button>
+    }
+}
