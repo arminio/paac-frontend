@@ -9,6 +9,10 @@ GET         /                                           controllers.StartPageCon
 GET         /new                                        controllers.StartPageController.newSession
 POST        /                                           controllers.StartPageController.onSubmit
 
+## 2016/17 Threshold Income Yes/No Page
+GET         /yesnothresholdincome                       controllers.YesNoThresholdIncomeController.onPageLoad
+POST        /yesnothresholdincome                       controllers.YesNoThresholdIncomeController.onSubmit
+
 ## Scheme Selection Page
 GET         /scheme                                     controllers.SelectSchemeController.onPageLoad
 POST        /scheme                                     controllers.SelectSchemeController.onSubmit
