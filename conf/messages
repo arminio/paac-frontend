@@ -100,16 +100,9 @@ paac.mpaa.te.yesno.question = Have you flexibly accessed your pension since 6 Ap
 paac.mpaa.te.yesno.description = Your pension provider will have sent you a flexible access statement confirming this.
 
 ## Date Of MPAA Trigger Event
-paac.mpaa.ta.date.page.title = MPAA TE Date
-paac.mpaa.ta.date.page.heading = When did you access your savings?
-paac.mpaa.ta.date.page.description = This is the date you first accessed your savings. You will have received a statement from your scheme administrator informing you that your defined contribution scheme was flexibily accessed.
-paac.mpaa.ta.date.page.datehint = For example, 21 6 2015
-paac.mpaa.ta.date.page.datevalidation = Check all date of MPAA Trigger Event fields are complete and only contain numbers
-
-## Date Of MPAA Trigger Event
-paac.mpaa.ta.date.page.title = MPAA TE Date
-paac.mpaa.ta.date.page.heading = When did you access your savings?
-paac.mpaa.ta.date.page.description = This is the date you first accessed your savings. You will have received a statement from your scheme administrator informing you that your defined contribution scheme was flexibily accessed.
+paac.mpaa.ta.date.page.title = MPAA Date
+paac.mpaa.ta.date.page.heading = When did you first flexibly access your pension?
+paac.mpaa.ta.date.page.description = This is also be on your flexible access statement.
 paac.mpaa.ta.date.page.datehint = For example, 21 6 2015
 paac.mpaa.ta.date.page.datevalidation = Check all date of MPAA Trigger Event fields are complete and only contain numbers
 paac.mpaa.ta.date.page.invalid.date = The date must fall within or after 2015
