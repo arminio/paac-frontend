@@ -34,7 +34,7 @@ trait PensionInputs1516Period1Controller extends RedirectController {
   private val onSubmitRedirect: Call = routes.PensionInputs1516Period2Controller.onPageLoad()
 
   val onBack = withSession { implicit request =>
-    wheretoBack(Redirect(routes.StaticPageController.onPipPageLoad))
+    wheretoBack(Redirect(routes.TaxYearSelectionController.onPageLoad))
   }
 
   val onPageLoad = withSession { implicit request =>

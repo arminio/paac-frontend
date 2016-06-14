@@ -16,17 +16,13 @@
 
 package controllers
 
-import java.util.UUID
-import org.scalatest.BeforeAndAfterAll
-import play.api.Play
-import play.api.mvc.{Result, Request}
+import play.api.mvc.Result
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.api.test.{FakeRequest, FakeApplication}
 import service.KeystoreService
 import uk.gov.hmrc.play.http.{HeaderCarrier, SessionKeys}
-import uk.gov.hmrc.play.test.UnitSpec
-import scala.concurrent.duration._
-import scala.concurrent.{Await, Future}
+
+import scala.concurrent.Future
 
 class TaxYearSelectionSpec extends test.BaseSpec {
   val endPointURL = "/paac/taxyearselection"
@@ -142,7 +138,7 @@ class TaxYearSelectionSpec extends test.BaseSpec {
       status(result) shouldBe 303
       MockKeystore.map(KeystoreService.CURRENT_INPUT_YEAR_KEY) shouldBe ("2015")
       MockKeystore.map(KeystoreService.SELECTED_INPUT_YEARS_KEY) shouldBe ("2015")
-      redirectLocation(result) shouldBe Some("/paac/changes-to-pip")
+      redirectLocation(result) shouldBe Some("/paac/pensionInputs1516p1")
     }
 
     "when unselecting a previously selected year reset year's data value" in new ControllerWithMockKeystore {

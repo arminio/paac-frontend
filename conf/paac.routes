@@ -13,14 +13,6 @@ POST        /                                           controllers.StartPageCon
 GET         /scheme                                     controllers.SelectSchemeController.onPageLoad
 POST        /scheme                                     controllers.SelectSchemeController.onSubmit
 
-## Understand What Pension Input Periods are
-GET         /pip-tax-years                              controllers.StaticPageController.onPipTaxYearPageLoad
-POST        /pip-tax-years                              controllers.StaticPageController.onPipTaxYearSubmit
-
-# Changes to Pension Input Periods
-GET         /changes-to-pip                             controllers.StaticPageController.onPipPageLoad
-POST        /changes-to-pip                             controllers.StaticPageController.onPipSubmit
-
 # Tax year selection
 GET         /taxyearselection                           controllers.TaxYearSelectionController.onPageLoad
 POST        /taxyearselection                           controllers.TaxYearSelectionController.onYearSelected

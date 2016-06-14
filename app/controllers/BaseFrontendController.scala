@@ -61,7 +61,7 @@ trait RedirectController extends BaseFrontendController {
         Future.successful(Redirect(routes.StartPageController.startPage()))//2016
       } else if (year == 2015) {
         if (isForward) {
-          Future.successful(Redirect(routes.StaticPageController.onPipPageLoad()))
+          Future.successful(Redirect(routes.PensionInputs1516Period1Controller.onPageLoad()))
         } else {
           if (isTE) {
             keystore.read[String](KeystoreService.TRIGGER_DATE_KEY).flatMap {

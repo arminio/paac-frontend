@@ -58,14 +58,6 @@ db.error.bounds={0} defined benefit amount was incorrect or empty. Please provid
 dc.error.bounds={0} defined contribution amount was incorrect or empty. Please provide an amount between £0 and £5,000,000.
 error.real.precision={0} amount must not be empty. (Amount must have no more than {1} numbers, including {2} decimal places, and should be £0 or larger and under £5,000,000.)
 
-## Understand What Pension Input Periods are
-paac.pip.taxyear.pagetitle = Pension Input Periods and Tax Years
-paac.pip.taxyear.heading = Pension Input Periods and Tax Years
-paac.pip.taxyear.p1 = A pension input period is a year from when you started paying into your pension, like 1 November to 31 October.
-paac.pip.taxyear.p2 = A tax year is 6 April to 5 April. The tax year that your pension input period is for is based on the date your pension input period ends.
-paac.pip.taxyear.p3 = For example, your pension input period is 1 November 2012 to 31 October 2013. Because the end date of the period is between 6 April 2013 and 5 April 2014 this is for the tax year 2013 to 2014.
-paac.pip.taxyear.button.continue= Continue
-
 ## Pension Inputs Changes Page
 paac.pip.button.continue=Continue
 paac.pip.p1=From the 6th April 2016, pension input periods are the same as tax years. To make the periods and years the same, the tax year 2015 to 2016 includes 2 periods.

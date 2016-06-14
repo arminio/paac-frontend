@@ -16,20 +16,13 @@
 
 package controllers
 
-import java.util.UUID
-
-import org.scalatest.BeforeAndAfterAll
-import play.api.test.Helpers._
-import play.api.test.{FakeRequest}
-import play.api.Play
-import play.api.test._
-import play.api.mvc._
 import play.api.mvc.Results._
+import play.api.mvc._
+import play.api.test.FakeRequest
+import play.api.test.Helpers._
 import service.KeystoreService
+import uk.gov.hmrc.play.http.{HeaderCarrier, SessionKeys}
 
-import uk.gov.hmrc.play.http.{HeaderCarrier, HttpPost, HttpResponse}
-import uk.gov.hmrc.play.http.SessionKeys
-import uk.gov.hmrc.play.test.UnitSpec
 import scala.concurrent.Future
 
 class RedirectControllerSpec extends test.BaseSpec {
@@ -131,19 +124,6 @@ class RedirectControllerSpec extends test.BaseSpec {
         // check
         status(result) shouldBe 303
         redirectLocation(result) shouldBe Some("/paac")
-      }
-
-      "redirect to StaticPageController changes-to-pip if forward is true and edit are false and year is 2015" in new ControllerWithMockKeystore {
-        // set up
-        implicit val hc = HeaderCarrier()
-        implicit val request = FakeRequest().withSession { (SessionKeys.sessionId, "session-test") }
-
-        // test
-        val result: Future[Result] = RedirectController.goTo(2015, true, false, false, Redirect(routes.YesNoMPAATriggerEventAmountController.onPageLoad()))
-
-        // check
-        status(result) shouldBe 303
-        redirectLocation(result) shouldBe Some("/paac/changes-to-pip")
       }
 
       "redirect to PostTriggerPensionInputsController if forward is false and edit are false, te is true and year is 2014" in new ControllerWithMockKeystore {

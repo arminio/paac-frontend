@@ -28,7 +28,7 @@ object SelectSchemeController extends SelectSchemeController {
 trait SelectSchemeController  extends BaseFrontendController {
   val keystore: KeystoreService
 
-  private val onSubmitRedirect: Call = routes.StaticPageController.onPipTaxYearPageLoad()
+  private val onSubmitRedirect: Call = routes.TaxYearSelectionController.onPageLoad()
 
   val onPageLoad = withSession { implicit request =>
     keystore.read[String](List(KeystoreService.DB_FLAG, KeystoreService.DC_FLAG)).map {

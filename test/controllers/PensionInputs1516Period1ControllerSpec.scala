@@ -16,16 +16,11 @@
 
 package controllers
 
-import java.util.UUID
-
-import org.scalatest.BeforeAndAfterAll
-import play.api.Play
-import play.api.mvc.{Request, Result}
+import play.api.mvc.Result
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.api.test.{FakeApplication, FakeRequest}
 import service.KeystoreService
 import uk.gov.hmrc.play.http.{HeaderCarrier, SessionKeys}
-import uk.gov.hmrc.play.test.UnitSpec
 
 import scala.concurrent.Future
 
@@ -203,7 +198,7 @@ class PensionInputs1516Period1ControllerSpec extends test.BaseSpec {
   }
 
   "onBack" should {
-    "redirect to changes to pip static page" in new ControllerWithMockKeystore {
+    "redirect to taxyearselection page" in new ControllerWithMockKeystore {
       // set up
       implicit val hc = HeaderCarrier()
       implicit val request = FakeRequest(GET,"/paac/back").withSession{(SessionKeys.sessionId,SESSION_ID)}
@@ -213,7 +208,7 @@ class PensionInputs1516Period1ControllerSpec extends test.BaseSpec {
 
       // check
       status(result) shouldBe 303
-      redirectLocation(result) shouldBe Some("/paac/changes-to-pip")
+      redirectLocation(result) shouldBe Some("/paac/taxyearselection")
     }
   }
 }
