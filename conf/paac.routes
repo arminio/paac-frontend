@@ -13,6 +13,10 @@ POST        /                                           controllers.StartPageCon
 GET         /yesnothresholdincome                       controllers.YesNoThresholdIncomeController.onPageLoad
 POST        /yesnothresholdincome                       controllers.YesNoThresholdIncomeController.onSubmit
 
+## 2016/17 Adjusted Income Yes/No Page
+GET         /yesnoadjustedincome                        controllers.YesNoAdjustedIncomeController.onPageLoad
+POST        /yesnoadjustedincome                        controllers.YesNoAdjustedIncomeController.onSubmit
+
 ## Scheme Selection Page
 GET         /scheme                                     controllers.SelectSchemeController.onPageLoad
 POST        /scheme                                     controllers.SelectSchemeController.onSubmit

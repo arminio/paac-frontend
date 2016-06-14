@@ -151,6 +151,7 @@ object KeystoreService extends KeystoreService {
   val TA_PREFIX = "taperedAllowance_"
   val TE_YES_NO_KEY = "yesnoForMPAATriggerEvent"
   val TI_YES_NO_KEY = "yesnoForThresholdIncome"
+  val AI_YES_NO_KEY = "yesnoForAdjustedIncome"
   val IS_EDIT_KEY = "isEdit"
 
   def toStringPair(key: String, value: Option[String]): (String, String) = value match {
