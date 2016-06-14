@@ -95,9 +95,9 @@ paac.pension.inputs.heading = How much was paid into your {0} schemes in the tax
 paac.pension.inputs.description = This is how much was paid into your {0} schemes during the pension input period that started earlier in {1} and ended on or before 5 April {2}.
 
 ## MPAA Trigger Event Yes/No Page
-paac.mpaa.te.yesno.pagetitle = MPAA TE Yes/No
-paac.mpaa.te.yesno.question = Have you accessed any of your defined contribution pension savings?
-paac.mpaa.te.yesno.description = If you have, your pension provider would have sent you a flexible access statement.
+paac.mpaa.te.yesno.pagetitle = MPAA
+paac.mpaa.te.yesno.question = Have you flexibly accessed your pension since 6 April 2015?
+paac.mpaa.te.yesno.description = Your pension provider will have sent you a flexible access statement confirming this.
 
 ## Date Of MPAA Trigger Event
 paac.mpaa.ta.date.page.title = MPAA TE Date
