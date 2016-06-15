@@ -17,6 +17,10 @@ POST        /yesnothresholdincome                       controllers.YesNoThresho
 GET         /yesnoadjustedincome                        controllers.YesNoAdjustedIncomeController.onPageLoad
 POST        /yesnoadjustedincome                        controllers.YesNoAdjustedIncomeController.onSubmit
 
+## Pension Input Page
+GET         /adjustedincome                             controllers.AdjustedIncome1617InputController.onPageLoad
+POST        /adjustedincome                             controllers.AdjustedIncome1617InputController.onSubmit
+
 ## Scheme Selection Page
 GET         /scheme                                     controllers.SelectSchemeController.onPageLoad
 POST        /scheme                                     controllers.SelectSchemeController.onSubmit

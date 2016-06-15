@@ -171,6 +171,8 @@ paac.1617.adjusted.income.question = Is your adjusted income more than £150,000
 paac.1617.adjusted.income.description1 = Adjusted income includes all taxable income including pension contributions made by you and your employer.
 paac.1617.adjusted.income.description2 = From 6 April 2016, for every £2 over £150,000 of adjusted income your annual allowance is reduced by £1. The maximum reduction is £30,000.
 
-
+## 2016/17 Adjusted Income
+paac.1617.adjusted.income.input.pagetitle = Adjusted Income
+paac.1617.adjusted.income.input.question = What is your adjusted income?
 
 
