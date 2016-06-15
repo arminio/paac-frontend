@@ -156,9 +156,9 @@ trigger.date=Post Flexi-access date
 
 ## 2016/17 TaxYear Yes/No Question Pages
 ## Threshold Income
-paac.1617.threshold.pagetitle = Threshold Income
-paac.1617.threshold.question = Is your threshold income more than £110,000 a year?
-paac.1617.threshold.description = When working this out you should include earnings from employment, interest from savings, trust benefits and income from shares. Do not include pension contributions.
+paac.1617.threshold.income.pagetitle = Threshold Income
+paac.1617.threshold.income.question = Is your threshold income more than £110,000 a year?
+paac.1617.threshold.income.description = When working this out you should include earnings from employment, interest from savings, trust benefits and income from shares. Do not include pension contributions.
 
 ## 2016/17 TaxYear Yes/No Question Pages
 ## Adjusted Income

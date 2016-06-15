@@ -29,8 +29,8 @@ object YesNoThresholdIncomeController extends YesNoThresholdIncomeController {
 trait YesNoThresholdIncomeController extends RedirectController {
   val keystore: KeystoreService
 
-  private val yesNoFormKey = "yesNoForThreadIncome"
-  private val onSubmitRedirectForYes: Call = routes.DateOfMPAATriggerEventController.onPageLoad()
+  private val yesNoFormKey = "yesNoForThresholdIncome"
+  private val onSubmitRedirectForYes: Call = routes.YesNoAdjustedIncomeController.onPageLoad()
   private val onSubmitRedirectForNo: Call = routes.ReviewTotalAmountsController.onPageLoad()
 
   val onPageLoad = withSession { implicit request =>
