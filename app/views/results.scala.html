@@ -18,6 +18,8 @@ backLink = Some((controllers.routes.ReviewTotalAmountsController.onPageLoad.url,
          <th class="numeric" scope="col">@Messages("paac.results.table.col.6")</th>
          <th class="numeric" scope="col">@Messages("paac.results.table.col.7")</th>
          <th class="numeric" scope="col">@Messages("paac.results.table.col.8")</th>
+         <th class="numeric" scope="col">@Messages("paac.results.table.col.9")</th>
+         <th class="numeric" scope="col">@Messages("paac.results.table.col.10")</th>
        </tr>
        </thead>
        <tbody>
@@ -59,6 +61,8 @@ backLink = Some((controllers.routes.ReviewTotalAmountsController.onPageLoad.url,
           }
           </td>
           <td class="numeric">&pound;@(currencyFormatter.format(result.summaryResult.unusedAllowance/100))</td>
+          <td class="numeric">&pound;@(currencyFormatter.format(result.summaryResult.unusedAAA/100))</td>
+          <td class="numeric">&pound;@(currencyFormatter.format(result.summaryResult.unusedMPAA/100))</td>
           <td class="numeric">&pound;@(currencyFormatter.format(result.summaryResult.availableAAWithCCF/100))</td>
        </tr>
       }
