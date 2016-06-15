@@ -21,7 +21,9 @@ backLink = Some((controllers.routes.SelectSchemeController.onPageLoad.url,Messag
   </div>
 }
 
-<p class="">@Messages("paac.taxyear.selection.p1")</p>
+<p class="lede">@Messages("paac.taxyear.selection.p1")</p>
+<p class="">@Messages("paac.taxyear.selection.p2")</p>
+<p style="margin-bottom:30px">@Messages("paac.taxyear.selection.p3")</p>
 @form(action = controllers.routes.TaxYearSelectionController.onYearSelected,
 args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
 <div class="form-group" id="yearSelectGroup">
