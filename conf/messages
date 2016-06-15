@@ -133,7 +133,9 @@ paac.results.table.col.4 = Amount Exceeding the AA
 paac.results.table.col.5 = Available Annual Allowance (Incl. Carry Fwd)
 paac.results.table.col.6 = Contributions Liable to a Tax Charge
 paac.results.table.col.7 = Unused AA Carried Forward to Next Year
-paac.results.table.col.8 = Cumulative Carry Forward (3 Years)
+paac.results.table.col.8 = Unused MP AA
+paac.results.table.col.9 = Unused AAA
+paac.results.table.col.10 = Cumulative Carry Forward (3 Years)
 paac.results.link.new.href = new
 paac.results.link.new = Restart Calculator
 
