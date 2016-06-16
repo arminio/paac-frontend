@@ -62,15 +62,12 @@ trait ReviewTotalAmountsController extends RedirectController with models.ThisYe
         val result = keystore.save[String](List((Some(false.toString()), IS_EDIT_KEY), (Some("-1"), CURRENT_INPUT_YEAR_KEY)), "").map {
           (_) =>
           val values = amountsMap ++ Map((TRIGGER_DATE_KEY, td.getOrElse("")))
-          val f = CalculatorForm.bind(values, true)
-          val model = f.get
-          val c = model.toPageValues.reverse.find(_.isTriggered)
           CalculatorForm.bind(values).fold(
             formWithErrors => {
-              Ok(views.html.review_amounts(formWithErrors, model.hasDefinedBenefits(), model.hasDefinedContributions(), model.hasTriggerDate(), c))
+              Ok(views.html.review_amounts(formWithErrors))
             },
             form => {
-              Ok(views.html.review_amounts(f, model.hasDefinedBenefits(), model.hasDefinedContributions(), model.hasTriggerDate(), c))
+              Ok(views.html.review_amounts(CalculatorForm.bind(values, true)))
             }
           )
         }
@@ -94,11 +91,7 @@ trait ReviewTotalAmountsController extends RedirectController with models.ThisYe
         val values = amounts ++ Map((TRIGGER_DATE_KEY, td.getOrElse("")))
         CalculatorForm.bind(values).fold(
           formWithErrors => {
-            val f = CalculatorForm.bind(amounts, true)
-            val model = f.get
-            val c = model.toPageValues.reverse.find(_.isTriggered)
-            Future.successful(Ok(views.html.review_amounts(formWithErrors, model.hasDefinedBenefits(),
-              model.hasDefinedContributions(), model.hasTriggerDate(), c)))
+            Future.successful(Ok(views.html.review_amounts(formWithErrors)))
           },
           input => {
             val contributions = input.toContributions()

@@ -1,8 +1,4 @@
-@(reviewForm : Form[models.CalculatorFormFields], 
-  hasBenefits: Boolean, 
-  hasContributions: Boolean,
-  hasTriggerDate: Boolean,
-  triggerContribution: Option[Contribution])(implicit request:Request[_])
+@(reviewForm : Form[models.CalculatorFormFields])(implicit request:Request[_])
 
 @import uk.gov.hmrc.play.views.html.helpers._
 @import java.math.BigDecimal
@@ -42,31 +38,115 @@ backLink = Some((controllers.routes.ReviewTotalAmountsController.onBack.url,Mess
 }
 
 @if(reviewForm.hasErrors == false && reviewForm.hasGlobalErrors == false) {
-<table>
+  @defining(java.text.NumberFormat.getNumberInstance(java.util.Locale.UK)) { currencyFormatter =>
+  @defining(reviewForm.get.toPageValues.reverse.find(_.isTriggered)) { triggerContribution => 
+  
+    @for(contribution <- (if (triggerContribution.isDefined) reviewForm.get.toPageValues.reverse.filterNot((c1)=>c1==triggerContribution.get||c1.isEmpty) else reviewForm.get.toPageValues.reverse.filterNot(_.isEmpty))) {
+    <table id="@(contribution.taxPeriodStart.year)">
     <thead>
     <tr>
-        <th class="numeric" scope="col">@Messages("paac.review-amounts.heading.period")</th>
-        @if(hasContributions) {
-        <th class="numeric" scope="col">@Messages("paac.review-amounts.heading.mp")</th>
+        <th scope="50%">
+        @if(contribution.isPeriod1) {
+            @Messages("paac.review-amounts.heading.period",contribution.taxPeriodStart.year.toString(), (contribution.taxPeriodStart.year+1).toString(), 1)
         }
-        @if(hasBenefits) {
-        <th class="numeric" scope="col">@Messages("paac.review-amounts.heading.db")</th>
+        @if(contribution.isPeriod2) {
+            @Messages("paac.review-amounts.heading.period",contribution.taxPeriodStart.year.toString(), (contribution.taxPeriodStart.year+1).toString(), 2)
         }
-        @if(triggerContribution.isDefined) {
-        <th class="numeric" scope="col">@Messages("paac.review-amounts.heading.trigger.savings")</th>
-        <th class="numeric" scope="col">@Messages("paac.review-amounts.heading.trigger.date")</th>
+        @if(!contribution.isPeriod1 && !contribution.isPeriod2) {
+            @Messages("paac.review-amounts.heading",contribution.taxPeriodStart.year.toString(), (contribution.taxPeriodStart.year+1).toString())
         }
-        <th class="edit_action" scope="col"></th>
+        </th>
+        <th width="35%"></th>
+        <th class="edit_action" width="15%"></th>
     </tr>
     </thead>
     <tbody>
-    @defining(java.text.NumberFormat.getNumberInstance(java.util.Locale.UK)) { currencyFormatter =>
-    @for(contribution <- (if (triggerContribution.isDefined) reviewForm.get.toPageValues.reverse.filterNot((c1)=>c1==triggerContribution.get) else reviewForm.get.toPageValues.reverse)) {
         @defining(contribution.amounts.getOrElse(InputAmounts())) { amounts =>
-        @if(contribution.isEmpty() == false) {
+        @if(amounts.moneyPurchase.isDefined && contribution.taxPeriodStart.year >= 2015){
+        <tr>
+            <td>@Messages("paac.review-amounts.heading.mp")</td>
+            <td class="numeric">&pound;@(currencyFormatter.format(amounts.moneyPurchase.get/100D))</td>
+            <td class="edit_action">
+                @if(contribution.taxPeriodStart.year < 2015) {
+                <a href="edit/@contribution.taxPeriodStart.year">
+                }
+                @if(contribution.isPeriod1()) {
+                <a href="edit/20151">
+                }
+                @if(contribution.isPeriod2()) {
+                <a href="edit/20152">
+                }
+                 @Messages("paac.review-amounts.action.edit") <span class="visuallyhidden">@(contribution.taxYearLabel())</span>
+                </a>
+            </td>
+        </tr>
+        }        
+        @if(amounts.definedBenefit.isDefined){
+        <tr>
+            <td>@if(contribution.taxPeriodStart.year < 2015) { 
+                    @Messages("paac.review-amounts.heading.total") 
+                } else { 
+                    @Messages("paac.review-amounts.heading.db") 
+                }</td>
+            <td class="numeric">&pound;@(currencyFormatter.format(amounts.definedBenefit.get/100D))</td>
+            <td class="edit_action">
+                @if(contribution.taxPeriodStart.year < 2015) {
+                <a href="edit/@contribution.taxPeriodStart.year">
+                }
+                @if(contribution.isPeriod1()) {
+                <a href="edit/20151">
+                }
+                @if(contribution.isPeriod2()) {
+                <a href="edit/20152">
+                }
+                 @Messages("paac.review-amounts.action.edit") <span class="visuallyhidden">@(contribution.taxYearLabel())</span>
+                </a>
+            </td>
+        </tr>
+        }
+        @if(triggerContribution.isDefined) {
+        @if(triggerContribution.get.isPeriod1 && contribution.isPeriod1 || 
+            triggerContribution.get.isPeriod2 && contribution.isPeriod2 || 
+            triggerContribution.get.taxPeriodEnd == contribution.taxPeriodEnd) {
+        <tr>
+            <td>@Messages("paac.review-amounts.heading.trigger.date")</td>
+            <td class="numeric">
+            @defining(reviewForm.get.triggerDate.getOrElse("2000-1-1").split("-")) { dateParts =>
+            @Messages("paac.review-amounts.value."+dateParts(1), dateParts(2).toInt.toString, dateParts(0))
+            }
+            </td>
+            <td class="edit_action">
+                <a href="edit/triggerDate">
+                 @Messages("paac.review-amounts.action.edit") <span class="visuallyhidden">@(contribution.taxYearLabel())</span>
+                </a>
+            </td>
+        </tr>
+        <tr>
+            <td>@Messages("paac.review-amounts.heading.trigger.savings", contribution.taxPeriodStart.year.toString(), (contribution.taxPeriodEnd.year+1).toString())</td>
+            <td class="numeric">&pound;@(currencyFormatter.format(triggerContribution.get.amounts.getOrElse(InputAmounts()).moneyPurchase.get/100D))</td>
+            <td class="edit_action">
+                <a href="edit/triggerAmount">
+                 @Messages("paac.review-amounts.action.edit") <span class="visuallyhidden">@(contribution.taxYearLabel())</span>
+                </a>
+            </td>
+        </tr>
+        }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+<!--
         <tr>
             <td class="numeric">@(contribution.taxYearLabel())</td>
-            @if(hasContributions) {
             <td class="numeric">
                 @if(amounts.moneyPurchase.isDefined){
                 &pound;@(currencyFormatter.format(amounts.moneyPurchase.get/100D))
@@ -74,8 +154,6 @@ backLink = Some((controllers.routes.ReviewTotalAmountsController.onBack.url,Mess
                 &pound;&nbsp;&ndash;
                 }
             </td>
-            }
-            @if(hasBenefits) {
             <td class="numeric">
                 @if(amounts.definedBenefit.isDefined) {
                     &pound;@(currencyFormatter.format(amounts.definedBenefit.get/100D))
@@ -83,7 +161,6 @@ backLink = Some((controllers.routes.ReviewTotalAmountsController.onBack.url,Mess
                     &pound;&nbsp;&ndash;
                 }
             </td>
-            }
             @if(triggerContribution.isDefined) {
             @if(triggerContribution.get.isPeriod1 && contribution.isPeriod1 || triggerContribution.get.isPeriod2 && contribution.isPeriod2) {
             <td class="numeric">
@@ -100,27 +177,16 @@ backLink = Some((controllers.routes.ReviewTotalAmountsController.onBack.url,Mess
             <td class="numeric"></td>
             <td class="numeric"></td>
             }
-            }
-            <td class="edit_action">
-                @if(contribution.taxPeriodStart.year < 2015) {
-                <a href="edit/@contribution.taxPeriodStart.year">
-                }
-                @if(contribution.isPeriod1()) {
-                <a href="edit/20151">
-                }
-                @if(contribution.isPeriod2()) {
-                <a href="edit/20152">
-                }
-                 @Messages("paac.review-amounts.action.edit") <span class="visuallyhidden">@(contribution.taxYearLabel())</span>
-                </a>
-            </td>
         </tr>
+-->
         }
-        }
-    }
-    }
+
     </tbody>
 </table>
+      }
+    }
+  }
+  }
 }
 @form(
 action = controllers.routes.ReviewTotalAmountsController.onSubmit,
