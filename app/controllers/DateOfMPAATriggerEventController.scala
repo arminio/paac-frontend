@@ -62,20 +62,15 @@ trait DateOfMPAATriggerEventController extends RedirectController {
                 (date.getYear() == 2015 && date.getMonthOfYear() == 4 && date.getDayOfMonth() < 6)) {
               val form = DateOfMPAATriggerEventForm.form.bindFromRequest().withError("dateOfMPAATriggerEvent", "paac.mpaa.ta.date.page.invalid.date")
               Future.successful(Ok(views.html.date_of_mpaa_trigger_event(form)))
-            } else if ((date.getYear() > 2016) || 
-                       (date.getYear() == 2016 && date.getMonthOfYear() > 4) || 
-                       (date.getYear() == 2016 && date.getMonthOfYear() == 4 && date.getDayOfMonth() > 5)) {
-              keystore.read[String](KeystoreService.SELECTED_INPUT_YEARS_KEY).flatMap {
-                (selectedYears) =>
-                val years = selectedYears.getOrElse("2015").split(",")
-                if (years.size > 1) {
-                  wheretoNext(Redirect(onSubmitRedirect))
+            } else {
+              keystore.read[String](KeystoreService.IS_EDIT_KEY).map {
+                (maybeIsEdit) =>
+                if (maybeIsEdit.getOrElse("false").toBoolean) {
+                  Results.Redirect(routes.ReviewTotalAmountsController.onPageLoad())
                 } else {
-                  goTo(-1, true, true, true, Redirect(onSubmitRedirect))
+                  Redirect(onSubmitRedirect)
                 }
               }
-            } else {
-              Future.successful(Redirect(onSubmitRedirect))
             }
           } else {
             val form = DateOfMPAATriggerEventForm.form.bindFromRequest().withError("dateOfMPAATriggerEvent", "error.invalid.date.format")

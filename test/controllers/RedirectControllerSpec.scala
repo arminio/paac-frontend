@@ -48,6 +48,32 @@ class RedirectControllerSpec extends test.BaseSpec {
         MockKeystore.map should contain value ("99")
       }
 
+      "redirect to trigger date page if forward is false and edit is true" in new ControllerWithMockKeystore {
+        // set up
+        implicit val hc = HeaderCarrier()
+        implicit val request = FakeRequest().withSession { (SessionKeys.sessionId, "session-test") }
+
+        // test
+        val result: Future[Result] = RedirectController.goTo(RedirectController.EDIT_TRIGGER_DATE, false, true, false, Redirect(routes.StartPageController.startPage()))
+
+        // check
+        status(result) shouldBe 303
+        redirectLocation(result) shouldBe Some("/paac/dateofmpaate")
+      }
+
+      "redirect to trigger amount page if forward is false and edit is true" in new ControllerWithMockKeystore {
+        // set up
+        implicit val hc = HeaderCarrier()
+        implicit val request = FakeRequest().withSession { (SessionKeys.sessionId, "session-test") }
+
+        // test
+        val result: Future[Result] = RedirectController.goTo(RedirectController.EDIT_TRIGGER_AMOUNT, false, true, false, Redirect(routes.StartPageController.startPage()))
+
+        // check
+        status(result) shouldBe 303
+        redirectLocation(result) shouldBe Some("/paac/moneyPurchasePostTriggerValue")
+      }
+
       "redirect to review page load if forward and edit are true" in new ControllerWithMockKeystore {
         // set up
         implicit val hc = HeaderCarrier()
