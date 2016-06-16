@@ -194,7 +194,7 @@ class ReviewTotalAmountsControllerSpec extends test.BaseSpec {
 
         // check
         val htmlSummaryPage = contentAsString(await(result))
-        htmlSummaryPage should include ("Tax Year Results")
+        htmlSummaryPage should include ("Results")
       }
 
       "display errors if errors in keystore" in new MockControllerFixture {
