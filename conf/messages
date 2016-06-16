@@ -140,17 +140,16 @@ paac.review-amounts.value.12={0} December {1}
 
 ## Results Page
 paac.results.table.col.1 = Year
-paac.results.table.col.2 = Defined Benefit
-paac.results.table.col.3 = Money Purchase
-paac.results.table.col.4 = Amount Exceeding the AA
-paac.results.table.col.5 = Available Annual Allowance (Incl. Carry Fwd)
-paac.results.table.col.6 = Contributions Liable to a Tax Charge
-paac.results.table.col.7 = Unused AA Carried Forward to Next Year
-paac.results.table.col.8 = Unused MP AA
-paac.results.table.col.9 = Unused AAA
-paac.results.table.col.10 = Cumulative Carry Forward (3 Years)
+paac.results.table.col.2 = Annual allowance
+paac.results.table.col.3 = Contributions
+paac.results.table.col.4 = Amount on which tax is due
+paac.results.table.col.5 = Unused allowance
+paac.results.taxyearlabel = {0} to {1}
 paac.results.link.new.href = new
-paac.results.link.new = Restart Calculator
+paac.results.link.new = Start again
+paac.results.page.heading = Results
+paac.results.page.title = PAAC Results
+paac.results.p1 = Based on your answers, over the past {0} years you have exceeded your annual allowance by &pound;{1}. You may have to pay tax on this.
 
 ## Post Trigger Pension Inputs Page
 paac.post-trigger-value.page.heading=How much was paid into your pension scheme after you accessed your pension savings?
