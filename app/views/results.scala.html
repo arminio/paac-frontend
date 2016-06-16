@@ -61,8 +61,8 @@ backLink = Some((controllers.routes.ReviewTotalAmountsController.onPageLoad.url,
           }
           </td>
           <td class="numeric">&pound;@(currencyFormatter.format(result.summaryResult.unusedAllowance/100))</td>
-          <td class="numeric">&pound;@(currencyFormatter.format(result.summaryResult.unusedAAA/100))</td>
           <td class="numeric">&pound;@(currencyFormatter.format(result.summaryResult.unusedMPAA/100))</td>
+          <td class="numeric">&pound;@(currencyFormatter.format(result.summaryResult.unusedAAA/100))</td>
           <td class="numeric">&pound;@(currencyFormatter.format(result.summaryResult.availableAAWithCCF/100))</td>
        </tr>
       }
