@@ -56,20 +56,20 @@ class CalculatorConnectorSpec extends UnitSpec with MockitoSugar with BeforeAndA
   "Calculator connector" should {
     "convert contributions to json" in {
       // set up
-      val request = Json.toJson(CalculationRequest(List(Contribution(2008,5000)), Some(2012), Some(false)))
       implicit val hc = uk.gov.hmrc.play.http.HeaderCarrier()
       val mockHttpPost = mock[HttpPost]
       object MockCalculatorConnector extends CalculatorConnector {
         override def httpPostRequest: HttpPost = mockHttpPost
         override def serviceUrl: String = ""
       }
-      stub(mockHttpPost.POST[JsValue, HttpResponse]("/paac/calculate", request, null)).toReturn(HttpResponse(200))
+      val body = Json.toJson(CalculationRequest(List(Contribution(2008,5000)),Some(2008),Some(false)))
+      stub(mockHttpPost.POST[JsValue, HttpResponse]("/paac/calculate", body, null)).toReturn(Future.successful(HttpResponse(200)))
 
       // test
       MockCalculatorConnector.connectToPAACService(List(Contribution(2008,5000)))
 
       // check
-      verify(mockHttpPost).POST[JsValue, HttpResponse]("/paac/calculate", request, null)
+      verify(mockHttpPost).POST[JsValue, HttpResponse]("/paac/calculate", body, null)
     }
   }
 }

@@ -35,9 +35,14 @@ trait CalculatorConnector {
   def serviceUrl: String
 
   def connectToPAACService(contributions:List[Contribution])(implicit hc: HeaderCarrier): Future[List[TaxYearResults]] = {
-    val calculationRequest = CalculationRequest(contributions, Some(2012), Some(false))
+    val earliestYear = contributions.foldLeft(Integer.MAX_VALUE)((x,y)=>x.min(y.taxPeriodStart.year))
+    val calculationRequest = CalculationRequest(contributions, Some(earliestYear), Some(false))
     val endpoint = Play.current.configuration.getString("microservice.services.paac.endpoints.calculate").getOrElse("/paac/calculate")
-    httpPostRequest.POST[JsValue, HttpResponse](s"${serviceUrl}${endpoint}",
-      Json.toJson(calculationRequest)).map((response)=>(response.json \ "results").as[List[TaxYearResults]])
+    val body = Json.toJson(calculationRequest)
+    val results = httpPostRequest.POST[JsValue, HttpResponse](s"${serviceUrl}${endpoint}",body).map{
+      (response)=>
+      (response.json \ "results").as[List[TaxYearResults]]
+    }
+    results
   }
 }
