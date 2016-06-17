@@ -57,9 +57,11 @@ trait DateOfMPAATriggerEventController extends RedirectController {
           if (input.dateOfMPAATriggerEvent.isDefined) {
             val date = input.dateOfMPAATriggerEvent.get
 
-            if ((date.getYear() < 2015) || 
+            if ((date.getYear() < 2015) || (date.getYear() >= 2017) ||
                 (date.getYear() == 2015 && date.getMonthOfYear() < 4) || 
-                (date.getYear() == 2015 && date.getMonthOfYear() == 4 && date.getDayOfMonth() < 6)) {
+                (date.getYear() == 2015 && date.getMonthOfYear() == 4 && date.getDayOfMonth() < 6) ||
+                (date.getYear() == 2016 && date.getMonthOfYear() > 4 ) ||
+                (date.getYear() == 2016 && date.getMonthOfYear() == 4 && date.getDayOfMonth() >= 6)) {
               val form = DateOfMPAATriggerEventForm.form.bindFromRequest().withError("dateOfMPAATriggerEvent", "paac.mpaa.ta.date.page.invalid.date")
               Future.successful(Ok(views.html.date_of_mpaa_trigger_event(form)))
             } else {

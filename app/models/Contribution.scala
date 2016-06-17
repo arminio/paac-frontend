@@ -59,6 +59,14 @@ case class Contribution(taxPeriodStart: PensionPeriod, taxPeriodEnd: PensionPeri
     }
   }
 
+  def taxYearFullLabel() : String = {
+    if (isPeriod1 || isPeriod2) {
+      s"2015 to 2016"
+    } else {
+      s"${taxPeriodStart.year} to ${taxPeriodEnd.year}"
+    }
+  }
+
   def label() : String = {
     val beforeAfter = if (amounts.getOrElse(InputAmounts()).triggered.getOrElse(false)) "A" else "B"
     if (isPeriod2) {
