@@ -61,30 +61,17 @@ class RedirectControllerSpec extends test.BaseSpec {
         redirectLocation(result) shouldBe Some("/paac/review")
       }
 
-      "redirect to PensionInputs1516Period1Controller page load if forward is false and edit are true" in new ControllerWithMockKeystore {
+      "redirect to PensionInputs201516Controller page load if forward is false and edit are true" in new ControllerWithMockKeystore {
         // set up
         implicit val hc = HeaderCarrier()
         implicit val request = FakeRequest().withSession { (SessionKeys.sessionId, "session-test") }
 
         // test
-        val result: Future[Result] = RedirectController.goTo(20151, false, true, false, Redirect(routes.StartPageController.startPage()))
+        val result: Future[Result] = RedirectController.goTo(2015, false, true, false, Redirect(routes.StartPageController.startPage()))
 
         // check
         status(result) shouldBe 303
-        redirectLocation(result) shouldBe Some("/paac/pensionInputs1516p1")
-      }
-
-      "redirect to PensionInputs1516Period2Controller page load if forward is false and edit are true" in new ControllerWithMockKeystore {
-        // set up
-        implicit val hc = HeaderCarrier()
-        implicit val request = FakeRequest().withSession { (SessionKeys.sessionId, "session-test") }
-
-        // test
-        val result: Future[Result] = RedirectController.goTo(20152, false, true, false, Redirect(routes.StartPageController.startPage()))
-
-        // check
-        status(result) shouldBe 303
-        redirectLocation(result) shouldBe Some("/paac/pensionInputs1516p2")
+        redirectLocation(result) shouldBe Some("/paac/pensionInputs201516")
       }
 
       "redirect to PensionInputsController page load if forward is false and edit are true" in new ControllerWithMockKeystore {
@@ -194,7 +181,7 @@ class RedirectControllerSpec extends test.BaseSpec {
         redirectLocation(result) shouldBe Some("/paac/yesnompaate")
       }
 
-      "redirect to PensionInputs1516Period2Controller on page load if forward, edit, dc, te are false and year is 2015" in new ControllerWithMockKeystore {
+      "redirect to PensionInputs201516Controller on page load if forward, edit, dc, te are false and year is 2015" in new ControllerWithMockKeystore {
         // set up
         implicit val hc = HeaderCarrier()
         implicit val request = FakeRequest().withSession { (SessionKeys.sessionId, "session-test") }
@@ -204,7 +191,7 @@ class RedirectControllerSpec extends test.BaseSpec {
 
         // check
         status(result) shouldBe 303
-        redirectLocation(result) shouldBe Some("/paac/pensionInputs1516p2")
+        redirectLocation(result) shouldBe Some("/paac/pensionInputs201516")
       }
 
       "redirect to PensionInputsController if year is 2013" in new ControllerWithMockKeystore {

@@ -3,11 +3,15 @@
 @import uk.gov.hmrc.play.views.html.helpers._
 
 @common.paacMain(
-pageTitle = Messages("paac.1516.period.pension.inputs.pagetitle"),
+pageTitle = Messages("paac.201516.pension.inputs.pagetitle"),
 heading = Messages("paac.1516.pension.inputs.pages.heading", (if(isDefinedBenefit && isDefinedContribution) "pension" else if(isDefinedBenefit) "defined benefit" else if (isDefinedContribution) "defined contribution"  else "")),
 articleClasses=Some("full-width"),
 backLink = Some((controllers.routes.PensionInputs201516Controller.onBack.url,Messages("paac.link.text.back")))
 ) {
+
+
+<p class="lede">@Messages("paac.201516.pension.inputs.description")</p>
+<p class=""style="margin-bottom:50px">@Messages("paac.201516.pension.inputs.description2")</p>
 
 @if(paacForm.hasErrors) {
 <div class="error-summary" role="group" aria-labelledby="error-summary-heading-example-1" tabindex="-1" style="border: 5px solid #b10e1e;padding: 20px;padding-top: 0px;margin-bottom: 30px;">
@@ -38,12 +42,10 @@ backLink = Some((controllers.routes.PensionInputs201516Controller.onBack.url,Mes
 action = controllers.routes.PensionInputs201516Controller.onSubmit,
 args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
 
-<p class="lede text">@Messages("paac.1516.pension.inputs.period1.description", (if(isDefinedBenefit && isDefinedContribution) "pension" else if(isDefinedBenefit) "defined benefit" else if (isDefinedContribution) "defined contribution"  else ""))</p>
+<p class="lede text">@Messages("paac.201516.pension.inputs.period1", (if(isDefinedBenefit && isDefinedContribution) "pension" else if(isDefinedBenefit) "defined benefit" else if (isDefinedContribution) "defined contribution"  else ""))</p>
 
 <table>
     <tbody>
-    <tr style="text-align:left;min-width: 7em">P1</tr>
-
     <fieldset id="input_2015_p1" class="form-field-group" style="max-width:12.35em;">
         @if(isDefinedContribution){
         <label class="form-element-bold label--full-length numeric" for="year2015.definedContribution_2015_p1" style="width:150%;display: inline-block;@if(paacForm.errors.find(_.key == "definedContribution_2015_p1")) {color:#b10e1e;}">
@@ -86,7 +88,7 @@ args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
 action = controllers.routes.PensionInputs201516Controller.onSubmit,
 args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
 
-<p class="lede text">@Messages("paac.1516.pension.inputs.period2.description", (if(isDefinedBenefit && isDefinedContribution) "pension" else if(isDefinedBenefit) "defined benefit" else if (isDefinedContribution) "defined contribution"  else ""))</p>
+<p class="lede text">@Messages("paac.201516.pension.inputs.period2", (if(isDefinedBenefit && isDefinedContribution) "pension" else if(isDefinedBenefit) "defined benefit" else if (isDefinedContribution) "defined contribution"  else ""))</p>
 <table>
     <tbody>
     <fieldset id="input_2015_p2" class="form-field-group" style="max-width:12.35em;">

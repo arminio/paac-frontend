@@ -138,7 +138,7 @@ class TaxYearSelectionSpec extends test.BaseSpec {
       status(result) shouldBe 303
       MockKeystore.map(KeystoreService.CURRENT_INPUT_YEAR_KEY) shouldBe ("2015")
       MockKeystore.map(KeystoreService.SELECTED_INPUT_YEARS_KEY) shouldBe ("2015")
-      redirectLocation(result) shouldBe Some("/paac/pensionInputs1516p1")
+      redirectLocation(result) shouldBe Some("/paac/pensionInputs201516")
     }
 
     "when unselecting a previously selected year reset year's data value" in new ControllerWithMockKeystore {
