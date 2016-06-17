@@ -35,8 +35,9 @@ trait CalculatorConnector {
   def serviceUrl: String
 
   def connectToPAACService(contributions:List[Contribution])(implicit hc: HeaderCarrier): Future[List[TaxYearResults]] = {
+    val calculationRequest = CalculationRequest(contributions, Some(2012), Some(false))
     val endpoint = Play.current.configuration.getString("microservice.services.paac.endpoints.calculate").getOrElse("/paac/calculate")
     httpPostRequest.POST[JsValue, HttpResponse](s"${serviceUrl}${endpoint}",
-      Json.toJson(contributions)).map((response)=>(response.json \ "results").as[List[TaxYearResults]])
+      Json.toJson(calculationRequest)).map((response)=>(response.json \ "results").as[List[TaxYearResults]])
   }
 }
