@@ -259,7 +259,7 @@ class ReviewTotalAmountsControllerSpec extends test.BaseSpec {
         // check
         val htmlSummaryPage = contentAsString(await(result))
         htmlSummaryPage should include ("&pound;1,234")
-        htmlSummaryPage should include ("10-5-2015")
+        htmlSummaryPage should include ("paac.review-amounts.value.5")
       }
 
       "display p2 trigger amount columns if in keystore" in new MockControllerFixture {
@@ -276,7 +276,7 @@ class ReviewTotalAmountsControllerSpec extends test.BaseSpec {
         // check
         val htmlSummaryPage = contentAsString(await(result))
         htmlSummaryPage should include ("&pound;1,234")
-        htmlSummaryPage should include ("5-11-2015")
+        htmlSummaryPage should include ("5 November 2015")
       }
 
       "display errors if errors in keystore" in new MockControllerFixture {
