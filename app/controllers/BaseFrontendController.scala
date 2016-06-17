@@ -38,6 +38,11 @@ trait SessionProvider {
 trait RedirectController extends BaseFrontendController {
   def keystore: KeystoreService
 
+  val START = -1
+  val END = -2
+  val EDIT_TRIGGER_AMOUNT = -4
+  val EDIT_TRIGGER_DATE = -5
+
   def goTo(year: Int, isForward: Boolean, isEdit: Boolean, isTE: Boolean, defaultRoute: Result)
           (implicit hc: HeaderCarrier, format: play.api.libs.json.Format[String], request: Request[Any]): Future[Result] = {
     keystore.store(year.toString(), KeystoreService.CURRENT_INPUT_YEAR_KEY).flatMap {
@@ -46,7 +51,11 @@ trait RedirectController extends BaseFrontendController {
       if (isForward && isEdit) {
         Future.successful(Results.Redirect(routes.ReviewTotalAmountsController.onPageLoad()))
       } else if (isEdit) {
-        if (year == 2015) {
+        if (year == EDIT_TRIGGER_AMOUNT) {
+          Future.successful(Redirect(routes.PostTriggerPensionInputsController.onPageLoad()))
+        } else if (year == EDIT_TRIGGER_DATE) {
+          Future.successful(Redirect(routes.DateOfMPAATriggerEventController.onPageLoad()))
+        } else if (year == 2015) {
           Future.successful(Results.Redirect(routes.PensionInputs201516Controller.onPageLoad()))
         } else if (year == 0) {
           Future.successful(Redirect(routes.PostTriggerPensionInputsController.onPageLoad()))
@@ -99,16 +108,16 @@ trait RedirectController extends BaseFrontendController {
 
     def previous(currentYear: String, selectedYears: String): Int = {
       if (currentYear == "" || selectedYears == "") {
-        -1
+        START
       } else {
         val syears = selectedYears.split(",")
         val cy = currentYear.toInt
-        if (cy == -1) {
+        if (cy == START) {
           syears.reverse(0).toInt
         } else {
           val i = syears.indexOf(currentYear) - 1
           if (i < 0) {
-            -2
+            END
           } else {
             syears(i).toInt
           }
@@ -134,8 +143,8 @@ trait RedirectController extends BaseFrontendController {
     implicit val marshall = KeystoreService.toStringPair _
 
     def next(currentYear: String, selectedYears: String): Int = {
-      if ((selectedYears == "" && currentYear == "") || (currentYear == "-2")) {
-        -1
+      if ((selectedYears == "" && currentYear == "") || (currentYear == END.toString)) {
+        START
       } else {
         val syears = selectedYears.split(",")
         if (currentYear == "") {
@@ -145,7 +154,7 @@ trait RedirectController extends BaseFrontendController {
           if (i < syears.length) {
             syears(i).toInt
           } else {
-            -1
+            START
           }
         }
       }
