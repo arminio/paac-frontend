@@ -3,10 +3,10 @@
 @import uk.gov.hmrc.play.views.html.helpers._
 
 @common.paacMain(
-pageTitle = Messages("paac.1516.period1.pension.inputs.pagetitle"),
+pageTitle = Messages("paac.1516.period.pension.inputs.pagetitle"),
 heading = Messages("paac.1516.pension.inputs.pages.heading", (if(isDefinedBenefit && isDefinedContribution) "pension" else if(isDefinedBenefit) "defined benefit" else if (isDefinedContribution) "defined contribution"  else "")),
 articleClasses=Some("full-width"),
-backLink = Some((controllers.routes.PensionInputs1516Period1Controller.onBack.url,Messages("paac.link.text.back")))
+backLink = Some((controllers.routes.PensionInputs201516Controller.onBack.url,Messages("paac.link.text.back")))
 ) {
 
 @if(paacForm.hasErrors) {
@@ -35,13 +35,15 @@ backLink = Some((controllers.routes.PensionInputs1516Period1Controller.onBack.ur
 }
 
 @form(
-action = controllers.routes.PensionInputs1516Period1Controller.onSubmit,
+action = controllers.routes.PensionInputs201516Controller.onSubmit,
 args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
 
 <p class="lede text">@Messages("paac.1516.pension.inputs.period1.description", (if(isDefinedBenefit && isDefinedContribution) "pension" else if(isDefinedBenefit) "defined benefit" else if (isDefinedContribution) "defined contribution"  else ""))</p>
 
 <table>
     <tbody>
+    <tr style="text-align:left;min-width: 7em">P1</tr>
+
     <fieldset id="input_2015_p1" class="form-field-group" style="max-width:12.35em;">
         @if(isDefinedContribution){
         <label class="form-element-bold label--full-length numeric" for="year2015.definedContribution_2015_p1" style="width:150%;display: inline-block;@if(paacForm.errors.find(_.key == "definedContribution_2015_p1")) {color:#b10e1e;}">
@@ -80,7 +82,9 @@ args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
 </table>
 
 <br/>
-
+@form(
+action = controllers.routes.PensionInputs201516Controller.onSubmit,
+args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
 
 <p class="lede text">@Messages("paac.1516.pension.inputs.period2.description", (if(isDefinedBenefit && isDefinedContribution) "pension" else if(isDefinedBenefit) "defined benefit" else if (isDefinedContribution) "defined contribution"  else ""))</p>
 <table>
@@ -122,7 +126,8 @@ args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
     </tbody>
 </table>
 
+<br/>
 
 <button id="submit" type="submit" class="button" value="Continue">@Messages("paac.calculator.button.continue")</button>
 } @* End of Form *@
-} @* End of paacMain *@
+} @* End of paacMain *@ }
