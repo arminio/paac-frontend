@@ -177,6 +177,7 @@ class ReviewTotalAmountsControllerSpec extends test.BaseSpec {
       "display list of amounts previously provided by user" in new MockControllerFixture {
         // set up
         val endpoint = "/paac/review"
+        MockKeystore.map = MockKeystore.map + (KeystoreService.SELECTED_INPUT_YEARS_KEY-> "2012,2014")
 
         // test
         val result : Future[Result] = ControllerWithMocks.onSubmit()(FakeRequest(GET, endpoint).withSession {(SessionKeys.sessionId,SESSION_ID)})
@@ -185,9 +186,10 @@ class ReviewTotalAmountsControllerSpec extends test.BaseSpec {
         status(result) shouldBe 200
       }
 
-      "return calculation results from amounts stored in keystore" in new MockControllerFixture {
+      "return calculation results from amounts stored in keystore" in new Mock2016ControllerFixture {
         // set up
         val request = FakeRequest(GET, "/paac/calculate").withSession {(SessionKeys.sessionId,SESSION_ID)}
+        MockKeystore.map = MockKeystore.map + (KeystoreService.SELECTED_INPUT_YEARS_KEY-> "2012,2014")
 
         // test
         val result: Future[Result] = ControllerWithMocks.onSubmit()(request)
@@ -197,7 +199,7 @@ class ReviewTotalAmountsControllerSpec extends test.BaseSpec {
         htmlSummaryPage should include ("Results")
       }
 
-      "display errors if errors in keystore" in new MockControllerFixture {
+      "display errors if errors in keystore" in new Mock2016ControllerFixture {
         // set up
         val request = FakeRequest(GET, "/paac/calculate").withSession {(SessionKeys.sessionId,SESSION_ID)}
         MockKeystore.map = MockKeystore.map - "definedBenefit_2009"
