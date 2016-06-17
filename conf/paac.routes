@@ -29,6 +29,11 @@ POST        /scheme                                     controllers.SelectScheme
 GET         /taxyearselection                           controllers.TaxYearSelectionController.onPageLoad
 POST        /taxyearselection                           controllers.TaxYearSelectionController.onYearSelected
 
+## 2015/16 Period-1 and Period 2 Pension Input Page
+GET         /pensionInputs201516                          controllers.PensionInputs201516Controller.onPageLoad
+GET         /pensionInputs201516Back                      controllers.PensionInputs201516Controller.onBack
+POST        /pensionInputs201516                          controllers.PensionInputs201516Controller.onSubmit
+
 ## 2015/16 Period-1 Pension Input Page
 GET         /pensionInputs1516p1                        controllers.PensionInputs1516Period1Controller.onPageLoad
 GET         /pensionInputs1516p1Back                    controllers.PensionInputs1516Period1Controller.onBack
