@@ -40,70 +40,50 @@ backLink = Some((controllers.routes.ReviewTotalAmountsController.onBack.url,Mess
 @if(reviewForm.hasErrors == false && reviewForm.hasGlobalErrors == false) {
   @defining(java.text.NumberFormat.getNumberInstance(java.util.Locale.UK)) { currencyFormatter =>
   @defining(reviewForm.get.toPageValues.reverse.find(_.isTriggered)) { triggerContribution => 
-  
-    @for(contribution <- (if (triggerContribution.isDefined) reviewForm.get.toPageValues.reverse.filterNot((c1)=>c1==triggerContribution.get||c1.isEmpty) else reviewForm.get.toPageValues.reverse.filterNot(_.isEmpty))) {
+  @defining((triggerContribution.map((tc)=>reviewForm.get.toPageValues.reverse.filterNot((c1)=>c1==tc||c1.isEmpty)).getOrElse(reviewForm.get.toPageValues.reverse.filterNot(_.isEmpty)))) { contributions =>
+    @for(contribution <- contributions) {
     <table id="@(contribution.taxPeriodStart.year)">
     <thead>
     <tr>
         <th scope="50%">
-        @if(contribution.isPeriod1) {
-            @Messages("paac.review-amounts.heading.period",contribution.taxPeriodStart.year.toString(), (contribution.taxPeriodStart.year+1).toString(), 1)
-        }
-        @if(contribution.isPeriod2) {
-            @Messages("paac.review-amounts.heading.period",contribution.taxPeriodStart.year.toString(), (contribution.taxPeriodStart.year+1).toString(), 2)
-        }
-        @if(!contribution.isPeriod1 && !contribution.isPeriod2) {
-            @Messages("paac.review-amounts.heading",contribution.taxPeriodStart.year.toString(), (contribution.taxPeriodStart.year+1).toString())
-        }
+        @if(contribution.isPeriod1) {@Messages("paac.review-amounts.heading.period",contribution.taxPeriodStart.year.toString(), (contribution.taxPeriodStart.year+1).toString(), 1)}
+        @if(contribution.isPeriod2) {@Messages("paac.review-amounts.heading.period",contribution.taxPeriodStart.year.toString(), (contribution.taxPeriodStart.year+1).toString(), 2)}
+        @if(!contribution.isPeriod1 && !contribution.isPeriod2) {@Messages("paac.review-amounts.heading",contribution.taxPeriodStart.year.toString(), (contribution.taxPeriodStart.year+1).toString())}
         </th>
         <th width="35%"></th>
         <th class="edit_action" width="15%"></th>
     </tr>
     </thead>
     <tbody>
-        @defining(contribution.amounts.getOrElse(InputAmounts())) { amounts =>
+        @defining(contribution.amounts.get) { amounts =>
         @if(amounts.moneyPurchase.isDefined && contribution.taxPeriodStart.year >= 2015){
         <tr>
             <td>@Messages("paac.review-amounts.heading.mp")</td>
             <td class="numeric">&pound;@(currencyFormatter.format(amounts.moneyPurchase.get/100D))</td>
             <td class="edit_action">
-                @if(contribution.taxPeriodStart.year < 2015) {
-                <a href="edit/@contribution.taxPeriodStart.year">
-                }
-                @if(contribution.isPeriod1()) {
-                <a href="edit/20151">
-                }
-                @if(contribution.isPeriod2()) {
-                <a href="edit/20152">
-                }
+                @if(contribution.taxPeriodStart.year < 2015) {<a href="edit/@contribution.taxPeriodStart.year">}
+                @if(contribution.isPeriod1()) {<a href="edit/20151">}
+                @if(contribution.isPeriod2()) {<a href="edit/20152">}
                  @Messages("paac.review-amounts.action.edit") <span class="visuallyhidden">@(contribution.taxYearLabel())</span>
                 </a>
             </td>
         </tr>
-        }        
+        } @* End of defined contribution row *@
+
         @if(amounts.definedBenefit.isDefined){
         <tr>
-            <td>@if(contribution.taxPeriodStart.year < 2015) { 
-                    @Messages("paac.review-amounts.heading.total") 
-                } else { 
-                    @Messages("paac.review-amounts.heading.db") 
-                }</td>
+            <td>@if(contribution.taxPeriodStart.year < 2015) { @Messages("paac.review-amounts.heading.total") } else { @Messages("paac.review-amounts.heading.db") }</td>
             <td class="numeric">&pound;@(currencyFormatter.format(amounts.definedBenefit.get/100D))</td>
             <td class="edit_action">
-                @if(contribution.taxPeriodStart.year < 2015) {
-                <a href="edit/@contribution.taxPeriodStart.year">
-                }
-                @if(contribution.isPeriod1()) {
-                <a href="edit/20151">
-                }
-                @if(contribution.isPeriod2()) {
-                <a href="edit/20152">
-                }
+                @if(contribution.taxPeriodStart.year < 2015) {<a href="edit/@contribution.taxPeriodStart.year">}
+                @if(contribution.isPeriod1()) {<a href="edit/20151">}
+                @if(contribution.isPeriod2()) {<a href="edit/20152">}
                  @Messages("paac.review-amounts.action.edit") <span class="visuallyhidden">@(contribution.taxYearLabel())</span>
                 </a>
             </td>
         </tr>
-        }
+        }@* End of defined benefit row *@
+
         @if(triggerContribution.isDefined) {
         @if(triggerContribution.get.isPeriod1 && contribution.isPeriod1 || 
             triggerContribution.get.isPeriod2 && contribution.isPeriod2 || 
@@ -122,7 +102,7 @@ backLink = Some((controllers.routes.ReviewTotalAmountsController.onBack.url,Mess
             </td>
         </tr>
         <tr>
-            <td>@Messages("paac.review-amounts.heading.trigger.savings", contribution.taxPeriodStart.year.toString(), (contribution.taxPeriodEnd.year+1).toString())</td>
+            <td>@Messages("paac.review-amounts.heading.trigger.savings", contribution.taxPeriodStart.year.toString(), (contribution.taxPeriodStart.year+1).toString())</td>
             <td class="numeric">&pound;@(currencyFormatter.format(triggerContribution.get.amounts.getOrElse(InputAmounts()).moneyPurchase.get/100D))</td>
             <td class="edit_action">
                 <a href="edit/@(controllers.ReviewTotalAmountsController.EDIT_TRIGGER_AMOUNT)">
@@ -131,63 +111,17 @@ backLink = Some((controllers.routes.ReviewTotalAmountsController.onBack.url,Mess
             </td>
         </tr>
         }
-        }
+        } @* End of money purchase trigger rows *@
 
-
-
-
-
-
-
-
-
-
-
-
-<!--
-        <tr>
-            <td class="numeric">@(contribution.taxYearLabel())</td>
-            <td class="numeric">
-                @if(amounts.moneyPurchase.isDefined){
-                &pound;@(currencyFormatter.format(amounts.moneyPurchase.get/100D))
-                } else {
-                &pound;&nbsp;&ndash;
-                }
-            </td>
-            <td class="numeric">
-                @if(amounts.definedBenefit.isDefined) {
-                    &pound;@(currencyFormatter.format(amounts.definedBenefit.get/100D))
-                } else {
-                    &pound;&nbsp;&ndash;
-                }
-            </td>
-            @if(triggerContribution.isDefined) {
-            @if(triggerContribution.get.isPeriod1 && contribution.isPeriod1 || triggerContribution.get.isPeriod2 && contribution.isPeriod2) {
-            <td class="numeric">
-            @defining(triggerContribution.get.amounts.getOrElse(InputAmounts())) { amounts2 =>
-            &pound;@(currencyFormatter.format(amounts2.moneyPurchase.get/100D))
-            }
-            </td>
-            <td class="numeric">
-            @defining(reviewForm.get.triggerDate.get.split("-")) { dateParts =>
-            @(dateParts(2))-@(dateParts(1))-@(dateParts(0))
-            }
-            </td>
-            } else {
-            <td class="numeric"></td>
-            <td class="numeric"></td>
-            }
-        </tr>
--->
-        }
-
+        } @* End of define amounts *@
     </tbody>
 </table>
-      }
-    }
-  }
-  }
-}
+} @* End of for *@
+} @* End of define contributions *@
+} @* End of define triggerContribution *@
+} @* End of define currencyFormatter *@
+} @* End of if form has no errors *@
+
 @form(
 action = controllers.routes.ReviewTotalAmountsController.onSubmit,
 args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
