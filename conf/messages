@@ -68,7 +68,7 @@ paac.pip.subheading=The tax year 2015 to 2016 is split into 2 periods.
 
 ## Tax Year Selection
 paac.taxyear.selection.pagetitle = Tax Year Selection
-paac.taxyear.selection.heading = Choose Tax Years
+paac.taxyear.selection.heading = Choose tax years
 paac.taxyear.selection.p1 = Select which tax years you want to check if you owe any tax on your pension contributions or if you can carry over any unused allowance.
 paac.taxyear.selection.p2 = You can check for tax years when you were a registered member of a pension scheme but made no contributions.
 paac.taxyear.selection.p3 = A tax year is 6 April to 5 April.
