@@ -32,7 +32,7 @@ backLink = Some((controllers.routes.PensionInputs201516Controller.onBack.url,Mes
         @for(error <- paacForm.errors) {
         @defining(Seq("2015 P1")++error.args) { args =>
         <li><a href="#input_2015_p1" style="color:#b10e1e;font-weight: bold;">@Messages(error.message, args:_*)</a></li>
-        }
+            }
         }
     </ul>
 </div>
@@ -48,7 +48,7 @@ args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
     <tbody>
     <fieldset id="input_2015_p1" class="form-field-group" style="max-width:12.35em;">
         @if(isDefinedContribution){
-        <label class="form-element-bold label--full-length numeric" for="year2015.definedContribution_2015_p1" style="width:150%;display: inline-block;@if(paacForm.errors.find(_.key == "definedContribution_2015_p1")) {color:#b10e1e;}">
+        <label class="form-element-bold label--full-length numeric" for="year2015.definedContribution_2015_p1" style="width:150%;display: inline-block;@if(paacForm.errors.find(_.key == "year2015.definedContribution_2015_p1")) {color:#b10e1e;}">
         <tr style="text-align:left;min-width: 7em">@Messages("paac.1516.pension.inputs.dc")</tr><BR/>
                           <span style="float:right">
                               @if(paacForm.data.contains("year2015.definedContribution_2015_p1")) {
@@ -82,12 +82,6 @@ args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
     </fieldset>
     </tbody>
 </table>
-
-<br/>
-@form(
-action = controllers.routes.PensionInputs201516Controller.onSubmit,
-args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
-
 <p class="lede text">@Messages("paac.201516.pension.inputs.period2", (if(isDefinedBenefit && isDefinedContribution) "pension" else if(isDefinedBenefit) "defined benefit" else if (isDefinedContribution) "defined contribution"  else ""))</p>
 <table>
     <tbody>
@@ -127,9 +121,8 @@ args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
     </fieldset>
     </tbody>
 </table>
-
 <br/>
 
 <button id="submit" type="submit" class="button" value="Continue">@Messages("paac.calculator.button.continue")</button>
 } @* End of Form *@
-} @* End of paacMain *@ }
+} @* End of paacMain *@

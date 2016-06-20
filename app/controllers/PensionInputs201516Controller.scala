@@ -38,14 +38,7 @@ trait PensionInputs201516Controller extends RedirectController {
   }
 
   val onPageLoad = withSession { implicit request =>
-    keystore.read[String](List(KeystoreService.P1_DB_KEY, KeystoreService.P1_DC_KEY, KeystoreService.DB_FLAG, KeystoreService.DC_FLAG)).map {
-      (fieldsMap) =>
-        Ok(views.html.pensionInputs_201516(CalculatorForm.bind(fieldsMap).discardingErrors,
-          fieldsMap(KeystoreService.DB_FLAG).toBoolean,
-          fieldsMap(KeystoreService.DC_FLAG).toBoolean))
-    }
-
-    keystore.read[String](List(KeystoreService.P2_DB_KEY, KeystoreService.P2_DC_KEY, KeystoreService.DB_FLAG, KeystoreService.DC_FLAG)).map {
+    keystore.read[String](List(KeystoreService.P1_DB_KEY, KeystoreService.P1_DC_KEY, KeystoreService.P2_DB_KEY, KeystoreService.P2_DC_KEY, KeystoreService.DB_FLAG, KeystoreService.DC_FLAG)).map {
       (fieldsMap) =>
         Ok(views.html.pensionInputs_201516(CalculatorForm.bind(fieldsMap).discardingErrors,
           fieldsMap(KeystoreService.DB_FLAG).toBoolean,
@@ -63,61 +56,32 @@ trait PensionInputs201516Controller extends RedirectController {
         CalculatorForm.form.bindFromRequest().fold(
           formWithErrors => { Future.successful(Ok(views.html.pensionInputs_201516(formWithErrors, isDB, isDC))) },
           input => {
-            val isDBError = !input.to1516Period1DefinedBenefit.isDefined && isDB
-            val isDCError = !input.to1516Period1DefinedContribution.isDefined && isDC
-            if (isDBError || isDCError) {
+            val isDBErrorP1 = !input.to1516Period1DefinedBenefit.isDefined && isDB
+            val isDBErrorP2 = !input.to1516Period2DefinedBenefit.isDefined
+            val isDCErrorP1 = !input.to1516Period1DefinedContribution.isDefined && isDC
+            val isDCErrorP2 = !input.to1516Period2DefinedContribution.isDefined
+            if ((isDBErrorP1 || isDCErrorP1) || (isDBErrorP2 || isDCErrorP2)) {
               var form = CalculatorForm.form.bindFromRequest()
-              if (isDBError) {
+              if (isDBErrorP1) {
                 form = form.withError("year2015.definedBenefit_2015_p1", "db.error.bounds")
               }
-              if (isDCError) {
+              if (isDBErrorP2){
+                form = form.withError("year2015.definedBenefit_2015_p2", "db.error.bounds")
+              }
+              if (isDCErrorP1){
                 form = form.withError("year2015.definedContribution_2015_p1", "dc.error.bounds")
               }
-
-
-
+              if (isDCErrorP2) {
+                form = form.withError("year2015.definedContribution_2015_p2", "dc.error.bounds")
+              }
               Future.successful(Ok(views.html.pensionInputs_201516(form, isDB, isDC)))
             } else {
-              keystore.save(List(input.to1516Period1DefinedBenefit, input.to1516Period1DefinedContribution), "").flatMap{
+              keystore.save(List(input.to1516Period1DefinedBenefit, input.to1516Period1DefinedContribution, input.to1516Period2DefinedBenefit, input.to1516Period2DefinedContribution), "").flatMap{
                 (_)=>
                   if (isEdit) {
                     goTo(-1, true, isEdit, false, Redirect(onSubmitRedirect))
                   } else {
                     Future.successful(Redirect(onSubmitRedirect))
-                  }
-              }
-            }
-          }
-        )
-    }
-
-    keystore.read[String](List(KeystoreService.DB_FLAG, KeystoreService.DC_FLAG, KeystoreService.IS_EDIT_KEY)).flatMap {
-      (fieldsMap) =>
-        val isDB = fieldsMap(KeystoreService.DB_FLAG).toBoolean
-        val isDC = fieldsMap(KeystoreService.DC_FLAG).toBoolean
-        val isEdit = fieldsMap(KeystoreService.IS_EDIT_KEY).toBoolean
-
-        CalculatorForm.form.bindFromRequest().fold(
-          formWithErrors => { Future.successful(Ok(views.html.pensionInputs_201516(formWithErrors, isDB, isDC))) },
-          input => {
-            val isDBError = !input.to1516Period2DefinedBenefit.isDefined && isDB
-            val isDCError = !input.to1516Period2DefinedContribution.isDefined && isDC
-            if (isDBError || isDCError) {
-              var form = CalculatorForm.form.bindFromRequest()
-              if (isDBError) {
-                form = form.withError("year2015.definedBenefit_2015_p2", "db.error.bounds")
-              }
-              if (isDCError) {
-                form = form.withError("year2015.definedContribution_2015_p2", "dc.error.bounds")
-              }
-              Future.successful(Ok(views.html.pensionInputs_201516(form, isDB, isDC)))
-            } else {
-              keystore.save(List(input.to1516Period2DefinedBenefit, input.to1516Period2DefinedContribution), "").flatMap{
-                (_)=>
-                  if (isDC && !isEdit) {
-                    Future.successful(Redirect(onSubmitRedirect))
-                  } else {
-                    wheretoNext(Redirect(routes.ReviewTotalAmountsController.onPageLoad()))
                   }
               }
             }
