@@ -43,11 +43,11 @@ backLink = Some((controllers.routes.PensionInputs201516Controller.onBack.url,Mes
 action = controllers.routes.PensionInputs201516Controller.onSubmit,
 args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
 
-<p class="lede text">@Messages("paac.201516.pension.inputs.period1", (if(isDefinedBenefit && isDefinedContribution) "pension" else if(isDefinedBenefit) "defined benefit" else if (isDefinedContribution) "defined contribution"  else ""))</p>
+<p class="lede text" style="margin: 0"><b>@Messages("paac.201516.pension.inputs.period1", (if(isDefinedBenefit && isDefinedContribution) "pension" else if(isDefinedBenefit) "defined benefit" else if (isDefinedContribution) "defined contribution"  else ""))</b></p>
 
-<table>
+<table style="max-width:12.35em; margin: 0">
     <tbody>
-    <fieldset id="input_2015_p1" class="form-field-group" style="max-width:12.35em;">
+    <fieldset id="input_2015_p1" style="max-width:12.35em; margin: 0">
         @if(isDefinedContribution){
         <label class="form-element-bold label--full-length numeric" for="year2015.definedContribution_2015_p1" style="width:150%;display: inline-block;@if(paacForm.errors.find(_.key == "year2015.definedContribution_2015_p1")) {color:#b10e1e;}">
         <tr style="text-align:left;min-width: 7em">@Messages("paac.1516.pension.inputs.dc")</tr><BR/>
@@ -83,10 +83,11 @@ args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
     </fieldset>
     </tbody>
 </table>
-<p class="lede text">@Messages("paac.201516.pension.inputs.period2", (if(isDefinedBenefit && isDefinedContribution) "pension" else if(isDefinedBenefit) "defined benefit" else if (isDefinedContribution) "defined contribution"  else ""))</p>
+<br>
+<p class="lede text" style="margin: 0"><b>@Messages("paac.201516.pension.inputs.period2", (if(isDefinedBenefit && isDefinedContribution) "pension" else if(isDefinedBenefit) "defined benefit" else if (isDefinedContribution) "defined contribution"  else ""))</b></p>
 <table>
     <tbody>
-    <fieldset id="input_2015_p2" class="form-field-group" style="max-width:12.35em;">
+    <fieldset id="input_2015_p2" style="max-width:12.35em; margin: 0">
         @if(isDefinedContribution){
         <label class="form-element-bold label--full-length numeric" for="year2015.definedContribution_2015_p2" style="width:150%;display: inline-block;@if(paacForm.errors.find(_.key == "year2015.definedContribution_2015_p2")) {color:#b10e1e;}">
         <tr style="text-align:left;min-width: 7em">@Messages("paac.1516.pension.inputs.dc")</tr><BR/>
