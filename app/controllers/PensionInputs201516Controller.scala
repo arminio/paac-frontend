@@ -57,9 +57,9 @@ trait PensionInputs201516Controller extends RedirectController {
           formWithErrors => { Future.successful(Ok(views.html.pensionInputs_201516(formWithErrors, isDB, isDC))) },
           input => {
             val isDBErrorP1 = !input.to1516Period1DefinedBenefit.isDefined && isDB
-            val isDBErrorP2 = !input.to1516Period2DefinedBenefit.isDefined
+            val isDBErrorP2 = !input.to1516Period2DefinedBenefit.isDefined && isDB
             val isDCErrorP1 = !input.to1516Period1DefinedContribution.isDefined && isDC
-            val isDCErrorP2 = !input.to1516Period2DefinedContribution.isDefined
+            val isDCErrorP2 = !input.to1516Period2DefinedContribution.isDefined && isDC
             if ((isDBErrorP1 || isDCErrorP1) || (isDBErrorP2 || isDCErrorP2)) {
               var form = CalculatorForm.form.bindFromRequest()
               if (isDBErrorP1) {
