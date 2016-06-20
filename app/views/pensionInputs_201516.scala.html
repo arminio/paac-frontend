@@ -32,7 +32,8 @@ backLink = Some((controllers.routes.PensionInputs201516Controller.onBack.url,Mes
         @for(error <- paacForm.errors) {
         @defining(Seq("2015 P1")++error.args) { args =>
         <li><a href="#input_2015_p1" style="color:#b10e1e;font-weight: bold;">@Messages(error.message, args:_*)</a></li>
-            }
+        }
+
         }
     </ul>
 </div>
@@ -64,7 +65,7 @@ args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
         </label>
         }
         @if(isDefinedBenefit){
-        <label class="form-element-bold label--full-length numeric" for="year2015.definedBenefit_2015_p1" style="width:150%;display: inline-block;@if(paacForm.errors.find(_.key == "definedBenefit_2015_p1")) {color:#b10e1e;}">
+        <label class="form-element-bold label--full-length numeric" for="year2015.definedBenefit_2015_p1" style="width:150%;display: inline-block;@if(paacForm.errors.find(_.key == "year2015.definedBenefit_2015_p1")) {color:#b10e1e;}">
         <tr style="text-align:left;min-width: 7em">@Messages("paac.1516.pension.inputs.db")</tr><BR/>
                           <span style="float:right">
                               @if(paacForm.data.contains("year2015.definedBenefit_2015_p1")) {
