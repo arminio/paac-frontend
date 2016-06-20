@@ -54,8 +54,9 @@ trait PostTriggerPensionInputsController extends RedirectController {
            ) {
           Future.successful( Ok(views.html.postTriggerPensionInputs(f.withError("error.bounds", "error.bounds", 0, 5000000.00))) )
         } else {
-          val toSave: Option[(Long,String)] = if (triggerP1) { input.toP1TriggerDefinedContribution } else { input.toP2TriggerDefinedContribution }
-          keystore.save[String,Long](List(toSave), "").flatMap {
+          val s1: Option[(Long,String)] = if (triggerP1) { input.toP1TriggerDefinedContribution } else { input.toP2TriggerDefinedContribution }
+          val s2: Option[(Long,String)] = Some((0, (if (triggerP1) KeystoreService.P2_TRIGGER_DC_KEY else KeystoreService.P1_TRIGGER_DC_KEY)))
+          keystore.save[String,Long](List(s1,s2), "").flatMap {
             (a) =>
             wheretoNext(Redirect(routes.ReviewTotalAmountsController.onPageLoad))
           }

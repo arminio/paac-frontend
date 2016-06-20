@@ -44,7 +44,7 @@ backLink = Some((controllers.routes.ReviewTotalAmountsController.onPageLoad.url,
                                                                 result.input.amounts.get.definedBenefit.getOrElse(0L) + 
                                                                 result.input.amounts.get.moneyPurchase.getOrElse(0L))
                                                                 /100))</td>
-          <td class="numeric">&pound;@(currencyFormatter.format(result.summaryResult.chargableAmount + period1Result.summaryResult.chargableAmount/100))</td>
+          <td class="numeric">&pound;@(currencyFormatter.format((result.summaryResult.chargableAmount + period1Result.summaryResult.chargableAmount)/100))</td>
           <td class="numeric">&pound;@(currencyFormatter.format(result.summaryResult.unusedAllowance/100))</td>
           <!--td class="numeric">&pound;@(currencyFormatter.format(result.summaryResult.unusedMPAA/100))</td>
           <td class="numeric">&pound;@(currencyFormatter.format(result.summaryResult.unusedAAA/100))</td-->

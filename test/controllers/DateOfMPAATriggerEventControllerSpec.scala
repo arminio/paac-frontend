@@ -44,6 +44,8 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
         // setup
         val request = FakeRequest(GET,"").withSession{(SessionKeys.sessionId,SESSION_ID)}
         MockKeystore.map = MockKeystore.map + (KeystoreService.TRIGGER_DATE_KEY -> "")
+        MockKeystore.map = MockKeystore.map + (KeystoreService.P1_TRIGGER_DC_KEY -> "0")
+        MockKeystore.map = MockKeystore.map + (KeystoreService.P2_TRIGGER_DC_KEY -> "0")
 
         // do it
         val result : Future[Result] = ControllerWithMockKeystore.onPageLoad()(request)
@@ -58,6 +60,8 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
         // setup
         val request = FakeRequest(GET,"").withSession{(SessionKeys.sessionId,SESSION_ID)}
         MockKeystore.map = MockKeystore.map + (KeystoreService.TRIGGER_DATE_KEY -> "2015-11-1")
+        MockKeystore.map = MockKeystore.map + (KeystoreService.P1_TRIGGER_DC_KEY -> "0")
+        MockKeystore.map = MockKeystore.map + (KeystoreService.P2_TRIGGER_DC_KEY -> "0")
 
         // do it
         val result : Future[Result] = ControllerWithMockKeystore.onPageLoad()(request)
@@ -77,7 +81,10 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
         implicit val hc = HeaderCarrier()
         implicit val request = FakeRequest(POST, "/paac/d").withSession((SessionKeys.sessionId,SESSION_ID)).withFormUrlEncodedBody(("dateOfMPAATriggerEvent.day" -> "4"),
                                     ("dateOfMPAATriggerEvent.month" -> "7"),
-                                    ("dateOfMPAATriggerEvent.year" -> "2015"))
+                                    ("dateOfMPAATriggerEvent.year" -> "2015"),
+                                    (KeystoreService.P1_TRIGGER_DC_KEY -> "0"),
+                                    (KeystoreService.P2_TRIGGER_DC_KEY -> "0"),
+                                    (KeystoreService.TRIGGER_DATE_KEY -> "2013-7-1"))
         MockKeystore.map = MockKeystore.map + (KeystoreService.IS_EDIT_KEY -> "false")
         MockKeystore.map = MockKeystore.map + (KeystoreService.TE_YES_NO_KEY -> "true")
 
@@ -96,7 +103,10 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
         implicit val hc = HeaderCarrier()
         implicit val request = FakeRequest(POST, "/paac/d").withSession((SessionKeys.sessionId,SESSION_ID)).withFormUrlEncodedBody(("dateOfMPAATriggerEvent.day" -> "4"),
                                     ("dateOfMPAATriggerEvent.month" -> "7"),
-                                    ("dateOfMPAATriggerEvent.year" -> "2015"))
+                                    ("dateOfMPAATriggerEvent.year" -> "2015"),
+                                    (KeystoreService.P1_TRIGGER_DC_KEY -> "0"),
+                                    (KeystoreService.P2_TRIGGER_DC_KEY -> "0"),
+                                    (KeystoreService.TRIGGER_DATE_KEY -> "2013-7-1"))
         MockKeystore.map = MockKeystore.map + (KeystoreService.IS_EDIT_KEY -> "false")
         MockKeystore.map = MockKeystore.map + (KeystoreService.TE_YES_NO_KEY -> "true")
 
@@ -113,7 +123,10 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
         implicit val hc = HeaderCarrier()
         implicit val request = FakeRequest(POST, "/paac/d").withSession((SessionKeys.sessionId,SESSION_ID)).withFormUrlEncodedBody(("dateOfMPAATriggerEvent.day" -> "5"),
                                     ("dateOfMPAATriggerEvent.month" -> "4"),
-                                    ("dateOfMPAATriggerEvent.year" -> "2015"))
+                                    ("dateOfMPAATriggerEvent.year" -> "2015"),
+                                    (KeystoreService.P1_TRIGGER_DC_KEY -> "0"),
+                                    (KeystoreService.P2_TRIGGER_DC_KEY -> "0"),
+                                    (KeystoreService.TRIGGER_DATE_KEY -> "2013-7-1"))
         MockKeystore.map = MockKeystore.map + (KeystoreService.IS_EDIT_KEY -> "false")
         MockKeystore.map = MockKeystore.map + (KeystoreService.TE_YES_NO_KEY -> "true")
 
@@ -131,7 +144,10 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
         implicit val hc = HeaderCarrier()
         implicit val request = FakeRequest(POST, "/paac/d").withSession((SessionKeys.sessionId,SESSION_ID)).withFormUrlEncodedBody(("dateOfMPAATriggerEvent.day" -> ""),
                                     ("dateOfMPAATriggerEvent.month" -> ""),
-                                    ("dateOfMPAATriggerEvent.year" -> ""))
+                                    ("dateOfMPAATriggerEvent.year" -> ""),
+                                    (KeystoreService.P1_TRIGGER_DC_KEY -> "0"),
+                                    (KeystoreService.P2_TRIGGER_DC_KEY -> "0"),
+                                    (KeystoreService.TRIGGER_DATE_KEY -> "2013-7-1"))
         MockKeystore.map = MockKeystore.map + (KeystoreService.IS_EDIT_KEY -> "false")
         MockKeystore.map = MockKeystore.map + (KeystoreService.TE_YES_NO_KEY -> "true")
 
@@ -149,7 +165,10 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
         implicit val hc = HeaderCarrier()
         implicit val request = FakeRequest(POST, "/paac/d").withSession((SessionKeys.sessionId,SESSION_ID)).withFormUrlEncodedBody(("dateOfMPAATriggerEvent.day" -> "-1"),
                                     ("dateOfMPAATriggerEvent.month" -> "-1"),
-                                    ("dateOfMPAATriggerEvent.year" -> "-1"))
+                                    ("dateOfMPAATriggerEvent.year" -> "-1"),
+                                    (KeystoreService.P1_TRIGGER_DC_KEY -> "0"),
+                                    (KeystoreService.P2_TRIGGER_DC_KEY -> "0"),
+                                    (KeystoreService.TRIGGER_DATE_KEY -> "2013-7-1"))
         MockKeystore.map = MockKeystore.map + (KeystoreService.IS_EDIT_KEY -> "false")
         MockKeystore.map = MockKeystore.map + (KeystoreService.TE_YES_NO_KEY -> "true")
 
@@ -167,7 +186,10 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
         implicit val hc = HeaderCarrier()
         implicit val request = FakeRequest(POST, "/paac/d").withSession((SessionKeys.sessionId,SESSION_ID)).withFormUrlEncodedBody(("dateOfMPAATriggerEvent.day" -> "4"),
                                     ("dateOfMPAATriggerEvent.month" -> "7"),
-                                    ("dateOfMPAATriggerEvent.year" -> "2018"))
+                                    ("dateOfMPAATriggerEvent.year" -> "2018"),
+                                    (KeystoreService.P1_TRIGGER_DC_KEY -> "0"),
+                                    (KeystoreService.P2_TRIGGER_DC_KEY -> "0"),
+                                    (KeystoreService.TRIGGER_DATE_KEY -> "2013-7-1"))
         MockKeystore.map = MockKeystore.map + (KeystoreService.IS_EDIT_KEY -> "false")
 
         // test
@@ -183,7 +205,10 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
         implicit val hc = HeaderCarrier()
         implicit val request = FakeRequest(POST, "/paac/d").withSession((SessionKeys.sessionId,SESSION_ID)).withFormUrlEncodedBody(("dateOfMPAATriggerEvent.day" -> "4"),
                                     ("dateOfMPAATriggerEvent.month" -> "11"),
-                                    ("dateOfMPAATriggerEvent.year" -> "2016"))
+                                    ("dateOfMPAATriggerEvent.year" -> "2016"),
+                                    (KeystoreService.P1_TRIGGER_DC_KEY -> "0"),
+                                    (KeystoreService.P2_TRIGGER_DC_KEY -> "0"),
+                                    (KeystoreService.TRIGGER_DATE_KEY -> "2013-7-1"))
         MockKeystore.map = MockKeystore.map + (KeystoreService.IS_EDIT_KEY -> "true")
 
         // test
@@ -199,7 +224,10 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
         implicit val hc = HeaderCarrier()
         implicit val request = FakeRequest(POST, "/paac/d").withSession((SessionKeys.sessionId,SESSION_ID)).withFormUrlEncodedBody(("dateOfMPAATriggerEvent.day" -> "4"),
                                     ("dateOfMPAATriggerEvent.month" -> "7"),
-                                    ("dateOfMPAATriggerEvent.year" -> "2013"))
+                                    ("dateOfMPAATriggerEvent.year" -> "2013"),
+                                    (KeystoreService.P1_TRIGGER_DC_KEY -> "0"),
+                                    (KeystoreService.P2_TRIGGER_DC_KEY -> "0"),
+                                    (KeystoreService.TRIGGER_DATE_KEY -> "2013-7-1"))
 
         // test
         val result : Future[Result] = ControllerWithMockKeystore.onSubmit()(request)
