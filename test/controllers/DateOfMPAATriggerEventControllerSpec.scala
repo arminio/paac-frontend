@@ -167,7 +167,7 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
         implicit val hc = HeaderCarrier()
         implicit val request = FakeRequest(POST, "/paac/d").withSession((SessionKeys.sessionId,SESSION_ID)).withFormUrlEncodedBody(("dateOfMPAATriggerEvent.day" -> "4"),
                                     ("dateOfMPAATriggerEvent.month" -> "7"),
-                                    ("dateOfMPAATriggerEvent.year" -> "2018"))
+                                    ("dateOfMPAATriggerEvent.year" -> "2015"))
         MockKeystore.map = MockKeystore.map + (KeystoreService.IS_EDIT_KEY -> "false")
 
         // test
@@ -183,7 +183,7 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
         implicit val hc = HeaderCarrier()
         implicit val request = FakeRequest(POST, "/paac/d").withSession((SessionKeys.sessionId,SESSION_ID)).withFormUrlEncodedBody(("dateOfMPAATriggerEvent.day" -> "4"),
                                     ("dateOfMPAATriggerEvent.month" -> "11"),
-                                    ("dateOfMPAATriggerEvent.year" -> "2016"))
+                                    ("dateOfMPAATriggerEvent.year" -> "2015"))
         MockKeystore.map = MockKeystore.map + (KeystoreService.IS_EDIT_KEY -> "true")
 
         // test

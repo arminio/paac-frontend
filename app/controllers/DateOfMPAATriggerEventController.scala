@@ -55,13 +55,7 @@ trait DateOfMPAATriggerEventController extends RedirectController {
         keystore.store(input.dateOfMPAATriggerEvent.map(_.toString).getOrElse(""), KeystoreService.TRIGGER_DATE_KEY).flatMap {
           (_)=>
           if (input.dateOfMPAATriggerEvent.isDefined) {
-            val date = input.dateOfMPAATriggerEvent.get
-
-            if ((date.getYear() < 2015) || (date.getYear() >= 2017) ||
-                (date.getYear() == 2015 && date.getMonthOfYear() < 4) || 
-                (date.getYear() == 2015 && date.getMonthOfYear() == 4 && date.getDayOfMonth() < 6) ||
-                (date.getYear() == 2016 && date.getMonthOfYear() > 4 ) ||
-                (date.getYear() == 2016 && date.getMonthOfYear() == 4 && date.getDayOfMonth() >= 6)) {
+            if (isValidDate(input.dateOfMPAATriggerEvent.get)) {
               val form = DateOfMPAATriggerEventForm.form.bindFromRequest().withError("dateOfMPAATriggerEvent", "paac.mpaa.ta.date.page.invalid.date")
               Future.successful(Ok(views.html.date_of_mpaa_trigger_event(form)))
             } else {
@@ -81,5 +75,13 @@ trait DateOfMPAATriggerEventController extends RedirectController {
         }
       }
     )
+  }
+
+  private def isValidDate(date: LocalDate): Boolean  = {
+    (date.getYear() < 2015) || (date.getYear() >= 2017) ||
+    (date.getYear() == 2015 && date.getMonthOfYear() < 4) ||
+    (date.getYear() == 2015 && date.getMonthOfYear() == 4 && date.getDayOfMonth() < 6) ||
+    (date.getYear() == 2016 && date.getMonthOfYear() > 4 ) ||
+    (date.getYear() == 2016 && date.getMonthOfYear() == 4 && date.getDayOfMonth() >= 6)
   }
 }

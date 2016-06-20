@@ -152,7 +152,7 @@ paac.results.page.title = PAAC Results
 paac.results.p1 = Based on your answers, over the past {0} years you have exceeded your annual allowance by &pound;{1}. You may have to pay tax on this.
 
 ## Post Trigger Pension Inputs Page
-paac.post-trigger-value.page.question = What were your defined contribution pension savings for the rest of the tax year {0}?
+paac.post-trigger-value.page.question = What were your defined contribution pension savings for the rest of the tax year {0} to {1}?
 paac.post-trigger-value.page.title=Money Purchase Value After Flexi Access
 paac.post-trigger-value.description = Enter total amount of defined contributions and investment growth made after the date of the first withdrawal on {0}.
 paac.post.trigger.amount.input.label = Total amount
