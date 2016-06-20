@@ -76,6 +76,7 @@ case class CalculatorFormFields(definedBenefits: Amounts,
   val P2_TRIGGER_AMOUNT = "ptDcAmount2015P2"
   val DB_PREFIX = "dbCurrentYearMinus"
   val DC_PREFIX = "dcCurrentYearMinus"
+
   def toPageValues():List[Contribution] = {
     def retrieveValue(amounts: Amounts, name: String): Option[Long] = {
       val fieldValueMap: Map[String,Any]= amounts.getClass.getDeclaredFields.map(_.getName).zip(amounts.productIterator.toList).toMap

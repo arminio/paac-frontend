@@ -16,18 +16,13 @@
 
 package controllers
 
-import java.util.UUID
-
 import connector._
 import models._
-import org.scalatest.BeforeAndAfterAll
-import play.api.Play
-import play.api.mvc.{Request, Result}
+import play.api.mvc.Result
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.api.test.{FakeApplication, FakeRequest}
 import service._
 import uk.gov.hmrc.play.http.{HeaderCarrier, SessionKeys}
-import uk.gov.hmrc.play.test.UnitSpec
 
 import scala.concurrent.duration._
 import scala.concurrent.{Await, Future}
@@ -309,30 +304,17 @@ class ReviewTotalAmountsControllerSpec extends test.BaseSpec {
         redirectLocation(result) shouldBe Some("/paac/pensionInputs")
       }
 
-      "redirect to pension inputs 1516 period 1 controller on page load when year is 2015 p1" in new MockControllerFixture {
+      "redirect to pension inputs 1516 controller on page load when year is 2015 " in new MockControllerFixture {
         // set up
         val request = FakeRequest(GET, "/paac/edit").withSession {(SessionKeys.sessionId,SESSION_ID)}
         MockKeystore.map = MockKeystore.map + ("isEdit" -> "false")
 
         // test
-        val result: Future[Result] = ControllerWithMocks.onEditAmount(20151)(request)
+        val result: Future[Result] = ControllerWithMocks.onEditAmount(2015)(request)
 
         // check
         status(result) shouldBe 303
-        redirectLocation(result) shouldBe Some("/paac/pensionInputs1516p1")
-      }
-
-      "redirect to pension inputs 1516 period 2 controller on page load when year is 2015 p2" in new MockControllerFixture {
-        // set up
-        val request = FakeRequest(GET, "/paac/edit").withSession {(SessionKeys.sessionId,SESSION_ID)}
-        MockKeystore.map = MockKeystore.map + ("isEdit" -> "false")
-
-        // test
-        val result: Future[Result] = ControllerWithMocks.onEditAmount(20152)(request)
-
-        // check
-        status(result) shouldBe 303
-        redirectLocation(result) shouldBe Some("/paac/pensionInputs1516p2")
+        redirectLocation(result) shouldBe Some("/paac/pensionInputs201516")
       }
     }
 

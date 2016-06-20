@@ -17,6 +17,7 @@
 package controllers
 
 import form.CalculatorForm
+import org.joda.time.LocalDate
 import service.KeystoreService
 
 import scala.concurrent.Future
@@ -35,33 +36,54 @@ trait PostTriggerPensionInputsController extends RedirectController {
         if (dateAsStr == "") {
           Future.successful(Redirect(routes.DateOfMPAATriggerEventController.onPageLoad))
         } else {
-          Future.successful(Ok(views.html.postTriggerPensionInputs(CalculatorForm.bind(values))))
+          val taxYear = selectedTaxYear(dateAsStr).getOrElse("2017")
+          val triggeredDate = flexiAccessDate(dateAsStr)
+          Future.successful(Ok(views.html.postTriggerPensionInputs(CalculatorForm.bind(values),taxYear,triggeredDate)))
         }
     }
   }
 
   val onSubmit = withSession { implicit request =>
     val f = CalculatorForm.form.bindFromRequest()
-    f.fold(
-      formWithErrors => {
-        Future.successful(Ok(views.html.postTriggerPensionInputs(formWithErrors)))
-      },
-      input => {
-        val triggerP1 = input.triggerDatePeriod.get.isPeriod1
-        val triggerP2 = input.triggerDatePeriod.get.isPeriod2
-        if ((triggerP1 && input.year2015.postTriggerDcAmount2015P1 == None) ||
-            (triggerP2 && input.year2015.postTriggerDcAmount2015P2 == None)
-           ) {
-          Future.successful( Ok(views.html.postTriggerPensionInputs(f.withError("error.bounds", "error.bounds", 0, 5000000.00))) )
-        } else {
-          val s1: Option[(Long,String)] = if (triggerP1) { input.toP1TriggerDefinedContribution } else { input.toP2TriggerDefinedContribution }
-          val s2: Option[(Long,String)] = Some((0, (if (triggerP1) KeystoreService.P2_TRIGGER_DC_KEY else KeystoreService.P1_TRIGGER_DC_KEY)))
-          keystore.save[String,Long](List(s1,s2), "").flatMap {
-            (a) =>
-            wheretoNext(Redirect(routes.ReviewTotalAmountsController.onPageLoad))
+    keystore.read[String](KeystoreService.TRIGGER_DATE_KEY).flatMap {
+      (dateAsStr) =>
+        val taxYear = selectedTaxYear(dateAsStr.get).getOrElse("2017")
+        val triggeredDate = flexiAccessDate(dateAsStr.get)
+        f.fold(
+          formWithErrors => {
+            Future.successful(Ok(views.html.postTriggerPensionInputs(formWithErrors, taxYear, triggeredDate)))
+          },
+          input => {
+            val triggerP1 = input.triggerDatePeriod.get.isPeriod1
+            val triggerP2 = input.triggerDatePeriod.get.isPeriod2
+            if ((triggerP1 && input.year2015.postTriggerDcAmount2015P1 == None) ||
+              (triggerP2 && input.year2015.postTriggerDcAmount2015P2 == None)
+            ) {
+              Future.successful(Ok(views.html.postTriggerPensionInputs(f.withError("error.bounds", "error.bounds", 0, 5000000.00),
+                                                                        taxYear, triggeredDate)))
+            } else {
+              val toSave: Option[(Long, String)] = if (triggerP1) {
+                input.toP1TriggerDefinedContribution
+              } else {
+                input.toP2TriggerDefinedContribution
+              }
+              keystore.save[String, Long](List(toSave), "").flatMap {
+                (a) =>
+                  wheretoNext(Redirect(routes.ReviewTotalAmountsController.onPageLoad))
+              }
+            }
           }
-        }
-      }
-    )
+        )
+    }
+  }
+
+  private def flexiAccessDate(date:String): String = {
+    date.split("-").reverse.mkString(" ")
+  }
+
+  def selectedTaxYear(date: String):Option[String] = new LocalDate(date) match {
+    case date1 if (!date1.isBefore(new LocalDate("2015-4-6")) && !date1.isAfter(new LocalDate("2016-4-5"))) => Some("2015")
+    case date2 if (!date2.isBefore(new LocalDate("2016-4-6")) && !date2.isAfter(new LocalDate("2017-4-5"))) => Some("2016")
+    case _ => None
   }
 }

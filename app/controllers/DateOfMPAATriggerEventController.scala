@@ -34,7 +34,7 @@ trait DateOfMPAATriggerEventController extends RedirectController {
   private val onSubmitRedirect: Call = routes.PostTriggerPensionInputsController.onPageLoad
 
   val onPageLoad = withSession { implicit request =>
-    keystore.read(List(TRIGGER_DATE_KEY,P1_TRIGGER_DC_KEY,P2_TRIGGER_DC_KEY)).map {
+    keystore.read[String](List(KeystoreService.TRIGGER_DATE_KEY,P1_TRIGGER_DC_KEY,P2_TRIGGER_DC_KEY)).map {
       (values) =>
         val dateAsStr = values(TRIGGER_DATE_KEY)
         if (dateAsStr == "") {
@@ -54,14 +54,12 @@ trait DateOfMPAATriggerEventController extends RedirectController {
         Future.successful(Ok(views.html.date_of_mpaa_trigger_event(formWithErrors, data))) 
       },
       input => {
+        // should store as json and read out as json but sticking with string throughout
         keystore.store(input.dateOfMPAATriggerEvent.map(_.toString).getOrElse(""), TRIGGER_DATE_KEY).flatMap {
           (_)=>
           if (input.dateOfMPAATriggerEvent.isDefined) {
             val date = input.dateOfMPAATriggerEvent.get
-
-            if ((date.getYear() < 2015) || 
-                (date.getYear() == 2015 && date.getMonthOfYear() < 4) || 
-                (date.getYear() == 2015 && date.getMonthOfYear() == 4 && date.getDayOfMonth() < 6)) {
+            if (isValidDate(input.dateOfMPAATriggerEvent.get)) {
               val form = DateOfMPAATriggerEventForm.form.bindFromRequest().withError("dateOfMPAATriggerEvent", "paac.mpaa.ta.date.page.invalid.date")
               Future.successful(Ok(views.html.date_of_mpaa_trigger_event(form, data)))
             } else {
@@ -76,10 +74,7 @@ trait DateOfMPAATriggerEventController extends RedirectController {
                     // flip trigger values
                     val v1: (Option[String],String) = if (newDate.isPeriod1) (Some(data(P2_TRIGGER_DC_KEY)+"00"),P1_TRIGGER_DC_KEY) else (Some(data(P1_TRIGGER_DC_KEY)+"00"), P2_TRIGGER_DC_KEY)
                     val v2: (Option[String],String) = (Some("0"), if (newDate.isPeriod1) P2_TRIGGER_DC_KEY else P1_TRIGGER_DC_KEY)
-                    keystore.save[String](List(v1,v2),"").map {
-                      (_)=>
-                      Results.Redirect(routes.ReviewTotalAmountsController.onPageLoad())
-                    }
+                    keystore.save[String](List(v1,v2),"").map((_)=>Results.Redirect(routes.ReviewTotalAmountsController.onPageLoad()))
                   } else {
                     Future.successful(Results.Redirect(routes.ReviewTotalAmountsController.onPageLoad()))
                   }
@@ -90,10 +85,18 @@ trait DateOfMPAATriggerEventController extends RedirectController {
             }
           } else {
             val form = DateOfMPAATriggerEventForm.form.bindFromRequest().withError("dateOfMPAATriggerEvent", "error.invalid.date.format")
-            Future.successful(Ok(views.html.date_of_mpaa_trigger_event(form, data)))
+            Future.successful(Ok(views.html.date_of_mpaa_trigger_event(form,data)))
           }
         }
       }
     )
+  }
+
+  private def isValidDate(date: LocalDate): Boolean  = {
+    (date.getYear() < 2015) || (date.getYear() >= 2017) ||
+    (date.getYear() == 2015 && date.getMonthOfYear() < 4) ||
+    (date.getYear() == 2015 && date.getMonthOfYear() == 4 && date.getDayOfMonth() < 6) ||
+    (date.getYear() == 2016 && date.getMonthOfYear() > 4 ) ||
+    (date.getYear() == 2016 && date.getMonthOfYear() == 4 && date.getDayOfMonth() >= 6)
   }
 }
