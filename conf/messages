@@ -68,7 +68,7 @@ paac.pip.subheading=The tax year 2015 to 2016 is split into 2 periods.
 
 ## Tax Year Selection
 paac.taxyear.selection.pagetitle = Tax Year Selection
-paac.taxyear.selection.heading = Choose Tax Years
+paac.taxyear.selection.heading = Choose tax years
 paac.taxyear.selection.p1 = Select which tax years you want to check if you owe any tax on your pension contributions or if you can carry over any unused allowance.
 paac.taxyear.selection.p2 = You can check for tax years when you were a registered member of a pension scheme but made no contributions.
 paac.taxyear.selection.p3 = A tax year is 6 April to 5 April.
@@ -149,9 +149,10 @@ paac.results.page.title = PAAC Results
 paac.results.p1 = Based on your answers, over the past {0} years you have exceeded your annual allowance by &pound;{1}. You may have to pay tax on this.
 
 ## Post Trigger Pension Inputs Page
-paac.post-trigger-value.page.heading=How much was paid into your pension scheme after you accessed your pension savings?
+paac.post-trigger-value.page.question = What were your defined contribution pension savings for the rest of the tax year {0} to {1}?
 paac.post-trigger-value.page.title=Money Purchase Value After Flexi Access
-paac.post-trigger-value.p1=This is how much was paid into your pension scheme from the day after you accessed your pension savings to the end of the pension input period.
+paac.post-trigger-value.description = Enter total amount of defined contributions and investment growth made after the date of the first withdrawal on {0}.
+paac.post.trigger.amount.input.label = Total amount
 paac.post-trigger-value.period1.label=2015/16 P1
 paac.post-trigger-value.period2.label=2015/16 P2
 paac.post-trigger-value.error.real.precision=The amount must not be empty or negative. (Amount must have no more than {1} numbers, including {2} decimal places, and should be £0 or larger and smaller than £5,000,000.)
