@@ -55,10 +55,8 @@ trait RedirectController extends BaseFrontendController {
           Future.successful(Redirect(routes.PostTriggerPensionInputsController.onPageLoad()))
         } else if (year == EDIT_TRIGGER_DATE) {
           Future.successful(Redirect(routes.DateOfMPAATriggerEventController.onPageLoad()))
-        } else if (year == 20151) {
-          Future.successful(Results.Redirect(routes.PensionInputs1516Period1Controller.onPageLoad()))
-        } else if (year == 20152) {
-          Future.successful(Results.Redirect(routes.PensionInputs1516Period2Controller.onPageLoad()))
+        } else if (year == 2015) {
+          Future.successful(Results.Redirect(routes.PensionInputs201516Controller.onPageLoad()))
         } else if (year == 0) {
           Future.successful(Redirect(routes.PostTriggerPensionInputsController.onPageLoad()))
         } else {
@@ -70,7 +68,7 @@ trait RedirectController extends BaseFrontendController {
         Future.successful(Redirect(routes.StartPageController.startPage()))//2016
       } else if (year == 2015) {
         if (isForward) {
-          Future.successful(Redirect(routes.PensionInputs1516Period1Controller.onPageLoad()))
+          Future.successful(Redirect(routes.PensionInputs201516Controller.onPageLoad()))
         } else {
           if (isTE) {
             keystore.read[String](KeystoreService.TRIGGER_DATE_KEY).flatMap {
@@ -94,7 +92,7 @@ trait RedirectController extends BaseFrontendController {
               if (isDC) {
                 Future.successful(Redirect(routes.YesNoMPAATriggerEventAmountController.onPageLoad()))
               } else {
-                Future.successful(Results.Redirect(routes.PensionInputs1516Period2Controller.onPageLoad()))
+                Future.successful(Results.Redirect(routes.PensionInputs201516Controller.onPageLoad()))
               }
             }
           }
