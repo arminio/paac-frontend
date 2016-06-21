@@ -161,7 +161,7 @@ case class CalculatorFormFields(definedBenefits: Amounts,
 
   def hasDefinedContributions(): Boolean = !definedContributions.isEmpty || year2015.hasDefinedContributions
   def hasDefinedBenefits(): Boolean = !definedBenefits.isEmpty || year2015.hasDefinedBenefits
-  def hasTriggerDate(): Boolean = triggerDate != None && triggerDate.get != ""
+  def hasTriggerDate(): Boolean = triggerDate != None && !triggerDate.get.isEmpty
 
   def toDefinedBenefit(first: Contribution => Boolean)(key: String) : Option[(Long, String)] = {
     toContributions.find(first).flatMap {

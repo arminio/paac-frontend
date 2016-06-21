@@ -31,7 +31,7 @@ trait TaxYearSelectionController extends RedirectController {
   private val onSubmitRedirect: Call = routes.PensionInputsController.onPageLoad()
 
   def resetData(kkey: String, previous: String)(implicit hc: HeaderCarrier, format: play.api.libs.json.Format[String], request: Request[Any]): Unit = {
-    if (previous != ""){
+    if (!previous.isEmpty){
       val deletedYears = previous.split(",").diff(kkey.split(","))
       val keysToReset = deletedYears.flatMap {
         (year)=>
