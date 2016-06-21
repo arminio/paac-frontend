@@ -97,9 +97,9 @@ trait ReviewTotalAmountsController extends RedirectController with models.ThisYe
             val contributions = input.toContributions()
             connector.connectToPAACService(contributions).flatMap{
               response =>
-              keystore.read[String](List(DB_FLAG, DC_FLAG)).flatMap {
+              keystore.read[String](List(SELECTED_INPUT_YEARS_KEY)).flatMap {
                 (fieldMap) =>
-                Future.successful(Ok(views.html.results(response, fieldMap(DB_FLAG).toBoolean, fieldMap(DC_FLAG).toBoolean)))
+                Future.successful(Ok(views.html.results(response, fieldMap(SELECTED_INPUT_YEARS_KEY).split(",").map(_.toInt))))
               }
             }
           }
