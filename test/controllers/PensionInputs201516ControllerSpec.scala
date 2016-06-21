@@ -36,25 +36,25 @@ class PensionInputs201516ControllerSpec extends test.BaseSpec {
 
   "PensionInputs201516Controller" when {
     "GET with routes" should {
-      "not return result NOT_FOUND" in {
+      "not return result NOT_FOUND"  in {
         val result: Option[Future[Result]] = route(FakeRequest(GET, endPointURL))
         result.isDefined shouldBe true
         status(result.get) should not be NOT_FOUND
       }
 
-      "return 303 for valid GET request" in {
+      "return 303 for valid GET request"  in {
         val result: Option[Future[Result]] = route(FakeRequest(GET, endPointURL))
         status(result.get) shouldBe 303
       }
 
-      "not return 200 for valid GET request" in {
+      "not return 200 for valid GET request"  in {
         val result: Option[Future[Result]] = route(FakeRequest(GET, endPointURL))
         status(result.get) should not be 200
       }
     }
 
     "onPageLoad with GET request" should {
-      "have keystore with definedContribution flag = true value, should have DC input field" in new ControllerWithMockKeystore {
+      "have keystore with definedContribution flag = true value, should have DC input field"  in new ControllerWithMockKeystore {
         // setup
         val request = FakeRequest(GET,"").withSession{(SessionKeys.sessionId,SESSION_ID)}
         MockKeystore.map = MockKeystore.map + ("definedContribution" -> "true")
@@ -69,7 +69,7 @@ class PensionInputs201516ControllerSpec extends test.BaseSpec {
         htmlPage should include ("""<input type="number" name="year2015.definedContribution_2015_p1" """)
       }
 
-      "have keystore with definedBenefit flag = true value, should have DB input field" in new ControllerWithMockKeystore {
+      "have keystore with definedBenefit flag = true value, should have DB input field"  in new ControllerWithMockKeystore {
         // setup
         val request = FakeRequest(GET,"").withSession{(SessionKeys.sessionId,SESSION_ID)}
         MockKeystore.map = MockKeystore.map + ("definedContribution" -> "false")
@@ -84,7 +84,7 @@ class PensionInputs201516ControllerSpec extends test.BaseSpec {
         htmlPage should include ("""<input type="number" name="year2015.definedBenefit_2015_p1" """)
       }
 
-      "have keystore with definedBenefit_2015_p1 value when we revisit the same page" in new ControllerWithMockKeystore {
+      "have keystore with definedBenefit_2015_p1 value when we revisit the same page"  in new ControllerWithMockKeystore {
         // setup
         val request = FakeRequest(GET,"").withSession{(SessionKeys.sessionId,SESSION_ID)}
         MockKeystore.map = MockKeystore.map + ("definedBenefit_2015_p1" -> "40000")
@@ -129,7 +129,7 @@ class PensionInputs201516ControllerSpec extends test.BaseSpec {
 //        htmlPage should include ("""<input type="number" name="year2015.definedBenefit_2015_p2" """)
 //      }
 
-      "have keystore with definedBenefit_2015_p2 value when we revisit the same page" in new ControllerWithMockKeystore {
+      "have keystore with definedBenefit_2015_p2 value when we revisit the same page"  in new ControllerWithMockKeystore {
         // setup
         val request = FakeRequest(GET,"").withSession{(SessionKeys.sessionId,SESSION_ID)}
         MockKeystore.map = MockKeystore.map + ("definedBenefit_2015_p2" -> "40000")
@@ -147,15 +147,33 @@ class PensionInputs201516ControllerSpec extends test.BaseSpec {
     }
 
     "onSubmit with POST request" should {
-      "not return result NOT_FOUND" in {
+      "not return result NOT_FOUND"  in {
         val result: Option[Future[Result]] = route(FakeRequest(POST, endPointURL))
         result.isDefined shouldBe true
         status(result.get) should not be NOT_FOUND
       }
 
-      "return 303 for valid GET request" in {
+      "return 303 for valid GET request"  in {
         val result: Option[Future[Result]] = route(FakeRequest(POST, endPointURL))
         status(result.get) shouldBe 303
+      }
+
+      "with dc flag false should not go to trigger question page" in new ControllerWithMockKeystore {
+        // set up
+        MockKeystore.map = MockKeystore.map + ("isEdit" -> "false")
+        MockKeystore.map = MockKeystore.map + (KeystoreService.DB_FLAG -> "true")
+        MockKeystore.map = MockKeystore.map + (KeystoreService.DC_FLAG -> "false")
+        MockKeystore.map = MockKeystore.map + (KeystoreService.SELECTED_INPUT_YEARS_KEY -> "2015,2014")
+        MockKeystore.map = MockKeystore.map + (KeystoreService.CURRENT_INPUT_YEAR_KEY -> "2015")
+        implicit val hc = HeaderCarrier()
+        implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID)).withFormUrlEncodedBody(("year2015.definedBenefit_2015_p1" -> "40000"),("year2015.definedBenefit_2015_p2" -> "0"))
+
+        // test
+        val result: Future[Result] = ControllerWithMockKeystore.onSubmit()(request)
+
+        // check
+        status(result) shouldBe 303
+        redirectLocation(result) shouldBe Some("/paac/pensionInputs")
       }
 
 //      "with valid definedBenefit_2015_p1 and in edit mode should redirect to review" in new ControllerWithMockKeystore {
