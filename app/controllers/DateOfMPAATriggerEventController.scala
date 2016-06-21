@@ -37,7 +37,7 @@ trait DateOfMPAATriggerEventController extends RedirectController {
     keystore.read[String](List(KeystoreService.TRIGGER_DATE_KEY,P1_TRIGGER_DC_KEY,P2_TRIGGER_DC_KEY)).map {
       (values) =>
         val dateAsStr = values(TRIGGER_DATE_KEY)
-        if (dateAsStr == "") {
+        if (dateAsStr.isEmpty) {
           Ok(views.html.date_of_mpaa_trigger_event(DateOfMPAATriggerEventForm.form,values))
         } else {
           val parts = dateAsStr.split("-").map(_.toInt)
