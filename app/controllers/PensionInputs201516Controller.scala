@@ -81,7 +81,11 @@ trait PensionInputs201516Controller extends RedirectController {
                   if (isEdit) {
                     goTo(-1, true, isEdit, false, Redirect(onSubmitRedirect))
                   } else {
-                    Future.successful(Redirect(onSubmitRedirect))
+                    if (!isDC) {
+                      wheretoNext(Redirect(onSubmitRedirect))
+                    } else {
+                      Future.successful(Redirect(onSubmitRedirect))
+                    }
                   }
               }
             }
