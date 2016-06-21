@@ -104,8 +104,8 @@ class PensionInputs201516ControllerSpec extends test.BaseSpec {
       "have keystore with definedContribution flag = true value, should have DC input field for P2" in new ControllerWithMockKeystore {
         // setup
         val request = FakeRequest(GET,"").withSession{(SessionKeys.sessionId,SESSION_ID)}
-        MockKeystore.map = MockKeystore.map + ("definedContribution" -> "true")
-        MockKeystore.map = MockKeystore.map + ("definedBenefit" -> "false")
+        MockKeystore.map = MockKeystore.map + (IS_DC -> "true")
+        MockKeystore.map = MockKeystore.map + (IS_DB -> "false")
 
         // test
         val result : Future[Result] = ControllerWithMockKeystore.onPageLoad()(request)
@@ -119,8 +119,8 @@ class PensionInputs201516ControllerSpec extends test.BaseSpec {
       "have keystore with definedBenefit flag = true value, should have DB input field for Period 2" in new ControllerWithMockKeystore {
         // setup
         val request = FakeRequest(GET,"").withSession{(SessionKeys.sessionId,SESSION_ID)}
-        MockKeystore.map = MockKeystore.map + ("definedContribution" -> "false")
-        MockKeystore.map = MockKeystore.map + ("definedBenefit" -> "true")
+        MockKeystore.map = MockKeystore.map + (IS_DC -> "false")
+        MockKeystore.map = MockKeystore.map + (IS_DB -> "true")
 
         // test
         val result : Future[Result] = ControllerWithMockKeystore.onPageLoad()(request)
