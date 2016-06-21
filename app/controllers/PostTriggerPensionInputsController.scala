@@ -77,6 +77,10 @@ trait PostTriggerPensionInputsController extends RedirectController {
     }
   }
 
+  val onBack = withSession { implicit request =>
+    wheretoBack(Redirect(routes.DateOfMPAATriggerEventController.onPageLoad))
+  }
+
   private def flexiAccessDate(date:String): String = {
     date.split("-").reverse.mkString(" ")
   }

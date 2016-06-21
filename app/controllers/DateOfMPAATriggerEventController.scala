@@ -92,6 +92,10 @@ trait DateOfMPAATriggerEventController extends RedirectController {
     )
   }
 
+  val onBack = withSession { implicit request =>
+    wheretoBack(Redirect(routes.YesNoMPAATriggerEventAmountController.onPageLoad))
+  }
+  
   private def isValidDate(date: LocalDate): Boolean  = {
     (date.getYear() < 2015) || (date.getYear() >= 2017) ||
     (date.getYear() == 2015 && date.getMonthOfYear() < 4) ||
