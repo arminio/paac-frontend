@@ -16,11 +16,11 @@
 
 package controllers
 
+import form.CalculatorForm
 import service.KeystoreService
 import service.KeystoreService._
-import play.api.mvc._
+
 import scala.concurrent.Future
-import form.CalculatorForm
 
 object PensionInputsController extends PensionInputsController {
   override val keystore: KeystoreService = KeystoreService
@@ -41,8 +41,7 @@ trait PensionInputsController extends RedirectController {
         keystore.read[String](List((DB_PREFIX + cy),(DC_PREFIX + cy), DB_FLAG, DC_FLAG)).map {
           (fieldsMap) =>
             Ok(views.html.pensionInputs(CalculatorForm.bind(fieldsMap).discardingErrors, cy,
-                                        fieldsMap(KeystoreService.DB_FLAG).toBoolean,
-                                        fieldsMap(KeystoreService.DC_FLAG).toBoolean))
+                                        fieldsMap(KeystoreService.DB_FLAG).toBoolean))
         }
       }
     }
@@ -54,25 +53,20 @@ trait PensionInputsController extends RedirectController {
       (fieldsMap) =>
       val cy = fieldsMap(CURRENT_INPUT_YEAR_KEY).toInt
       val isDB = fieldsMap(DB_FLAG).toBoolean
-      val isDC = fieldsMap(DC_FLAG).toBoolean
       CalculatorForm.form.bindFromRequest().fold(
         formWithErrors => { 
-          Future.successful(Ok(views.html.pensionInputs(formWithErrors, cy.toString(), isDB, isDC))) 
+          Future.successful(Ok(views.html.pensionInputs(formWithErrors, cy.toString(), isDB)))
         },
         input => {
           val isDBError = !input.toDefinedBenefit(cy).isDefined && isDB
-          val isDCError = !input.toDefinedContribution(cy).isDefined && isDC
-          if (isDBError || isDCError) {
+          if (isDBError) {
             var form = CalculatorForm.form.bindFromRequest()
             if (isDBError) {
               form = form.withError("definedBenefits.amount_"+cy, "db.error.bounds")
             }
-            if (isDCError) {
-              form = form.withError("definedContributions.amount_"+cy, "dc.error.bounds")
-            }
-            Future.successful(Ok(views.html.pensionInputs(form, cy.toString(), isDB, isDC)))
+            Future.successful(Ok(views.html.pensionInputs(form, cy.toString(), isDB)))
           } else {
-            keystore.save(List(input.toDefinedBenefit(cy), input.toDefinedContribution(cy)), "").flatMap {
+            keystore.save(List(input.toDefinedBenefit(cy)), "").flatMap {
               (_)=>
               wheretoNext(Redirect(onSubmitRedirect))
             }
