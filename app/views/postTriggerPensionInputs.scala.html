@@ -6,7 +6,7 @@
 @common.paacMain(
 pageTitle = Messages("paac.post-trigger-value.page.title"),
 heading = Messages("paac.post-trigger-value.page.question", selectedTaxYear, (selectedTaxYear.toInt+1).toString),
-backLink = Some((controllers.routes.DateOfMPAATriggerEventController.onPageLoad.url,Messages("paac.link.text.back")))
+backLink = Some((controllers.routes.PostTriggerPensionInputsController.onBack.url,Messages("paac.link.text.back")))
 ) {
 
     <p id="paac.post-trigger-value.p1">

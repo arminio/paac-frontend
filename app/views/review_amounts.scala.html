@@ -62,8 +62,8 @@ backLink = Some((controllers.routes.ReviewTotalAmountsController.onBack.url,Mess
             <td class="numeric">&pound;@(currencyFormatter.format(amounts.moneyPurchase.get/100D))</td>
             <td class="edit_action">
                 @if(contribution.taxPeriodStart.year < 2015) {<a href="edit/@contribution.taxPeriodStart.year">}
-                @if(contribution.isPeriod1()) {<a href="edit/20151">}
-                @if(contribution.isPeriod2()) {<a href="edit/20152">}
+                @if(contribution.isPeriod1()) {<a href="edit/2015">}
+                @if(contribution.isPeriod2()) {<a href="edit/2015">}
                  @Messages("paac.review-amounts.action.edit") <span class="visuallyhidden">@(contribution.taxYearLabel())</span>
                 </a>
             </td>
@@ -76,8 +76,8 @@ backLink = Some((controllers.routes.ReviewTotalAmountsController.onBack.url,Mess
             <td class="numeric">&pound;@(currencyFormatter.format(amounts.definedBenefit.get/100D))</td>
             <td class="edit_action">
                 @if(contribution.taxPeriodStart.year < 2015) {<a href="edit/@contribution.taxPeriodStart.year">}
-                @if(contribution.isPeriod1()) {<a href="edit/20151">}
-                @if(contribution.isPeriod2()) {<a href="edit/20152">}
+                @if(contribution.isPeriod1()) {<a href="edit/2015">}
+                @if(contribution.isPeriod2()) {<a href="edit/2015">}
                  @Messages("paac.review-amounts.action.edit") <span class="visuallyhidden">@(contribution.taxYearLabel())</span>
                 </a>
             </td>
