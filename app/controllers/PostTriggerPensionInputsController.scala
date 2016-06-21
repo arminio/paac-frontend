@@ -33,7 +33,7 @@ trait PostTriggerPensionInputsController extends RedirectController {
     keystore.read[String](List(KeystoreService.TRIGGER_DATE_KEY, KeystoreService.P1_TRIGGER_DC_KEY, KeystoreService.P2_TRIGGER_DC_KEY)).flatMap {
       (values) =>
         val dateAsStr = values(KeystoreService.TRIGGER_DATE_KEY)
-        if (dateAsStr == "") {
+        if (dateAsStr.isEmpty) {
           Future.successful(Redirect(routes.DateOfMPAATriggerEventController.onPageLoad))
         } else {
           val taxYear = selectedTaxYear(dateAsStr).getOrElse("2017")
