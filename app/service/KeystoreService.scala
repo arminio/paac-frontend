@@ -94,7 +94,7 @@ trait KeystoreService {
   }
 
   def save[T: ClassTag ,U](values: List[Option[(U,String)]], defaultT: T)(implicit hc: HeaderCarrier, format: play.api.libs.json.Format[T], request: Request[Any]): Future[List[Option[T]]] = {
-    Future.sequence(values.filter(_ != None).map{
+    Future.sequence(values.filter(_.isDefined).map{
       (maybePair)=>
       val pair = maybePair.get
       storeValue[T](convert[T](pair._1.asInstanceOf[AnyRef], defaultT), pair._2)

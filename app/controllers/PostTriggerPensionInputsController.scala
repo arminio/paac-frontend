@@ -56,8 +56,8 @@ trait PostTriggerPensionInputsController extends RedirectController {
           input => {
             val triggerP1 = input.triggerDatePeriod.get.isPeriod1
             val triggerP2 = input.triggerDatePeriod.get.isPeriod2
-            if ((triggerP1 && input.year2015.postTriggerDcAmount2015P1 == None) ||
-              (triggerP2 && input.year2015.postTriggerDcAmount2015P2 == None)
+            if ((triggerP1 && !input.year2015.postTriggerDcAmount2015P1.isDefined) ||
+              (triggerP2 && !input.year2015.postTriggerDcAmount2015P2.isDefined)
             ) {
               Future.successful(Ok(views.html.postTriggerPensionInputs(f.withError("error.bounds", "error.bounds", 0, 5000000.00),
                                                                         taxYear, triggeredDate)))
