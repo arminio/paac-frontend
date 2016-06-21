@@ -22,7 +22,7 @@ GET         /adjustedincome                             controllers.AdjustedInco
 POST        /adjustedincome                             controllers.AdjustedIncome1617InputController.onSubmit
 
 ## Scheme Selection Page
-GET         /scheme                                     controllers.SelectSchemeController.onPageLoad
+GET         /scheme/:year                               controllers.SelectSchemeController.onPageLoad(year:Int)
 POST        /scheme                                     controllers.SelectSchemeController.onSubmit
 
 # Tax year selection

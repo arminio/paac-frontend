@@ -17,6 +17,7 @@
 package controllers
 
 import service.KeystoreService
+import service.KeystoreService._
 import play.api.mvc._
 import scala.concurrent.Future
 import form.SelectSchemeForm
@@ -28,24 +29,29 @@ object SelectSchemeController extends SelectSchemeController {
 trait SelectSchemeController  extends BaseFrontendController {
   val keystore: KeystoreService
 
-  private val onSubmitRedirect: Call = routes.TaxYearSelectionController.onPageLoad()
+  private val onSubmitRedirect: Call = routes.PensionInputs201516Controller.onPageLoad()
 
-  val onPageLoad = withSession { implicit request =>
-    keystore.read[String](List(KeystoreService.DB_FLAG, KeystoreService.DC_FLAG)).map {
-      (fieldMap) =>
-        Ok(views.html.selectScheme(SelectSchemeForm.form.bind(fieldMap).discardingErrors))
+  def onPageLoad(year:Int) = withSession { implicit request =>
+    keystore.read[String](List(s"${DB_FLAG_PREFIX}${year}", s"${DC_FLAG_PREFIX}${year}")).map{
+      (v)=>
+      val m = Map(("definedBenefit"->v(s"${DB_FLAG_PREFIX}${year}")),("definedContribution"->v(s"${DC_FLAG_PREFIX}${year}")))
+      Ok(views.html.selectScheme(SelectSchemeForm.form.bind(m).discardingErrors, year))
     }
   }
 
   val onSubmit = withSession { implicit request =>
+    val year = formRequestData(request)("year").toInt
     SelectSchemeForm.form.bindFromRequest().fold(
-      formWithErrors => Future.successful(Ok(views.html.selectScheme(formWithErrors))),
+      formWithErrors => Future.successful(Ok(views.html.selectScheme(formWithErrors, year))),
       input => {
         if (!input.definedBenefit && !input.definedContribution) {
-          Future.successful(Ok(views.html.selectScheme(SelectSchemeForm.form.withError("paac.scheme.selection.error","paac.scheme.selection.error"))))
+          val form = SelectSchemeForm.form.withError("paac.scheme.selection.error","paac.scheme.selection.error")
+          Future.successful(Ok(views.html.selectScheme(form, year)))
         } else {
-          keystore.save(List((input.definedBenefit.toString, KeystoreService.DB_FLAG),
-                             (input.definedContribution.toString, KeystoreService.DC_FLAG))).map((_)=> Redirect(onSubmitRedirect))
+          keystore.save[String](List((s"${input.definedBenefit}", s"${DB_FLAG_PREFIX}${year}"),
+                                     (s"${input.definedContribution}", s"${DC_FLAG_PREFIX}${year}"))).map {
+            (_)=> Redirect(onSubmitRedirect)
+          }
         }
       }
     )

@@ -1,4 +1,4 @@
-@(paacForm : Form[form.SelectSchemeModel])(implicit request:Request[_])
+@(paacForm : Form[form.SelectSchemeModel],year: Int)(implicit request:Request[_])
 
 @import uk.gov.hmrc.play.views.html.helpers._
 
@@ -36,7 +36,7 @@ backLink = Some((controllers.routes.StartPageController.newSession.url,Messages(
     @form(
         action = controllers.routes.SelectSchemeController.onSubmit,
         args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
-
+    <input type="hidden" name="year" value="@(year)"/>
     <div class='form-group'>
 
         <fieldset class="inline">

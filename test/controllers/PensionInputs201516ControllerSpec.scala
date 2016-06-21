@@ -26,6 +26,8 @@ import scala.concurrent.Future
 
 class PensionInputs201516ControllerSpec extends test.BaseSpec {
   val endPointURL = "/paac/pensionInputs201516"
+  val IS_DB = s"${KeystoreService.DB_FLAG_PREFIX}2015"
+  val IS_DC = s"${KeystoreService.DC_FLAG_PREFIX}2015"
 
   trait ControllerWithMockKeystore extends MockKeystoreFixture {
     object ControllerWithMockKeystore extends PensionInputs201516Controller {
@@ -57,8 +59,8 @@ class PensionInputs201516ControllerSpec extends test.BaseSpec {
       "have keystore with definedContribution flag = true value, should have DC input field"  in new ControllerWithMockKeystore {
         // setup
         val request = FakeRequest(GET,"").withSession{(SessionKeys.sessionId,SESSION_ID)}
-        MockKeystore.map = MockKeystore.map + ("definedContribution" -> "true")
-        MockKeystore.map = MockKeystore.map + ("definedBenefit" -> "false")
+        MockKeystore.map = MockKeystore.map + (IS_DC -> "true")
+        MockKeystore.map = MockKeystore.map + (IS_DB -> "false")
 
         // test
         val result : Future[Result] = ControllerWithMockKeystore.onPageLoad()(request)
@@ -72,8 +74,8 @@ class PensionInputs201516ControllerSpec extends test.BaseSpec {
       "have keystore with definedBenefit flag = true value, should have DB input field"  in new ControllerWithMockKeystore {
         // setup
         val request = FakeRequest(GET,"").withSession{(SessionKeys.sessionId,SESSION_ID)}
-        MockKeystore.map = MockKeystore.map + ("definedContribution" -> "false")
-        MockKeystore.map = MockKeystore.map + ("definedBenefit" -> "true")
+        MockKeystore.map = MockKeystore.map + (IS_DC -> "false")
+        MockKeystore.map = MockKeystore.map + (IS_DB -> "true")
 
         // test
         val result : Future[Result] = ControllerWithMockKeystore.onPageLoad()(request)
@@ -88,8 +90,8 @@ class PensionInputs201516ControllerSpec extends test.BaseSpec {
         // setup
         val request = FakeRequest(GET,"").withSession{(SessionKeys.sessionId,SESSION_ID)}
         MockKeystore.map = MockKeystore.map + ("definedBenefit_2015_p1" -> "40000")
-        MockKeystore.map = MockKeystore.map + ("definedContribution" -> "true")
-        MockKeystore.map = MockKeystore.map + ("definedBenefit" -> "true")
+        MockKeystore.map = MockKeystore.map + (IS_DC -> "true")
+        MockKeystore.map = MockKeystore.map + (IS_DB -> "true")
 
         // test
         val result : Future[Result] = ControllerWithMockKeystore.onPageLoad()(request)
@@ -102,8 +104,8 @@ class PensionInputs201516ControllerSpec extends test.BaseSpec {
       "have keystore with definedContribution flag = true value, should have DC input field for P2" in new ControllerWithMockKeystore {
         // setup
         val request = FakeRequest(GET,"").withSession{(SessionKeys.sessionId,SESSION_ID)}
-        MockKeystore.map = MockKeystore.map + ("definedContribution" -> "true")
-        MockKeystore.map = MockKeystore.map + ("definedBenefit" -> "false")
+        MockKeystore.map = MockKeystore.map + (IS_DC -> "true")
+        MockKeystore.map = MockKeystore.map + (IS_DB -> "false")
 
         // test
         val result : Future[Result] = ControllerWithMockKeystore.onPageLoad()(request)
@@ -117,8 +119,8 @@ class PensionInputs201516ControllerSpec extends test.BaseSpec {
       "have keystore with definedBenefit flag = true value, should have DB input field for Period 2" in new ControllerWithMockKeystore {
         // setup
         val request = FakeRequest(GET,"").withSession{(SessionKeys.sessionId,SESSION_ID)}
-        MockKeystore.map = MockKeystore.map + ("definedContribution" -> "false")
-        MockKeystore.map = MockKeystore.map + ("definedBenefit" -> "true")
+        MockKeystore.map = MockKeystore.map + (IS_DC -> "false")
+        MockKeystore.map = MockKeystore.map + (IS_DB -> "true")
 
         // test
         val result : Future[Result] = ControllerWithMockKeystore.onPageLoad()(request)
@@ -133,8 +135,8 @@ class PensionInputs201516ControllerSpec extends test.BaseSpec {
         // setup
         val request = FakeRequest(GET,"").withSession{(SessionKeys.sessionId,SESSION_ID)}
         MockKeystore.map = MockKeystore.map + ("definedBenefit_2015_p2" -> "40000")
-        MockKeystore.map = MockKeystore.map + ("definedContribution" -> "true")
-        MockKeystore.map = MockKeystore.map + ("definedBenefit" -> "true")
+        MockKeystore.map = MockKeystore.map + (IS_DC -> "true")
+        MockKeystore.map = MockKeystore.map + (IS_DB -> "true")
 
         // test
         val result : Future[Result] = ControllerWithMockKeystore.onPageLoad()(request)
@@ -161,8 +163,8 @@ class PensionInputs201516ControllerSpec extends test.BaseSpec {
       "with dc flag false should not go to trigger question page" in new ControllerWithMockKeystore {
         // set up
         MockKeystore.map = MockKeystore.map + ("isEdit" -> "false")
-        MockKeystore.map = MockKeystore.map + (KeystoreService.DB_FLAG -> "true")
-        MockKeystore.map = MockKeystore.map + (KeystoreService.DC_FLAG -> "false")
+        MockKeystore.map = MockKeystore.map + (IS_DB -> "true")
+        MockKeystore.map = MockKeystore.map + (IS_DC -> "false")
         MockKeystore.map = MockKeystore.map + (KeystoreService.SELECTED_INPUT_YEARS_KEY -> "2015,2014")
         MockKeystore.map = MockKeystore.map + (KeystoreService.CURRENT_INPUT_YEAR_KEY -> "2015")
         implicit val hc = HeaderCarrier()
@@ -179,8 +181,8 @@ class PensionInputs201516ControllerSpec extends test.BaseSpec {
       "with dc flag false should go to review page when only 2015 selected" in new ControllerWithMockKeystore {
         // set up
         MockKeystore.map = MockKeystore.map + ("isEdit" -> "false")
-        MockKeystore.map = MockKeystore.map + (KeystoreService.DB_FLAG -> "true")
-        MockKeystore.map = MockKeystore.map + (KeystoreService.DC_FLAG -> "false")
+        MockKeystore.map = MockKeystore.map + (IS_DB -> "true")
+        MockKeystore.map = MockKeystore.map + (IS_DC -> "false")
         MockKeystore.map = MockKeystore.map + (KeystoreService.SELECTED_INPUT_YEARS_KEY -> "2015")
         MockKeystore.map = MockKeystore.map + (KeystoreService.CURRENT_INPUT_YEAR_KEY -> "2015")
         implicit val hc = HeaderCarrier()
@@ -229,8 +231,8 @@ class PensionInputs201516ControllerSpec extends test.BaseSpec {
 
       "with invalid request redisplay page with errors" in new ControllerWithMockKeystore {
         MockKeystore.map = MockKeystore.map + ("isEdit" -> "false")
-        MockKeystore.map = MockKeystore.map + (KeystoreService.DB_FLAG -> "true")
-        MockKeystore.map = MockKeystore.map + (KeystoreService.DC_FLAG -> "false")
+        MockKeystore.map = MockKeystore.map + (IS_DB -> "true")
+        MockKeystore.map = MockKeystore.map + (IS_DC -> "false")
         implicit val hc = HeaderCarrier()
         implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID)).withFormUrlEncodedBody(("year2015.definedBenefit_2015_p1" -> "-40000"))
 
@@ -245,8 +247,8 @@ class PensionInputs201516ControllerSpec extends test.BaseSpec {
 
       "with empty db amount redisplay page with errors" in new ControllerWithMockKeystore {
         MockKeystore.map = MockKeystore.map + ("isEdit" -> "false")
-        MockKeystore.map = MockKeystore.map + (KeystoreService.DB_FLAG -> "true")
-        MockKeystore.map = MockKeystore.map + (KeystoreService.DC_FLAG -> "false")
+        MockKeystore.map = MockKeystore.map + (IS_DB -> "true")
+        MockKeystore.map = MockKeystore.map + (IS_DC -> "false")
         implicit val hc = HeaderCarrier()
         implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID)).withFormUrlEncodedBody(("year2015.definedBenefit_2015_p1" -> ""))
 
@@ -261,8 +263,8 @@ class PensionInputs201516ControllerSpec extends test.BaseSpec {
 
       "with empty dc amount redisplay page with errors" in new ControllerWithMockKeystore {
         MockKeystore.map = MockKeystore.map + ("isEdit" -> "false")
-        MockKeystore.map = MockKeystore.map + (KeystoreService.DB_FLAG -> "false")
-        MockKeystore.map = MockKeystore.map + (KeystoreService.DC_FLAG -> "true")
+        MockKeystore.map = MockKeystore.map + (IS_DB -> "false")
+        MockKeystore.map = MockKeystore.map + (IS_DC -> "true")
         implicit val hc = HeaderCarrier()
         implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID)).withFormUrlEncodedBody(("year2015.definedContribution_2015_p1" -> ""))
 
@@ -328,8 +330,8 @@ class PensionInputs201516ControllerSpec extends test.BaseSpec {
 
       "with invalid request redisplay page with errors 2" in new ControllerWithMockKeystore {
         MockKeystore.map = MockKeystore.map + ("isEdit" -> "false")
-        MockKeystore.map = MockKeystore.map + (KeystoreService.DB_FLAG -> "true")
-        MockKeystore.map = MockKeystore.map + (KeystoreService.DC_FLAG -> "false")
+        MockKeystore.map = MockKeystore.map + (IS_DB -> "true")
+        MockKeystore.map = MockKeystore.map + (IS_DC -> "false")
         implicit val hc = HeaderCarrier()
         implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID)).withFormUrlEncodedBody(("year2015.definedBenefit_2015_p2" -> "-40000"))
 
@@ -344,8 +346,8 @@ class PensionInputs201516ControllerSpec extends test.BaseSpec {
 
       "with empty db amount redisplay page with errors 2" in new ControllerWithMockKeystore {
         MockKeystore.map = MockKeystore.map + ("isEdit" -> "false")
-        MockKeystore.map = MockKeystore.map + (KeystoreService.DB_FLAG -> "true")
-        MockKeystore.map = MockKeystore.map + (KeystoreService.DC_FLAG -> "false")
+        MockKeystore.map = MockKeystore.map + (IS_DB -> "true")
+        MockKeystore.map = MockKeystore.map + (IS_DC -> "false")
         implicit val hc = HeaderCarrier()
         implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID)).withFormUrlEncodedBody(("year2015.definedBenefit_2015_p2" -> ""))
 
@@ -360,8 +362,8 @@ class PensionInputs201516ControllerSpec extends test.BaseSpec {
 
       "with empty dc amount redisplay page with errors 2" in new ControllerWithMockKeystore {
         MockKeystore.map = MockKeystore.map + ("isEdit" -> "false")
-        MockKeystore.map = MockKeystore.map + (KeystoreService.DB_FLAG -> "false")
-        MockKeystore.map = MockKeystore.map + (KeystoreService.DC_FLAG -> "true")
+        MockKeystore.map = MockKeystore.map + (IS_DB -> "false")
+        MockKeystore.map = MockKeystore.map + (IS_DC -> "true")
         implicit val hc = HeaderCarrier()
         implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID)).withFormUrlEncodedBody(("year2015.definedContribution_2015_p2" -> ""))
 
@@ -377,7 +379,7 @@ class PensionInputs201516ControllerSpec extends test.BaseSpec {
   }
 
   "onBack" should {
-    "redirect to taxyearselection page" in new ControllerWithMockKeystore {
+    "redirect to scheme selection page" in new ControllerWithMockKeystore {
       // set up
       implicit val hc = HeaderCarrier()
       implicit val request = FakeRequest(GET,"/paac/back").withSession{(SessionKeys.sessionId,SESSION_ID)}
@@ -387,7 +389,7 @@ class PensionInputs201516ControllerSpec extends test.BaseSpec {
 
       // check
       status(result) shouldBe 303
-      redirectLocation(result) shouldBe Some("/paac/taxyearselection")
+      redirectLocation(result) shouldBe Some("/paac/scheme/2015")
     }
   }
 }

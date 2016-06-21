@@ -126,7 +126,7 @@ class RedirectControllerSpec extends test.BaseSpec {
         redirectLocation(result) shouldBe Some("/paac/yesnompaate")
       }
 
-      "redirect to start if forward is false and edit are false and year is 2016" in new ControllerWithMockKeystore {
+      "redirect to pension inputs if forward is false and edit are false and year is 2016" in new ControllerWithMockKeystore {
         // set up
         implicit val hc = HeaderCarrier()
         implicit val request = FakeRequest().withSession { (SessionKeys.sessionId, "session-test") }
@@ -136,7 +136,7 @@ class RedirectControllerSpec extends test.BaseSpec {
 
         // check
         status(result) shouldBe 303
-        redirectLocation(result) shouldBe Some("/paac")
+        redirectLocation(result) shouldBe Some("/paac/pensionInputs201516")
       }
 
       "redirect to PostTriggerPensionInputsController if forward is false and edit are false, te is true and year is 2014" in new ControllerWithMockKeystore {
@@ -197,7 +197,7 @@ class RedirectControllerSpec extends test.BaseSpec {
         // set up
         implicit val hc = HeaderCarrier()
         implicit val request = FakeRequest().withSession { (SessionKeys.sessionId, "session-test") }
-        MockKeystore.map = MockKeystore.map + (KeystoreService.DC_FLAG -> "true")
+        MockKeystore.map = MockKeystore.map + (KeystoreService.DC_FLAG_PREFIX + "2015" -> "true")
 
         // test
         val result: Future[Result] = RedirectController.goTo(2015, false, false, false, Redirect(routes.YesNoMPAATriggerEventAmountController.onPageLoad()))
