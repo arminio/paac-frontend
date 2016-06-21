@@ -58,14 +58,6 @@ db.error.bounds={0} defined benefit amount was incorrect or empty. Please provid
 dc.error.bounds={0} defined contribution amount was incorrect or empty. Please provide an amount between £0 and £5,000,000.
 error.real.precision={0} amount must not be empty. (Amount must have no more than {1} numbers, including {2} decimal places, and should be £0 or larger and under £5,000,000.)
 
-## Pension Inputs Changes Page
-paac.pip.button.continue=Continue
-paac.pip.p1=From the 6th April 2016, pension input periods are the same as tax years. To make the periods and years the same, the tax year 2015 to 2016 includes 2 periods.
-paac.pip.p2=Period 1 is when your normal pension input period started to 8th July 2015 and period 2 is from 9th July 2015 to 5th April 2016.
-paac.pip.pagetitle=Changes to pension input periods
-paac.pip.heading=Changes to pension input periods
-paac.pip.subheading=The tax year 2015 to 2016 is split into 2 periods.
-
 ## Tax Year Selection
 paac.taxyear.selection.pagetitle = Tax Year Selection
 paac.taxyear.selection.heading = Choose tax years
@@ -77,10 +69,6 @@ paac.taxyear.selection.error = Please select years you were a member of a pensio
 ## Yes/No Questions Text
 paac.yesno.yes = Yes
 paac.yesno.no = No
-
-## 2015/16 Period-1 and Period-2 Common messages
-paac.1516.yesno.yes = Yes
-paac.1516.yesno.no = No
 
 ## 2015/16 Period-1 and Period-2 Pension Inputs Page
 paac.1516.pension.inputs.db = Defined benefit
