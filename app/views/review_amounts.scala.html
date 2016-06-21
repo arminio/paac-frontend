@@ -42,7 +42,7 @@ backLink = Some((controllers.routes.ReviewTotalAmountsController.onBack.url,Mess
   @defining(reviewForm.get.toPageValues.reverse.find(_.isTriggered)) { triggerContribution => 
   @defining((triggerContribution.map((tc)=>reviewForm.get.toPageValues.reverse.filterNot((c1)=>c1==tc||c1.isEmpty)).getOrElse(reviewForm.get.toPageValues.reverse.filterNot(_.isEmpty)))) { contributions =>
     @for(contribution <- contributions) {
-    <table id="@(contribution.taxPeriodStart.year)">
+    <table id="@if(contribution.isPeriod1){period1}else{@if(contribution.isPeriod2){period2}else{@(contribution.taxPeriodStart.year)}}">
     <thead>
     <tr>
         <th scope="50%">

@@ -44,6 +44,17 @@ case class PensionPeriod(year: Int, month: Int, day: Int) {
                                     year > that.year || (year == that.year && month > that.month) || (year == that.year && month == that.month && day > that.day)
   def <=(that: PensionPeriod): Boolean = if (year == that.year && month == that.month && day == that.day) true else this < that
   def >=(that: PensionPeriod): Boolean = if (year == that.year && month == that.month && day == that.day) true else this > that
+  def isPeriod(s:PensionPeriod, e:PensionPeriod):Boolean = {
+    (this >= s) && (this <= e)
+  }
+
+  def isPeriod1(): Boolean = {
+    isPeriod(PensionPeriod.PERIOD_1_2015_START, PensionPeriod.PERIOD_1_2015_END)
+  }
+
+  def isPeriod2(): Boolean = {
+    isPeriod(PensionPeriod.PERIOD_2_2015_START, PensionPeriod.PERIOD_2_2015_END)
+  }
 }
 
 case class Contribution(taxPeriodStart: PensionPeriod, taxPeriodEnd: PensionPeriod, amounts: Option[InputAmounts]) extends CalculationParam {
@@ -74,16 +85,12 @@ case class Contribution(taxPeriodStart: PensionPeriod, taxPeriodEnd: PensionPeri
     amounts == None || (amounts.isDefined && amounts.get.isEmpty)
   }
 
-  def isPeriod(s:PensionPeriod, e:PensionPeriod):Boolean = {
-    (taxPeriodStart >= s) && (taxPeriodStart <= e) && (taxPeriodEnd >= s) && (taxPeriodEnd <= e)
-  }
-
   def isPeriod1(): Boolean = {
-    isPeriod(PensionPeriod.PERIOD_1_2015_START, PensionPeriod.PERIOD_1_2015_END)
+    taxPeriodStart.isPeriod1 && taxPeriodEnd.isPeriod1
   }
 
   def isPeriod2(): Boolean = {
-    isPeriod(PensionPeriod.PERIOD_2_2015_START, PensionPeriod.PERIOD_2_2015_END)
+    taxPeriodStart.isPeriod2 && taxPeriodEnd.isPeriod2
   }
 
   def + (that:Contribution): Contribution = {
@@ -202,5 +209,16 @@ object Contribution {
   def apply(year: Int, amounts: Option[InputAmounts]) : Contribution = {
     // month is 0 based
     Contribution(PensionPeriod(year, 4, 6), PensionPeriod(year + 1, 4, 5), amounts)
+  }
+
+  def apply(start: PensionPeriod, end: PensionPeriod, db: Long, dc: Long, triggered: Boolean): Contribution = {
+    val amounts = InputAmounts(db, dc).copy(triggered=Some(triggered))
+    Contribution(start, end, Some(amounts))
+  }
+
+  def apply(isP1: Boolean, db: Long, dc: Long): Contribution = {
+    val start = if (isP1) PensionPeriod.PERIOD_1_2015_START else PensionPeriod.PERIOD_2_2015_START
+    val end = if (isP1) PensionPeriod.PERIOD_1_2015_END else PensionPeriod.PERIOD_2_2015_END
+    Contribution(start, end, db, dc, false)
   }
 }
