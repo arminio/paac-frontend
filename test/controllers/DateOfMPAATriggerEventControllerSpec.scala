@@ -240,6 +240,34 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
         htmlPage should include ("The date must fall within or after 2015")
       }
     }
+
+    "onBack" should {
+      "during edit return to review page" in new ControllerWithMockKeystore {
+        // set up
+        val request = FakeRequest(GET,"").withSession{(SessionKeys.sessionId,SESSION_ID)}
+        MockKeystore.map = MockKeystore.map + (KeystoreService.IS_EDIT_KEY -> "true")
+
+        // test
+        val result : Future[Result] = ControllerWithMockKeystore.onBack()(request)
+
+        // check
+        status(result) shouldBe 303
+        redirectLocation(result) shouldBe Some("/paac/review")
+      }
+
+      "during edit return to yes/no page" in new ControllerWithMockKeystore {
+        // set up
+        val request = FakeRequest(GET,"").withSession{(SessionKeys.sessionId,SESSION_ID)}
+        MockKeystore.map = MockKeystore.map + (KeystoreService.IS_EDIT_KEY -> "false")
+
+        // test
+        val result : Future[Result] = ControllerWithMockKeystore.onBack()(request)
+
+        // check
+        status(result) shouldBe 303
+        redirectLocation(result) shouldBe Some("/paac/yesnompaate")
+      }
+    }
   }
 
   "DateOfMPAATriggerEventForm" when {

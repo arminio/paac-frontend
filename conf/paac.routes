@@ -30,13 +30,14 @@ GET         /taxyearselection                           controllers.TaxYearSelec
 POST        /taxyearselection                           controllers.TaxYearSelectionController.onYearSelected
 
 ## 2015/16 Period-1 and Period 2 Pension Input Page
-GET         /pensionInputs201516                          controllers.PensionInputs201516Controller.onPageLoad
-GET         /pensionInputs201516Back                      controllers.PensionInputs201516Controller.onBack
-POST        /pensionInputs201516                          controllers.PensionInputs201516Controller.onSubmit
+GET         /pensionInputs201516                        controllers.PensionInputs201516Controller.onPageLoad
+GET         /pensionInputs201516Back                    controllers.PensionInputs201516Controller.onBack
+POST        /pensionInputs201516                        controllers.PensionInputs201516Controller.onSubmit
 
 ## Post Trigger Pension Input Page
 GET         /moneyPurchasePostTriggerValue              controllers.PostTriggerPensionInputsController.onPageLoad
 POST        /moneyPurchasePostTriggerValue              controllers.PostTriggerPensionInputsController.onSubmit
+GET         /moneyPurchasePostTriggerValueBack          controllers.PostTriggerPensionInputsController.onBack
 
 ## MPAA Trigger Event Yes/No Page
 GET         /yesnompaate                                controllers.YesNoMPAATriggerEventAmountController.onPageLoad
@@ -45,6 +46,7 @@ POST        /yesnompaate                                controllers.YesNoMPAATri
 ## Date of MPAA Trigger Event Page
 GET         /dateofmpaate                               controllers.DateOfMPAATriggerEventController.onPageLoad
 POST        /dateofmpaate                               controllers.DateOfMPAATriggerEventController.onSubmit
+GET         /dateofmpaateBack                           controllers.DateOfMPAATriggerEventController.onBack
 
 ## Pension Input Page
 GET         /pensionInputs                              controllers.PensionInputsController.onPageLoad

@@ -157,4 +157,32 @@ class PostTriggerPensionInputsControllerSpec extends test.BaseSpec {
       MockKeystore.map should contain value ("4000000")
     }
   }
+
+    "onBack" should {
+      "during edit return to review page" in new ControllerWithMockKeystore {
+        // set up
+        val request = FakeRequest(GET,"").withSession{(SessionKeys.sessionId,SESSION_ID)}
+        MockKeystore.map = MockKeystore.map + (KeystoreService.IS_EDIT_KEY -> "true")
+
+        // test
+        val result : Future[Result] = ControllerWithMockKeystore.onBack()(request)
+
+        // check
+        status(result) shouldBe 303
+        redirectLocation(result) shouldBe Some("/paac/review")
+      }
+
+      "during edit return to date page" in new ControllerWithMockKeystore {
+        // set up
+        val request = FakeRequest(GET,"").withSession{(SessionKeys.sessionId,SESSION_ID)}
+        MockKeystore.map = MockKeystore.map + (KeystoreService.IS_EDIT_KEY -> "false")
+
+        // test
+        val result : Future[Result] = ControllerWithMockKeystore.onBack()(request)
+
+        // check
+        status(result) shouldBe 303
+        redirectLocation(result) shouldBe Some("/paac/dateofmpaate")
+      }
+    }
 }
