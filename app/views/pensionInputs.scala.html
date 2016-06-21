@@ -1,10 +1,10 @@
-@(paacForm : Form[models.CalculatorFormFields], currentYear: String,isDefinedBenefit: Boolean= false, isDefinedContribution: Boolean= false)(implicit request:Request[_])
+@(paacForm : Form[models.CalculatorFormFields], currentYear: String,isDefinedBenefit: Boolean= false)(implicit request:Request[_])
 
 @import uk.gov.hmrc.play.views.html.helpers._
 
 @common.paacMain(
 pageTitle = Messages("paac.pension.inputs.pagetitle"),
-heading = Messages("paac.pension.inputs.heading", (if(isDefinedContribution && isDefinedBenefit) "pension" else if(isDefinedContribution) "defined contribution" else if(isDefinedBenefit) "defined benefit"), currentYear, ""+(currentYear.toInt+1)),
+heading = Messages("paac.pension.inputs.heading", (if(isDefinedBenefit) "defined benefit"), currentYear, ""+(currentYear.toInt+1)),
 articleClasses=Some("full-width"),
 backLink = Some((controllers.routes.PensionInputsController.onBack.url,Messages("paac.link.text.back")))
 ) {
@@ -28,7 +28,7 @@ backLink = Some((controllers.routes.PensionInputsController.onBack.url,Messages(
           @for(error <- paacForm.errors) {
             @defining(currentYear) { year =>
               @defining(Seq(models.Contribution(currentYear.toInt,0).taxYearLabel())++error.args) { args =>
-                <li><a href="#input_@year" style="color:#b10e1e;font-weight: bold;">@Messages(error.message, args:_*)</a></li>
+                <li><a href="#input_@year" style="color:#b10e1e;font-weight: bold;">@Messages("paac.pension.inputs.error", args:_*)</a></li>
               }
             }
           }
@@ -41,31 +41,16 @@ backLink = Some((controllers.routes.PensionInputsController.onBack.url,Messages(
         args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
 
         @defining(currentYear.toInt) { year =>
-        <p id="paac.pension.inputs.p1" class="lede text">@Messages("paac.pension.inputs.description", (if(isDefinedContribution && isDefinedBenefit) "pension" else if(isDefinedContribution) "defined contribution" else if(isDefinedBenefit) "defined benefit"), currentYear, ""+(year+1))</p>
+        <p id="paac.pension.inputs.description" class="lede text">@Messages("paac.pension.inputs.description", (if(isDefinedBenefit) "Total amount"), currentYear, ""+(year+1))</p>
         }
 
         <table>
             <tbody>
                 <fieldset id="input_@currentYear" class="form-field-group" style="max-width:12.35em;">
-                    @if(isDefinedContribution){
-                    <label class="form-element-bold label--full-length numeric" for="definedContributions.amount_@currentYear" style="width:150%;display: inline-block;@if(paacForm.errors.find(_.key == "definedContributions.amount_"+currentYear)) {color:#b10e1e;}">
-                        <tr style="text-align:left;min-width: 7em">@Messages("paac.1516.pension.inputs.dc")</tr><BR/>
-                          <span style="float:right">
-                          @if(paacForm.data.contains("definedContributions.amount_"+currentYear)) {
-                              <tr style="text-align:left;min-width: 7em">
-                                  £&nbsp;<input type="number" name="definedContributions.amount_@currentYear" id="definedContributions.amount_@currentYear" min="0" step="1" value='@paacForm.data("definedContributions.amount_"+currentYear)' max="5000000.00" size="10" style="width:9em;@if(paacForm.errors.find(_.key == "definedContributions.amount_"+currentYear)) {border: 4px solid #b10e1e;}"/>
-                              </tr>
-                          } else {
-                              <tr style="text-align:left;min-width: 7em">
-                                  £&nbsp;<input type="number" name="definedContributions.amount_@currentYear" id="definedContributions.amount_@currentYear" min="0" step="1" value='' max="5000000.00" size="10" style="width:9em;@if(paacForm.errors.find(_.key == "definedContributions.amount_"+currentYear)) {border: 4px solid #b10e1e;}"/>
-                              </tr>
-                          }
-                          </span>
-                    </label>
-                    }
+
                     @if(isDefinedBenefit){
                     <label class="form-element-bold label--full-length numeric" for="definedBenefits.amount_@currentYear" style="width:150%;display: inline-block;@if(paacForm.errors.find(_.key == "definedBenefits.amount_"+currentYear)) {color:#b10e1e;}">
-                        <tr style="text-align:left;min-width: 7em">@Messages("paac.1516.pension.inputs.db")</tr><BR/>
+                        <tr style="text-align:left;min-width: 7em">@Messages("paac.pension.inputs.totalamount")</tr><BR/>
                           <span style="float:right">
                           @if(paacForm.data.contains("definedBenefits.amount_"+currentYear)) {
                               <tr style="text-align:left;min-width: 7em">
