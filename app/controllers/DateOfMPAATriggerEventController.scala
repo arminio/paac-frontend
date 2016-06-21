@@ -20,7 +20,9 @@ import form.{DateOfMPAATriggerEventPageModel, DateOfMPAATriggerEventForm}
 import org.joda.time.LocalDate
 import play.api.mvc._
 import service.KeystoreService
+import service.KeystoreService._
 import scala.concurrent.Future
+import models._
 
 object DateOfMPAATriggerEventController extends DateOfMPAATriggerEventController {
   override val keystore: KeystoreService = KeystoreService
@@ -32,45 +34,58 @@ trait DateOfMPAATriggerEventController extends RedirectController {
   private val onSubmitRedirect: Call = routes.PostTriggerPensionInputsController.onPageLoad
 
   val onPageLoad = withSession { implicit request =>
-    keystore.read[String](KeystoreService.TRIGGER_DATE_KEY).map {
-      (date) =>
-        val dateAsStr = date.getOrElse("")
-        if (dateAsStr == "") {
-          Ok(views.html.date_of_mpaa_trigger_event(DateOfMPAATriggerEventForm.form))
+    keystore.read[String](List(KeystoreService.TRIGGER_DATE_KEY,P1_TRIGGER_DC_KEY,P2_TRIGGER_DC_KEY)).map {
+      (values) =>
+        val dateAsStr = values(TRIGGER_DATE_KEY)
+        if (dateAsStr.isEmpty) {
+          Ok(views.html.date_of_mpaa_trigger_event(DateOfMPAATriggerEventForm.form,values))
         } else {
           val parts = dateAsStr.split("-").map(_.toInt)
           val model = DateOfMPAATriggerEventPageModel(Some(new LocalDate(parts(0),parts(1),parts(2))))
-          Ok(views.html.date_of_mpaa_trigger_event(DateOfMPAATriggerEventForm.form.fill(model)))
+          Ok(views.html.date_of_mpaa_trigger_event(DateOfMPAATriggerEventForm.form.fill(model),values))
         }
     }
   }
 
   val onSubmit = withSession { implicit request =>
+    val data: Map[String, String] = request.body.asFormUrlEncoded.getOrElse(Map[String, Seq[String]]()).mapValues(_.head)
     DateOfMPAATriggerEventForm.form.bindFromRequest().fold(
       formWithErrors => { 
-        Future.successful(Ok(views.html.date_of_mpaa_trigger_event(formWithErrors))) 
+        Future.successful(Ok(views.html.date_of_mpaa_trigger_event(formWithErrors, data))) 
       },
       input => {
         // should store as json and read out as json but sticking with string throughout
-        keystore.store(input.dateOfMPAATriggerEvent.map(_.toString).getOrElse(""), KeystoreService.TRIGGER_DATE_KEY).flatMap {
+        keystore.store(input.dateOfMPAATriggerEvent.map(_.toString).getOrElse(""), TRIGGER_DATE_KEY).flatMap {
           (_)=>
           if (input.dateOfMPAATriggerEvent.isDefined) {
+            val date = input.dateOfMPAATriggerEvent.get
             if (isValidDate(input.dateOfMPAATriggerEvent.get)) {
               val form = DateOfMPAATriggerEventForm.form.bindFromRequest().withError("dateOfMPAATriggerEvent", "paac.mpaa.ta.date.page.invalid.date")
-              Future.successful(Ok(views.html.date_of_mpaa_trigger_event(form)))
+              Future.successful(Ok(views.html.date_of_mpaa_trigger_event(form, data)))
             } else {
-              keystore.read[String](KeystoreService.IS_EDIT_KEY).map {
+              keystore.read[String](KeystoreService.IS_EDIT_KEY).flatMap {
                 (maybeIsEdit) =>
                 if (maybeIsEdit.getOrElse("false").toBoolean) {
-                  Results.Redirect(routes.ReviewTotalAmountsController.onPageLoad())
+                  // In 'edit' mode therefore re-save values into 
+                  val newDate = PensionPeriod(date.getYear(), date.getMonthOfYear(), date.getDayOfMonth())
+                  val originalDate = data(TRIGGER_DATE_KEY).split("-").map(_.toInt)
+                  val oldDate = PensionPeriod(originalDate(0), originalDate(1), originalDate(2))
+                  if (oldDate.isPeriod1 && newDate.isPeriod2 || oldDate.isPeriod2 && newDate.isPeriod1) {
+                    // flip trigger values
+                    val v1: (Option[String],String) = if (newDate.isPeriod1) (Some(data(P2_TRIGGER_DC_KEY)+"00"),P1_TRIGGER_DC_KEY) else (Some(data(P1_TRIGGER_DC_KEY)+"00"), P2_TRIGGER_DC_KEY)
+                    val v2: (Option[String],String) = (Some("0"), if (newDate.isPeriod1) P2_TRIGGER_DC_KEY else P1_TRIGGER_DC_KEY)
+                    keystore.save[String](List(v1,v2),"").map((_)=>Results.Redirect(routes.ReviewTotalAmountsController.onPageLoad()))
+                  } else {
+                    Future.successful(Results.Redirect(routes.ReviewTotalAmountsController.onPageLoad()))
+                  }
                 } else {
-                  Redirect(onSubmitRedirect)
+                  Future.successful(Redirect(onSubmitRedirect))
                 }
               }
             }
           } else {
             val form = DateOfMPAATriggerEventForm.form.bindFromRequest().withError("dateOfMPAATriggerEvent", "error.invalid.date.format")
-            Future.successful(Ok(views.html.date_of_mpaa_trigger_event(form)))
+            Future.successful(Ok(views.html.date_of_mpaa_trigger_event(form,data)))
           }
         }
       }

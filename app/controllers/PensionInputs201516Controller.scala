@@ -32,6 +32,7 @@ trait PensionInputs201516Controller extends RedirectController {
   val keystore: KeystoreService
 
   private val onSubmitRedirect: Call = routes.YesNoMPAATriggerEventAmountController.onPageLoad()
+  private val onSubmitDBRedirect: Call = routes.ReviewTotalAmountsController.onPageLoad()
 
   val onBack = withSession { implicit request =>
     wheretoBack(Redirect(routes.TaxYearSelectionController.onPageLoad))
@@ -81,7 +82,11 @@ trait PensionInputs201516Controller extends RedirectController {
                   if (isEdit) {
                     goTo(-1, true, isEdit, false, Redirect(onSubmitRedirect))
                   } else {
-                    Future.successful(Redirect(onSubmitRedirect))
+                    if (!isDC) {
+                      wheretoNext(Redirect(onSubmitDBRedirect))
+                    } else {
+                      Future.successful(Redirect(onSubmitRedirect))
+                    }
                   }
               }
             }

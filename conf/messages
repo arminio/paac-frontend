@@ -94,8 +94,10 @@ paac.201516.pension.inputs.period2 = PIP 2 from 9 July 2015 to 5 April 2016
 
 ## Pension Inputs Page
 paac.pension.inputs.pagetitle = Pension Inputs
-paac.pension.inputs.heading = How much was paid into your {0} schemes in the tax year {1} to {2}?
-paac.pension.inputs.description = This is how much was paid into your {0} schemes during the pension input period that started earlier in {1} and ended on or before 5 April {2}.
+paac.pension.inputs.heading = What were your pension savings in the tax year {1} to {2}?
+paac.pension.inputs.description = Include all pension savings where pension input periods ended in the tax year 6 April {1} to 5 April {2}.
+paac.pension.inputs.totalamount = Total amount
+paac.pension.inputs.error = Enter your pension savings for the tax year {0}
 
 ## MPAA Trigger Event Yes/No Page
 paac.mpaa.te.yesno.pagetitle = MPAA

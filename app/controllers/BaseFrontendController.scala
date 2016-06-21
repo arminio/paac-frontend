@@ -107,7 +107,7 @@ trait RedirectController extends BaseFrontendController {
     implicit val marshall = KeystoreService.toStringPair _
 
     def previous(currentYear: String, selectedYears: String): Int = {
-      if (currentYear == "" || selectedYears == "") {
+      if (currentYear.isEmpty || selectedYears.isEmpty) {
         START
       } else {
         val syears = selectedYears.split(",")
@@ -127,7 +127,7 @@ trait RedirectController extends BaseFrontendController {
 
     keystore.read(List(CURRENT_INPUT_YEAR_KEY, SELECTED_INPUT_YEARS_KEY, TE_YES_NO_KEY, IS_EDIT_KEY)).flatMap {
       (fieldsMap) =>
-      val isEdit = if (fieldsMap(IS_EDIT_KEY) == "") false else fieldsMap(IS_EDIT_KEY).toBoolean
+      val isEdit = if (fieldsMap(IS_EDIT_KEY).isEmpty) false else fieldsMap(IS_EDIT_KEY).toBoolean
       if (isEdit) {
         Future.successful(Results.Redirect(routes.ReviewTotalAmountsController.onPageLoad()))
       } else {
@@ -143,11 +143,11 @@ trait RedirectController extends BaseFrontendController {
     implicit val marshall = KeystoreService.toStringPair _
 
     def next(currentYear: String, selectedYears: String): Int = {
-      if ((selectedYears == "" && currentYear == "") || (currentYear == END.toString)) {
+      if ((selectedYears.isEmpty && currentYear.isEmpty) || (currentYear == END.toString)) {
         START
       } else {
         val syears = selectedYears.split(",")
-        if (currentYear == "") {
+        if (currentYear.isEmpty) {
           syears(0).toInt
         } else {
           val i = syears.indexOf(currentYear) + 1
@@ -165,7 +165,7 @@ trait RedirectController extends BaseFrontendController {
       val currentYear = fieldsMap(KeystoreService.CURRENT_INPUT_YEAR_KEY)
       val selectedYears = fieldsMap(KeystoreService.SELECTED_INPUT_YEARS_KEY)
       val nextYear = next(currentYear, selectedYears)
-      val isEdit = if (fieldsMap(IS_EDIT_KEY) == "") false else fieldsMap(IS_EDIT_KEY).toBoolean
+      val isEdit = if (fieldsMap(IS_EDIT_KEY).isEmpty) false else fieldsMap(IS_EDIT_KEY).toBoolean
       goTo(nextYear, true, isEdit, fieldsMap(TE_YES_NO_KEY) == "Yes", defaultRoute)
     }
   }

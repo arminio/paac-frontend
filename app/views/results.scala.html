@@ -1,4 +1,4 @@
-@(results: List[models.TaxYearResults], isDB: Boolean, isDC: Boolean)(implicit request:Request[_])
+@(results: List[models.TaxYearResults], selectedYears: Array[Int])(implicit request:Request[_])
 
 @common.paacMain(
 pageTitle = Messages("paac.results.page.title"),
@@ -8,8 +8,8 @@ articleClasses=Some("full-width"),
 backLink = Some((controllers.routes.ReviewTotalAmountsController.onPageLoad.url,Messages("paac.link.text.back")))
 ) {
 @defining(java.text.NumberFormat.getNumberInstance(java.util.Locale.UK)) { currencyFormatter =>
-@defining(results.sortWith(_.input.taxPeriodStart.year < _.input.taxPeriodStart.year).dropWhile((v)=>v.input.isEmpty).reverse) { sortedResults =>
-  <p class="govuk-box-highlight lede">@Html(Messages("paac.results.p1", if (sortedResults.exists((r)=>r.input.isPeriod1||r.input.isPeriod2)) sortedResults.size - 1 else sortedResults.size, currencyFormatter.format(sortedResults.map(_.summaryResult.exceedingAAAmount).foldLeft(0L)(_+_)/100)))</p>
+@defining(results.sortWith(_.input.taxPeriodStart.year < _.input.taxPeriodStart.year).dropWhile((v)=>v.input.isEmpty).reverse.filter((c)=>selectedYears.contains(c.input.taxPeriodStart.year))) { sortedResults =>
+  <p class="govuk-box-highlight lede">@Html(Messages("paac.results.p1", if (sortedResults.exists((r)=>r.input.isPeriod1||r.input.isPeriod2)) sortedResults.size - 1 else sortedResults.size, currencyFormatter.format(sortedResults.map(_.summaryResult.chargableAmount).foldLeft(0L)(_+_)/100)))</p>
     <table>
        <thead>
        <tr>
@@ -26,7 +26,7 @@ backLink = Some((controllers.routes.ReviewTotalAmountsController.onPageLoad.url,
       @if(result.input.amounts.isDefined && !result.input.isPeriod1 && !result.input.isPeriod2) {
        <tr>
           <td>@Messages("paac.results.taxyearlabel", result.input.taxPeriodStart.year.toString, (result.input.taxPeriodStart.year+1).toString)</td>
-          <td class="numeric">&pound;@(currencyFormatter.format(result.summaryResult.availableAAWithCF/100))</td>
+          <td class="numeric">&pound;@(currencyFormatter.format(result.summaryResult.availableAllowance/100))</td>
           <td class="numeric">&pound;@(currencyFormatter.format((result.input.amounts.get.definedBenefit.getOrElse(0L) + result.input.amounts.get.moneyPurchase.getOrElse(0L))/100))</td>
           <td class="numeric">&pound;@(currencyFormatter.format(result.summaryResult.chargableAmount/100))</td>
           <td class="numeric">&pound;@(currencyFormatter.format(result.summaryResult.unusedAllowance/100))</td>
@@ -38,13 +38,13 @@ backLink = Some((controllers.routes.ReviewTotalAmountsController.onPageLoad.url,
       @defining(sortedResults.find(_.input.isPeriod1).getOrElse(TaxYearResults(Contribution(2015,0),SummaryResult()))) { period1Result =>
        <tr>
           <td>@Messages("paac.results.taxyearlabel", result.input.taxPeriodStart.year.toString, (result.input.taxPeriodStart.year+1).toString)</td>
-          <td class="numeric">&pound;@(currencyFormatter.format(result.summaryResult.availableAAWithCF/100))</td>
+          <td class="numeric">&pound;@(currencyFormatter.format(period1Result.summaryResult.availableAllowance/100))</td>
           <td class="numeric">&pound;@(currencyFormatter.format((period1Result.input.amounts.get.definedBenefit.getOrElse(0L) + 
                                                                 period1Result.input.amounts.get.moneyPurchase.getOrElse(0L) + 
                                                                 result.input.amounts.get.definedBenefit.getOrElse(0L) + 
                                                                 result.input.amounts.get.moneyPurchase.getOrElse(0L))
                                                                 /100))</td>
-          <td class="numeric">&pound;@(currencyFormatter.format(result.summaryResult.chargableAmount + period1Result.summaryResult.chargableAmount/100))</td>
+          <td class="numeric">&pound;@(currencyFormatter.format((result.summaryResult.chargableAmount + period1Result.summaryResult.chargableAmount)/100))</td>
           <td class="numeric">&pound;@(currencyFormatter.format(result.summaryResult.unusedAllowance/100))</td>
           <!--td class="numeric">&pound;@(currencyFormatter.format(result.summaryResult.unusedMPAA/100))</td>
           <td class="numeric">&pound;@(currencyFormatter.format(result.summaryResult.unusedAAA/100))</td-->
