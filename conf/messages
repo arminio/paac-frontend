@@ -75,7 +75,7 @@ paac.1516.pension.inputs.db = Defined benefit
 paac.1516.pension.inputs.dc = Defined contribution
 paac.1516.pension.inputs.pages.heading = What were your pension savings for the tax year 2015 to 2016?
 paac.201516.pension.inputs.pagetitle = 2015/16 Pension Inputs
-paac.201516.pension.inputs.description = The tax year 2015 to 2016 was split into two, to align pension input periods (PIPs) with tax years.
+paac.201516.pension.inputs.description = The tax year 2015 to 2016 was split into two to align pension input periods (PIPs) with tax years.
 paac.201516.pension.inputs.description2 = Include all contributions and investment growth for the pension input periods that ended in this tax year.
 paac.201516.pension.inputs.period1 = PIP 1 from 6 April 2015 to 8 July 2015
 paac.201516.pension.inputs.period2 = PIP 2 from 9 July 2015 to 5 April 2016
@@ -139,17 +139,15 @@ paac.results.page.title = PAAC Results
 paac.results.p1 = Based on your answers, over the past {0} years you have exceeded your annual allowance by &pound;{1}. You may have to pay tax on this.
 
 ## Post Trigger Pension Inputs Page
-paac.post-trigger-value.page.question = What were your defined contribution pension savings for the rest of the tax year {0} to {1}?
-paac.post-trigger-value.page.title=Money Purchase Value After Flexi Access
-paac.post-trigger-value.description = Enter total amount of defined contributions and investment growth made after the date of the first withdrawal on {0}.
+paac.post.trigger.value.page.question = What were your defined contribution pension savings for the rest of the tax year {0} to {1}?
+paac.post.trigger.value.page.title = Money Purchase Value After Flexi Access
+paac.post.trigger.value.description = Enter total amount of defined contributions and investment growth made after the date of the first withdrawal on {0}.
 paac.post.trigger.amount.input.label = Total amount
-paac.post-trigger-value.period1.label=2015/16 P1
-paac.post-trigger-value.period2.label=2015/16 P2
-paac.post-trigger-value.error.real.precision=The amount must not be empty or negative. (Amount must have no more than {1} numbers, including {2} decimal places, and should be £0 or larger and smaller than £5,000,000.)
-paac.post-trigger-value.error.min={0} amount was too small and must be either £0 or greater.
-paac.post-trigger-value.error.max={0} amount was too large and must be either £{1} or less.
-paac.post-trigger-value.error.bounds={0} amount was empty or negative. Please provide an amount between £0 and £5,000,000.
-paac.post-trigger-value.error.number=Use whole numbers only, not decimals or characters
+paac.post.trigger.value.error.real.precision = The amount must not be empty or negative. (Amount must have no more than {1} numbers, including {2} decimal places, and should be £0 or larger and smaller than £5,000,000.)
+paac.post.trigger.value.error.min = {0} amount was too small and must be either £0 or greater.
+paac.post.trigger.value.error.max = {0} amount was too large and must be either £{1} or less.
+paac.post.trigger.value.error.bounds = {0} amount was empty or negative. Please provide an amount between £0 and £5,000,000.
+paac.post.trigger.value.error.number = Use whole numbers only, not decimals or characters
 
 db=defined benefit
 dc=defined contribution
