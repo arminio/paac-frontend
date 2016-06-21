@@ -30,15 +30,15 @@ case class Amounts(currentYearMinus0:Option[BigDecimal]=None,
                    currentYearMinus6:Option[BigDecimal]=None,
                    currentYearMinus7:Option[BigDecimal]=None,
                    currentYearMinus8:Option[BigDecimal]=None) {
-  def isEmpty(): Boolean = currentYearMinus0 == None &&
-                           currentYearMinus1 == None &&
-                           currentYearMinus2 == None &&
-                           currentYearMinus3 == None &&
-                           currentYearMinus4 == None &&
-                           currentYearMinus5 == None &&
-                           currentYearMinus6 == None &&
-                           currentYearMinus7 == None &&
-                           currentYearMinus8 == None
+  def isEmpty(): Boolean = !currentYearMinus0.isDefined &&
+                           !currentYearMinus1.isDefined &&
+                           !currentYearMinus2.isDefined &&
+                           !currentYearMinus3.isDefined &&
+                           !currentYearMinus4.isDefined &&
+                           !currentYearMinus5.isDefined &&
+                           !currentYearMinus6.isDefined &&
+                           !currentYearMinus7.isDefined &&
+                           !currentYearMinus8.isDefined
 }
 
 case class Year2015Amounts(amount2015P1:Option[BigDecimal]=None,
@@ -47,14 +47,14 @@ case class Year2015Amounts(amount2015P1:Option[BigDecimal]=None,
                            dcAmount2015P2:Option[BigDecimal]=None,
                            postTriggerDcAmount2015P1:Option[BigDecimal]=None,
                            postTriggerDcAmount2015P2:Option[BigDecimal]=None) {
-  def isEmpty(): Boolean = amount2015P1 == None &&
-                           dcAmount2015P1 == None &&
-                           amount2015P2 == None &&
-                           dcAmount2015P2 == None &&
-                           postTriggerDcAmount2015P1 == None &&
-                           postTriggerDcAmount2015P2 == None
-  def hasDefinedContributions(): Boolean = dcAmount2015P1 != None || dcAmount2015P2 != None || postTriggerDcAmount2015P1 != None || postTriggerDcAmount2015P2 != None
-  def hasDefinedBenefits(): Boolean = amount2015P1 != None || amount2015P2 != None
+  def isEmpty(): Boolean = !amount2015P1.isDefined &&
+                           !dcAmount2015P1.isDefined &&
+                           !amount2015P2.isDefined &&
+                           !dcAmount2015P2.isDefined &&
+                           !postTriggerDcAmount2015P1.isDefined &&
+                           !postTriggerDcAmount2015P2.isDefined
+  def hasDefinedContributions(): Boolean = dcAmount2015P1.isDefined || dcAmount2015P2.isDefined || postTriggerDcAmount2015P1.isDefined || postTriggerDcAmount2015P2.isDefined
+  def hasDefinedBenefits(): Boolean = amount2015P1.isDefined || amount2015P2.isDefined
 }
 
 trait ThisYear {
@@ -161,7 +161,7 @@ case class CalculatorFormFields(definedBenefits: Amounts,
 
   def hasDefinedContributions(): Boolean = !definedContributions.isEmpty || year2015.hasDefinedContributions
   def hasDefinedBenefits(): Boolean = !definedBenefits.isEmpty || year2015.hasDefinedBenefits
-  def hasTriggerDate(): Boolean = triggerDate != None && !triggerDate.get.isEmpty
+  def hasTriggerDate(): Boolean = triggerDate.isDefined && !triggerDate.get.isEmpty
 
   def toDefinedBenefit(first: Contribution => Boolean)(key: String) : Option[(Long, String)] = {
     toContributions.find(first).flatMap {
