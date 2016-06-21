@@ -9,7 +9,7 @@ backLink = Some((controllers.routes.ReviewTotalAmountsController.onPageLoad.url,
 ) {
 @defining(java.text.NumberFormat.getNumberInstance(java.util.Locale.UK)) { currencyFormatter =>
 @defining(results.sortWith(_.input.taxPeriodStart.year < _.input.taxPeriodStart.year).dropWhile((v)=>v.input.isEmpty).reverse.filter((c)=>selectedYears.contains(c.input.taxPeriodStart.year))) { sortedResults =>
-  <p class="govuk-box-highlight lede">@Html(Messages("paac.results.p1", if (sortedResults.exists((r)=>r.input.isPeriod1||r.input.isPeriod2)) sortedResults.size - 1 else sortedResults.size, currencyFormatter.format(sortedResults.map(_.summaryResult.exceedingAAAmount).foldLeft(0L)(_+_)/100)))</p>
+  <p class="govuk-box-highlight lede">@Html(Messages("paac.results.p1", if (sortedResults.exists((r)=>r.input.isPeriod1||r.input.isPeriod2)) sortedResults.size - 1 else sortedResults.size, currencyFormatter.format(sortedResults.map((row)=>row.summaryResult.exceedingAAAmount+row.summaryResult.exceedingMPAA+row.summaryResult.exceedingAAA).foldLeft(0L)(_+_)/100)))</p>
     <table>
        <thead>
        <tr>
