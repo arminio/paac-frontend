@@ -64,11 +64,9 @@ trait RedirectController extends BaseFrontendController {
         }
       } else if (year < 0) {
         Future.successful(defaultRoute)
-      } else if (year > 2015) {
-        Future.successful(Redirect(routes.StartPageController.startPage()))//2016
-      } else if (year == 2015) {
+      } else if (year >= 2015) {
         if (isForward) {
-          Future.successful(Redirect(routes.PensionInputs201516Controller.onPageLoad()))
+          Future.successful(Redirect(routes.SelectSchemeController.onPageLoad(year)))
         } else {
           if (isTE) {
             keystore.read[String](KeystoreService.TRIGGER_DATE_KEY).flatMap {
@@ -86,7 +84,7 @@ trait RedirectController extends BaseFrontendController {
               }
             }
           } else {
-            keystore.read[String](KeystoreService.DC_FLAG).flatMap {
+            keystore.read[String](s"${KeystoreService.DC_FLAG_PREFIX}${year}").flatMap {
               (isDCStr)=>
               val isDC = isDCStr.getOrElse("false").toBoolean
               if (isDC) {
@@ -175,17 +173,21 @@ trait BaseFrontendController extends SessionProvider with FrontendController {
   this: SessionProvider =>
 
   val keys = List(KeystoreService.SCHEME_TYPE_KEY, 
-                  KeystoreService.DB_FLAG, 
-                  KeystoreService.DC_FLAG, 
+                  KeystoreService.DB_FLAG_PREFIX, 
+                  KeystoreService.DC_FLAG_PREFIX, 
                   KeystoreService.TRIGGER_DATE_KEY,
                   KeystoreService.CURRENT_INPUT_YEAR_KEY,
                   KeystoreService.SELECTED_INPUT_YEARS_KEY,
                   KeystoreService.TE_YES_NO_KEY,
                   KeystoreService.IS_EDIT_KEY
                   )
+  def isValue(key: String): Boolean = {
+    !(keys.contains(key) || key.startsWith(KeystoreService.DB_FLAG_PREFIX) || key.startsWith(KeystoreService.DC_FLAG_PREFIX))
+  }
+
   implicit val marshall = {
     (key: String, value: Option[String]) =>
-      if (keys.contains(key)) {
+      if (!isValue(key)) {
         value match {
           case None => (key, "")
           case Some(v) => (key, v)
@@ -198,7 +200,7 @@ trait BaseFrontendController extends SessionProvider with FrontendController {
         }
       }
   }
-  
+
   def getSessionId()(implicit request : Request[AnyContent]) : Option[String] = request.session.get(SessionKeys.sessionId)
 
   /**
@@ -218,4 +220,6 @@ trait BaseFrontendController extends SessionProvider with FrontendController {
         case _ => f(request)
       }
   }
+
+  def formRequestData(implicit request : Request[AnyContent]): Map[String, String] = request.body.asFormUrlEncoded.getOrElse(Map[String, Seq[String]]()).mapValues(_.head)
 }

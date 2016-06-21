@@ -30,7 +30,7 @@ trait StartPageController extends BaseFrontendController {
     val connector: CalculatorConnector
     val keystore: KeystoreService
 
-    private val onSubmitRedirect: Call = routes.SelectSchemeController.onPageLoad()
+    private val onSubmitRedirect: Call = routes.TaxYearSelectionController.onPageLoad()
 
     val startPage = withSession { implicit request =>
       keystore.store(false.toString(), KeystoreService.IS_EDIT_KEY).map {

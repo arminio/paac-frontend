@@ -17,6 +17,7 @@
 package controllers
 
 import service.KeystoreService
+import service.KeystoreService._
 import play.api.mvc._
 import scala.concurrent.Future
 import form.CalculatorForm
@@ -35,24 +36,24 @@ trait PensionInputs201516Controller extends RedirectController {
   private val onSubmitDBRedirect: Call = routes.ReviewTotalAmountsController.onPageLoad()
 
   val onBack = withSession { implicit request =>
-    wheretoBack(Redirect(routes.TaxYearSelectionController.onPageLoad))
+    wheretoBack(Redirect(routes.SelectSchemeController.onPageLoad(2015)))
   }
 
   val onPageLoad = withSession { implicit request =>
-    keystore.read[String](List(KeystoreService.P1_DB_KEY, KeystoreService.P1_DC_KEY, KeystoreService.P2_DB_KEY, KeystoreService.P2_DC_KEY, KeystoreService.DB_FLAG, KeystoreService.DC_FLAG)).map {
+    keystore.read[String](List(P1_DB_KEY, P1_DC_KEY, P2_DB_KEY, P2_DC_KEY, s"${DB_FLAG_PREFIX}2015", s"${DC_FLAG_PREFIX}2015")).map {
       (fieldsMap) =>
         Ok(views.html.pensionInputs_201516(CalculatorForm.bind(fieldsMap).discardingErrors,
-          fieldsMap(KeystoreService.DB_FLAG).toBoolean,
-          fieldsMap(KeystoreService.DC_FLAG).toBoolean))
+          fieldsMap(s"${DB_FLAG_PREFIX}2015").toBoolean,
+          fieldsMap(s"${DC_FLAG_PREFIX}2015").toBoolean))
     }
   }
 
   val onSubmit = withSession { implicit request =>
-    keystore.read[String](List(KeystoreService.DB_FLAG, KeystoreService.DC_FLAG, KeystoreService.IS_EDIT_KEY)).flatMap {
+    keystore.read[String](List(s"${DB_FLAG_PREFIX}2015", s"${DC_FLAG_PREFIX}2015", IS_EDIT_KEY)).flatMap {
       (fieldsMap) =>
-        val isDB = fieldsMap(KeystoreService.DB_FLAG).toBoolean
-        val isDC = fieldsMap(KeystoreService.DC_FLAG).toBoolean
-        val isEdit = fieldsMap(KeystoreService.IS_EDIT_KEY).toBoolean
+        val isDB = fieldsMap(s"${DB_FLAG_PREFIX}2015").toBoolean
+        val isDC = fieldsMap(s"${DC_FLAG_PREFIX}2015").toBoolean
+        val isEdit = fieldsMap(IS_EDIT_KEY).toBoolean
 
         CalculatorForm.form.bindFromRequest().fold(
           formWithErrors => { Future.successful(Ok(views.html.pensionInputs_201516(formWithErrors, isDB, isDC))) },

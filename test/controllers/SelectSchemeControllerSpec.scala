@@ -23,13 +23,15 @@ import play.api.mvc.{ Request, Result}
 import play.api.test.Helpers._
 import play.api.test.{FakeApplication, FakeRequest}
 import service.KeystoreService
+import service.KeystoreService._
 import uk.gov.hmrc.play.http.{HeaderCarrier, SessionKeys}
 import uk.gov.hmrc.play.test.UnitSpec
 import scala.concurrent.Future
 import form._
 
 class SelectSchemeControllerSpec extends test.BaseSpec {
-  val endPointURL = "/paac/scheme"
+  val endPointURL = "/paac/scheme/2015"
+  val postEndPointURL = "/paac/scheme"
 
   trait ControllerWithMockKeystore extends MockKeystoreFixture {
     object MockSelectSchemeControllerWithMockKeystore extends SelectSchemeController {
@@ -62,7 +64,7 @@ class SelectSchemeControllerSpec extends test.BaseSpec {
         val request = FakeRequest(GET,"").withSession{(SessionKeys.sessionId,SESSION_ID)}
 
         // test
-        val result : Future[Result] = MockSelectSchemeControllerWithMockKeystore.onPageLoad()(request)
+        val result : Future[Result] = MockSelectSchemeControllerWithMockKeystore.onPageLoad(2015)(request)
 
         // check
         status(result) shouldBe 200
@@ -74,54 +76,51 @@ class SelectSchemeControllerSpec extends test.BaseSpec {
       "have keystore with DB and DC schemeType flag value when we revisit the same page" in new ControllerWithMockKeystore {
         // setup
         val request = FakeRequest(GET,"").withSession{(SessionKeys.sessionId,SESSION_ID)}
-        MockKeystore.map = MockKeystore.map + ("definedBenefit" -> "true")
-        MockKeystore.map = MockKeystore.map + ("definedContribution" -> "true")
+        MockKeystore.map = MockKeystore.map + (DB_FLAG_PREFIX + "2015" -> "true")
+        MockKeystore.map = MockKeystore.map + (DC_FLAG_PREFIX + "2015" -> "true")
 
         // test
-        val result : Future[Result] = MockSelectSchemeControllerWithMockKeystore.onPageLoad()(request)
+        val result : Future[Result] = MockSelectSchemeControllerWithMockKeystore.onPageLoad(2015)(request)
 
         // check
         status(result) shouldBe 200
-        MockKeystore.map should contain key ("definedContribution")
-        MockKeystore.map should contain key ("definedBenefit")
-        MockKeystore.map should contain value ("true")
       }
 
     }
 
     "onSubmit with POST request" should {
       "not return result NOT_FOUND" in {
-        val result: Option[Future[Result]] = route(FakeRequest(POST, endPointURL))
+        val result: Option[Future[Result]] = route(FakeRequest(POST, postEndPointURL))
         result.isDefined shouldBe true
         status(result.get) should not be NOT_FOUND
       }
 
       "return 303 for valid GET request" in {
-        val result: Option[Future[Result]] = route(FakeRequest(POST, endPointURL))
+        val result: Option[Future[Result]] = route(FakeRequest(POST, postEndPointURL))
         status(result.get) shouldBe 303
       }
 
       "with valid DB and DC schemeType flag value should save to keystore" in new ControllerWithMockKeystore{
         // set up
         implicit val hc = HeaderCarrier()
-        implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID))
-                                               .withFormUrlEncodedBody({"definedContribution" -> "true";"definedBenefit" -> "true"})
+        implicit val request = FakeRequest(POST, postEndPointURL).withSession((SessionKeys.sessionId,SESSION_ID))
+                                               .withFormUrlEncodedBody(("definedContribution" -> "true"),("definedBenefit" -> "true"),("year"->"2015"))
 
         // test
         val result: Future[Result] = MockSelectSchemeControllerWithMockKeystore.onSubmit()(request)
 
         // check
         status(result) shouldBe 303
-        MockKeystore.map should contain key ("definedContribution")
-        MockKeystore.map should contain key ("definedBenefit")
+        MockKeystore.map should contain key (DB_FLAG_PREFIX + "2015")
+        MockKeystore.map should contain key (DC_FLAG_PREFIX + "2015")
         MockKeystore.map should contain value ("true")
       }
 
       "with invalid DB and DC schemeType flag value should show errors" in new ControllerWithMockKeystore{
         // set up
         implicit val hc = HeaderCarrier()
-        implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID))
-                                               .withFormUrlEncodedBody({"definedContribution" -> "";"definedBenefit" -> ""})
+        implicit val request = FakeRequest(POST, postEndPointURL).withSession((SessionKeys.sessionId,SESSION_ID))
+                                               .withFormUrlEncodedBody({"definedContribution" -> "";"definedBenefit" -> "";"year"->"2015"})
 
         // test
         val result: Future[Result] = MockSelectSchemeControllerWithMockKeystore.onSubmit()(request)
@@ -135,8 +134,8 @@ class SelectSchemeControllerSpec extends test.BaseSpec {
       "with false DB and DC schemeType flag value should show errors" in new ControllerWithMockKeystore{
         // set up
         implicit val hc = HeaderCarrier()
-        implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID))
-                                               .withFormUrlEncodedBody({"definedContribution" -> "false";"definedBenefit" -> "false"})
+        implicit val request = FakeRequest(POST, postEndPointURL).withSession((SessionKeys.sessionId,SESSION_ID))
+                                               .withFormUrlEncodedBody({"definedContribution" -> "false";"definedBenefit" -> "false";"year"->"2015"})
 
         // test
         val result: Future[Result] = MockSelectSchemeControllerWithMockKeystore.onSubmit()(request)
@@ -153,14 +152,14 @@ class SelectSchemeControllerSpec extends test.BaseSpec {
     "correctly unbind" in {
       // set up
       val model = SelectSchemeModel(true, true)
-      val theForm = SelectSchemeForm.form.bind(Map(KeystoreService.DB_FLAG -> "false",KeystoreService.DC_FLAG -> "false"))
+      val theForm = SelectSchemeForm.form.bind(Map("definedContribution" -> "false","definedContribution" -> "false"))
 
       // test
       val map = theForm.mapping.unbind(model)
 
       // check
-      map(KeystoreService.DB_FLAG) shouldBe "true"
-      map(KeystoreService.DC_FLAG) shouldBe "true"
+      map("definedContribution") shouldBe "true"
+      map("definedContribution") shouldBe "true"
     }
   }
 }

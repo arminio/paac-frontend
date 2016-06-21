@@ -33,8 +33,8 @@ trait SelectSchemeForm {
 
   val form: Form[SelectSchemeModel] = Form(
     mapping(
-      KeystoreService.DB_FLAG -> boolean,
-      KeystoreService.DC_FLAG -> boolean
+      "definedBenefit" -> boolean,
+      "definedContribution" -> boolean
     )(SelectSchemeModel.apply)(SelectSchemeModel.unapply)
 )
 }

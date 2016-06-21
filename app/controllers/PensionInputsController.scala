@@ -38,7 +38,7 @@ trait PensionInputsController extends RedirectController {
       if (cy == "2015" || cy == "-1") {
         Future.successful(Redirect(onSubmitRedirect))
       } else {
-        keystore.read[String](List((DB_PREFIX + cy),(DC_PREFIX + cy), DB_FLAG, DC_FLAG)).map {
+        keystore.read[String](List((DB_PREFIX + cy),(DC_PREFIX + cy))).map {
           (fieldsMap) =>
             Ok(views.html.pensionInputs(CalculatorForm.bind(fieldsMap).discardingErrors, cy))
         }
@@ -48,21 +48,18 @@ trait PensionInputsController extends RedirectController {
 
   val onSubmit = withSession { implicit request =>
     implicit val marshall = KeystoreService.toStringPair _
-    keystore.read[String](List(CURRENT_INPUT_YEAR_KEY, DB_FLAG, DC_FLAG)).flatMap {
+    keystore.read[String](List(CURRENT_INPUT_YEAR_KEY)).flatMap {
       (fieldsMap) =>
       val cy = fieldsMap(CURRENT_INPUT_YEAR_KEY).toInt
-      val isDB = fieldsMap(DB_FLAG).toBoolean
       CalculatorForm.form.bindFromRequest().fold(
         formWithErrors => { 
           Future.successful(Ok(views.html.pensionInputs(formWithErrors, cy.toString())))
         },
         input => {
-          val isDBError = !input.toDefinedBenefit(cy).isDefined && isDB
+          val isDBError = !input.toDefinedBenefit(cy).isDefined
           if (isDBError) {
             var form = CalculatorForm.form.bindFromRequest()
-            if (isDBError) {
-              form = form.withError("definedBenefits.amount_"+cy, "db.error.bounds")
-            }
+            form = form.withError("definedBenefits.amount_"+cy, "db.error.bounds")
             Future.successful(Ok(views.html.pensionInputs(form, cy.toString())))
           } else {
             keystore.save(List(input.toDefinedBenefit(cy)), "").flatMap {
