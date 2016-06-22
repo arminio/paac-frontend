@@ -26,7 +26,7 @@ object SelectSchemeController extends SelectSchemeController {
   override val keystore: KeystoreService = KeystoreService
 }
 
-trait SelectSchemeController  extends BaseFrontendController {
+trait SelectSchemeController  extends RedirectController {
   val keystore: KeystoreService
 
   private val onSubmitRedirect: Call = routes.PensionInputs201516Controller.onPageLoad()
@@ -50,10 +50,16 @@ trait SelectSchemeController  extends BaseFrontendController {
         } else {
           keystore.save[String](List((s"${input.definedBenefit}", s"${DB_FLAG_PREFIX}${year}"),
                                      (s"${input.definedContribution}", s"${DC_FLAG_PREFIX}${year}"))).map {
-            (_)=> Redirect(onSubmitRedirect)
+            (_)=> 
+            Redirect(onSubmitRedirect)
           }
         }
       }
     )
+  }
+
+  def onBack(year:Int) = withSession { implicit request =>
+    // once 2016 and later implemented we need to pass on the year
+    wheretoBack(Redirect(routes.TaxYearSelectionController.onPageLoad))
   }
 }
