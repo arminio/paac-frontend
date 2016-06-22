@@ -37,8 +37,7 @@ trait PostTriggerPensionInputsController extends RedirectController {
           Future.successful(Redirect(routes.DateOfMPAATriggerEventController.onPageLoad))
         } else {
           val taxYear = selectedTaxYear(dateAsStr).getOrElse("2017")
-          val triggeredDate = flexiAccessDate(dateAsStr)
-          Future.successful(Ok(views.html.postTriggerPensionInputs(CalculatorForm.bind(values),taxYear,triggeredDate)))
+          Future.successful(Ok(views.html.postTriggerPensionInputs(CalculatorForm.bind(values),taxYear,dateAsStr)))
         }
     }
   }
@@ -46,12 +45,11 @@ trait PostTriggerPensionInputsController extends RedirectController {
   val onSubmit = withSession { implicit request =>
     val f = CalculatorForm.form.bindFromRequest()
     keystore.read[String](KeystoreService.TRIGGER_DATE_KEY).flatMap {
-      (dateAsStr) =>
-        val taxYear = selectedTaxYear(dateAsStr.get).getOrElse("2017")
-        val triggeredDate = flexiAccessDate(dateAsStr.get)
+      (maybeDateString) =>
+        val taxYear = selectedTaxYear(maybeDateString.get).getOrElse("2017")
         f.fold(
           formWithErrors => {
-            Future.successful(Ok(views.html.postTriggerPensionInputs(formWithErrors, taxYear, triggeredDate)))
+            Future.successful(Ok(views.html.postTriggerPensionInputs(formWithErrors, taxYear, maybeDateString.get)))
           },
           input => {
             val triggerP1 = input.triggerDatePeriod.get.isPeriod1
@@ -60,7 +58,7 @@ trait PostTriggerPensionInputsController extends RedirectController {
               (triggerP2 && !input.year2015.postTriggerDcAmount2015P2.isDefined)
             ) {
               Future.successful(Ok(views.html.postTriggerPensionInputs(f.withError("error.bounds", "error.bounds", 0, 5000000.00),
-                                                                        taxYear, triggeredDate)))
+                                                                        taxYear, maybeDateString.get)))
             } else {
               val toSave: Option[(Long, String)] = if (triggerP1) {
                 input.toP1TriggerDefinedContribution
@@ -79,10 +77,6 @@ trait PostTriggerPensionInputsController extends RedirectController {
 
   val onBack = withSession { implicit request =>
     wheretoBack(Redirect(routes.DateOfMPAATriggerEventController.onPageLoad))
-  }
-
-  private def flexiAccessDate(date:String): String = {
-    date.split("-").reverse.mkString(" ")
   }
 
   def selectedTaxYear(date: String):Option[String] = new LocalDate(date) match {
