@@ -42,7 +42,7 @@ object ApplicationConfig extends AppConfig with ServicesConfig {
   override lazy val assetsUrl = stringConfig(s"assets.url") + stringConfig(s"assets.version")
 
   private val contactHost = configuration.getString(s"contact-frontend.host").getOrElse("")
-  private val contactFormServiceIdentifier = "MyService"
+  private val contactFormServiceIdentifier = "PAAC"
 
   override lazy val assetsPrefix = loadConfig(s"assets.url") + loadConfig(s"assets.version")
   override lazy val analyticsToken: Option[String] = configuration.getString(s"govuk-tax.google-analytics.token")
@@ -54,4 +54,8 @@ object ApplicationConfig extends AppConfig with ServicesConfig {
 
   override lazy val useMinifiedAssets = configuration.getBoolean(s"govuk-tax.cc-frontend.assets.minified").getOrElse(true)
   override lazy val betaFeedbackUnauthenticatedUrl = s"$contactHost/contact/beta-feedback-unauthenticated"
+
+
+  lazy val whitelist = Play.configuration.getStringSeq("whitelist") getOrElse Seq.empty
+  lazy val whitelistExcluded = Play.configuration.getStringSeq("whitelistExcludedCalls") getOrElse Seq.empty
 }
