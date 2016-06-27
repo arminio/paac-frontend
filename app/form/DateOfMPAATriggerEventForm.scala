@@ -19,11 +19,11 @@ package form
 import org.joda.time.LocalDate
 import play.api.data.Form
 import play.api.data.Forms._
-import play.api.i18n.Messages
 import play.api.libs.json.Json
+import service.KeystoreService._
 import uk.gov.hmrc.play.mappers.DateTuple._
 
-case class DateOfMPAATriggerEventPageModel(dateOfMPAATriggerEvent: Option[LocalDate])
+case class DateOfMPAATriggerEventPageModel(dateOfMPAATriggerEvent: Option[LocalDate], p1dctrigger: String, p2dctrigger: String, isEdit: Boolean)
 
 object DateOfMPAATriggerEventPageModel {
   implicit val formats = Json.format[DateOfMPAATriggerEventPageModel]
@@ -39,7 +39,10 @@ trait DateOfMPAATriggerEventForm extends DateOfMPAATriggerEvent {
 
   val form: Form[DateOfMPAATriggerEventPageModel] = Form(
     mapping(
-      mpaaDate -> dateTuple(validate = true)
+      mpaaDate -> dateTuple(validate = true),
+      P1_TRIGGER_DC_KEY -> text,
+      P2_TRIGGER_DC_KEY -> text,
+      "isEdit" -> boolean
     )(DateOfMPAATriggerEventPageModel.apply)(DateOfMPAATriggerEventPageModel.unapply)
   )
 }
