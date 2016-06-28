@@ -77,9 +77,11 @@ paac.1516.pension.inputs.dc = Defined contribution
 paac.1516.pension.inputs.pages.heading = What were your pension savings for the tax year 2015 to 2016?
 paac.201516.pension.inputs.pagetitle = 2015/16 Pension Inputs
 paac.201516.pension.inputs.description = The tax year 2015 to 2016 was split into two to align pension input periods (PIPs) with tax years.
-paac.201516.pension.inputs.description2 = Include all contributions and investment growth for the pension input periods that ended in this tax year.
-paac.201516.pension.inputs.period1 = PIP 1 from 6 April 2015 to 8 July 2015
-paac.201516.pension.inputs.period2 = PIP 2 from 9 July 2015 to 5 April 2016
+paac.201516.pension.inputs.description2 = Include pension savings for the PIPs that ended in this tax year.
+paac.201516.pension.inputs.period1 = Period 1
+paac.201516.pension.inputs.period1.description = Include all pension savings made in the PIPs ending between 6 April 2015 to 8 July 2015.
+paac.201516.pension.inputs.period2 = Period 2
+paac.201516.pension.inputs.period2.description = Include all pension savings made between 9 July 2015 to 5 April 2016.
 
 ## Pension Inputs Page
 paac.pension.inputs.pagetitle = Pension Inputs
@@ -110,7 +112,8 @@ paac.review-amounts.heading.period = Tax year {0} to {1} period {2}
 paac.review-amounts.heading.total = Total amount
 paac.review-amounts.heading.db = Defined benefit
 paac.review-amounts.heading.mp = Defined contribution
-paac.review-amounts.heading.trigger.savings=What were your defined contribution pension savings for the rest of the tax year {0} to {1}?
+paac.review-amounts.heading.trigger.savings.p1=What were your defined contribution pension savings for the rest of period 1?
+paac.review-amounts.heading.trigger.savings.p2=What were your defined contribution pension savings for the rest of period 2?
 paac.review-amounts.heading.trigger.date=When did you first flexibly access your pensions?
 paac.review-amounts.action.edit = Edit
 paac.review-amounts.value.01={0} January {1}
@@ -128,16 +131,19 @@ paac.review-amounts.value.12={0} December {1}
 
 ## Results Page
 paac.results.table.col.1 = Year
-paac.results.table.col.2 = Annual allowance
-paac.results.table.col.3 = Contributions
-paac.results.table.col.4 = Amount on which tax is due
-paac.results.table.col.5 = Unused allowance
+paac.results.table.col.2 = Annual Allowance<br>Alternative Annual Allowance<br>Reduced Annual Allowance
+paac.results.table.col.3 = Money<br> Purchase<br> Annual<br> Allowance 
+paac.results.table.col.4 = Pension<br> savings
+paac.results.table.col.5 = Amount<br> on which<br> tax is due
+paac.results.table.col.6 = Unused<br> allowance
 paac.results.taxyearlabel = {0} to {1}
+paac.results.taxyearlabel.p1 = 2015 to 2016 period 1
+paac.results.taxyearlabel.p2 = 2015 to 2016 period 2
 paac.results.link.new.href = new
 paac.results.link.new = Start again
 paac.results.page.heading = Results
 paac.results.page.title = PAAC Results
-paac.results.p1 = Based on your answers, over the past {0} years you have exceeded your annual allowance by &pound;{1}. You may have to pay tax on this.
+paac.results.p1 = Based on your answers, you have exceeded your annual allowance by &pound;{1}. You will have to pay tax on this.
 
 ## Post Trigger Pension Inputs Page
 paac.post.trigger.value.page.question = What were your defined contribution savings for the rest of {0} / {1}?
