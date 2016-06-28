@@ -16,11 +16,13 @@
 
 package config
 
+import play.api.mvc.Call
 import uk.gov.hmrc.play.audit.http.config.LoadAuditingConfig
 import uk.gov.hmrc.play.audit.http.connector.{AuditConnector => Auditing}
 import uk.gov.hmrc.play.config.{AppName, RunMode, ServicesConfig}
 import uk.gov.hmrc.play.http.ws.{WSDelete, WSGet, WSPost, WSPut}
 import uk.gov.hmrc.http.cache.client.SessionCache
+import uk.gov.hmrc.whitelist.AkamaiWhitelistFilter
 
 object FrontendAuditConnector extends Auditing with AppName with RunMode {
   override lazy val auditingConfig = LoadAuditingConfig(s"auditing")
@@ -35,4 +37,18 @@ object PaacSessionCache extends SessionCache with AppName with ServicesConfig {
   override lazy val defaultSource = appName
   override lazy val baseUri = baseUrl("cachable.session-cache")
   override lazy val domain = getConfString("cachable.session-cache.domain", throw new Exception(s"Could not find config 'cachable.session-cache.domain'"))
+}
+
+object WhitelistFilter extends AkamaiWhitelistFilter
+  with RunMode {
+
+  override def whitelist: Seq[String] = ApplicationConfig.whitelist
+
+  override def excludedPaths: Seq[Call] = {
+    ApplicationConfig.whitelistExcluded.map {path =>
+      Call("GET", path)}
+  }
+
+  override def destination: Call = Call("GET", "https://www.tax.service.gov.uk/paac-outage/index.html")
+
 }

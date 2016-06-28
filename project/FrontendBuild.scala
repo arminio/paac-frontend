@@ -38,10 +38,12 @@ private object AppDependencies {
   private val playConfigVersion = "2.0.1"
   private val httpCachingClientVersion ="5.2.0"
   private val scalaTestVersion = "2.2.2"
+  private val scalaTestPlusVersion = "1.2.0"
   private val jSoupVersion = "1.7.3"
   private val mockitoVersion = "1.10.19"
   private val hmrcTestVersion = "1.4.0"
   private val pegDownVersion = "1.4.2"
+  private val playWhitelistFilterVersion = "1.1.0"
   
   val compile = Seq(
     ws,
@@ -54,12 +56,13 @@ private object AppDependencies {
     "uk.gov.hmrc" %% "play-health" % playHealthVersion,
     "uk.gov.hmrc" %% "play-ui" % playUiVersion,
     "uk.gov.hmrc" %% "http-caching-client" % httpCachingClientVersion,
-    "uk.gov.hmrc" %% "secure" % "7.0.0"
+    "uk.gov.hmrc" %% "secure" % "7.0.0",
+    "uk.gov.hmrc" %% "play-whitelist-filter" % playWhitelistFilterVersion
   )
 
   trait TestDependencies {
     lazy val scope: String = "test"
-    lazy val test : Seq[ModuleID] = ???
+    lazy val test : Seq[ModuleID] = Seq()
   }
 
   object Test {
@@ -67,6 +70,7 @@ private object AppDependencies {
       override lazy val test = Seq(
         "uk.gov.hmrc" %% "hmrctest" % hmrcTestVersion % scope,
         "org.scalatest" %% "scalatest" % scalaTestVersion % scope,
+        "org.scalatestplus" %% "play" % scalaTestPlusVersion % scope,
         "com.typesafe.play" %% "play-test" % PlayVersion.current % scope,
         "org.mockito" % "mockito-all" % mockitoVersion % scope,
         "org.jsoup" % "jsoup" % jSoupVersion % scope,
