@@ -43,8 +43,8 @@ backLink = Some((controllers.routes.PensionInputs201516Controller.onBack.url,Mes
 action = controllers.routes.PensionInputs201516Controller.onSubmit,
 args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
 
-<p class="lede text" style="margin: 0"><b>@Messages("paac.201516.pension.inputs.period1", (if(isDefinedBenefit && isDefinedContribution) "pension" else if(isDefinedBenefit) "defined benefit" else if (isDefinedContribution) "defined contribution"  else ""))</b></p>
-
+<p class="lede text"><b>@Messages("paac.201516.pension.inputs.period1")</b></p>
+<p class="text" style="margin: 0"><b>@Messages("paac.201516.pension.inputs.period1.description")</b></p>
 <table style="max-width:12.35em; margin: 0">
     <tbody>
     <fieldset id="input_2015_p1" style="max-width:12.35em; margin: 0">
@@ -84,7 +84,8 @@ args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
     </tbody>
 </table>
 <br>
-<p class="lede text" style="margin: 0"><b>@Messages("paac.201516.pension.inputs.period2", (if(isDefinedBenefit && isDefinedContribution) "pension" else if(isDefinedBenefit) "defined benefit" else if (isDefinedContribution) "defined contribution"  else ""))</b></p>
+<p class="lede text"><b>@Messages("paac.201516.pension.inputs.period2")</b></p>
+<p class="text" style="margin: 0"><b>@Messages("paac.201516.pension.inputs.period2.description")</b></p>
 <table>
     <tbody>
     <fieldset id="input_2015_p2" style="max-width:12.35em; margin: 0">
