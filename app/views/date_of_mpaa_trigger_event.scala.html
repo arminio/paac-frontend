@@ -1,4 +1,4 @@
-@(paacForm : Form[form.DateOfMPAATriggerEventPageModel])(implicit request:Request[_])
+@(paacForm : Form[form.DateOfMPAATriggerEventPageModel],model : form.DateOfMPAATriggerEventPageModel)(implicit request:Request[_])
 
 @import play.api.i18n._
 @import uk.gov.hmrc.play.views.html.helpers._
@@ -41,11 +41,11 @@ backLink = Some((controllers.routes.DateOfMPAATriggerEventController.onBack.url,
         args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
 
         <p class="lede text">@Messages("paac.mpaa.ta.date.page.description")</p>
-        @defining(paacForm.get){model=>
+
         <input type="hidden" name="@(service.KeystoreService.P1_TRIGGER_DC_KEY)" value="@(model.p1dctrigger)"/>
         <input type="hidden" name="@(service.KeystoreService.P2_TRIGGER_DC_KEY)" value="@(model.p2dctrigger)"/>
         <input type="hidden" name="@(service.KeystoreService.TRIGGER_DATE_KEY)" value="@(model.dateOfMPAATriggerEvent)"/>
-        <input type="hidden" name="@(service.KeystoreService.IS_EDIT_KEY)" value="@(model.isEdit)"/>}
+        <input type="hidden" name="@(service.KeystoreService.IS_EDIT_KEY)" value="@(model.isEdit)"/>
 
         @* 'dateOfBirth' class name is misleading. However, it's coming from Assets_Frontend App. *@
         @dateFieldsFree(

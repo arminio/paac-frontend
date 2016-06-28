@@ -46,14 +46,16 @@ trait DateOfMPAATriggerEventController extends RedirectController {
           val parts = dateAsStr.split("-").map(_.toInt)
           DateOfMPAATriggerEventPageModel(Some(new LocalDate(parts(0),parts(1),parts(2))), p1dc, p2dc, isEdit)
         }
-        Ok(views.html.date_of_mpaa_trigger_event(DateOfMPAATriggerEventForm.form.fill(model)))
+        Ok(views.html.date_of_mpaa_trigger_event(DateOfMPAATriggerEventForm.form.fill(model),model))
     }
   }
 
   val onSubmit = withSession { implicit request =>
     DateOfMPAATriggerEventForm.form.bindFromRequest().fold(
-      formWithErrors => { 
-        Future.successful(Ok(views.html.date_of_mpaa_trigger_event(formWithErrors)))
+      formWithErrors => {
+        val data = formRequestData
+        val model = DateOfMPAATriggerEventPageModel(None, data(P1_TRIGGER_DC_KEY), data(P2_TRIGGER_DC_KEY), data(IS_EDIT_KEY).toBoolean)
+        Future.successful(Ok(views.html.date_of_mpaa_trigger_event(formWithErrors,model)))
       },
       input => {
         // should store as json and read out as json but sticking with string throughout
@@ -63,7 +65,7 @@ trait DateOfMPAATriggerEventController extends RedirectController {
             val date = input.dateOfMPAATriggerEvent.get
             if (isValidDate(input.dateOfMPAATriggerEvent.get)) {
               val form = DateOfMPAATriggerEventForm.form.bindFromRequest().withError("dateOfMPAATriggerEvent", "paac.mpaa.ta.date.page.invalid.date")
-              Future.successful(Ok(views.html.date_of_mpaa_trigger_event(form)))
+              Future.successful(Ok(views.html.date_of_mpaa_trigger_event(form,input)))
             } else {
                 if (input.isEdit) {
                   // In 'edit' mode therefore re-save values into 
@@ -84,7 +86,7 @@ trait DateOfMPAATriggerEventController extends RedirectController {
               }
           } else {
             val form = DateOfMPAATriggerEventForm.form.bindFromRequest().withError("dateOfMPAATriggerEvent", "error.invalid.date.format")
-            Future.successful(Ok(views.html.date_of_mpaa_trigger_event(form)))
+            Future.successful(Ok(views.html.date_of_mpaa_trigger_event(form, input)))
           }
         }
       }
