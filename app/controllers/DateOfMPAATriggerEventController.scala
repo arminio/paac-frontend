@@ -41,7 +41,7 @@ trait DateOfMPAATriggerEventController extends RedirectController {
         val p2dc = values(P2_TRIGGER_DC_KEY)
         val isEdit = values(IS_EDIT_KEY).toBoolean
         val model = if (dateAsStr.isEmpty) {
-          DateOfMPAATriggerEventPageModel(Some(new LocalDate()), p1dc, p2dc, isEdit)
+          DateOfMPAATriggerEventPageModel(None, p1dc, p2dc, isEdit)
         } else {
           val parts = dateAsStr.split("-").map(_.toInt)
           DateOfMPAATriggerEventPageModel(Some(new LocalDate(parts(0),parts(1),parts(2))), p1dc, p2dc, isEdit)
