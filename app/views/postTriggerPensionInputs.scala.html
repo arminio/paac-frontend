@@ -7,17 +7,14 @@
   postTriggerDcAmount2015P1=paacForm.data.get("year2015.postTriggerDcAmount2015P1").flatMap((v) =>if (v == "") None else Some(BigDecimal(v.toDouble))),
   postTriggerDcAmount2015P2=paacForm.data.get("year2015.postTriggerDcAmount2015P2").flatMap((v) =>if (v == "") None else Some(BigDecimal(v.toDouble))) ), 
   Some(paacForm.data("triggerDate")))){ errorModel =>
-@defining(paacForm.value.getOrElse(errorModel)) { model =>
-
 @common.paacMain(
 pageTitle = Messages("paac.post.trigger.value.page.title"),
-heading = if(model.triggerDatePeriod.get.isPeriod1()) Messages("paac.post.trigger.value.page.question.p1") else Messages("paac.post.trigger.value.page.question.p2"),
+heading = if(paacForm.value.getOrElse(errorModel).triggerDatePeriod.get.isPeriod1()) Messages("paac.post.trigger.value.page.question.p1") else Messages("paac.post.trigger.value.page.question.p2"),
 backLink = Some((controllers.routes.PostTriggerPensionInputsController.onBack.url,Messages("paac.link.text.back")))
 ) {
-
     <p id="paac.post-trigger-value.p1">
       @defining(triggeredDate.split("-")) { tDate =>
-        @if(model.triggerDatePeriod.get.isPeriod1()) {
+        @if(paacForm.value.getOrElse(errorModel).triggerDatePeriod.get.isPeriod1()) {
           @Messages("paac.post.trigger.value.description.p1", Messages("paac.review-amounts.value."+tDate(1), tDate(2).toInt.toString, tDate(0)))
         } else {
           @Messages("paac.post.trigger.value.description.p2", Messages("paac.review-amounts.value."+tDate(1), tDate(2).toInt.toString, tDate(0)))
@@ -52,7 +49,7 @@ backLink = Some((controllers.routes.PostTriggerPensionInputsController.onBack.ur
     @form(
         action = controllers.routes.PostTriggerPensionInputsController.onSubmit,
         args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
-
+@defining(paacForm.value.getOrElse(errorModel)) { model =>
         <input type="hidden" id="triggerDate" name="triggerDate" value="@(model.triggerDate)"/>
         <table>
             <tbody>
