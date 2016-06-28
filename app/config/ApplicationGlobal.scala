@@ -31,7 +31,7 @@ import uk.gov.hmrc.play.frontend.bootstrap.DefaultFrontendGlobal
 import uk.gov.hmrc.play.http.logging.filters.FrontendLoggingFilter
 
 
-object FrontendGlobal
+abstract class FrontendGlobal
   extends DefaultFrontendGlobal
   with RunMode {
 
@@ -83,4 +83,11 @@ object PaacConfiguration {
       config.flatMap[Int](_.getInt("year")).getOrElse(2015)
     }
   }
+}
+
+object FrontendGlobal extends FrontendGlobal
+
+object ProductionFrontendGlobal extends FrontendGlobal {
+  override def filters = WhitelistFilter +: super.filters
+
 }
