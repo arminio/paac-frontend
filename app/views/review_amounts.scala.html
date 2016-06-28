@@ -102,7 +102,7 @@ backLink = Some((controllers.routes.ReviewTotalAmountsController.onBack.url,Mess
             </td>
         </tr>
         <tr>
-            <td>@Messages("paac.review-amounts.heading.trigger.savings", contribution.taxPeriodStart.year.toString(), (contribution.taxPeriodStart.year+1).toString())</td>
+            <td>@if(triggerContribution.get.isPeriod1){@Messages("paac.review-amounts.heading.trigger.savings.p1")}else{@Messages("paac.review-amounts.heading.trigger.savings.p2")}</td>
             <td class="numeric">&pound;@(currencyFormatter.format(triggerContribution.get.amounts.getOrElse(InputAmounts()).moneyPurchase.get/100D))</td>
             <td class="edit_action">
                 <a href="edit/@(controllers.ReviewTotalAmountsController.EDIT_TRIGGER_AMOUNT)">
