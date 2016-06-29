@@ -27,15 +27,13 @@ backLink = Some((controllers.routes.ReviewTotalAmountsController.onPageLoad.url,
       @if(result.input.amounts.isDefined && !result.input.isPeriod1 && !result.input.isPeriod2) {
        <tr>
           <td>@Messages("paac.results.taxyearlabel", result.input.taxPeriodStart.year.toString, (result.input.taxPeriodStart.year+1).toString)</td>
-          <td class="numeric">@if(result.summaryResult.isMPA){
-            &pound;@(currencyFormatter.format(result.summaryResult.moneyPurchaseAA/100))
-          } else {
+          <td class="numeric">
             @if(result.summaryResult.alternativeAA > 0) {
               &pound;@(currencyFormatter.format(result.summaryResult.alternativeAA/100))</td>
             } else {
               &pound;@(currencyFormatter.format(result.summaryResult.availableAllowance/100))</td>
             }
-          }</td>
+          </td>
           <td class="numeric">@if(result.summaryResult.moneyPurchaseAA>0){&pound;@(currencyFormatter.format(result.summaryResult.moneyPurchaseAA/100))}</td>
           <td class="numeric">&pound;@(currencyFormatter.format((result.input.amounts.get.definedBenefit.getOrElse(0L) + result.input.amounts.get.moneyPurchase.getOrElse(0L))/100))</td>
           <td class="numeric">&pound;@(currencyFormatter.format(result.summaryResult.chargableAmount/100))</td>
@@ -47,15 +45,13 @@ backLink = Some((controllers.routes.ReviewTotalAmountsController.onPageLoad.url,
       @if(result.input.amounts.isDefined && result.input.isPeriod1) {
        <tr>
           <td>@Messages("paac.results.taxyearlabel.p1")</td>
-          <td class="numeric">@if(result.summaryResult.isMPA){
-            &pound;@(currencyFormatter.format(result.summaryResult.moneyPurchaseAA/100))
-          } else {
+          <td class="numeric">
             @if(result.summaryResult.alternativeAA > 0) {
               &pound;@(currencyFormatter.format(result.summaryResult.alternativeAA/100))</td>
             } else {
               &pound;@(currencyFormatter.format(result.summaryResult.availableAllowance/100))</td>
             }
-          }</td>
+          </td>
           <td class="numeric">@if(result.summaryResult.moneyPurchaseAA>0){&pound;@(currencyFormatter.format(result.summaryResult.moneyPurchaseAA/100))}</td>
           <td class="numeric">&pound;@(currencyFormatter.format((result.input.amounts.get.definedBenefit.getOrElse(0L) + 
                                                                 result.input.amounts.get.moneyPurchase.getOrElse(0L))
@@ -69,15 +65,13 @@ backLink = Some((controllers.routes.ReviewTotalAmountsController.onPageLoad.url,
       @if(result.input.amounts.isDefined && result.input.isPeriod2) {
        <tr>
           <td>@Messages("paac.results.taxyearlabel.p2")</td>
-          <td class="numeric">@if(result.summaryResult.isMPA){
-            &pound;@(currencyFormatter.format(result.summaryResult.moneyPurchaseAA/100))
-          } else {
+          <td class="numeric">
             @if(result.summaryResult.alternativeAA > 0) {
               &pound;@(currencyFormatter.format(result.summaryResult.alternativeAA/100))</td>
             } else {
               &pound;@(currencyFormatter.format(result.summaryResult.availableAllowance/100))</td>
             }
-          }</td>
+          </td>
           <td class="numeric">@if(result.summaryResult.moneyPurchaseAA>0){&pound;@(currencyFormatter.format(result.summaryResult.moneyPurchaseAA/100))}</td>
           <td class="numeric">&pound;@(currencyFormatter.format((result.input.amounts.get.definedBenefit.getOrElse(0L) + 
                                                                 result.input.amounts.get.moneyPurchase.getOrElse(0L))/100))</td>
