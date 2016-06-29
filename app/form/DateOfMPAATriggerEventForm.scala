@@ -23,7 +23,7 @@ import play.api.libs.json.Json
 import service.KeystoreService._
 import uk.gov.hmrc.play.mappers.DateTuple._
 
-case class DateOfMPAATriggerEventPageModel(dateOfMPAATriggerEvent: Option[LocalDate], p1dctrigger: String, p2dctrigger: String, isEdit: Boolean)
+case class DateOfMPAATriggerEventPageModel(dateOfMPAATriggerEvent: Option[LocalDate], originalDate: String, p1dctrigger: String, p2dctrigger: String, isEdit: Boolean)
 
 object DateOfMPAATriggerEventPageModel {
   implicit val formats = Json.format[DateOfMPAATriggerEventPageModel]
@@ -40,9 +40,10 @@ trait DateOfMPAATriggerEventForm extends DateOfMPAATriggerEvent {
   val form: Form[DateOfMPAATriggerEventPageModel] = Form(
     mapping(
       mpaaDate -> dateTuple(validate = true),
+      "originalDate" -> text,
       P1_TRIGGER_DC_KEY -> text,
       P2_TRIGGER_DC_KEY -> text,
-      "isEdit" -> boolean
+      IS_EDIT_KEY -> boolean
     )(DateOfMPAATriggerEventPageModel.apply)(DateOfMPAATriggerEventPageModel.unapply)
   )
 }

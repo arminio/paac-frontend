@@ -82,7 +82,8 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
                                     ("dateOfMPAATriggerEvent.year" -> "2015"),
                                     (KeystoreService.P1_TRIGGER_DC_KEY -> "0"),
                                     (KeystoreService.P2_TRIGGER_DC_KEY -> "0"),
-                                    (KeystoreService.TRIGGER_DATE_KEY -> "2013-7-1"))
+                                    (KeystoreService.TRIGGER_DATE_KEY -> "2015-7-4"),
+                                    ("originalDate" -> "2013-7-1"))
         MockKeystore.map = MockKeystore.map + (KeystoreService.IS_EDIT_KEY -> "false")
         MockKeystore.map = MockKeystore.map + (KeystoreService.TE_YES_NO_KEY -> "true")
 
@@ -104,7 +105,8 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
                                     ("dateOfMPAATriggerEvent.year" -> "2015"),
                                     (KeystoreService.P1_TRIGGER_DC_KEY -> "0"),
                                     (KeystoreService.P2_TRIGGER_DC_KEY -> "0"),
-                                    (KeystoreService.TRIGGER_DATE_KEY -> "2013-7-1"))
+                                    (KeystoreService.TRIGGER_DATE_KEY -> "2015-7-4"),
+                                    ("originalDate" -> "2013-7-1"))
         MockKeystore.map = MockKeystore.map + (KeystoreService.IS_EDIT_KEY -> "false")
         MockKeystore.map = MockKeystore.map + (KeystoreService.TE_YES_NO_KEY -> "true")
 
@@ -124,8 +126,9 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
                                     ("dateOfMPAATriggerEvent.year" -> "2015"),
                                     (KeystoreService.P1_TRIGGER_DC_KEY -> "0"),
                                     (KeystoreService.P2_TRIGGER_DC_KEY -> "0"),
-                                    (KeystoreService.TRIGGER_DATE_KEY -> "2013-7-1"),
-                                    (KeystoreService.IS_EDIT_KEY -> "false"))
+                                    (KeystoreService.TRIGGER_DATE_KEY -> "2015-4-5"),
+                                    (KeystoreService.IS_EDIT_KEY -> "false"),
+                                    ("originalDate" -> "2013-7-1"))
         MockKeystore.map = MockKeystore.map + (KeystoreService.TE_YES_NO_KEY -> "true")
 
         // test
@@ -145,8 +148,9 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
                                     ("dateOfMPAATriggerEvent.year" -> ""),
                                     (KeystoreService.P1_TRIGGER_DC_KEY -> "0"),
                                     (KeystoreService.P2_TRIGGER_DC_KEY -> "0"),
-                                    (KeystoreService.TRIGGER_DATE_KEY -> "2013-7-1"),
-                                    (KeystoreService.IS_EDIT_KEY -> "false"))
+                                    (KeystoreService.TRIGGER_DATE_KEY -> ""),
+                                    (KeystoreService.IS_EDIT_KEY -> "false"),
+                                    ("originalDate" -> "2013-7-1"))
         MockKeystore.map = MockKeystore.map + (KeystoreService.TE_YES_NO_KEY -> "true")
 
         // test
@@ -166,8 +170,9 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
                                     ("dateOfMPAATriggerEvent.year" -> "-1"),
                                     (KeystoreService.P1_TRIGGER_DC_KEY -> "0"),
                                     (KeystoreService.P2_TRIGGER_DC_KEY -> "0"),
-                                    (KeystoreService.TRIGGER_DATE_KEY -> "2013-7-1"),
-                                    (KeystoreService.IS_EDIT_KEY -> "false"))
+                                    (KeystoreService.TRIGGER_DATE_KEY -> ""),
+                                    (KeystoreService.IS_EDIT_KEY -> "false"),
+                                    ("originalDate" -> "2013-7-1"))
         MockKeystore.map = MockKeystore.map + (KeystoreService.TE_YES_NO_KEY -> "true")
 
         // test
@@ -187,7 +192,8 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
                                     ("dateOfMPAATriggerEvent.year" -> "2015"),
                                     (KeystoreService.P1_TRIGGER_DC_KEY -> "0"),
                                     (KeystoreService.P2_TRIGGER_DC_KEY -> "0"),
-                                    (KeystoreService.TRIGGER_DATE_KEY -> "2013-7-1"))
+                                    (KeystoreService.TRIGGER_DATE_KEY -> "2013-7-1"),
+                                    ("originalDate" -> "2013-7-1"))
 
         MockKeystore.map = MockKeystore.map + (KeystoreService.IS_EDIT_KEY -> "false")
 
@@ -208,7 +214,8 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
                                     (KeystoreService.P1_TRIGGER_DC_KEY -> "0"),
                                     (KeystoreService.P2_TRIGGER_DC_KEY -> "0"),
                                     (KeystoreService.TRIGGER_DATE_KEY -> "2013-7-1"),
-                                    (KeystoreService.IS_EDIT_KEY -> "true"))
+                                    (KeystoreService.IS_EDIT_KEY -> "true"),
+                                    ("originalDate" -> "2013-7-1"))
 
         // test
         val result : Future[Result] = ControllerWithMockKeystore.onSubmit()(request)
@@ -227,7 +234,8 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
                                     (KeystoreService.P1_TRIGGER_DC_KEY -> "0"),
                                     (KeystoreService.P2_TRIGGER_DC_KEY -> "0"),
                                     (KeystoreService.TRIGGER_DATE_KEY -> "2013-7-1"),
-                                    (KeystoreService.IS_EDIT_KEY -> "false"))
+                                    (KeystoreService.IS_EDIT_KEY -> "false"),
+                                    ("originalDate" -> "2013-7-1"))
 
         // test
         val result : Future[Result] = ControllerWithMockKeystore.onSubmit()(request)
