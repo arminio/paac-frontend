@@ -42,8 +42,8 @@ backLink = Some((controllers.routes.DateOfMPAATriggerEventController.onBack.url,
 
         <p class="lede text">@Messages("paac.mpaa.ta.date.page.description")</p>
 
-        <input type="hidden" name="@(service.KeystoreService.P1_TRIGGER_DC_KEY)" value="@(model.p1dctrigger)"/>
-        <input type="hidden" name="@(service.KeystoreService.P2_TRIGGER_DC_KEY)" value="@(model.p2dctrigger)"/>
+        <input type="hidden" name="@(service.KeystoreService.P1_TRIGGER_DC_KEY)" value="@(model.p1dctrigger)00"/>
+        <input type="hidden" name="@(service.KeystoreService.P2_TRIGGER_DC_KEY)" value="@(model.p2dctrigger)00"/>
         <input type="hidden" name="originalDate" value="@(model.originalDate)"/>
         <input type="hidden" name="@(service.KeystoreService.IS_EDIT_KEY)" value="@(model.isEdit)"/>
 
