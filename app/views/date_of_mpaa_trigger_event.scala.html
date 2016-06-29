@@ -44,7 +44,7 @@ backLink = Some((controllers.routes.DateOfMPAATriggerEventController.onBack.url,
 
         <input type="hidden" name="@(service.KeystoreService.P1_TRIGGER_DC_KEY)" value="@(model.p1dctrigger)"/>
         <input type="hidden" name="@(service.KeystoreService.P2_TRIGGER_DC_KEY)" value="@(model.p2dctrigger)"/>
-        <input type="hidden" name="@(service.KeystoreService.TRIGGER_DATE_KEY)" value="@(model.dateOfMPAATriggerEvent)"/>
+        <input type="hidden" name="originalDate" value="@(model.originalDate)"/>
         <input type="hidden" name="@(service.KeystoreService.IS_EDIT_KEY)" value="@(model.isEdit)"/>
 
         @* 'dateOfBirth' class name is misleading. However, it's coming from Assets_Frontend App. *@
