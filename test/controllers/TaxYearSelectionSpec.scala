@@ -80,7 +80,7 @@ class TaxYearSelectionSpec extends test.BaseSpec {
 
       "if TaxYearSelection value in keystore displays checked checkboxes" in new ControllerWithMockKeystore {
         // set up
-        MockKeystore.map = MockKeystore.map + (KeystoreService.SELECTED_INPUT_YEARS_KEY -> "2015,2014,2012")
+        MockKeystore.map = MockKeystore.map + (KeystoreService.SELECTED_INPUT_YEARS_KEY -> "2015,2014,2013")
         implicit val hc = HeaderCarrier()
         val request = FakeRequest(GET,"").withSession{(SessionKeys.sessionId,SESSION_ID)}
 
@@ -92,7 +92,7 @@ class TaxYearSelectionSpec extends test.BaseSpec {
         val htmlPage = contentAsString(await(result))
         htmlPage should include ("""<input id="TaxYear2015" type="checkbox" name="TaxYear2015" checked>""")
         htmlPage should include ("""<input id="TaxYear2014" type="checkbox" name="TaxYear2014" checked>""")
-        htmlPage should include ("""<input id="TaxYear2012" type="checkbox" name="TaxYear2012" checked>""")
+        htmlPage should include ("""<input id="TaxYear2013" type="checkbox" name="TaxYear2013" checked>""")
       }
     }
   }
