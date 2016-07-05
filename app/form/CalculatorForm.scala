@@ -64,6 +64,15 @@ object CalculatorForm extends models.ThisYear {
                                                 s"amount_${CY6}"->t,
                                                 s"amount_${CY7}"->t,
                                                 s"amount_${CY8}"->t)(Amounts.applyFromInt)(Amounts.unapplyToInt),
+              "adjustedIncome" -> mapping(s"amount_${CY0}"->t,
+                                          s"amount_${CY1}"->t,
+                                          s"amount_${CY2}"->t,
+                                          s"amount_${CY3}"->t,
+                                          s"amount_${CY4}"->t,
+                                          s"amount_${CY5}"->t,
+                                          s"amount_${CY6}"->t,
+                                          s"amount_${CY7}"->t,
+                                          s"amount_${CY8}"->t)(Amounts.applyFromInt)(Amounts.unapplyToInt),
               "year2015" -> mapping("definedBenefit_2015_p1"->t,
                                     "definedContribution_2015_p1"->t,
                                     "definedBenefit_2015_p2"->t,
@@ -72,6 +81,7 @@ object CalculatorForm extends models.ThisYear {
                                     "postTriggerDcAmount2015P2"->t)
                                     (Year2015Amounts.applyFromInt)
                                     (Year2015Amounts.unapplyToInt),
+              "triggerAmount" -> t,
               "triggerDate" -> optional(text)
       )(CalculatorFormFields.apply)(CalculatorFormFields.unapply)
     )

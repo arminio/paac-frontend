@@ -20,7 +20,8 @@ import uk.gov.hmrc.play.test.UnitSpec
 import models._
 
 class CalculatorFormSpec extends test.BaseSpec {
-  val thisYear = 2015//(config.PaacConfiguration.year())
+  //val thisYear = 2015//(config.PaacConfiguration.year())
+  val thisYear = 2016
 
   "CalculatorForm" should {
 
@@ -95,7 +96,9 @@ class CalculatorFormSpec extends test.BaseSpec {
       // set up
       val model = CalculatorFormFields(Amounts(Some(scala.math.BigDecimal(0))),
                                        Amounts(Some(scala.math.BigDecimal(123))),
+                                       Amounts(),
                                        Year2015Amounts(Some(scala.math.BigDecimal(987))),
+                                       None,
                                        Some("2015-11-01"))
 
       // test
@@ -111,7 +114,9 @@ class CalculatorFormSpec extends test.BaseSpec {
       // set up
       val model = CalculatorFormFields(Amounts(Some(scala.math.BigDecimal(0))),
                                        Amounts(Some(scala.math.BigDecimal(123))),
+                                       Amounts(Some(scala.math.BigDecimal(555))),
                                        Year2015Amounts(Some(scala.math.BigDecimal(987))),
+                                       Some(99),
                                        Some("2015-11-01"))
 
       // test
@@ -120,7 +125,9 @@ class CalculatorFormSpec extends test.BaseSpec {
       // check
       map(s"definedBenefits.amount_$thisYear") shouldBe "0"
       map(s"definedContributions.amount_$thisYear") shouldBe "123"
+      map(s"adjustedIncome.amount_$thisYear") shouldBe "555"
       map("year2015.definedBenefit_2015_p1") shouldBe "987"
+      map("triggerAmount") shouldBe "99"
     }
   }
 }
