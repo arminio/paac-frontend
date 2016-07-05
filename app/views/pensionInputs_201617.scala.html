@@ -1,0 +1,79 @@
+@(paacForm : Form[models.CalculatorFormFields],isDefinedBenefit: Boolean= false, isDefinedContribution: Boolean= false)(implicit request:Request[_])
+
+@import uk.gov.hmrc.play.views.html.helpers._
+
+@common.paacMain(
+pageTitle = Messages("paac.201617.pension.inputs.pagetitle"),
+heading = Messages("paac.201617.pension.inputs.heading", (if(isDefinedBenefit && isDefinedContribution) "pension" else if(isDefinedBenefit) "defined benefit" else if (isDefinedContribution) "defined contribution"  else "")),
+articleClasses=Some("full-width"),
+backLink = Some((controllers.routes.PensionInputs201617Controller.onBack.url,Messages("paac.link.text.back")))
+) {
+
+<p class="">@Messages("paac.201617.pension.inputs.description")</p>
+<p class="">@Messages("paac.201617.pension.inputs.description2")</p>
+
+    @if(paacForm.hasErrors) {
+    <div class="error-summary" role="group" aria-labelledby="error-summary-heading-example-1" tabindex="-1" style="border: 5px solid #b10e1e;padding: 20px;padding-top: 0px;margin-bottom: 30px;">
+
+        <h1 class="heading-medium error-summary-heading">
+            There was a problem with the amounts you reported to us
+        </h1>
+
+        @if(paacForm.hasGlobalErrors) {
+        <ul>
+            @for(error <- paacForm.globalErrors) {
+            <li>@error.message</li>
+            }
+        </ul>
+        }
+
+        <ul class="error-summary-list">
+            @for(error <- paacForm.errors) {
+            @defining(Seq("2016")++error.args) { args =>
+            <li><a href="#input_2016" style="color:#b10e1e;font-weight: bold;">@Messages(error.message, args:_*)</a></li>
+            }
+
+            }
+        </ul>
+    </div>
+    }
+
+@form(
+action = controllers.routes.PensionInputs201617Controller.onSubmit,
+args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
+
+<table style="max-width:12.35em; margin: 0">
+    <tbody>
+    <fieldset id="input_2016" style="max-width:12.35em; margin: 0">
+        @if(isDefinedContribution){
+        <label class="form-element-bold label--full-length numeric" for="definedContributions.amount_2016" style="width:150%;display: inline-block;@if(paacForm.errors.find(_.key == "definedContributions.amount_2016")) {color:#b10e1e;}">
+        <tr style="text-align:left;min-width: 7em">@Messages("paac.1516.pension.inputs.dc")</tr><BR/>
+                          <span style="float:right">
+                              @if(paacForm.data.contains("definedContributions.amount_"+2016)) {
+                              <tr style="text-align:left;min-width: 7em">
+                                  £&nbsp;<input type="number" name="definedContributions.amount_2016" id="definedContributions.amount_2016" min="0" step="1" value='@paacForm.data("definedContributions.amount_2016")' max="5000000.00" size="10" style="width:9em;@if(paacForm.errors.find(_.key == "definedContributions.amount_2016")) {border: 4px solid #b10e1e;}"/>
+                              </tr>
+                              }
+                          </span>
+        </label>
+        }
+        @if(isDefinedBenefit){
+        <label class="form-element-bold label--full-length numeric" for="definedBenefits.amount_2016" style="width:150%;display: inline-block;@if(paacForm.errors.find(_.key == "definedBenefits.amount_2016")) {color:#b10e1e;}">
+        <tr style="text-align:left;min-width: 7em">@Messages("paac.1516.pension.inputs.db")</tr><BR/>
+                          <span style="float:right">
+                              @if(paacForm.data.contains("definedBenefits.amount_"+2016)) {
+                              <tr style="text-align:left;min-width: 7em">
+                                  £&nbsp;<input type="number" name="definedBenefits.amount_2016" id="definedBenefits.amount_2016" min="0" step="1" value='@paacForm.data("definedBenefits.amount_2016")' max="5000000.00" size="10" style="width:9em;@if(paacForm.errors.find(_.key == "definedBenefits.amount_2016")) {border: 4px solid #b10e1e;}"/>
+                              </tr>
+                              }
+                          </span>
+        </label>
+        }
+    </fieldset>
+    </tbody>
+</table>
+
+
+<button id="submit" type="submit" class="button" value="Continue">@Messages("paac.calculator.button.continue")</button>
+} @* End of Form *@
+} @* End of paacMain *@

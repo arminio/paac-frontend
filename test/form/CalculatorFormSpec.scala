@@ -16,11 +16,10 @@
 
 package form
 
-import uk.gov.hmrc.play.test.UnitSpec
 import models._
 
 class CalculatorFormSpec extends test.BaseSpec {
-  val thisYear = 2015//(config.PaacConfiguration.year())
+  val thisYear = 2016//(config.PaacConfiguration.year())
 
   "CalculatorForm" should {
 
