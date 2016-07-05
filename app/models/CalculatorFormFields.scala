@@ -61,9 +61,12 @@ trait ThisYear {
   def THIS_YEAR = config.PaacConfiguration.year()
 }
 
+//noinspection ScalaStyle
 case class CalculatorFormFields(definedBenefits: Amounts,
                                 definedContributions: Amounts,
+                                adjustedIncome: Amounts,
                                 year2015: Year2015Amounts,
+                                triggerAmount: Option[Int],
                                 triggerDate: Option[String]) extends ThisYear {
   settings: ThisYear =>
 
@@ -76,6 +79,7 @@ case class CalculatorFormFields(definedBenefits: Amounts,
   val P2_TRIGGER_AMOUNT = "ptDcAmount2015P2"
   val DB_PREFIX = "dbCurrentYearMinus"
   val DC_PREFIX = "dcCurrentYearMinus"
+  val AI_PREFIX = "aiCurrentYearMinus"
 
   def toPageValues():List[Contribution] = {
     def retrieveValue(amounts: Amounts, name: String): Option[Long] = {
@@ -97,6 +101,8 @@ case class CalculatorFormFields(definedBenefits: Amounts,
             Some(this.definedBenefits)
           } else if (name.contains(DC_PREFIX)) {
             Some(this.definedContributions)
+          } else if (name.contains(AI_PREFIX)) {
+            Some(this.adjustedIncome)
           } else {
             None
           }
@@ -105,8 +111,8 @@ case class CalculatorFormFields(definedBenefits: Amounts,
       }
     }
 
-    def toInputAmounts(name1: String, name2: String): Option[InputAmounts] = {
-      val a = InputAmounts(get(name1), get(name2), None, Some(false))
+    def toInputAmounts(name1: String, name2: String, name3: String = ""): Option[InputAmounts] = {
+      val a = InputAmounts(get(name1), get(name2), get(name3), Some(false))
       if (a.isEmpty) None else Some(a)
     }
 
@@ -150,7 +156,7 @@ case class CalculatorFormFields(definedBenefits: Amounts,
         p2Contribution ++ p1Contribution
       } else {
         val delta = settings.THIS_YEAR - year
-        List(Contribution(year, toInputAmounts(DB_PREFIX + delta, DC_PREFIX + delta)))
+        List(Contribution(year, toInputAmounts(DB_PREFIX + delta, DC_PREFIX + delta, AI_PREFIX + delta)))
       }
     }
   }
@@ -170,6 +176,16 @@ case class CalculatorFormFields(definedBenefits: Amounts,
           amounts <- c.amounts
           definedBenefit <- amounts.definedBenefit
         } yield definedBenefit).map((_,key))
+    }
+  }
+
+  def toAdjustedIncome(first: Contribution => Boolean)(key: String) : Option[(Long, String)] = {
+    toContributions.find(first).flatMap {
+      (c)=>
+        (for {
+          amounts <- c.amounts
+          adjustedIncome <- amounts.income
+        } yield adjustedIncome).map((_,key))
     }
   }
 
@@ -199,6 +215,9 @@ case class CalculatorFormFields(definedBenefits: Amounts,
   // Useful for all years except 2015/16 Tax Year
   def toDefinedBenefit(year: Int) : Option[(Long, String)] = toDefinedBenefit((_.taxPeriodStart.year == year))(KeystoreService.DB_PREFIX + year)
   def toDefinedContribution(year: Int) : Option[(Long, String)] = toDefinedContribution((_.taxPeriodStart.year == year))(KeystoreService.DC_PREFIX + year)
+
+  def toAdjustedIncome(year: Int) : Option[(Long, String)] = toAdjustedIncome((_.taxPeriodStart.year == year))(KeystoreService.AI_PREFIX + year)
+
 
   def triggerDatePeriod(): Option[Contribution] = {
     triggerDate.map {

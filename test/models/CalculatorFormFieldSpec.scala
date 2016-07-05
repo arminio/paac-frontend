@@ -317,8 +317,9 @@ class CalculatorFormFieldSpec extends ModelSpec with BeforeAndAfterAll {
       // set up
       val definedBenefitAmounts = Amounts(Some(50.50), Some(90.50), Some(100.50), Some(200.50), Some(300.50), Some(400.50), Some(500.50), Some(600.50))
       val moneyPurchaseAmounts = Amounts(Some(700.50), Some(800.50), Some(900.50), Some(1000.50), Some(1100.50),Some(1200.50), Some(1300.50), Some(1400.50))
+      val adjustedIncomeAmounts = Amounts(Some(11.50), Some(22.50), Some(33.50), Some(44.50), Some(55.50),Some(66.50), Some(77.50), Some(88.50))
       val year2015Amounts = Year2015Amounts(Some(1700.50), Some(1600.50), Some(1500.50), Some(1800.50), None, None)
-      val input = new CalculatorFormFields(definedBenefitAmounts, moneyPurchaseAmounts, year2015Amounts, None) with Year2016
+      val input = new CalculatorFormFields(definedBenefitAmounts, moneyPurchaseAmounts, adjustedIncomeAmounts, year2015Amounts, Some(1111), None) with Year2016
 
       // test
       val maybeTuple = input.toDefinedBenefit(2016)
@@ -335,11 +336,15 @@ class CalculatorFormFieldSpec extends ModelSpec with BeforeAndAfterAll {
       // set up
       val definedBenefits = Amounts(Some(BigDecimal(123)))
       val definedContributions = Amounts(Some(BigDecimal(456)))
+      val adjustedIncome = Amounts(Some(BigDecimal(789)))
       val year2015 = Year2015Amounts()
+      val triggeredAmount = Some(999)
       val triggerDate = None
       val formFields = new CalculatorFormFields(definedBenefits,
                                                 definedContributions,
+                                                adjustedIncome,
                                                 year2015,
+                                                triggeredAmount,
                                                 triggerDate) with Year2016
 
       // test
@@ -365,11 +370,15 @@ class CalculatorFormFieldSpec extends ModelSpec with BeforeAndAfterAll {
       // set up
       val definedBenefits = Amounts(Some(BigDecimal(123)))
       val definedContributions = Amounts(Some(BigDecimal(456)))
+      val adjustedIncome = Amounts(Some(BigDecimal(789)))
       val year2015 = Year2015Amounts(None, Some(444), None, Some(555), Some(888), None)
+      val triggeredAmount = Some(999)
       val triggerDate = Some("2015-4-12")
       val formFields = new CalculatorFormFields(definedBenefits,
                                                 definedContributions,
+                                                adjustedIncome,
                                                 year2015,
+                                                triggeredAmount,
                                                 triggerDate) with Year2016
 
       // test
@@ -400,11 +409,15 @@ class CalculatorFormFieldSpec extends ModelSpec with BeforeAndAfterAll {
       // set up
       val definedBenefits = Amounts(Some(BigDecimal(123)))
       val definedContributions = Amounts(Some(BigDecimal(456)))
+      val adjustedIncome = Amounts(Some(BigDecimal(789)))
       val year2015 = Year2015Amounts(None, Some(444), None, Some(888), None, Some(555))
+      val triggeredAmount = Some(999)
       val triggerDate = Some("2015-11-12")
       val formFields = new CalculatorFormFields(definedBenefits,
                                                 definedContributions,
+                                                adjustedIncome,
                                                 year2015,
+                                                triggeredAmount,
                                                 triggerDate) with Year2016
 
       // test
@@ -435,11 +448,15 @@ class CalculatorFormFieldSpec extends ModelSpec with BeforeAndAfterAll {
       // set up
       val definedBenefits = Amounts(Some(BigDecimal(123)))
       val definedContributions = Amounts(Some(BigDecimal(456)))
+      val adjustedIncome = Amounts(Some(BigDecimal(789)))
       val year2015 = Year2015Amounts(None, Some(444), None, Some(555), Some(888), None)
+      val triggeredAmount = Some(999)
       val triggerDate = Some("2015-4-6")
       val formFields = new CalculatorFormFields(definedBenefits,
                                                 definedContributions,
+                                                adjustedIncome,
                                                 year2015,
+                                                triggeredAmount,
                                                 triggerDate) with Year2016
 
       // test
@@ -471,11 +488,15 @@ class CalculatorFormFieldSpec extends ModelSpec with BeforeAndAfterAll {
       // set up
       val definedBenefits = Amounts(Some(BigDecimal(123)))
       val definedContributions = Amounts(Some(BigDecimal(456)))
+      val adjustedIncome = Amounts(Some(BigDecimal(789)))
       val year2015 = Year2015Amounts(None, Some(444), None, Some(555), None, Some(888))
+      val triggeredAmount = Some(999)
       val triggerDate = Some("2015-7-9")
       val formFields = new CalculatorFormFields(definedBenefits,
                                                 definedContributions,
+                                                adjustedIncome,
                                                 year2015,
+                                                triggeredAmount,
                                                 triggerDate) with Year2016
 
       // test
@@ -508,11 +529,15 @@ class CalculatorFormFieldSpec extends ModelSpec with BeforeAndAfterAll {
       // set up
       val definedBenefits = Amounts(Some(BigDecimal(123)))
       val definedContributions = Amounts(Some(BigDecimal(456)))
+      val adjustedIncome = Amounts(Some(BigDecimal(789)))
       val year2015 = Year2015Amounts(None, Some(444), None, Some(555), None, None)
+      val triggeredAmount = Some(999)
       val triggerDate = None
       val formFields = new CalculatorFormFields(definedBenefits,
                                                 definedContributions,
+                                                adjustedIncome,
                                                 year2015,
+                                                triggeredAmount,
                                                 triggerDate) with Year2016
 
       // test
@@ -541,11 +566,15 @@ class CalculatorFormFieldSpec extends ModelSpec with BeforeAndAfterAll {
       // set up
       val definedBenefits = Amounts(Some(BigDecimal(123)))
       val definedContributions = Amounts(Some(BigDecimal(456)))
+      val adjustedIncome = Amounts(Some(BigDecimal(789)))
       val year2015 = Year2015Amounts(Some(444), None, Some(555), None, None, None)
+      val triggeredAmount = Some(999)
       val triggerDate = None
       val formFields = new CalculatorFormFields(definedBenefits,
                                                 definedContributions,
+                                                adjustedIncome,
                                                 year2015,
+                                                triggeredAmount,
                                                 triggerDate) with Year2016
 
       // test
@@ -574,11 +603,15 @@ class CalculatorFormFieldSpec extends ModelSpec with BeforeAndAfterAll {
       // set up
       val definedBenefits = Amounts(Some(BigDecimal(123)))
       val definedContributions = Amounts(Some(BigDecimal(456)))
+      val adjustedIncome = Amounts(Some(BigDecimal(789)))
       val year2015 = Year2015Amounts(Some(444), None, Some(555), None, None, None)
+      val triggeredAmount = Some(999)
       val triggerDate = Some("2020-11-02")
       val formFields = new CalculatorFormFields(definedBenefits,
                                                 definedContributions,
+                                                adjustedIncome,
                                                 year2015,
+                                                triggeredAmount,
                                                 triggerDate) with Year2016
 
       // test
@@ -604,20 +637,28 @@ class CalculatorFormFieldSpec extends ModelSpec with BeforeAndAfterAll {
       // set up
       val year2015a = Year2015Amounts(Some(BigDecimal(123)))
       val year2015b = Year2015Amounts(None, None, Some(BigDecimal(123)))
+      val adjustedIncome = Amounts()
       val definedBenefits = Amounts()
       val definedContributions = Amounts()
+      val triggeredAmount = None
       val triggerDate = None
       val formFields1 = new CalculatorFormFields(definedBenefits,
                                                 definedContributions,
+                                                adjustedIncome,
                                                 year2015a,
+                                                triggeredAmount,
                                                 triggerDate) with Year2016
       val formFields2 = new CalculatorFormFields(definedBenefits,
                                                 definedContributions,
+                                                adjustedIncome,
                                                 year2015b,
+                                                triggeredAmount,
                                                 triggerDate) with Year2016
       val formFields3 = new CalculatorFormFields(Amounts(Some(123)),
                                                 definedContributions,
+                                                adjustedIncome,
                                                 Year2015Amounts(),
+                                                triggeredAmount,
                                                 triggerDate) with Year2016
 
       // test
@@ -638,7 +679,9 @@ class CalculatorFormFieldSpec extends ModelSpec with BeforeAndAfterAll {
       val triggerDate = Some("2015-1-3")
       val formFields1 = new CalculatorFormFields(Amounts(),
                                                 Amounts(),
+                                                Amounts(),
                                                 Year2015Amounts(),
+                                                None,
                                                 triggerDate) with Year2016
 
       // test
@@ -653,7 +696,9 @@ class CalculatorFormFieldSpec extends ModelSpec with BeforeAndAfterAll {
       val triggerDate = Some("")
       val formFields1 = new CalculatorFormFields(Amounts(),
                                                 Amounts(),
+                                                Amounts(),
                                                 Year2015Amounts(),
+                                                None,
                                                 triggerDate) with Year2016
 
       // test
@@ -668,7 +713,9 @@ class CalculatorFormFieldSpec extends ModelSpec with BeforeAndAfterAll {
       val triggerDate = None
       val formFields1 = new CalculatorFormFields(Amounts(),
                                                 Amounts(),
+                                                Amounts(),
                                                 Year2015Amounts(),
+                                                None,
                                                 triggerDate) with Year2016
 
       // test
@@ -685,7 +732,9 @@ class CalculatorFormFieldSpec extends ModelSpec with BeforeAndAfterAll {
       val triggerDate = None
       val formFields1 = new CalculatorFormFields(Amounts(),
                                                 Amounts(),
+                                                Amounts(),
                                                 Year2015Amounts(None, None, None, None, None, None),
+                                                None,
                                                 triggerDate) with Year2016
 
       // test
@@ -700,7 +749,9 @@ class CalculatorFormFieldSpec extends ModelSpec with BeforeAndAfterAll {
       val triggerDate = None
       val formFields1 = new CalculatorFormFields(Amounts(),
                                                 Amounts(),
+                                                Amounts(),
                                                 Year2015Amounts(None, None, None, None, Some(BigDecimal(123)), None),
+                                                None,
                                                 triggerDate) with Year2016
 
       // test
@@ -719,7 +770,9 @@ class CalculatorFormFieldSpec extends ModelSpec with BeforeAndAfterAll {
       val triggerDate = None
       val formFields1 = new CalculatorFormFields(Amounts(),
                                                 Amounts(),
+                                                Amounts(),
                                                 Year2015Amounts(None, None, None, None, None, None),
+                                                None,
                                                 triggerDate) with Year2016
 
       // test
@@ -734,7 +787,9 @@ class CalculatorFormFieldSpec extends ModelSpec with BeforeAndAfterAll {
       val triggerDate = None
       val formFields1 = new CalculatorFormFields(Amounts(),
                                                 Amounts(),
+                                                Amounts(),
                                                 Year2015Amounts(None, None, None, None, None, Some(BigDecimal(123))),
+                                                None,
                                                 triggerDate) with Year2016
 
       // test
@@ -756,7 +811,9 @@ class CalculatorFormFieldSpec extends ModelSpec with BeforeAndAfterAll {
       val triggerDate = None
       val formFields = new CalculatorFormFields(definedBenefits,
                                                 definedContributions,
+                                                Amounts(),
                                                 year2015,
+                                                None,
                                                 triggerDate) with Year2016
       def first = { (c:Contribution) => c.amounts.isDefined && c.amounts.get.moneyPurchase.isDefined && c.amounts.get.moneyPurchase.get == 45600 }
 
@@ -777,7 +834,9 @@ class CalculatorFormFieldSpec extends ModelSpec with BeforeAndAfterAll {
       val triggerDate = None
       val formFields = new CalculatorFormFields(definedBenefits,
                                                 definedContributions,
+                                                Amounts(),
                                                 year2015,
+                                                None,
                                                 triggerDate) with Year2016
 
       // test
@@ -802,7 +861,9 @@ class CalculatorFormFieldSpec extends ModelSpec with BeforeAndAfterAll {
       // set up
       val formFields = new CalculatorFormFields(Amounts(),
                                                 Amounts(),
+                                                Amounts(),
                                                 Year2015Amounts(),
+                                                None,
                                                 Some("2015-4-15")) with Year2016
 
       // test
