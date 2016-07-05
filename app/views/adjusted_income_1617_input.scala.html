@@ -1,4 +1,4 @@
-@(paacForm : Form[models.CalculatorFormFields])(implicit request:Request[_])
+@(paacForm : Form[models.CalculatorFormFields], currentYear: String)(implicit request:Request[_])
 
 @import uk.gov.hmrc.play.views.html.helpers._
 
@@ -38,21 +38,22 @@ backLink = Some((controllers.routes.YesNoAdjustedIncomeController.onPageLoad.url
         action = controllers.routes.AdjustedIncome1617InputController.onSubmit,
         args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
 
+        <p class="lede text">@Messages("paac.1617.adjusted.income.description1")</p>
+        <p class="lede text">@Messages("paac.1617.adjusted.income.description2")</p>
         <table>
             <tbody>
                 <fieldset id="adjusted_income_input" class="form-field-group" style="max-width:12.35em;">
-                          <span style="float:right">
-                          @if(paacForm.data.contains("year2015.definedContribution_2015_p2")) {
-                              <tr style="text-align:left;min-width: 7em">
-                                  £&nbsp;<input type="number" name="year2015.definedContribution_2015_p2" id="year2015.definedContribution_2015_p2" min="0" step="1" value='@paacForm.data("year2015.definedContribution_2015_p2")' max="5000000.00" size="10" style="width:9em;@if(paacForm.errors.find(_.key == "year2015.definedContribution_2015_p2")) {border: 4px solid #b10e1e;}"/>
-                              </tr>
-                              } else {
-                              <tr style="text-align:left;min-width: 7em">
-                                  £&nbsp;<input type="number" name="year2015.definedContribution_2015_p2" id="year2015.definedContribution_2015_p2" min="0" step="1" value='' max="5000000.00" size="10" style="width:9em;@if(paacForm.errors.find(_.key == "year2015.definedContribution_2015_p2")) {border: 4px solid #b10e1e;}"/>
-                              </tr>
-                              }
-                          </span>
-                    </label>
+                  <span style="float:right">
+                      @if(paacForm.data.contains("adjustedIncome.amount_@currentYear")) {
+                      <tr style="text-align:left;min-width: 7em">
+                          £&nbsp;<input type="number" name="adjustedIncome.amount_@currentYear" id="adjustedIncome.amount_@currentYear" min="0" step="1" value='@paacForm.data("adjustedIncome.amount_@currentYear")' max="5000000.00" size="10" style="width:9em;@if(paacForm.errors.find(_.key == "adjustedIncome.amount_@currentYear")) {border: 4px solid #b10e1e;}"/>
+                      </tr>
+                      } else {
+                      <tr style="text-align:left;min-width: 7em">
+                          £&nbsp;<input type="number" name="adjustedIncome.amount_@currentYear" id="adjustedIncome.amount_@currentYear" min="0" step="1" value='' max="5000000.00" size="10" style="width:9em;@if(paacForm.errors.find(_.key == "adjustedIncome.amount_@currentYear")) {border: 4px solid #b10e1e;}"/>
+                      </tr>
+                      }
+                  </span>
                 </fieldset>
             </tbody>
         </table>

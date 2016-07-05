@@ -3,9 +3,10 @@
 @import uk.gov.hmrc.play.views.html.helpers._
 @import models._
 
-@defining(CalculatorFormFields(Amounts(), Amounts(), Year2015Amounts(
+@defining(CalculatorFormFields(Amounts(), Amounts(), Amounts(), Year2015Amounts(
   postTriggerDcAmount2015P1=paacForm.data.get("year2015.postTriggerDcAmount2015P1").flatMap((v) =>if (v == "") None else Some(BigDecimal(v.toDouble))),
-  postTriggerDcAmount2015P2=paacForm.data.get("year2015.postTriggerDcAmount2015P2").flatMap((v) =>if (v == "") None else Some(BigDecimal(v.toDouble))) ), 
+  postTriggerDcAmount2015P2=paacForm.data.get("year2015.postTriggerDcAmount2015P2").flatMap((v) =>if (v == "") None else Some(BigDecimal(v.toDouble))) ),
+  Some(paacForm.data("triggerAmount").toInt),
   Some(paacForm.data("triggerDate")))){ errorModel =>
 @common.paacMain(
 pageTitle = Messages("paac.post.trigger.value.page.title"),

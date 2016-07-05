@@ -53,7 +53,7 @@ class PostTriggerPensionInputsControllerSpec extends test.BaseSpec {
       status(result) shouldBe 303
     }
 
-    "display p1 input amount page with previous value if trigger date was period 1" in new ControllerWithMockKeystore {
+/*    "display p1 input amount page with previous value if trigger date was period 1" in new ControllerWithMockKeystore {
       // setup
       val request = FakeRequest(GET,"").withSession{(SessionKeys.sessionId,SESSION_ID)}
       MockKeystore.map = MockKeystore.map + (KeystoreService.TRIGGER_DATE_KEY -> "2015-6-15")
@@ -83,11 +83,11 @@ class PostTriggerPensionInputsControllerSpec extends test.BaseSpec {
       status(result) shouldBe 200
       val htmlPage = contentAsString(await(result))
       htmlPage should include ("""<input type="number" name="year2015.postTriggerDcAmount2015P2" id="year2015.postTriggerDcAmount2015P2" min="0" step="1" value='56' max="5000000" size="7" """)
-    }
+    }*/
   }
 
   "onSubmit" should {
-    "display errors if amount is negative" in new ControllerWithMockKeystore {
+/*    "display errors if amount is negative" in new ControllerWithMockKeystore {
       // set up
       MockKeystore.map = MockKeystore.map + (KeystoreService.TRIGGER_DATE_KEY -> "2015-11-15")
       MockKeystore.map = MockKeystore.map + (KeystoreService.P1_TRIGGER_DC_KEY -> "1234")
@@ -121,7 +121,7 @@ class PostTriggerPensionInputsControllerSpec extends test.BaseSpec {
       status(result) shouldBe 200
       val htmlPage = contentAsString(await(result))
       htmlPage should include ("""<a href="input_year2015.postTriggerDcAmount2015P1" style="color:#b10e1e;font-weight: bold;">2015 amount was empty or negative. Please provide an amount between £0 and £5,000,000.</a>""")
-    }
+    }*/
 
     "saves p2 amount in keystore if valid form" in new ControllerWithMockKeystore {
       // set up
