@@ -168,6 +168,7 @@ trigger.date=Post Flexi-access date
 ## 2016/17 Pension Input Amounts Page
 
 paac.201617.pension.inputs.pagetitle = 2016/17 Pension Inputs
+paac.201617.pension.inputs.heading = What were your pension savings in the tax year 2016 to 2017?
 paac.201617.pension.inputs.description = The savings for defined contributions and defined benefits plans are calculated differently, with defined benefits including investment growth and defined contributions including payments made by, or on behalf of the member. Investment income is not included.
 paac.201617.pension.inputs.description2 = Include all savings for 6 April 2016 to 5 April 2017.
 
