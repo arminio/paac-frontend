@@ -64,7 +64,7 @@ error.real.precision={0} amount must not be empty. (Amount must have no more tha
 paac.taxyear.selection.pagetitle = Tax Year Selection
 paac.taxyear.selection.heading = Choose tax years
 paac.taxyear.selection.p1 = Select which tax years you want to check if you owe any tax on your pension savings or if you can carry over any unused allowance.
-paac.taxyear.selection.p2 = You can also check for years when you were member of registered pension scheme or a qualifying overseas pension scheme but made no contributions.
+paac.taxyear.selection.p2 = You can also check for years when you were member of a registered pension scheme or a qualifying overseas pension scheme but made no contributions.
 paac.taxyear.selection.p3 = A tax year is 6 April to 5 April.
 paac.taxyear.selection.error = Please select years you were a member of a pension scheme.
 
