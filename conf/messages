@@ -57,6 +57,7 @@ error.max={0} amount was too large and must be either £{1} or less.
 error.bounds={0} amount was incorrect or empty. Please provide an amount between £0 and £5,000,000.
 db.error.bounds={0} defined benefit amount was incorrect or empty. Please provide an amount between £0 and £5,000,000.
 dc.error.bounds={0} defined contribution amount was incorrect or empty. Please provide an amount between £0 and £5,000,000.
+ai.error.bounds={0} adjusted income amount was incorrect or empty. Please provide an amount between £0 and £5,000,000.
 error.real.precision={0} amount must not be empty. (Amount must have no more than {1} numbers, including {2} decimal places, and should be £0 or larger and under £5,000,000.)
 
 ## Tax Year Selection
