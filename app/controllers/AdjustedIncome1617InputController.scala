@@ -60,7 +60,7 @@ trait AdjustedIncome1617InputController extends RedirectController {
             val isAIError = !input.toAdjustedIncome(cy).isDefined
             if (isAIError) {
               var form = CalculatorForm.form.bindFromRequest()
-              form = form.withError("adjustedIncome.amount_"+cy, "db.error.bounds")
+              form = form.withError("adjustedIncome.amount_"+cy, "ai.error.bounds")
               Future.successful(Ok(views.html.adjusted_income_1617_input(form, cy.toString())))
             } else {
               keystore.save(List(input.toAdjustedIncome(cy)), "").flatMap {
