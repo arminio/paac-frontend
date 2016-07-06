@@ -57,13 +57,14 @@ error.max={0} amount was too large and must be either £{1} or less.
 error.bounds={0} amount was incorrect or empty. Please provide an amount between £0 and £5,000,000.
 db.error.bounds={0} defined benefit amount was incorrect or empty. Please provide an amount between £0 and £5,000,000.
 dc.error.bounds={0} defined contribution amount was incorrect or empty. Please provide an amount between £0 and £5,000,000.
+ai.error.bounds={0} adjusted income amount was incorrect or empty. Please provide an amount between £0 and £5,000,000.
 error.real.precision={0} amount must not be empty. (Amount must have no more than {1} numbers, including {2} decimal places, and should be £0 or larger and under £5,000,000.)
 
 ## Tax Year Selection
 paac.taxyear.selection.pagetitle = Tax Year Selection
 paac.taxyear.selection.heading = Choose tax years
 paac.taxyear.selection.p1 = Select which tax years you want to check if you owe any tax on your pension savings or if you can carry over any unused allowance.
-paac.taxyear.selection.p2 = You can also check for years when you were member of registered pension scheme or a qualifying overseas pension scheme but made no contributions.
+paac.taxyear.selection.p2 = You can also check for years when you were member of a registered pension scheme or a qualifying overseas pension scheme but made no contributions.
 paac.taxyear.selection.p3 = A tax year is 6 April to 5 April.
 paac.taxyear.selection.error = Please select years you were a member of a pension scheme.
 
@@ -188,6 +189,9 @@ paac.1617.adjusted.income.description2 = From 6 April 2016, for every £2 over �
 
 ## 2016/17 Adjusted Income
 paac.1617.adjusted.income.input.pagetitle = Adjusted Income
-paac.1617.adjusted.income.input.question = What is your adjusted income?
+paac.1617.adjusted.income.input.question = What was your adjusted income in the tax year 2016 to 2017?
+paac.1617.adjusted.income.description1 = Adjusted income is your taxable income after deductions. Include pension contributions made by you, your employer or someone on your behalf.
+paac.1617.adjusted.income.description2 = From 6 April 2016, for every £2 over £150,000 of adjusted income your annual allowance is reduced by £1. The maximum reduction is £30,000.
+
 
 
