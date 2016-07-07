@@ -55,7 +55,7 @@ object ApplicationConfig extends AppConfig with ServicesConfig {
   override lazy val useMinifiedAssets = configuration.getBoolean(s"govuk-tax.cc-frontend.assets.minified").getOrElse(true)
   override lazy val betaFeedbackUnauthenticatedUrl = s"$contactHost/contact/beta-feedback-unauthenticated"
 
-
-  lazy val whitelist = Play.configuration.getStringSeq("whitelist") getOrElse Seq.empty
-  lazy val whitelistExcluded = Play.configuration.getStringSeq("whitelistExcludedCalls") getOrElse Seq.empty
+  // Whitelist Configuration
+  lazy val whitelist = Play.configuration.getString("whitelist").map(_.split(",")).getOrElse(Array.empty).toSeq
+  lazy val whitelistExcluded = Play.configuration.getString("whitelistExcludedCalls").map(_.split(",")).getOrElse(Array.empty).toSeq
 }
