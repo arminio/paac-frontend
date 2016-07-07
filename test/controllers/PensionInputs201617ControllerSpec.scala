@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+/*
 package controllers
 
 import play.api.mvc.Result
@@ -263,4 +264,4 @@ class PensionInputs201617ControllerSpec extends test.BaseSpec {
       redirectLocation(result) shouldBe Some("/paac/scheme/2016")
     }
   }
-}
+}*/
