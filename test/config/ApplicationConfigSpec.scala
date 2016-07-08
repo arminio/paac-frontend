@@ -25,16 +25,16 @@ class ApplicationConfigSpec extends PlaySpec
   with OneAppPerTest{
 
   implicit override def newAppForTest(td: TestData): FakeApplication =
-    FakeApplication(additionalConfiguration = Map("whitelistExcludedCalls" -> "/ping/pong,/admin/details",
-                                                  "whitelist" -> "11.22.33.44,55.66.77.88"))
+    FakeApplication(additionalConfiguration = Map("whitelistExcludedCalls" -> Seq("/ping/pong", "/healthcheck"),
+      "whitelist" -> Seq("11.22.33.44")))
 
   "ApplicationConfig" must {
     "return a valid config item" when {
       "the whitelist exclusion paths are requested" in {
-        ApplicationConfig.whitelistExcluded mustBe Seq("/ping/pong", "/admin/details")
+        ApplicationConfig.whitelistExcluded mustBe Seq("/ping/pong", "/healthcheck")
       }
       "the whitelist IPs are requested" in {
-        ApplicationConfig.whitelist mustBe Seq("11.22.33.44","55.66.77.88")
+        ApplicationConfig.whitelist mustBe Seq("11.22.33.44")
       }
 
     }
