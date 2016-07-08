@@ -16,6 +16,8 @@
 
 package config
 
+import java.util.Base64
+
 import play.api.Play
 import play.api.Play.{configuration, current}
 import uk.gov.hmrc.play.config.ServicesConfig
@@ -56,6 +58,9 @@ object ApplicationConfig extends AppConfig with ServicesConfig {
   override lazy val betaFeedbackUnauthenticatedUrl = s"$contactHost/contact/beta-feedback-unauthenticated"
 
   // Whitelist Configuration
-  lazy val whitelist = Play.configuration.getStringSeq("whitelist") getOrElse Seq.empty
-  lazy val whitelistExcluded = Play.configuration.getStringSeq("whitelistExcludedCalls") getOrElse Seq.empty
+  private def whitelistConfig(key: String):Seq[String] = Option(new String(Base64.getDecoder().decode(Play.configuration.getString(key).getOrElse("")), "UTF-8"))
+                                                                            .map(_.split(",")).getOrElse(Array.empty).toSeq
+
+  lazy val whitelist = whitelistConfig("whitelist")
+  lazy val whitelistExcluded = whitelistConfig("whitelistExcludedCalls")
 }

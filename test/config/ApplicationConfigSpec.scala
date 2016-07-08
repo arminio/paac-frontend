@@ -18,6 +18,7 @@ package config
 
 import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
 import play.api.mvc.Call
+import java.util.Base64
 import play.api.test.FakeApplication
 import org.scalatest.TestData
 
@@ -25,8 +26,8 @@ class ApplicationConfigSpec extends PlaySpec
   with OneAppPerTest{
 
   implicit override def newAppForTest(td: TestData): FakeApplication =
-    FakeApplication(additionalConfiguration = Map("whitelistExcludedCalls" -> Seq("/ping/pong", "/healthcheck"),
-      "whitelist" -> Seq("11.22.33.44")))
+    FakeApplication(additionalConfiguration = Map("whitelistExcludedCalls" -> Base64.getEncoder.encodeToString("/ping/pong,/healthcheck".getBytes),
+                                                  "whitelist" -> Base64.getEncoder.encodeToString("11.22.33.44".getBytes)))
 
   "ApplicationConfig" must {
     "return a valid config item" when {
