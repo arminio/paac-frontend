@@ -28,7 +28,9 @@ import scala.concurrent.Future
 class YesNoThresholdIncomeControllerSpec extends test.BaseSpec {
   val endPointURL = "/paac/yesnothresholdincome"
 
-  trait ControllerWithMockKeystore extends MockKeystoreFixture{
+  trait ControllerWithMockKeystore extends MockKeystoreFixture {
+    MockKeystore.map = MockKeystore.map + (KeystoreService.CURRENT_INPUT_YEAR_KEY -> "2016")
+    MockKeystore.map = MockKeystore.map + (KeystoreService.SELECTED_INPUT_YEARS_KEY -> "2016")
     object MockYesNoThresholdIncomeControllerWithMockKeystore extends YesNoThresholdIncomeController {
       val yesNoKeystoreKey = "yesnoForThresholdIncome"
       val yesNoFormKey = "yesNo"
@@ -128,7 +130,7 @@ class YesNoThresholdIncomeControllerSpec extends test.BaseSpec {
        redirectLocation(result) shouldBe Some("/paac/adjustedincome")
      }
 
-     "with yesNo = No should forward to review page" in new ControllerWithMockKeystore{
+     "with yesNo = No should forward to review page when 2015 not selected" in new ControllerWithMockKeystore{
        // set up
        MockKeystore.map = MockKeystore.map + ("isEdit" -> "false")
        implicit val hc = HeaderCarrier()

@@ -19,7 +19,7 @@ package controllers
 import form.{DateOfMPAATriggerEventPageModel, DateOfMPAATriggerEventForm}
 import org.joda.time.LocalDate
 import play.api.mvc._
-import service.KeystoreService
+import service._
 import service.KeystoreService._
 import scala.concurrent.Future
 import models._
@@ -30,8 +30,6 @@ object DateOfMPAATriggerEventController extends DateOfMPAATriggerEventController
 
 trait DateOfMPAATriggerEventController extends RedirectController {
   val keystore: KeystoreService
-
-  private val onSubmitRedirect: Call = routes.PostTriggerPensionInputsController.onPageLoad
 
   val onPageLoad = withSession { implicit request =>
     keystore.read[String](List(TRIGGER_DATE_KEY,P1_TRIGGER_DC_KEY,P2_TRIGGER_DC_KEY, IS_EDIT_KEY)).map {
@@ -64,7 +62,7 @@ trait DateOfMPAATriggerEventController extends RedirectController {
           (_)=>
           if (input.dateOfMPAATriggerEvent.isDefined) {
             val date = input.dateOfMPAATriggerEvent.get
-            if (isValidDate(date)) {
+            if (!isValidDate(date)) {
               val form = DateOfMPAATriggerEventForm.form.bindFromRequest().withError("dateOfMPAATriggerEvent", "paac.mpaa.ta.date.page.invalid.date")
               Future.successful(Ok(views.html.date_of_mpaa_trigger_event(form,input)))
             } else {
@@ -77,13 +75,11 @@ trait DateOfMPAATriggerEventController extends RedirectController {
                     // flip trigger values
                     val v1: (Option[String],String) = if (newDate.isPeriod1) (Some(input.p2dctrigger),P1_TRIGGER_DC_KEY) else (Some(input.p1dctrigger), P2_TRIGGER_DC_KEY)
                     val v2: (Option[String],String) = (Some("0"), if (newDate.isPeriod1) P2_TRIGGER_DC_KEY else P1_TRIGGER_DC_KEY)
-                    keystore.save[String](List(v1,v2),"").map((_)=>Results.Redirect(routes.ReviewTotalAmountsController.onPageLoad()))
-                  } else {
-                    Future.successful(Results.Redirect(routes.ReviewTotalAmountsController.onPageLoad()))
-                  }
-                } else {
-                  Future.successful(Redirect(onSubmitRedirect))
-                }
+                    keystore.save[String](List(v1,v2),"").flatMap((_)=>TriggerDate() go Forward)
+                  } else
+                    TriggerDate() go Forward
+                } else
+                  TriggerDate() go Forward
               }
           } else {
             val form = DateOfMPAATriggerEventForm.form.bindFromRequest().withError("dateOfMPAATriggerEvent", "error.invalid.date.format")
@@ -95,14 +91,12 @@ trait DateOfMPAATriggerEventController extends RedirectController {
   }
 
   val onBack = withSession { implicit request =>
-    wheretoBack(Redirect(routes.YesNoMPAATriggerEventAmountController.onPageLoad))
+    TriggerDate() go Backward
   }
   
   private def isValidDate(date: LocalDate): Boolean  = {
-    (date.getYear() < 2015) || (date.getYear() >= 2017) ||
-    (date.getYear() == 2015 && date.getMonthOfYear() < 4) ||
-    (date.getYear() == 2015 && date.getMonthOfYear() == 4 && date.getDayOfMonth() < 6) ||
-    (date.getYear() == 2016 && date.getMonthOfYear() > 4 ) ||
-    (date.getYear() == 2016 && date.getMonthOfYear() == 4 && date.getDayOfMonth() >= 6)
+    (date.getYear() >= 2016) ||
+    (date.getYear() == 2015 && date.getMonthOfYear() > 4) ||
+    (date.getYear() == 2015 && date.getMonthOfYear() == 4 && date.getDayOfMonth() > 6)
   }
 }

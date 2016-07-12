@@ -31,7 +31,9 @@ import form._
 class YesNoMPAATriggerEventAmountControllerSpec extends test.BaseSpec {
   val endPointURL = "/paac/yesnompaate"
 
-  trait ControllerWithMockKeystore extends MockKeystoreFixture{
+  trait ControllerWithMockKeystore extends MockKeystoreFixture {
+    MockKeystore.map = MockKeystore.map + (KeystoreService.CURRENT_INPUT_YEAR_KEY -> "2015")
+    MockKeystore.map = MockKeystore.map + (KeystoreService.SELECTED_INPUT_YEARS_KEY -> "2015")
     object MockYesNoMPAATriggerEventAmountControllerWithMockKeystore extends YesNoMPAATriggerEventAmountController {
       val yesNoKeystoreKey = "yesnoForMPAATriggerEvent"
       val yesNoFormKey = "yesNo"

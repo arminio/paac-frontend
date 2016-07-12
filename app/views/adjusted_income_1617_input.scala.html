@@ -1,4 +1,4 @@
-@(paacForm : Form[models.CalculatorFormFields], currentYear: String)(implicit request:Request[_])
+@(paacForm : Form[models.CalculatorFormFields], currentYear: String, isEdit: Boolean)(implicit request:Request[_])
 
 @import uk.gov.hmrc.play.views.html.helpers._
 
@@ -6,7 +6,7 @@
 pageTitle = Messages("paac.1617.adjusted.income.input.pagetitle"),
 heading = Messages("paac.1617.adjusted.income.input.question"),
 articleClasses=Some("full-width"),
-backLink = Some((controllers.routes.YesNoAdjustedIncomeController.onPageLoad.url,Messages("paac.link.text.back")))
+backLink = Some((controllers.routes.AdjustedIncome1617InputController.onBack.url,Messages("paac.link.text.back")))
 ) {
 
     @if(paacForm.hasErrors) {
@@ -59,6 +59,6 @@ backLink = Some((controllers.routes.YesNoAdjustedIncomeController.onPageLoad.url
         </table>
 
         <br/>
-        <button id="submit" type="submit" class="button" value="Continue">@Messages("paac.calculator.button.continue")</button>
+        <button id="submit" type="submit" class="button" value="Continue">@if(isEdit){@Messages("paac.calculator.button.save")}else{@Messages("paac.calculator.button.continue")}</button>
     } @* End of Form *@
 } @* End of paacMain *@

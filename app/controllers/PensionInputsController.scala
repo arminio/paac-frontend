@@ -17,7 +17,7 @@
 package controllers
 
 import form.CalculatorForm
-import service.KeystoreService
+import service._
 import service.KeystoreService._
 
 import scala.concurrent.Future
@@ -29,20 +29,14 @@ object PensionInputsController extends PensionInputsController {
 trait PensionInputsController extends RedirectController {
   val keystore: KeystoreService
 
-  private val onSubmitRedirect = routes.ReviewTotalAmountsController.onPageLoad
-
   val onPageLoad = withSession { implicit request =>
     keystore.read[String](CURRENT_INPUT_YEAR_KEY).flatMap {
       (currentYear) =>
       val cy = currentYear.getOrElse("2014")
-      if (cy == "2015" || cy == "-1") {
-        Future.successful(Redirect(onSubmitRedirect))
-      } else {
-        keystore.read[String](List((DB_PREFIX + cy),(DC_PREFIX + cy))).map {
-          (fieldsMap) =>
-            Ok(views.html.pensionInputs(CalculatorForm.bind(fieldsMap).discardingErrors, cy))
-        }
-      }
+      if (cy.isEmpty || cy.toInt <= 0)
+        Start() go Edit
+      else
+        keystore.read[String](List((DB_PREFIX + cy),(DC_PREFIX + cy))).map((fieldsMap) =>Ok(views.html.pensionInputs(CalculatorForm.bind(fieldsMap).discardingErrors, cy)))
     }
   }
 
@@ -62,10 +56,7 @@ trait PensionInputsController extends RedirectController {
             form = form.withError("definedBenefits.amount_"+cy, "db.error.bounds")
             Future.successful(Ok(views.html.pensionInputs(form, cy.toString())))
           } else {
-            keystore.save(List(input.toDefinedBenefit(cy)), "").flatMap {
-              (_)=>
-              wheretoNext(Redirect(onSubmitRedirect))
-            }
+            keystore.save(List(input.toDefinedBenefit(cy)), "").flatMap(_=>PensionInput() go Forward)
           }
         }
       )
@@ -73,6 +64,6 @@ trait PensionInputsController extends RedirectController {
   }
 
   val onBack = withSession { implicit request =>
-    wheretoBack(Redirect(routes.TaxYearSelectionController.onPageLoad))
+    PensionInput() go Backward
   }
 }

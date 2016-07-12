@@ -33,6 +33,8 @@ object ReviewTotalAmountsController extends ReviewTotalAmountsController {
 trait ReviewTotalAmountsController extends RedirectController with models.ThisYear {
   settings: models.ThisYear =>
 
+  val EDIT_TRIGGER_AMOUNT = -4
+  val EDIT_TRIGGER_DATE = -5
   val keystore: KeystoreService
   val connector: CalculatorConnector
 
@@ -77,11 +79,21 @@ trait ReviewTotalAmountsController extends RedirectController with models.ThisYe
   }
 
   def onEditAmount(year:Int) = withSession { implicit request =>
-    keystore.store(true.toString(), IS_EDIT_KEY)
-    keystore.read(List(TE_YES_NO_KEY)).flatMap {
-      (fieldsMap) =>
-      goTo(year, false, true, fieldsMap(TE_YES_NO_KEY) == "Yes", Redirect(routes.ReviewTotalAmountsController.onPageLoad))
+    keystore.save(List(("true", IS_EDIT_KEY), (year.toString, CURRENT_INPUT_YEAR_KEY))).flatMap {
+      (_)=>
+      val location = if (year == EDIT_TRIGGER_AMOUNT)
+        TriggerAmount()
+      else if (year == EDIT_TRIGGER_DATE)
+        TriggerDate()
+      else
+        PensionInput(PageState(year=year))
+
+      location go Edit
     }
+  }
+
+  def onEditIncome(year:Int) = withSession { implicit request =>
+    keystore.save(List(("true", IS_EDIT_KEY), (year.toString, CURRENT_INPUT_YEAR_KEY))).flatMap((_)=>AdjustedIncome() go Edit)
   }
 
   val onSubmit = withSession { implicit request =>
@@ -109,6 +121,6 @@ trait ReviewTotalAmountsController extends RedirectController with models.ThisYe
   }
 
   val onBack = withSession { implicit request =>
-    wheretoBack(Redirect(routes.PensionInputsController.onPageLoad))
+    CheckYourAnswers() go Backward
   }
 }

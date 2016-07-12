@@ -131,7 +131,7 @@ class PensionInputs201617ControllerSpec extends test.BaseSpec {
 
         // check
         status(result) shouldBe 303
-        redirectLocation(result) shouldBe Some("/paac/pensionInputs")
+        redirectLocation(result) shouldBe Some("/paac/yesnothresholdincome")
       }
 
       "with dc flag false should go to review page when only 2016 selected" in new ControllerWithMockKeystore {
