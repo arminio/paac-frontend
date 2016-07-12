@@ -17,7 +17,7 @@
 package controllers
 
 import form.CalculatorForm
-import service._
+import service.KeystoreService
 import service.KeystoreService._
 
 import scala.concurrent.Future
@@ -28,6 +28,12 @@ object PensionInputs201617Controller extends PensionInputs201617Controller {
 
 trait PensionInputs201617Controller extends RedirectController {
   val keystore: KeystoreService
+
+  private val onSubmitRedirect = routes.YesNoThresholdIncomeController.onPageLoad
+
+  val onBack = withSession { implicit request =>
+    wheretoBack(Redirect(routes.SelectSchemeController.onPageLoad(2016)))
+  }
 
   val onPageLoad = withSession { implicit request =>
     keystore.read[String](List(DB_PREFIX, DC_PREFIX, s"${DB_FLAG_PREFIX}2016", s"${DC_FLAG_PREFIX}2016")).map {
@@ -43,6 +49,7 @@ trait PensionInputs201617Controller extends RedirectController {
       (fieldsMap) =>
         val isDB = fieldsMap(s"${DB_FLAG_PREFIX}2016").toBoolean
         val isDC = fieldsMap(s"${DC_FLAG_PREFIX}2016").toBoolean
+        val isEdit = fieldsMap(IS_EDIT_KEY).toBoolean
 
         CalculatorForm.form.bindFromRequest().fold(
           formWithErrors => { Future.successful(Ok(views.html.pensionInputs_201617(formWithErrors, isDB, isDC))) },
@@ -58,14 +65,18 @@ trait PensionInputs201617Controller extends RedirectController {
                 form = form.withError("year2016.definedContribution", "dc.error.bounds")
               }
               Future.successful(Ok(views.html.pensionInputs_201617(form, isDB, isDC)))
-            } else
-              keystore.save(List(input.toDefinedBenefit(2016), input.toDefinedContribution(2016)), "").flatMap(_=>PensionInput() go Forward)
+            } else {
+              keystore.save(List(input.toDefinedBenefit(2016), input.toDefinedContribution(2016)), "").flatMap{
+                (_)=>
+                  if (isEdit) {
+                    goTo(-1, true, isEdit, false, Redirect(onSubmitRedirect))
+                  } else {
+                      wheretoNext(Redirect(onSubmitRedirect))
+                    }
+                  }
+              }
           }
         )
     }
-  }
-
-  val onBack = withSession { implicit request =>
-    PensionInput() go Backward
   }
 }

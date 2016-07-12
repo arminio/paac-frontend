@@ -12,22 +12,19 @@ POST        /                                           controllers.StartPageCon
 ## 2016/17 Threshold Income Yes/No Page
 GET         /yesnothresholdincome                       controllers.YesNoThresholdIncomeController.onPageLoad
 POST        /yesnothresholdincome                       controllers.YesNoThresholdIncomeController.onSubmit
-GET         /yesnothresholdincomeBack                   controllers.YesNoThresholdIncomeController.onBack
 
 ## 2016/17 Adjusted Income Yes/No Page
 GET         /yesnoadjustedincome                        controllers.YesNoAdjustedIncomeController.onPageLoad
 POST        /yesnoadjustedincome                        controllers.YesNoAdjustedIncomeController.onSubmit
-GET         /yesnoadjustedincomeBack                    controllers.YesNoAdjustedIncomeController.onBack
 
 ## Pension Input Page
 GET         /adjustedincome                             controllers.AdjustedIncome1617InputController.onPageLoad
 POST        /adjustedincome                             controllers.AdjustedIncome1617InputController.onSubmit
-GET         /adjustedincomeBack                         controllers.AdjustedIncome1617InputController.onBack
 
 ## Scheme Selection Page
 GET         /scheme/:year                               controllers.SelectSchemeController.onPageLoad(year:Int)
 POST        /scheme                                     controllers.SelectSchemeController.onSubmit
-GET         /schemeBack                                 controllers.SelectSchemeController.onBack
+GET         /schemeBack                                 controllers.SelectSchemeController.onBack(year:Int)
 
 
 # Tax year selection
@@ -47,7 +44,6 @@ GET         /moneyPurchasePostTriggerValueBack          controllers.PostTriggerP
 ## MPAA Trigger Event Yes/No Page
 GET         /yesnompaate                                controllers.YesNoMPAATriggerEventAmountController.onPageLoad
 POST        /yesnompaate                                controllers.YesNoMPAATriggerEventAmountController.onSubmit
-GET         /yesnompaateBack                            controllers.YesNoMPAATriggerEventAmountController.onBack
 
 ## Date of MPAA Trigger Event Page
 GET         /dateofmpaate                               controllers.DateOfMPAATriggerEventController.onPageLoad

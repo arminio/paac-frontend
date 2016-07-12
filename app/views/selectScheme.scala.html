@@ -5,7 +5,7 @@
 @common.paacMain(
 pageTitle = Messages("paac.scheme.selection.pagetitle"),
 heading = Messages("paac.scheme.selection.heading", ""+year, ""+(year+1)),
-backLink = Some((controllers.routes.SelectSchemeController.onBack.url,Messages("paac.link.text.back")))
+backLink = Some((controllers.routes.SelectSchemeController.onBack(year).url,Messages("paac.link.text.back")))
 ) {
 <br>
     @if(paacForm.hasErrors) {
@@ -38,7 +38,6 @@ backLink = Some((controllers.routes.SelectSchemeController.onBack.url,Messages("
         action = controllers.routes.SelectSchemeController.onSubmit,
         args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
     <input type="hidden" name="year" value="@(year)"/>
-    <input type="hidden" name="firstDCYear" value="@(paacForm.value.map(_.firstDCYear))"/>
     <div class='form-group'>
 
         <fieldset class="inline">

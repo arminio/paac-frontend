@@ -295,8 +295,6 @@ class ReviewTotalAmountsControllerSpec extends test.BaseSpec {
       "redirect to pension inputs controller when year is less than 2015" in new MockControllerFixture {
         // set up
         val request = FakeRequest(GET, "/paac/edit").withSession {(SessionKeys.sessionId,SESSION_ID)}
-        MockKeystore.map = MockKeystore.map + (KeystoreService.SELECTED_INPUT_YEARS_KEY -> "2014")
-        MockKeystore.map = MockKeystore.map + ("isEdit" -> "false")
 
         // test
         val result: Future[Result] = ControllerWithMocks.onEditAmount(2014)(request)
@@ -310,7 +308,6 @@ class ReviewTotalAmountsControllerSpec extends test.BaseSpec {
         // set up
         val request = FakeRequest(GET, "/paac/edit").withSession {(SessionKeys.sessionId,SESSION_ID)}
         MockKeystore.map = MockKeystore.map + ("isEdit" -> "false")
-        MockKeystore.map = MockKeystore.map + (KeystoreService.SELECTED_INPUT_YEARS_KEY -> "2015")
 
         // test
         val result: Future[Result] = ControllerWithMocks.onEditAmount(2015)(request)
@@ -326,7 +323,6 @@ class ReviewTotalAmountsControllerSpec extends test.BaseSpec {
         // set up
         implicit val hc = HeaderCarrier()
         implicit val request = FakeRequest(GET,"/paac/backreview").withSession{(SessionKeys.sessionId,SESSION_ID)}
-        MockKeystore.map = MockKeystore.map + (KeystoreService.SELECTED_INPUT_YEARS_KEY -> "2014")
   
           // test
           val result : Future[Result] = ControllerWithMocks.onBack()(request)
