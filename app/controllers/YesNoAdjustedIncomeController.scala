@@ -18,7 +18,7 @@ package controllers
 
 import form.YesNoMPAATriggerEventForm
 import play.api.mvc._
-import service.KeystoreService
+import service._
 import service.KeystoreService._
 import scala.concurrent.Future
 
@@ -30,8 +30,6 @@ trait YesNoAdjustedIncomeController extends RedirectController {
   val keystore: KeystoreService
 
   private val yesNoFormKey = "yesNoForAdjustedIncome"
-  private val onSubmitRedirectForYes: Call = routes.DateOfMPAATriggerEventController.onPageLoad()
-  private val onSubmitRedirectForNo: Call = routes.ReviewTotalAmountsController.onPageLoad()
 
   val onPageLoad = withSession { implicit request =>
     keystore.read[String](AI_YES_NO_KEY).map {
@@ -47,17 +45,11 @@ trait YesNoAdjustedIncomeController extends RedirectController {
   val onSubmit = withSession { implicit request =>
     YesNoMPAATriggerEventForm.form.bindFromRequest().fold(
       formWithErrors => { Future.successful(Ok(views.html.yesno_for_adjusted_income(YesNoMPAATriggerEventForm.form))) },
-      input => {
-        keystore.store(input, AI_YES_NO_KEY)
-        if (input == "Yes") {
-          Future.successful(Redirect(onSubmitRedirectForYes))
-        } else {
-          keystore.save(List((None,AI_YES_NO_KEY)),"").flatMap {
-            _ =>
-            wheretoNext(Redirect(onSubmitRedirectForNo))
-          }
-        }
-      }
+      input => keystore.store(input, AI_YES_NO_KEY).flatMap(_=>AdjustedIncome() go Forward)
     )
+  }
+
+  val onBack = withSession { implicit request =>
+    AdjustedIncome() go Backward
   }
 }

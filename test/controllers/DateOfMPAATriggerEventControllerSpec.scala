@@ -31,6 +31,8 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
     object ControllerWithMockKeystore extends DateOfMPAATriggerEventController {
       override val keystore: KeystoreService = MockKeystore
     }
+    MockKeystore.map = MockKeystore.map + (KeystoreService.CURRENT_INPUT_YEAR_KEY -> "2015")
+    MockKeystore.map = MockKeystore.map + (KeystoreService.SELECTED_INPUT_YEARS_KEY -> "2015")
   }
 
   "DateOfMPAATriggerEventControllerSpec" when {
@@ -207,6 +209,7 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
 
       "with valid date redirect to review page if edit flag set" in new ControllerWithMockKeystore {
         // set up
+        MockKeystore.map = MockKeystore.map + (KeystoreService.IS_EDIT_KEY -> "true")
         implicit val hc = HeaderCarrier()
         implicit val request = FakeRequest(POST, "/paac/d").withSession((SessionKeys.sessionId,SESSION_ID)).withFormUrlEncodedBody(("dateOfMPAATriggerEvent.day" -> "4"),
                                     ("dateOfMPAATriggerEvent.month" -> "11"),
@@ -265,7 +268,9 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
         // set up
         val request = FakeRequest(GET,"").withSession{(SessionKeys.sessionId,SESSION_ID)}
         MockKeystore.map = MockKeystore.map + (KeystoreService.IS_EDIT_KEY -> "false")
-
+        MockKeystore.map = MockKeystore.map + (KeystoreService.FIRST_DC_YEAR_KEY -> "2015")
+        MockKeystore.map = MockKeystore.map + (KeystoreService.TE_YES_NO_KEY -> "Yes")
+        
         // test
         val result : Future[Result] = ControllerWithMockKeystore.onBack()(request)
 

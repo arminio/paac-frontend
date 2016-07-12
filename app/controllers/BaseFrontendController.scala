@@ -20,11 +20,12 @@ import java.util.UUID
 import scala.concurrent.Future
 import play.api.mvc._
 
-import service.KeystoreService
+import service._
 import service.KeystoreService._
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import uk.gov.hmrc.play.http.{HeaderCarrier, SessionKeys}
-
+import scala.util.{Try, Success, Failure}
+import play.api.libs.json._
 
 trait SessionProvider {
   val NOSESSION = "NOSESSION"
@@ -38,133 +39,59 @@ trait SessionProvider {
 trait RedirectController extends BaseFrontendController {
   def keystore: KeystoreService
 
-  val START = -1
-  val END = -2
-  val EDIT_TRIGGER_AMOUNT = -4
-  val EDIT_TRIGGER_DATE = -5
+  implicit class RichPageLocation(location:PageLocation) {
+    protected implicit val marshall = KeystoreService.toStringPair _
 
-  def goTo(year: Int, isForward: Boolean, isEdit: Boolean, isTE: Boolean, defaultRoute: Result)
-          (implicit hc: HeaderCarrier, format: play.api.libs.json.Format[String], request: Request[Any]): Future[Result] = {
-    keystore.store(year.toString(), KeystoreService.CURRENT_INPUT_YEAR_KEY).flatMap {
-      (values) =>
-      //redirect to nextYear Controller
-      if (isForward && isEdit) {
-        Future.successful(Results.Redirect(routes.ReviewTotalAmountsController.onPageLoad()))
-      } else if (isEdit) {
-        if (year == EDIT_TRIGGER_AMOUNT) {
-          Future.successful(Redirect(routes.PostTriggerPensionInputsController.onPageLoad()))
-        } else if (year == EDIT_TRIGGER_DATE) {
-          Future.successful(Redirect(routes.DateOfMPAATriggerEventController.onPageLoad()))
-        } else if (year == 2015) {
-          Future.successful(Results.Redirect(routes.PensionInputs201516Controller.onPageLoad()))
-        } else if (year == 0) {
-          Future.successful(Redirect(routes.PostTriggerPensionInputsController.onPageLoad()))
-        } else {
-          Future.successful(Redirect(routes.PensionInputsController.onPageLoad()))
-        }
-      } else if (year < 0) {
-        Future.successful(defaultRoute)
-      } else if (year >= 2015) {
-        if (isForward) {
-          Future.successful(Redirect(routes.SelectSchemeController.onPageLoad(year)))
-        } else {
-          if (isTE) {
-            keystore.read[String](KeystoreService.TRIGGER_DATE_KEY).flatMap {
-              (dateAsStr)=>
-              if (dateAsStr.isDefined) {
-                val parts = dateAsStr.getOrElse("2000-01-01").split("-").map(_.toInt)
-                if (parts(0) > 2016 || (parts(0) == 2016 && parts(1) > 4) || (parts(0) == 2016 && parts(1) == 4 && parts(2) > 5) ||
-                    parts(0) < 2015 || (parts(0) == 2015 && parts(1) < 4) || (parts(0) == 2015 && parts(1) == 4 && parts(2) < 5)) {
-                  Future.successful(Redirect(routes.DateOfMPAATriggerEventController.onPageLoad()))
-                } else {
-                  Future.successful(Redirect(routes.PostTriggerPensionInputsController.onPageLoad()))
-                }
-              } else {
-                Future.successful(Redirect(routes.DateOfMPAATriggerEventController.onPageLoad()))
-              }
-            }
-          } else {
-            keystore.read[String](s"${KeystoreService.DC_FLAG_PREFIX}${year}").flatMap {
-              (isDCStr)=>
-              val isDC = isDCStr.getOrElse("false").toBoolean
-              if (isDC) {
-                Future.successful(Redirect(routes.YesNoMPAATriggerEventAmountController.onPageLoad()))
-              } else {
-                Future.successful(Results.Redirect(routes.PensionInputs201516Controller.onPageLoad()))
-              }
+    def updateYear(): Boolean = location match {
+      case TaxYearSelection(_) => false
+      case Start(_) => false
+      case CheckYourAnswers(_) => false
+      case _ => true
+    }
+
+    protected def updateForYear(page: PageLocation, year: Int)(implicit hc: HeaderCarrier, format: Format[String], request: Request[Any]): Future[PageLocation] = {
+      val toRead = List(DC_FLAG_PREFIX).map(_+year) ++ List(IS_EDIT_KEY, TE_YES_NO_KEY, TI_YES_NO_KEY, SELECTED_INPUT_YEARS_KEY, FIRST_DC_YEAR_KEY)
+      keystore.read(toRead).map {
+        (fieldsMap)=>
+        page.update(PageState(isDC = fieldsMap bool toRead(0), 
+                              isTE = fieldsMap yesNo TE_YES_NO_KEY, 
+                              isTI = fieldsMap yesNo TI_YES_NO_KEY,
+                              year = if (updateYear) year else page.state.year,
+                              selectedYears = fieldsMap(SELECTED_INPUT_YEARS_KEY),
+                              isEdit = (fieldsMap bool IS_EDIT_KEY),
+                              firstDCYear = (fieldsMap int FIRST_DC_YEAR_KEY)))
+      }
+    }
+
+    def go(e:Event)(implicit hc: HeaderCarrier, format: Format[String], request: Request[Any]): Future[Result] = {
+      keystore.read(List(CURRENT_INPUT_YEAR_KEY,SELECTED_INPUT_YEARS_KEY)).flatMap {
+        (fieldsMap) =>
+        val currentYear = if (location.state.year == PageLocation.END) location.lastYear(fieldsMap(SELECTED_INPUT_YEARS_KEY)) 
+                          else if (fieldsMap(CURRENT_INPUT_YEAR_KEY).isEmpty) location.firstYear(fieldsMap(SELECTED_INPUT_YEARS_KEY))
+                          else fieldsMap(CURRENT_INPUT_YEAR_KEY).toInt
+        location.updateForYear(location, currentYear).flatMap {
+          (updatedLocation)=>
+          e match {
+            case Forward => Future.successful(updatedLocation)
+            case Edit => Future.successful(updatedLocation)
+            case Backward => {
+              val nextYear = (updatedLocation move e).state.year
+              if (nextYear != currentYear && !location.isInstanceOf[CheckYourAnswers])
+                updateForYear(location, nextYear).map((p)=>p.update(p.state.copy(year=updatedLocation.state.year)))
+              else
+                Future.successful(updatedLocation)
             }
           }
         }
-      } else {
-        Future.successful(Redirect(routes.PensionInputsController.onPageLoad()))
+      } andThen {
+        case Failure(t) => location
+        case Success(page) => page
+      } flatMap {
+        (page) => 
+        val next = page move e
+        println(s"${page} -> ${next}, saving next year as ${next.state.year}")
+        keystore.store(next.state.year.toString, CURRENT_INPUT_YEAR_KEY).flatMap((values) => Future.successful(Redirect(next.action)))
       }
-    }
-  }
-
-  def wheretoBack(defaultRoute: Result)(implicit hc: HeaderCarrier, format: play.api.libs.json.Format[String], request: Request[Any]) : Future[Result] = {
-    implicit val marshall = KeystoreService.toStringPair _
-
-    def previous(currentYear: String, selectedYears: String): Int = {
-      if (currentYear.isEmpty || selectedYears.isEmpty) {
-        START
-      } else {
-        val syears = selectedYears.split(",")
-        val cy = currentYear.toInt
-        if (cy == START) {
-          syears.reverse(0).toInt
-        } else {
-          val i = syears.indexOf(currentYear) - 1
-          if (i < 0) {
-            END
-          } else {
-            syears(i).toInt
-          }
-        }
-      }
-    }
-
-    keystore.read(List(CURRENT_INPUT_YEAR_KEY, SELECTED_INPUT_YEARS_KEY, TE_YES_NO_KEY, IS_EDIT_KEY)).flatMap {
-      (fieldsMap) =>
-      val isEdit = if (fieldsMap(IS_EDIT_KEY).isEmpty) false else fieldsMap(IS_EDIT_KEY).toBoolean
-      if (isEdit) {
-        Future.successful(Results.Redirect(routes.ReviewTotalAmountsController.onPageLoad()))
-      } else {
-        val currentYear = fieldsMap(CURRENT_INPUT_YEAR_KEY)
-        val selectedYears = fieldsMap(SELECTED_INPUT_YEARS_KEY)
-        val previousYear = previous(currentYear, selectedYears)
-        goTo(previousYear, false, false, fieldsMap(TE_YES_NO_KEY) == "Yes", defaultRoute)
-      }
-    }
-  }
-
-  def wheretoNext(defaultRoute: Result)(implicit hc: HeaderCarrier, format: play.api.libs.json.Format[String], request: Request[Any]) : Future[Result] = {
-    implicit val marshall = KeystoreService.toStringPair _
-
-    def next(currentYear: String, selectedYears: String): Int = {
-      if ((selectedYears.isEmpty && currentYear.isEmpty) || (currentYear == END.toString)) {
-        START
-      } else {
-        val syears = selectedYears.split(",")
-        if (currentYear.isEmpty) {
-          syears(0).toInt
-        } else {
-          val i = syears.indexOf(currentYear) + 1
-          if (i < syears.length) {
-            syears(i).toInt
-          } else {
-            START
-          }
-        }
-      }
-    }
-
-    keystore.read(List(CURRENT_INPUT_YEAR_KEY, SELECTED_INPUT_YEARS_KEY,IS_EDIT_KEY,TE_YES_NO_KEY)).flatMap {
-      (fieldsMap) =>
-      val currentYear = fieldsMap(KeystoreService.CURRENT_INPUT_YEAR_KEY)
-      val selectedYears = fieldsMap(KeystoreService.SELECTED_INPUT_YEARS_KEY)
-      val nextYear = next(currentYear, selectedYears)
-      val isEdit = if (fieldsMap(IS_EDIT_KEY).isEmpty) false else fieldsMap(IS_EDIT_KEY).toBoolean
-      goTo(nextYear, true, isEdit, fieldsMap(TE_YES_NO_KEY) == "Yes", defaultRoute)
     }
   }
 }
@@ -195,6 +122,7 @@ trait BaseFrontendController extends SessionProvider with FrontendController {
       } else {
         value match {
           case None => (key, "")
+          case Some("") => (key, "0")
           case Some("0") => (key, "0")
           case Some(v) => (key, f"${(v.toInt / 100.00)}%2.0f".trim)
         }

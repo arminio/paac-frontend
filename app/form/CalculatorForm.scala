@@ -20,6 +20,7 @@ import models._
 import play.api.data.Form
 import play.api.data.Forms._
 import service.KeystoreService
+import service.KeystoreService._
 
 object CalculatorForm extends models.ThisYear {
   settings: ThisYear =>
@@ -92,12 +93,12 @@ object CalculatorForm extends models.ThisYear {
 
   /** Utility method to aid marshalling keystore values into form either with or without validation. */
   def bind(data: Map[String, String], nonValidatingForm: Boolean = false): Form[CalculatorFormType] = {
-    val year2015 = List(("year2015.definedBenefit_2015_p1", data.getOrElse("amount2015P1", data.getOrElse(KeystoreService.P1_DB_KEY,""))),
-                        ("year2015.definedContribution_2015_p1", data.getOrElse("dcAmount2015P1", data.getOrElse(KeystoreService.P1_DC_KEY,""))),
-                        ("year2015.definedBenefit_2015_p2", data.getOrElse("amount2015P2", data.getOrElse(KeystoreService.P2_DB_KEY,""))),
-                        ("year2015.definedContribution_2015_p2", data.getOrElse("dcAmount2015P2", data.getOrElse(KeystoreService.P2_DC_KEY,""))),
-                        ("year2015.postTriggerDcAmount2015P1", data.getOrElse(KeystoreService.P1_TRIGGER_DC_KEY,"")),
-                        ("year2015.postTriggerDcAmount2015P2", data.getOrElse(KeystoreService.P2_TRIGGER_DC_KEY,"")))
+    val year2015 = List(("year2015.definedBenefit_2015_p1", data.getOrElse("amount2015P1", data.getOrElse(P1_DB_KEY,""))),
+                        ("year2015.definedContribution_2015_p1", data.getOrElse("dcAmount2015P1", data.getOrElse(P1_DC_KEY,""))),
+                        ("year2015.definedBenefit_2015_p2", data.getOrElse("amount2015P2", data.getOrElse(P2_DB_KEY,""))),
+                        ("year2015.definedContribution_2015_p2", data.getOrElse("dcAmount2015P2", data.getOrElse(P2_DC_KEY,""))),
+                        ("year2015.postTriggerDcAmount2015P1", data.getOrElse(P1_TRIGGER_DC_KEY,"")),
+                        ("year2015.postTriggerDcAmount2015P2", data.getOrElse(P2_TRIGGER_DC_KEY,"")))
     val yearAmounts = List.range(settings.THIS_YEAR-8, settings.THIS_YEAR + 1).flatMap {
       (year)=>
       if (year != 2015){
@@ -107,8 +108,9 @@ object CalculatorForm extends models.ThisYear {
         year2015
       }
     }
-    val maybeDate: Option[String] = data.get(KeystoreService.TRIGGER_DATE_KEY)
-    val values: List[(String,String)] = maybeDate.map((date)=>yearAmounts ++ List(("triggerDate", date))).getOrElse(yearAmounts)
+    val triggerDateValue = data.get(TRIGGER_DATE_KEY).map((date)=>("triggerDate", date)).getOrElse(("triggerDate", ""))
+    val triggerAmountValue = data.get(TRIGGER_DC_KEY).map((amount)=>("triggerAmount", amount)).getOrElse(("triggerAmount", ""))
+    val values: List[(String,String)] = yearAmounts ++ List(triggerDateValue, triggerAmountValue)
     if (nonValidatingForm) CalculatorForm.nonValidatingForm.bind(Map(values: _*)) else CalculatorForm.form.bind(Map(values: _*))
   }
 }

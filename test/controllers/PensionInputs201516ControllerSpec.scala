@@ -383,6 +383,8 @@ class PensionInputs201516ControllerSpec extends test.BaseSpec {
       // set up
       implicit val hc = HeaderCarrier()
       implicit val request = FakeRequest(GET,"/paac/back").withSession{(SessionKeys.sessionId,SESSION_ID)}
+      MockKeystore.map = MockKeystore.map + (KeystoreService.CURRENT_INPUT_YEAR_KEY -> "2015")
+      MockKeystore.map = MockKeystore.map + (KeystoreService.SELECTED_INPUT_YEARS_KEY -> "2015")
 
       // test
       val result : Future[Result] = ControllerWithMockKeystore.onBack()(request)
