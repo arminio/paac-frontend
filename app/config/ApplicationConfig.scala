@@ -28,9 +28,6 @@ trait AppConfig {
   val analyticsHost: String
   val reportAProblemPartialUrl: String
   val reportAProblemNonJSUrl: String
-  val useMinifiedAssets: Boolean
-  val betaFeedbackUnauthenticatedUrl: String
-  val betaFeedbackUrl: String
   val assetsUrl: String
 }
 
@@ -51,11 +48,6 @@ object ApplicationConfig extends AppConfig with ServicesConfig {
   override lazy val analyticsHost = loadConfig(s"google-analytics.host")
   override lazy val reportAProblemPartialUrl = s"$contactHost/contact/problem_reports_ajax?service=$contactFormServiceIdentifier"
   override lazy val reportAProblemNonJSUrl = s"$contactHost/contact/problem_reports_nonjs?service=$contactFormServiceIdentifier"
-
-  override lazy val betaFeedbackUrl = s"$contactHost/contact/beta-feedback"
-
-  override lazy val useMinifiedAssets = configuration.getBoolean(s"govuk-tax.cc-frontend.assets.minified").getOrElse(true)
-  override lazy val betaFeedbackUnauthenticatedUrl = s"$contactHost/contact/beta-feedback-unauthenticated"
 
   // Whitelist Configuration
   private def whitelistConfig(key: String):Seq[String] = Some(new String(Base64.getDecoder().decode(Play.configuration.getString(key).getOrElse("")), "UTF-8"))
