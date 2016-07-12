@@ -209,6 +209,7 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
 
       "with valid date redirect to review page if edit flag set" in new ControllerWithMockKeystore {
         // set up
+        MockKeystore.map = MockKeystore.map + (KeystoreService.IS_EDIT_KEY -> "true")
         implicit val hc = HeaderCarrier()
         implicit val request = FakeRequest(POST, "/paac/d").withSession((SessionKeys.sessionId,SESSION_ID)).withFormUrlEncodedBody(("dateOfMPAATriggerEvent.day" -> "4"),
                                     ("dateOfMPAATriggerEvent.month" -> "11"),

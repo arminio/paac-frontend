@@ -52,7 +52,7 @@ trait SelectSchemeController  extends RedirectController {
           Future.successful(Ok(views.html.selectScheme(form, year)))
         } else {
           val firstDCYear = if (input.definedContribution && (input.firstDCYear.isEmpty || input.firstDCYear.toInt < year)) year.toString 
-                            else if (!input.definedContribution && input.firstDCYear.toInt == year) "" 
+                            else if (!input.firstDCYear.isEmpty && !input.definedContribution && input.firstDCYear.toInt == year) "" 
                             else input.firstDCYear.toString
           keystore.save[String](List((s"${input.definedBenefit}", s"${DB_FLAG_PREFIX}${year}"),
                                      (s"${input.definedContribution}", s"${DC_FLAG_PREFIX}${year}"),

@@ -154,6 +154,7 @@ paac.post.trigger.value.page.question.p2 = What were your defined contribution s
 paac.post.trigger.value.page.title = Money Purchase Value After Flexi Access
 paac.post.trigger.value.description.p1 = Include all pension savings after you first flexibly accessed your defined contribution scheme on {0} to the end of the period on 8 July 2015.
 paac.post.trigger.value.description.p2 = Include all pension savings after you first flexibly accessed your defined contribution scheme on {0} to the end of the period on 5 April 2016.
+paac.post.trigger.value.description.other = Include all pension savings after you first flexibly accessed your defined contribution scheme on {0} to 5 April {1}.
 
 paac.post.trigger.amount.input.label = Total amount
 paac.post.trigger.value.error.real.precision = The amount must not be empty or negative. (Amount must have no more than {1} numbers, including {2} decimal places, and should be £0 or larger and smaller than £5,000,000.)
