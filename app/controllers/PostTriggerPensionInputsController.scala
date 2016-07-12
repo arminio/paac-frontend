@@ -18,8 +18,7 @@ package controllers
 
 import form.CalculatorForm
 import org.joda.time.LocalDate
-import service._
-import service.KeystoreService._
+import service.KeystoreService
 
 import scala.concurrent.Future
 
@@ -31,36 +30,58 @@ trait PostTriggerPensionInputsController extends RedirectController {
   val keystore: KeystoreService
 
   val onPageLoad = withSession { implicit request =>
-    keystore.read[String](List(TRIGGER_DATE_KEY, P1_TRIGGER_DC_KEY, P2_TRIGGER_DC_KEY, TRIGGER_DC_KEY)).flatMap {
+    keystore.read[String](List(KeystoreService.TRIGGER_DATE_KEY, KeystoreService.P1_TRIGGER_DC_KEY, KeystoreService.P2_TRIGGER_DC_KEY)).flatMap {
       (values) =>
-        val dateAsStr = values(TRIGGER_DATE_KEY)
-        if (dateAsStr.isEmpty)
+        val dateAsStr = values(KeystoreService.TRIGGER_DATE_KEY)
+        if (dateAsStr.isEmpty) {
           Future.successful(Redirect(routes.DateOfMPAATriggerEventController.onPageLoad))
-        else
-          Future.successful(Ok(views.html.postTriggerPensionInputs(CalculatorForm.bind(values))))
+        } else {
+          val taxYear = selectedTaxYear(dateAsStr).getOrElse("2017")
+          Future.successful(Ok(views.html.postTriggerPensionInputs(CalculatorForm.bind(values),taxYear,dateAsStr)))
+        }
     }
   }
 
   val onSubmit = withSession { implicit request =>
     val f = CalculatorForm.form.bindFromRequest()
-    f.fold(
-      formWithErrors => Future.successful(Ok(views.html.postTriggerPensionInputs(formWithErrors))),
-      input => {
-        val triggerP1 = input.triggerDatePeriod.get.isPeriod1
-        val triggerP2 = input.triggerDatePeriod.get.isPeriod2
-        if ((triggerP1 && !input.year2015.postTriggerDcAmount2015P1.isDefined) ||
-            (triggerP2 && !input.year2015.postTriggerDcAmount2015P2.isDefined) ||
-            (!triggerP1 && !triggerP2 && !input.triggerAmount.isDefined))
-          Future.successful(Ok(views.html.postTriggerPensionInputs(f.withError("error.bounds", "error.bounds", 0, 5000000.00))))
-        else {
-          val toSave: List[Option[(Long, String)]] = List(input.toP1TriggerDefinedContribution, input.toP2TriggerDefinedContribution, Some((input.triggerAmount.map(_.toLong).getOrElse(0L), TRIGGER_DC_KEY)))
-          keystore.save[String, Long](toSave, "").flatMap(_=>TriggerAmount() go Forward)
-        }
-      }
-    )
+    keystore.read[String](KeystoreService.TRIGGER_DATE_KEY).flatMap {
+      (maybeDateString) =>
+        val taxYear = selectedTaxYear(maybeDateString.get).getOrElse("2017")
+        f.fold(
+          formWithErrors => {
+            Future.successful(Ok(views.html.postTriggerPensionInputs(formWithErrors, taxYear, maybeDateString.get)))
+          },
+          input => {
+            val triggerP1 = input.triggerDatePeriod.get.isPeriod1
+            val triggerP2 = input.triggerDatePeriod.get.isPeriod2
+            if ((triggerP1 && !input.year2015.postTriggerDcAmount2015P1.isDefined) ||
+              (triggerP2 && !input.year2015.postTriggerDcAmount2015P2.isDefined)
+            ) {
+              Future.successful(Ok(views.html.postTriggerPensionInputs(f.withError("error.bounds", "error.bounds", 0, 5000000.00),
+                                                                        taxYear, maybeDateString.get)))
+            } else {
+              val toSave: Option[(Long, String)] = if (triggerP1) {
+                input.toP1TriggerDefinedContribution
+              } else {
+                input.toP2TriggerDefinedContribution
+              }
+              keystore.save[String, Long](List(toSave), "").flatMap {
+                (a) =>
+                  wheretoNext(Redirect(routes.ReviewTotalAmountsController.onPageLoad))
+              }
+            }
+          }
+        )
+    }
   }
 
   val onBack = withSession { implicit request =>
-    TriggerAmount() go Backward
+    wheretoBack(Redirect(routes.DateOfMPAATriggerEventController.onPageLoad))
+  }
+
+  def selectedTaxYear(date: String):Option[String] = new LocalDate(date) match {
+    case date1 if (!date1.isBefore(new LocalDate("2015-4-6")) && !date1.isAfter(new LocalDate("2016-4-5"))) => Some("2015")
+    case date2 if (!date2.isBefore(new LocalDate("2016-4-6")) && !date2.isAfter(new LocalDate("2017-4-5"))) => Some("2016")
+    case _ => None
   }
 }

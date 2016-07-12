@@ -36,11 +36,7 @@ class PensionInputsControllerSpec extends test.BaseSpec {
                     "definedBenefit_2013" -> "1200000",
                     "definedBenefit_2014" -> "1300000",
                     "definedBenefit_2014" -> "1300000",
-                    SessionKeys.sessionId -> SESSION_ID,
-                    KeystoreService.CURRENT_INPUT_YEAR_KEY -> "2014",
-                    KeystoreService.SELECTED_INPUT_YEARS_KEY -> "2014"
-                    )
-
+                    SessionKeys.sessionId -> SESSION_ID)
     object PensionInputsControllerMockedKeystore extends PensionInputsController {
       override val keystore: KeystoreService = MockKeystore
     }
@@ -96,19 +92,30 @@ class PensionInputsControllerSpec extends test.BaseSpec {
         htmlPage should include("""<button id="submit" type="submit" class="button" value="Continue">Continue</button>""")
       }
 
-      "with current year = -1 redirect to start" in new ControllerWithMockKeystore {
+      "with current year 2015 redirect to review" in new ControllerWithMockKeystore {
         // setup
+        MockKeystore.map = MockKeystore.map + (KeystoreService.CURRENT_INPUT_YEAR_KEY -> "2015")
         val request = FakeRequest(GET,"").withSession{(SessionKeys.sessionId,SESSION_ID)}
-        MockKeystore.map = MockKeystore.map - KeystoreService.CURRENT_INPUT_YEAR_KEY - KeystoreService.SELECTED_INPUT_YEARS_KEY
-        MockKeystore.map = MockKeystore.map + (KeystoreService.SELECTED_INPUT_YEARS_KEY -> "2014")
-        MockKeystore.map = MockKeystore.map + (KeystoreService.CURRENT_INPUT_YEAR_KEY -> "-1")
 
         // test
         val result : Future[Result] = PensionInputsControllerMockedKeystore.onPageLoad()(request)
 
         // check
         status(result) shouldBe 303
-        redirectLocation(result) shouldBe Some("/paac")
+        redirectLocation(result) shouldBe Some("/paac/review")
+      }
+
+      "with current year -1 redirect to review" in new ControllerWithMockKeystore {
+        // setup
+        MockKeystore.map = MockKeystore.map + (KeystoreService.CURRENT_INPUT_YEAR_KEY -> "-1")
+        val request = FakeRequest(GET,"").withSession{(SessionKeys.sessionId,SESSION_ID)}
+
+        // test
+        val result : Future[Result] = PensionInputsControllerMockedKeystore.onPageLoad()(request)
+
+        // check
+        status(result) shouldBe 303
+        redirectLocation(result) shouldBe Some("/paac/review")
       }
     }
   }

@@ -55,12 +55,6 @@ case class PensionPeriod(year: Int, month: Int, day: Int) {
   def isPeriod2(): Boolean = {
     isPeriod(PensionPeriod.PERIOD_2_2015_START, PensionPeriod.PERIOD_2_2015_END)
   }
-
-  def taxYear(): Int = {
-    if (this < PensionPeriod(year, 4, 6) && this > PensionPeriod(year-1, 4, 6)) year-1 
-    else if (this > PensionPeriod(year, 4, 6) && this < PensionPeriod(year+1, 4, 6)) year
-    else year
-  }
 }
 
 case class Contribution(taxPeriodStart: PensionPeriod, taxPeriodEnd: PensionPeriod, amounts: Option[InputAmounts]) extends CalculationParam {
@@ -164,11 +158,6 @@ object PensionPeriod {
     (JsPath \ "month").read[Int](min(MIN_MONTH_VALUE) keepAnd max(MAX_MONTH_VALUE)) and
     (JsPath \ "day").read[Int](min(MIN_DAY_VALUE) keepAnd max(MAX_DAY_VALUE))
   )(PensionPeriod.apply _)
-
-  implicit def toPensionPeriod(str: String): PensionPeriod = {
-    val parts = (if (str.isEmpty) "2008-01-01" else str).split("-").map(_.toInt)
-    PensionPeriod(parts(0), parts(1), parts(2))
-  }
 }
 
 object InputAmounts {

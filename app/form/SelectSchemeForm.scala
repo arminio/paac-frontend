@@ -21,7 +21,7 @@ import play.api.data.Form
 import play.api.data.Forms._
 import play.api.libs.json.Json
 
-case class SelectSchemeModel(definedBenefit: Boolean,definedContribution: Boolean, firstDCYear: String, year: Int)
+case class SelectSchemeModel(definedBenefit: Boolean,definedContribution: Boolean)
 
 object SelectSchemeModel {
   implicit val formats = Json.format[SelectSchemeModel]
@@ -34,9 +34,7 @@ trait SelectSchemeForm {
   val form: Form[SelectSchemeModel] = Form(
     mapping(
       "definedBenefit" -> boolean,
-      "definedContribution" -> boolean,
-      "firstDCYear" -> text,
-      "year" -> number
+      "definedContribution" -> boolean
     )(SelectSchemeModel.apply)(SelectSchemeModel.unapply)
 )
 }

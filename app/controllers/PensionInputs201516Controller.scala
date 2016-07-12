@@ -16,7 +16,7 @@
 
 package controllers
 
-import service._
+import service.KeystoreService
 import service.KeystoreService._
 import play.api.mvc._
 import scala.concurrent.Future
@@ -32,6 +32,13 @@ object PensionInputs201516Controller extends PensionInputs201516Controller {
 trait PensionInputs201516Controller extends RedirectController {
   val keystore: KeystoreService
 
+  private val onSubmitRedirect: Call = routes.YesNoMPAATriggerEventAmountController.onPageLoad()
+  private val onSubmitDBRedirect: Call = routes.ReviewTotalAmountsController.onPageLoad()
+
+  val onBack = withSession { implicit request =>
+    wheretoBack(Redirect(routes.SelectSchemeController.onPageLoad(2015)))
+  }
+
   val onPageLoad = withSession { implicit request =>
     keystore.read[String](List(P1_DB_KEY, P1_DC_KEY, P2_DB_KEY, P2_DC_KEY, s"${DB_FLAG_PREFIX}2015", s"${DC_FLAG_PREFIX}2015")).map {
       (fieldsMap) =>
@@ -42,10 +49,11 @@ trait PensionInputs201516Controller extends RedirectController {
   }
 
   val onSubmit = withSession { implicit request =>
-    keystore.read[String](List(s"${DB_FLAG_PREFIX}2015", s"${DC_FLAG_PREFIX}2015")).flatMap {
+    keystore.read[String](List(s"${DB_FLAG_PREFIX}2015", s"${DC_FLAG_PREFIX}2015", IS_EDIT_KEY)).flatMap {
       (fieldsMap) =>
         val isDB = fieldsMap(s"${DB_FLAG_PREFIX}2015").toBoolean
         val isDC = fieldsMap(s"${DC_FLAG_PREFIX}2015").toBoolean
+        val isEdit = fieldsMap(IS_EDIT_KEY).toBoolean
 
         CalculatorForm.form.bindFromRequest().fold(
           formWithErrors => { Future.successful(Ok(views.html.pensionInputs_201516(formWithErrors, isDB, isDC))) },
@@ -70,14 +78,21 @@ trait PensionInputs201516Controller extends RedirectController {
               }
               Future.successful(Ok(views.html.pensionInputs_201516(form, isDB, isDC)))
             } else {
-              keystore.save(List(input.to1516Period1DefinedBenefit, input.to1516Period1DefinedContribution, input.to1516Period2DefinedBenefit, input.to1516Period2DefinedContribution), "").flatMap(_=> PensionInput() go Forward)
+              keystore.save(List(input.to1516Period1DefinedBenefit, input.to1516Period1DefinedContribution, input.to1516Period2DefinedBenefit, input.to1516Period2DefinedContribution), "").flatMap{
+                (_)=>
+                  if (isEdit) {
+                    goTo(-1, true, isEdit, false, Redirect(onSubmitRedirect))
+                  } else {
+                    if (!isDC) {
+                      wheretoNext(Redirect(onSubmitDBRedirect))
+                    } else {
+                      Future.successful(Redirect(onSubmitRedirect))
+                    }
+                  }
+              }
             }
           }
         )
     }
-  }
-
-  val onBack = withSession { implicit request =>
-    PensionInput() go Backward
   }
 }

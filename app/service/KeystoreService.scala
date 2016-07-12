@@ -27,7 +27,6 @@ import uk.gov.hmrc.play.http._
 import scala.util.{Failure, Success}
 import uk.gov.hmrc.http.cache.client._
 
-
 trait KeystoreService {
   val SOURCE = "paac-frontend"
   val sessionCache: SessionCache = PaacSessionCache
@@ -130,12 +129,6 @@ trait KeystoreService {
       case _ => defaultT
     }
   }
-
-  implicit class RichMap(map: Map[String,String]) {
-    def bool(key: String): Boolean = if (!map.isDefinedAt(key) || map(key).isEmpty) false else map(key).toBoolean
-    def int(key: String): Int = if (!map.isDefinedAt(key) || map(key).isEmpty) 0 else map(key).toInt
-    def yesNo(key: String): Boolean = if (!map.isDefinedAt(key) || map(key).isEmpty) false else map(key) == "Yes"
-  }
 }
 
 object KeystoreService extends KeystoreService {
@@ -146,12 +139,11 @@ object KeystoreService extends KeystoreService {
   val P2_DC_KEY= "definedContribution_2015_p2"
   val P1_TRIGGER_DC_KEY = "triggerDefinedContribution_2015_p1"
   val P2_TRIGGER_DC_KEY= "triggerDefinedContribution_2015_p2"
-  val TRIGGER_DC_KEY= "triggerDefinedContribution"
+  val YEAR_1617_TRIGGER_DC_KEY= "triggerDefinedContribution_2016"
   val YEAR_1617_AI_KEY= "adjustedIncome_2016"
   val SCHEME_TYPE_KEY = "schemeType"
   val CURRENT_INPUT_YEAR_KEY = "Current"
   val SELECTED_INPUT_YEARS_KEY = "SelectedYears"
-  val FIRST_DC_YEAR_KEY = "FirstDCYear"
   val DB_PREFIX = "definedBenefit_"
   val DC_PREFIX = "definedContribution_"
   val DB_FLAG_PREFIX = "isDefinedBenefit_"
