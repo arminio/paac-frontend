@@ -31,8 +31,7 @@ import uk.gov.hmrc.play.frontend.bootstrap.DefaultFrontendGlobal
 import uk.gov.hmrc.play.http.logging.filters.FrontendLoggingFilter
 
 
-abstract class FrontendGlobal
-  extends DefaultFrontendGlobal
+abstract class FrontendGlobal extends DefaultFrontendGlobal
   with RunMode {
 
   override val auditConnector = FrontendAuditConnector
@@ -89,5 +88,4 @@ object FrontendGlobal extends FrontendGlobal
 
 object ProductionFrontendGlobal extends FrontendGlobal {
   override def filters = WhitelistFilter +: super.filters
-
 }
