@@ -16,7 +16,7 @@
 
 package controllers
 
-import service.KeystoreService
+import service._
 import play.api.mvc._
 
 import scala.concurrent.Future
@@ -40,36 +40,37 @@ trait AdjustedIncome1617InputController extends RedirectController {
         if (cy <= "2015" || cy == "-1") {
           Future.successful(Redirect(onSubmitRedirect))
         } else {
-          keystore.read[String](List((AI_PREFIX + cy))).map {
+          keystore.read[String](List(AI_PREFIX + cy,IS_EDIT_KEY)).map {
             (fieldsMap) =>
-              Ok(views.html.adjusted_income_1617_input(CalculatorForm.bind(fieldsMap).discardingErrors, cy))
+              Ok(views.html.adjusted_income_1617_input(CalculatorForm.bind(fieldsMap).discardingErrors, cy, (fieldsMap bool IS_EDIT_KEY)))
           }
         }
     }
   }
 
   val onSubmit = withSession { implicit request =>
-    keystore.read[String](List(CURRENT_INPUT_YEAR_KEY)).flatMap {
+    keystore.read[String](List(CURRENT_INPUT_YEAR_KEY,IS_EDIT_KEY)).flatMap {
       (fieldsMap) =>
         val cy = fieldsMap (CURRENT_INPUT_YEAR_KEY).toInt
         CalculatorForm.form.bindFromRequest ().fold (
           formWithErrors => {
-          Future.successful (Ok (views.html.adjusted_income_1617_input (formWithErrors, cy.toString)))
+          Future.successful (Ok (views.html.adjusted_income_1617_input (formWithErrors, cy.toString, (fieldsMap bool IS_EDIT_KEY))))
           },
           input => {
             val isAIError = !input.toAdjustedIncome(cy).isDefined
             if (isAIError) {
               var form = CalculatorForm.form.bindFromRequest()
               form = form.withError("adjustedIncome.amount_"+cy, "ai.error.bounds")
-              Future.successful(Ok(views.html.adjusted_income_1617_input(form, cy.toString())))
+              Future.successful(Ok(views.html.adjusted_income_1617_input(form, cy.toString(), (fieldsMap bool IS_EDIT_KEY))))
             } else {
-              keystore.save(List(input.toAdjustedIncome(cy)), "").flatMap {
-                (_)=>
-                  wheretoNext(Redirect(onSubmitRedirect))
-              }
+              keystore.save(List(input.toAdjustedIncome(cy)), "").flatMap((_)=>AdjustedIncome() go Forward)
             }
           }
         )
     }
+  }
+
+  val onBack = withSession { implicit request =>
+    AdjustedIncome() go Backward
   }
 }

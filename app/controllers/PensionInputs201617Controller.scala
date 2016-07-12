@@ -17,7 +17,7 @@
 package controllers
 
 import form.CalculatorForm
-import service.KeystoreService
+import service._
 import service.KeystoreService._
 
 import scala.concurrent.Future
@@ -29,30 +29,26 @@ object PensionInputs201617Controller extends PensionInputs201617Controller {
 trait PensionInputs201617Controller extends RedirectController {
   val keystore: KeystoreService
 
-  private val onSubmitRedirect = routes.YesNoThresholdIncomeController.onPageLoad
-
-  val onBack = withSession { implicit request =>
-    wheretoBack(Redirect(routes.SelectSchemeController.onPageLoad(2016)))
-  }
-
   val onPageLoad = withSession { implicit request =>
-    keystore.read[String](List(DB_PREFIX, DC_PREFIX, s"${DB_FLAG_PREFIX}2016", s"${DC_FLAG_PREFIX}2016")).map {
+    keystore.read[String](List(DB_PREFIX, DC_PREFIX, s"${DB_FLAG_PREFIX}2016", s"${DC_FLAG_PREFIX}2016", IS_EDIT_KEY)).map {
       (fieldsMap) =>
         Ok(views.html.pensionInputs_201617(CalculatorForm.bind(fieldsMap).discardingErrors,
-          fieldsMap(s"${DB_FLAG_PREFIX}2016").toBoolean,
-          fieldsMap(s"${DC_FLAG_PREFIX}2016").toBoolean))
+          (fieldsMap bool s"${DB_FLAG_PREFIX}2016"),
+          (fieldsMap bool s"${DC_FLAG_PREFIX}2016"),
+          (fieldsMap bool IS_EDIT_KEY)
+          ))
     }
   }
 
   val onSubmit = withSession { implicit request =>
     keystore.read[String](List(s"${DB_FLAG_PREFIX}2016", s"${DC_FLAG_PREFIX}2016", IS_EDIT_KEY)).flatMap {
       (fieldsMap) =>
-        val isDB = fieldsMap(s"${DB_FLAG_PREFIX}2016").toBoolean
-        val isDC = fieldsMap(s"${DC_FLAG_PREFIX}2016").toBoolean
-        val isEdit = fieldsMap(IS_EDIT_KEY).toBoolean
+        val isDB = fieldsMap bool s"${DB_FLAG_PREFIX}2016"
+        val isDC = fieldsMap bool s"${DC_FLAG_PREFIX}2016"
+        val isEdit = fieldsMap bool s"${DC_FLAG_PREFIX}2016"
 
         CalculatorForm.form.bindFromRequest().fold(
-          formWithErrors => { Future.successful(Ok(views.html.pensionInputs_201617(formWithErrors, isDB, isDC))) },
+          formWithErrors => { Future.successful(Ok(views.html.pensionInputs_201617(formWithErrors, isDB, isDC, isEdit))) },
           input => {
             val isDBError = !input.toDefinedBenefit(2016).isDefined && isDB
             val isDCError = !input.toDefinedContribution(2016).isDefined && isDC
@@ -64,19 +60,15 @@ trait PensionInputs201617Controller extends RedirectController {
               if (isDCError) {
                 form = form.withError("year2016.definedContribution", "dc.error.bounds")
               }
-              Future.successful(Ok(views.html.pensionInputs_201617(form, isDB, isDC)))
-            } else {
-              keystore.save(List(input.toDefinedBenefit(2016), input.toDefinedContribution(2016)), "").flatMap{
-                (_)=>
-                  if (isEdit) {
-                    goTo(-1, true, isEdit, false, Redirect(onSubmitRedirect))
-                  } else {
-                      wheretoNext(Redirect(onSubmitRedirect))
-                    }
-                  }
-              }
+              Future.successful(Ok(views.html.pensionInputs_201617(form, isDB, isDC, isEdit)))
+            } else
+              keystore.save(List(input.toDefinedBenefit(2016), input.toDefinedContribution(2016)), "").flatMap(_=>PensionInput() go Forward)
           }
         )
     }
+  }
+
+  val onBack = withSession { implicit request =>
+    PensionInput() go Backward
   }
 }

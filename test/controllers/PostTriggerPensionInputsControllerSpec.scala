@@ -32,6 +32,8 @@ class PostTriggerPensionInputsControllerSpec extends test.BaseSpec {
   val endPointURL = "/paac/moneyPurchasePostTriggerValue"
 
   trait ControllerWithMockKeystore extends MockKeystoreFixture {
+    MockKeystore.map = MockKeystore.map + (KeystoreService.CURRENT_INPUT_YEAR_KEY -> "2015")
+    MockKeystore.map = MockKeystore.map + (KeystoreService.SELECTED_INPUT_YEARS_KEY -> "2015")
     object ControllerWithMockKeystore extends PostTriggerPensionInputsController {
       override val keystore: KeystoreService = MockKeystore
     }
@@ -176,6 +178,8 @@ class PostTriggerPensionInputsControllerSpec extends test.BaseSpec {
         // set up
         val request = FakeRequest(GET,"").withSession{(SessionKeys.sessionId,SESSION_ID)}
         MockKeystore.map = MockKeystore.map + (KeystoreService.IS_EDIT_KEY -> "false")
+        MockKeystore.map = MockKeystore.map + (KeystoreService.FIRST_DC_YEAR_KEY -> "2015")
+        MockKeystore.map = MockKeystore.map + (KeystoreService.TE_YES_NO_KEY -> "Yes")
 
         // test
         val result : Future[Result] = ControllerWithMockKeystore.onBack()(request)

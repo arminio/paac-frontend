@@ -18,7 +18,7 @@ package controllers
 
 import form.YesNoMPAATriggerEventForm
 import play.api.mvc._
-import service.KeystoreService
+import service._
 import service.KeystoreService._
 import scala.concurrent.Future
 
@@ -30,8 +30,6 @@ trait YesNoMPAATriggerEventAmountController extends RedirectController {
   val keystore: KeystoreService
 
   private val yesNoFormKey = "yesNo"
-  private val onSubmitRedirectForYes: Call = routes.DateOfMPAATriggerEventController.onPageLoad()
-  private val onSubmitRedirectForNo: Call = routes.ReviewTotalAmountsController.onPageLoad()
 
   val onPageLoad = withSession { implicit request =>
     keystore.read[String](TE_YES_NO_KEY).map {
@@ -49,15 +47,15 @@ trait YesNoMPAATriggerEventAmountController extends RedirectController {
       formWithErrors => { Future.successful(Ok(views.html.yesno_mpaa_trigger_amount(YesNoMPAATriggerEventForm.form))) },
       input => {
         keystore.store(input, TE_YES_NO_KEY)
-        if (input == "Yes") {
-          Future.successful(Redirect(onSubmitRedirectForYes))
-        } else {
-          keystore.save(List((None,P1_TRIGGER_DC_KEY),(None,P2_TRIGGER_DC_KEY),(None,TRIGGER_DATE_KEY)),"").flatMap {
-            _ =>
-            wheretoNext(Redirect(onSubmitRedirectForNo))
-          }
-        }
+        if (input == "Yes")
+          YesNoTrigger(PageState(isTE=true)) go Forward
+        else
+          keystore.save(List((None,P1_TRIGGER_DC_KEY),(None,P2_TRIGGER_DC_KEY),(None,TRIGGER_DATE_KEY)),"").flatMap(_=>YesNoTrigger() go Forward)
       }
     )
+  }
+
+  val onBack = withSession { implicit request =>
+    YesNoTrigger() go Backward
   }
 }
