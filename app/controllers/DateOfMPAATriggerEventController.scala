@@ -19,7 +19,7 @@ package controllers
 import form.{DateOfMPAATriggerEventPageModel, DateOfMPAATriggerEventForm}
 import org.joda.time.LocalDate
 import play.api.mvc._
-import service.KeystoreService
+import service._
 import service.KeystoreService._
 import scala.concurrent.Future
 import models._
@@ -30,8 +30,6 @@ object DateOfMPAATriggerEventController extends DateOfMPAATriggerEventController
 
 trait DateOfMPAATriggerEventController extends RedirectController {
   val keystore: KeystoreService
-
-  private val onSubmitRedirect: Call = routes.PostTriggerPensionInputsController.onPageLoad
 
   val onPageLoad = withSession { implicit request =>
     keystore.read[String](List(TRIGGER_DATE_KEY,P1_TRIGGER_DC_KEY,P2_TRIGGER_DC_KEY, IS_EDIT_KEY)).map {
@@ -81,9 +79,8 @@ trait DateOfMPAATriggerEventController extends RedirectController {
                   } else {
                     Future.successful(Results.Redirect(routes.ReviewTotalAmountsController.onPageLoad()))
                   }
-                } else {
-                  Future.successful(Redirect(onSubmitRedirect))
-                }
+                } else
+                  TriggerDate() go Forward
               }
           } else {
             val form = DateOfMPAATriggerEventForm.form.bindFromRequest().withError("dateOfMPAATriggerEvent", "error.invalid.date.format")
@@ -95,7 +92,7 @@ trait DateOfMPAATriggerEventController extends RedirectController {
   }
 
   val onBack = withSession { implicit request =>
-    wheretoBack(Redirect(routes.YesNoMPAATriggerEventAmountController.onPageLoad))
+    TriggerDate() go Backward
   }
   
   private def isValidDate(date: LocalDate): Boolean  = {

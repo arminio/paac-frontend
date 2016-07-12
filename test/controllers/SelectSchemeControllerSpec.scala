@@ -102,9 +102,11 @@ class SelectSchemeControllerSpec extends test.BaseSpec {
 
       "with valid DB and DC schemeType flag value should save to keystore" in new ControllerWithMockKeystore{
         // set up
+        MockKeystore.map = MockKeystore.map + (FIRST_DC_YEAR_KEY -> "")
+        MockKeystore.map = MockKeystore.map + (SELECTED_INPUT_YEARS_KEY -> "2015")
         implicit val hc = HeaderCarrier()
         implicit val request = FakeRequest(POST, postEndPointURL).withSession((SessionKeys.sessionId,SESSION_ID))
-                                               .withFormUrlEncodedBody(("definedContribution" -> "true"),("definedBenefit" -> "true"),("year"->"2015"))
+                                               .withFormUrlEncodedBody(("definedContribution" -> "true"),("definedBenefit" -> "true"),("year"->"2015"),("firstDCYear"->"2015"))
 
         // test
         val result: Future[Result] = MockSelectSchemeControllerWithMockKeystore.onSubmit()(request)
@@ -120,7 +122,10 @@ class SelectSchemeControllerSpec extends test.BaseSpec {
         // set up
         implicit val hc = HeaderCarrier()
         implicit val request = FakeRequest(POST, postEndPointURL).withSession((SessionKeys.sessionId,SESSION_ID))
-                                               .withFormUrlEncodedBody({"definedContribution" -> "";"definedBenefit" -> "";"year"->"2015"})
+                                               .withFormUrlEncodedBody(("definedContribution" -> ""),
+                                                                       ("definedBenefit" -> ""),
+                                                                       ("year"->"2015"),
+                                                                       ("firstDCYear"->"2015"))
 
         // test
         val result: Future[Result] = MockSelectSchemeControllerWithMockKeystore.onSubmit()(request)
@@ -135,7 +140,11 @@ class SelectSchemeControllerSpec extends test.BaseSpec {
         // set up
         implicit val hc = HeaderCarrier()
         implicit val request = FakeRequest(POST, postEndPointURL).withSession((SessionKeys.sessionId,SESSION_ID))
-                                               .withFormUrlEncodedBody({"definedContribution" -> "false";"definedBenefit" -> "false";"year"->"2015"})
+                                               .withFormUrlEncodedBody(("definedContribution" -> "false"),
+                                                                       ("definedBenefit" -> "false"),
+                                                                       ("year"->"2015"),
+                                                                       ("firstDCYear"->"2015"))
+        MockKeystore.map = MockKeystore.map + (FIRST_DC_YEAR_KEY -> "")
 
         // test
         val result: Future[Result] = MockSelectSchemeControllerWithMockKeystore.onSubmit()(request)
@@ -151,8 +160,8 @@ class SelectSchemeControllerSpec extends test.BaseSpec {
   "SelectSchemeForm" should {
     "correctly unbind" in {
       // set up
-      val model = SelectSchemeModel(true, true)
-      val theForm = SelectSchemeForm.form.bind(Map("definedContribution" -> "false","definedContribution" -> "false"))
+      val model = SelectSchemeModel(true, true, "2015", 2015)
+      val theForm = SelectSchemeForm.form.bind(Map("definedContribution" -> "false","definedContribution" -> "false","firstDCYear"->"2015","year"->"2015"))
 
       // test
       val map = theForm.mapping.unbind(model)

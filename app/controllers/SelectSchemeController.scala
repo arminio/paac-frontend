@@ -16,7 +16,7 @@
 
 package controllers
 
-import service.KeystoreService
+import service._
 import service.KeystoreService._
 import play.api.mvc._
 import scala.concurrent.Future
@@ -29,37 +29,40 @@ object SelectSchemeController extends SelectSchemeController {
 trait SelectSchemeController  extends RedirectController {
   val keystore: KeystoreService
 
-  private val onSubmitRedirect: Call = routes.PensionInputs201516Controller.onPageLoad()
-
   def onPageLoad(year:Int) = withSession { implicit request =>
-    keystore.read[String](List(s"${DB_FLAG_PREFIX}${year}", s"${DC_FLAG_PREFIX}${year}")).map{
+    implicit val marshall = KeystoreService.toStringPair _
+    val toRead = List(DB_FLAG_PREFIX, DC_FLAG_PREFIX).map(""+_+year) ++ List(FIRST_DC_YEAR_KEY)
+    keystore.read[String](toRead).map{
       (v)=>
-      val m = Map(("definedBenefit"->v(s"${DB_FLAG_PREFIX}${year}")),("definedContribution"->v(s"${DC_FLAG_PREFIX}${year}")))
+      val m = Map(("definedBenefit"->v(toRead(0))),
+                  ("definedContribution"->v(toRead(1))),
+                  ("firstDCYear"->v(toRead(2))),
+                  ("year"->year.toString))
       Ok(views.html.selectScheme(SelectSchemeForm.form.bind(m).discardingErrors, year))
     }
   }
 
   val onSubmit = withSession { implicit request =>
-    val year = formRequestData(request)("year").toInt
     SelectSchemeForm.form.bindFromRequest().fold(
-      formWithErrors => Future.successful(Ok(views.html.selectScheme(formWithErrors, year))),
+      formWithErrors => Future.successful(Ok(views.html.selectScheme(formWithErrors, formRequestData(request)("year").toInt))),
       input => {
+        val year = input.year
         if (!input.definedBenefit && !input.definedContribution) {
           val form = SelectSchemeForm.form.withError("paac.scheme.selection.error","paac.scheme.selection.error")
           Future.successful(Ok(views.html.selectScheme(form, year)))
         } else {
+          val firstDCYear = if (input.definedContribution && (input.firstDCYear.isEmpty || input.firstDCYear.toInt < year)) year.toString 
+                            else if (!input.definedContribution && input.firstDCYear.toInt == year) "" 
+                            else input.firstDCYear.toString
           keystore.save[String](List((s"${input.definedBenefit}", s"${DB_FLAG_PREFIX}${year}"),
-                                     (s"${input.definedContribution}", s"${DC_FLAG_PREFIX}${year}"))).map {
-            (_)=> 
-            Redirect(onSubmitRedirect)
-          }
+                                     (s"${input.definedContribution}", s"${DC_FLAG_PREFIX}${year}"),
+                                     (firstDCYear, FIRST_DC_YEAR_KEY))).flatMap(_=>SelectScheme() go Forward) 
         }
       }
     )
   }
 
-  def onBack(year:Int) = withSession { implicit request =>
-    // once 2016 and later implemented we need to pass on the year
-    wheretoBack(Redirect(routes.TaxYearSelectionController.onPageLoad))
+  val onBack = withSession { implicit request =>
+    SelectScheme() go Backward
   }
 }

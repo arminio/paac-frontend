@@ -16,7 +16,7 @@
 
 package controllers
 
-import service.KeystoreService
+import service._
 import play.api.mvc._
 
 import scala.concurrent.Future
@@ -63,13 +63,14 @@ trait AdjustedIncome1617InputController extends RedirectController {
               form = form.withError("adjustedIncome.amount_"+cy, "ai.error.bounds")
               Future.successful(Ok(views.html.adjusted_income_1617_input(form, cy.toString())))
             } else {
-              keystore.save(List(input.toAdjustedIncome(cy)), "").flatMap {
-                (_)=>
-                  wheretoNext(Redirect(onSubmitRedirect))
-              }
+              keystore.save(List(input.toAdjustedIncome(cy)), "").flatMap((_)=>AdjustedIncome() go Forward)
             }
           }
         )
     }
+  }
+
+  val onBack = withSession { implicit request =>
+    AdjustedIncome() go Backward
   }
 }

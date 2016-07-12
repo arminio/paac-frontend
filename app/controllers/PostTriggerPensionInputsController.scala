@@ -18,7 +18,7 @@ package controllers
 
 import form.CalculatorForm
 import org.joda.time.LocalDate
-import service.KeystoreService
+import service._
 
 import scala.concurrent.Future
 
@@ -65,10 +65,7 @@ trait PostTriggerPensionInputsController extends RedirectController {
               } else {
                 input.toP2TriggerDefinedContribution
               }
-              keystore.save[String, Long](List(toSave), "").flatMap {
-                (a) =>
-                  wheretoNext(Redirect(routes.ReviewTotalAmountsController.onPageLoad))
-              }
+              keystore.save[String, Long](List(toSave), "").flatMap(_=>TriggerAmount() go Forward)
             }
           }
         )
@@ -76,7 +73,7 @@ trait PostTriggerPensionInputsController extends RedirectController {
   }
 
   val onBack = withSession { implicit request =>
-    wheretoBack(Redirect(routes.DateOfMPAATriggerEventController.onPageLoad))
+    TriggerAmount() go Backward
   }
 
   def selectedTaxYear(date: String):Option[String] = new LocalDate(date) match {
