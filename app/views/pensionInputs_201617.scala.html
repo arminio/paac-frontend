@@ -1,4 +1,8 @@
-@(paacForm : Form[models.CalculatorFormFields],isDefinedBenefit: Boolean= false, isDefinedContribution: Boolean= false, isEdit: Boolean)(implicit request:Request[_])
+@(paacForm : Form[models.CalculatorFormFields],
+  isDefinedBenefit: Boolean= false, 
+  isDefinedContribution: Boolean= false, 
+  isEdit: Boolean,
+  year: Int)(implicit request:Request[_])
 
 @import uk.gov.hmrc.play.views.html.helpers._
 
@@ -29,8 +33,8 @@ backLink = Some((controllers.routes.PensionInputs201617Controller.onBack.url,Mes
 
         <ul class="error-summary-list">
             @for(error <- paacForm.errors) {
-            @defining(Seq("2016")++error.args) { args =>
-            <li><a href="#input_2016" style="color:#b10e1e;font-weight: bold;">@Messages(error.message, args:_*)</a></li>
+            @defining(Seq(year.toString)++error.args) { args =>
+            <li><a href="#input_@year" style="color:#b10e1e;font-weight: bold;">@Messages(error.message, args:_*)</a></li>
             }
 
             }
@@ -41,32 +45,31 @@ backLink = Some((controllers.routes.PensionInputs201617Controller.onBack.url,Mes
 @form(
 action = controllers.routes.PensionInputs201617Controller.onSubmit,
 args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
-
+<input type="hidden" name="isEdit" value="@(isEdit)"/>
+<input type="hidden" name="isDefinedBenefit" value="@(isDefinedBenefit)"/>
+<input type="hidden" name="isDefinedContribution" value="@(isDefinedContribution)"/>
+<input type="hidden" name="year" value="@(year)"/>
 <table style="max-width:12.35em; margin: 0">
     <tbody>
     <fieldset id="input_2016" style="max-width:12.35em; margin: 0">
         @if(isDefinedContribution){
-        <label class="form-element-bold label--full-length numeric" for="definedContributions.amount_2016" style="width:150%;display: inline-block;@if(paacForm.errors.find(_.key == "definedContributions.amount_2016")) {color:#b10e1e;}">
+        <label class="form-element-bold label--full-length numeric" for="definedContributions.amount_@year" style="width:150%;display: inline-block;@if(paacForm.errors.find(_.key == "definedContributions.amount_@year")) {color:#b10e1e;}">
         <tr style="text-align:left;min-width: 7em">@Messages("paac.1516.pension.inputs.dc")</tr><BR/>
-                          <span style="float:right">
-                              @if(paacForm.data.contains("definedContributions.amount_"+2016)) {
-                              <tr style="text-align:left;min-width: 7em">
-                                  £&nbsp;<input type="number" name="definedContributions.amount_2016" id="definedContributions.amount_2016" min="0" step="1" value='@paacForm.data("definedContributions.amount_2016")' max="5000000.00" size="10" style="width:9em;@if(paacForm.errors.find(_.key == "definedContributions.amount_2016")) {border: 4px solid #b10e1e;}"/>
-                              </tr>
-                              }
-                          </span>
+          <span style="float:right">
+              <tr style="text-align:left;min-width: 7em">
+                  £&nbsp;<input type="number" name="definedContributions.amount_@year" id="definedContributions.amount_@year" min="0" step="1" value='@paacForm.data(s"definedContributions.amount_${year}")' max="5000000.00" size="10" style="width:9em;@if(paacForm.errors.find(_.key == s"definedContributions.amount_${year}")) {border: 4px solid #b10e1e;}"/>
+              </tr>
+          </span>
         </label>
         }
         @if(isDefinedBenefit){
-        <label class="form-element-bold label--full-length numeric" for="definedBenefits.amount_2016" style="width:150%;display: inline-block;@if(paacForm.errors.find(_.key == "definedBenefits.amount_2016")) {color:#b10e1e;}">
+        <label class="form-element-bold label--full-length numeric" for="definedBenefits.amount_@year" style="width:150%;display: inline-block;@if(paacForm.errors.find(_.key == s"definedBenefits.amount_${year}")) {color:#b10e1e;}">
         <tr style="text-align:left;min-width: 7em">@Messages("paac.1516.pension.inputs.db")</tr><BR/>
-                          <span style="float:right">
-                              @if(paacForm.data.contains("definedBenefits.amount_"+2016)) {
-                              <tr style="text-align:left;min-width: 7em">
-                                  £&nbsp;<input type="number" name="definedBenefits.amount_2016" id="definedBenefits.amount_2016" min="0" step="1" value='@paacForm.data("definedBenefits.amount_2016")' max="5000000.00" size="10" style="width:9em;@if(paacForm.errors.find(_.key == "definedBenefits.amount_2016")) {border: 4px solid #b10e1e;}"/>
-                              </tr>
-                              }
-                          </span>
+          <span style="float:right">
+              <tr style="text-align:left;min-width: 7em">
+                  £&nbsp;<input type="number" name="definedBenefits.amount_@year" id="definedBenefits.amount_@year" min="0" step="1" value='@paacForm.data(s"definedBenefits.amount_${year}")' max="5000000.00" size="10" style="width:9em;@if(paacForm.errors.find(_.key == s"definedBenefits.amount_${year}")) {border: 4px solid #b10e1e;}"/>
+              </tr>
+          </span>
         </label>
         }
     </fieldset>

@@ -18,8 +18,11 @@ package controllers
 
 import form.CalculatorForm
 import service._
+import models._
 import service.KeystoreService._
-
+import play.api.data.Form
+import play.api.data.Forms._
+import play.api.mvc._
 import scala.concurrent.Future
 
 object PensionInputsController extends PensionInputsController {
@@ -29,38 +32,37 @@ object PensionInputsController extends PensionInputsController {
 trait PensionInputsController extends RedirectController {
   val keystore: KeystoreService
 
+  protected def show(form: Form[CalculatorFormFields], year: Int, isEditing: Boolean)(implicit request: Request[Any]) = {
+    Ok(views.html.pensionInputs(form, year.toString, isEditing))
+  }
+
   val onPageLoad = withSession { implicit request =>
-    keystore.read[String](CURRENT_INPUT_YEAR_KEY).flatMap {
-      (currentYear) =>
-      val cy = currentYear.getOrElse("2014")
+    keystore.read[String](List(CURRENT_INPUT_YEAR_KEY,IS_EDIT_KEY)).flatMap {
+      (fieldsMap) =>
+      val cy = fieldsMap(CURRENT_INPUT_YEAR_KEY)
       if (cy.isEmpty || cy.toInt <= 0)
         Start() go Edit
       else
-        keystore.read[String](List((DB_PREFIX + cy),(DC_PREFIX + cy))).map((fieldsMap) =>Ok(views.html.pensionInputs(CalculatorForm.bind(fieldsMap).discardingErrors, cy)))
+        keystore.read[String](List((DB_PREFIX + cy),(DC_PREFIX + cy))).map((v)=>show(CalculatorForm.bind(v).discardingErrors, cy.toInt, (fieldsMap bool IS_EDIT_KEY)))
     }
   }
 
   val onSubmit = withSession { implicit request =>
-    implicit val marshall = KeystoreService.toStringPair _
-    keystore.read[String](List(CURRENT_INPUT_YEAR_KEY)).flatMap {
-      (fieldsMap) =>
-      val cy = fieldsMap(CURRENT_INPUT_YEAR_KEY).toInt
-      CalculatorForm.form.bindFromRequest().fold(
-        formWithErrors => { 
-          Future.successful(Ok(views.html.pensionInputs(formWithErrors, cy.toString())))
-        },
-        input => {
-          val isDBError = !input.toDefinedBenefit(cy).isDefined
-          if (isDBError) {
-            var form = CalculatorForm.form.bindFromRequest()
-            form = form.withError("definedBenefits.amount_"+cy, "db.error.bounds")
-            Future.successful(Ok(views.html.pensionInputs(form, cy.toString())))
-          } else {
-            keystore.save(List(input.toDefinedBenefit(cy)), "").flatMap(_=>PensionInput() go Forward)
-          }
-        }
-      )
-    }
+    val data = formRequestData
+    val cy = data("year").toInt
+    val form = CalculatorForm.form.bindFromRequest()
+    form.fold(
+      formWithErrors =>
+        Future.successful(show(formWithErrors, cy, data("isEdit").toBoolean)),
+      fields => {
+        if (!fields.toDefinedBenefit(cy).isDefined)
+          Future.successful(show(form.withError("definedBenefits.amount_"+cy, "db.error.bounds"), 
+                                 cy, 
+                                 data("isEdit").toBoolean))
+        else
+          keystore.save(List(fields.toDefinedBenefit(cy)), "").flatMap(_=>PensionInput() go Forward)
+      }
+    )
   }
 
   val onBack = withSession { implicit request =>

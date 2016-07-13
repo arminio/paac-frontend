@@ -221,7 +221,7 @@ class ReviewTotalAmountsControllerSpec extends test.BaseSpec {
         // check
         await(result)
         MockKeystore.map(KeystoreService.IS_EDIT_KEY) shouldBe "false"
-        MockKeystore.map(KeystoreService.CURRENT_INPUT_YEAR_KEY) shouldBe "-1"
+        MockKeystore.map(KeystoreService.CURRENT_INPUT_YEAR_KEY) shouldBe PageLocation.END.toString
       }
 
       "display table of values that are present in keystore" in new MockControllerFixture {

@@ -101,13 +101,12 @@ object CalculatorForm extends models.ThisYear {
                         ("year2015.postTriggerDcAmount2015P2", data.getOrElse(P2_TRIGGER_DC_KEY,"")))
     val yearAmounts = List.range(settings.THIS_YEAR-8, settings.THIS_YEAR + 1).flatMap {
       (year)=>
-      if (year != 2015){
+      if (year != 2015)
         List((s"definedBenefits.amount_${year}", data.getOrElse("definedBenefit_" + year, "")),
              (s"definedContributions.amount_${year}", data.getOrElse("definedContribution_" + year, "")),
              (s"adjustedIncome.amount_${year}", data.getOrElse("adjustedIncome_" + year, "")))
-      } else {
+      else
         year2015
-      }
     }
     val triggerDateValue = data.get(TRIGGER_DATE_KEY).map((date)=>("triggerDate", date)).getOrElse(("triggerDate", ""))
     val triggerAmountValue = data.get(TRIGGER_DC_KEY).map((amount)=>("triggerAmount", amount)).getOrElse(("triggerAmount", ""))

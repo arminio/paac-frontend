@@ -51,7 +51,7 @@ trait ReviewTotalAmountsController extends RedirectController with models.ThisYe
              P2_TRIGGER_DC_KEY)
       case y if y > 2015 =>
         List(DB_PREFIX + y, DC_PREFIX + y, TH_PREFIX + y,
-          AI_PREFIX + y, TA_PREFIX + y)
+          AI_PREFIX + y, TA_PREFIX + y, TRIGGER_DC_KEY)
       }
 
     keystore.read[String](List.range(2008, settings.THIS_YEAR + 1).flatMap(yearAmountKeys(_)))
@@ -61,16 +61,12 @@ trait ReviewTotalAmountsController extends RedirectController with models.ThisYe
     fetchAmounts.flatMap { (amountsMap) =>
       keystore.read[String](TRIGGER_DATE_KEY).flatMap {
         (td) =>
-        val result = keystore.save[String](List((Some(false.toString()), IS_EDIT_KEY), (Some("-1"), CURRENT_INPUT_YEAR_KEY)), "").map {
+        val result = keystore.save[String](List((Some("false"), IS_EDIT_KEY), (Some(PageLocation.END.toString), CURRENT_INPUT_YEAR_KEY)), "").map {
           (_) =>
           val values = amountsMap ++ Map((TRIGGER_DATE_KEY, td.getOrElse("")))
           CalculatorForm.bind(values).fold(
-            formWithErrors => {
-              Ok(views.html.review_amounts(formWithErrors))
-            },
-            form => {
-              Ok(views.html.review_amounts(CalculatorForm.bind(values, true)))
-            }
+            formWithErrors => Ok(views.html.review_amounts(formWithErrors)),
+            form => Ok(views.html.review_amounts(CalculatorForm.bind(values, true)))
           )
         }
         result
@@ -81,12 +77,11 @@ trait ReviewTotalAmountsController extends RedirectController with models.ThisYe
   def onEditAmount(year:Int) = withSession { implicit request =>
     keystore.save(List(("true", IS_EDIT_KEY), (year.toString, CURRENT_INPUT_YEAR_KEY))).flatMap {
       (_)=>
-      val location = if (year == EDIT_TRIGGER_AMOUNT)
-        TriggerAmount()
-      else if (year == EDIT_TRIGGER_DATE)
-        TriggerDate()
-      else
-        PensionInput(PageState(year=year))
+      val location = year match {
+        case EDIT_TRIGGER_AMOUNT => TriggerAmount()
+        case EDIT_TRIGGER_DATE => TriggerDate()
+        case _ => PensionInput(PageState())
+      }
 
       location go Edit
     }

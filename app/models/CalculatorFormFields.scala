@@ -111,8 +111,8 @@ case class CalculatorFormFields(definedBenefits: Amounts,
       }
     }
 
-    def toInputAmounts(name1: String, name2: String, name3: String = ""): Option[InputAmounts] = {
-      val a = InputAmounts(get(name1), get(name2), get(name3), Some(false))
+    def toInputAmounts(name1: String, name2: String, name3: String = "", isTriggered: Boolean = false): Option[InputAmounts] = {
+      val a = InputAmounts(get(name1), get(name2), get(name3), if (isTriggered) Some(true) else None)
       if (a.isEmpty) None else Some(a)
     }
 
@@ -152,11 +152,24 @@ case class CalculatorFormFields(definedBenefits: Amounts,
 
     List.range(settings.START_YEAR, settings.THIS_YEAR + 1).flatMap {
       (year:Int) =>
-      if (year == 2015) {
+      if (year == 2015)
         p2Contribution ++ p1Contribution
-      } else {
+      else {
         val delta = settings.THIS_YEAR - year
-        List(Contribution(year, toInputAmounts(DB_PREFIX + delta, DC_PREFIX + delta, AI_PREFIX + delta)))
+        if (triggerAmount.isDefined && triggerDate.isDefined) {
+          val pp = PensionPeriod.toPensionPeriod(triggerDate.get)
+          if (pp.taxYear >= year) {
+            if (pp.taxYear == year) {
+              val start = Contribution(year, 0).taxPeriodStart
+              val end = Contribution(year, 0).taxPeriodEnd
+              List(Contribution(start, pp, toInputAmounts(DB_PREFIX + delta, DC_PREFIX + delta, AI_PREFIX + delta)),
+                   Contribution(pp, end, Some(InputAmounts(None, triggerAmount.map(_.toLong*100L), None, Some(true)))))
+            } else
+              List(Contribution(year, toInputAmounts(DB_PREFIX + delta, DC_PREFIX + delta, AI_PREFIX + delta, true)))
+          } else
+            List(Contribution(year, toInputAmounts(DB_PREFIX + delta, DC_PREFIX + delta, AI_PREFIX + delta)))
+        } else
+          List(Contribution(year, toInputAmounts(DB_PREFIX + delta, DC_PREFIX + delta, AI_PREFIX + delta)))
       }
     }
   }
