@@ -177,19 +177,11 @@ paac.201617.pension.inputs.heading = What were your pension savings in the tax y
 paac.201617.pension.inputs.description = The savings for defined contributions and defined benefits plans are calculated differently, with defined benefits including investment growth and defined contributions including payments made by, or on behalf of the member. Investment income is not included.
 paac.201617.pension.inputs.description2 = Include all savings for 6 April 2016 to 5 April 2017.
 
-
 ## 2016/17 TaxYear Yes/No Question Pages
 ## Threshold Income
 paac.1617.threshold.income.pagetitle = Threshold Income
 paac.1617.threshold.income.question = Was your threshold income more than £110,000 in the tax year 2016 to 2017?
 paac.1617.threshold.income.description = Threshold income is your taxable income after deductions. Do not include pension contributions.
-
-## 2016/17 TaxYear Yes/No Question Pages
-## Adjusted Income
-paac.1617.adjusted.income.pagetitle = Adjusted Income
-paac.1617.adjusted.income.question = Is your adjusted income more than £150,000 a year?
-paac.1617.adjusted.income.description1 = Adjusted income includes all taxable income including pension contributions made by you and your employer.
-paac.1617.adjusted.income.description2 = From 6 April 2016, for every £2 over £150,000 of adjusted income your annual allowance is reduced by £1. The maximum reduction is £30,000.
 
 ## 2016/17 Adjusted Income
 paac.1617.adjusted.income.input.pagetitle = Adjusted Income
