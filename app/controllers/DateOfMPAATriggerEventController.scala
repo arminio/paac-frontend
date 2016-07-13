@@ -93,10 +93,12 @@ trait DateOfMPAATriggerEventController extends RedirectController {
   val onBack = withSession { implicit request =>
     TriggerDate() go Backward
   }
-  
+
   private def isValidDate(date: LocalDate): Boolean  = {
-    (date.getYear() >= 2016) ||
+    (date.getYear() == 2016) ||
     (date.getYear() == 2015 && date.getMonthOfYear() > 4) ||
-    (date.getYear() == 2015 && date.getMonthOfYear() == 4 && date.getDayOfMonth() > 6)
+    (date.getYear() == 2015 && date.getMonthOfYear() == 4 && date.getDayOfMonth() >= 6) ||
+    (date.getYear() == 2017 && date.getMonthOfYear() < 4) ||
+    (date.getYear() == 2017 && date.getMonthOfYear() == 4 && date.getDayOfMonth() < 6)
   }
 }
