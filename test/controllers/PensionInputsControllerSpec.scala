@@ -116,7 +116,11 @@ class PensionInputsControllerSpec extends test.BaseSpec {
   "onSubmit" can {
     "with blank value returns to page with errors" in new ControllerWithMockKeystore {
         // setup
-        val request = FakeRequest(POST,"").withFormUrlEncodedBody(("definedBenefits.amount_2014"," ")).withSession{(SessionKeys.sessionId,SESSION_ID)}
+        val request = FakeRequest(POST,"").withFormUrlEncodedBody(("definedBenefits.amount_2014"," "),
+                                                                  ("isDefinedBenefit","true"),
+                                                                  ("isDefinedContribution","false"),
+                                                                  ("year","2014"),
+                                                                  ("isEdit","false")).withSession{(SessionKeys.sessionId,SESSION_ID)}
         MockKeystore.map = MockKeystore.map + ("Current" -> "2014")
         MockKeystore.map = MockKeystore.map + ("definedBenefit" -> "true")
 
@@ -131,7 +135,11 @@ class PensionInputsControllerSpec extends test.BaseSpec {
 
     "with empty db value returns to page with errors" in new ControllerWithMockKeystore {
         // setup
-        val request = FakeRequest(POST,"").withFormUrlEncodedBody(("definedBenefits.amount_2014","")).withSession{(SessionKeys.sessionId,SESSION_ID)}
+        val request = FakeRequest(POST,"").withFormUrlEncodedBody(("definedBenefits.amount_2014",""),
+                                                                  ("isDefinedBenefit","true"),
+                                                                  ("isDefinedContribution","false"),
+                                                                  ("year","2014"),
+                                                                  ("isEdit","false")).withSession{(SessionKeys.sessionId,SESSION_ID)}
         MockKeystore.map = MockKeystore.map + ("Current" -> "2014")
         MockKeystore.map = MockKeystore.map + ("definedBenefit" -> "true")
 
@@ -152,7 +160,11 @@ class PensionInputsControllerSpec extends test.BaseSpec {
       MockKeystore.map = MockKeystore.map + ("definedBenefit" -> "true")
       MockKeystore.map = MockKeystore.map + ("isEdit" -> "false")
       implicit val hc = HeaderCarrier()
-      implicit val request = FakeRequest(POST,"/paac/pensionInputs").withSession{(SessionKeys.sessionId,SESSION_ID)}.withFormUrlEncodedBody(("definedBenefits.amount_2014"->"1234"))
+      implicit val request = FakeRequest(POST,"/paac/pensionInputs").withSession{(SessionKeys.sessionId,SESSION_ID)}.withFormUrlEncodedBody(("definedBenefits.amount_2014"->"1234"),
+                                                                                                                                            ("isDefinedBenefit","true"),
+                                                                                                                                            ("isDefinedContribution","false"),
+                                                                                                                                            ("year","2014"),
+                                                                                                                                            ("isEdit","false"))
 
       // test
       val result : Future[Result] = PensionInputsControllerMockedKeystore.onSubmit()(request)

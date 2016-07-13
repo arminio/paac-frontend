@@ -1,4 +1,4 @@
-@(paacForm : Form[models.CalculatorFormFields], currentYear: String)(implicit request:Request[_])
+@(paacForm : Form[models.CalculatorFormFields], currentYear: String, isEdit: Boolean)(implicit request:Request[_])
 
 @import uk.gov.hmrc.play.views.html.helpers._
 
@@ -43,7 +43,8 @@ backLink = Some((controllers.routes.PensionInputsController.onBack.url,Messages(
         @defining(currentYear.toInt) { year =>
         <p id="paac.pension.inputs.description" class="lede text">@Messages("paac.pension.inputs.description", "Total amount", currentYear, ""+(year+1))</p>
         }
-
+        <input type="hidden" name="year" value="@currentYear"/>
+        <input type="hidden" name="isEdit" value="@isEdit"/>
         <table>
             <tbody>
                 <fieldset id="input_@currentYear" class="form-field-group" style="max-width:12.35em;">
@@ -68,6 +69,6 @@ backLink = Some((controllers.routes.PensionInputsController.onBack.url,Messages(
         </table>
 
         <br/>
-        <button id="submit" type="submit" class="button" value="Continue">@Messages("paac.calculator.button.continue")</button>
+        <button id="submit" type="submit" class="button" value="Continue">@if(isEdit){@Messages("paac.calculator.button.save")}else{@Messages("paac.calculator.button.continue")}</button>
     }
 }

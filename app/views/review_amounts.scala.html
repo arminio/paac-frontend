@@ -40,7 +40,7 @@ backLink = Some((controllers.routes.ReviewTotalAmountsController.onBack.url,Mess
 @if(reviewForm.hasErrors == false && reviewForm.hasGlobalErrors == false) {
   @defining(java.text.NumberFormat.getNumberInstance(java.util.Locale.UK)) { currencyFormatter =>
   @defining(reviewForm.get.toPageValues.reverse.find(_.isTriggered)) { triggerContribution => 
-  @defining((triggerContribution.map((tc)=>reviewForm.get.toPageValues.reverse.filterNot((c1)=>c1==tc||c1.isEmpty)).getOrElse(reviewForm.get.toPageValues.reverse.filterNot(_.isEmpty)))) { contributions =>
+  @defining((triggerContribution.map((tc)=>reviewForm.get.toPageValues.reverse.filterNot((c1)=>c1==tc||c1.isEmpty)).getOrElse(reviewForm.get.toPageValues.reverse.filterNot(_.isEmpty)))) { contributions =>    
     @for(contribution <- contributions) {
     <table id="@if(contribution.isPeriod1){period1}else{@if(contribution.isPeriod2){period2}else{@(contribution.taxPeriodStart.year)}}">
     <thead>
@@ -99,7 +99,7 @@ backLink = Some((controllers.routes.ReviewTotalAmountsController.onBack.url,Mess
         @if(triggerContribution.isDefined) {
         @if(triggerContribution.get.isPeriod1 && contribution.isPeriod1 || 
             triggerContribution.get.isPeriod2 && contribution.isPeriod2 || 
-            triggerContribution.get.taxPeriodEnd == contribution.taxPeriodEnd) {
+            triggerContribution.get.taxPeriodStart == contribution.taxPeriodEnd) {
         <tr>
             <td>@Messages("paac.review-amounts.heading.trigger.date")</td>
             <td class="numeric">
@@ -114,7 +114,7 @@ backLink = Some((controllers.routes.ReviewTotalAmountsController.onBack.url,Mess
             </td>
         </tr>
         <tr>
-            <td>@if(triggerContribution.get.isPeriod1){@Messages("paac.review-amounts.heading.trigger.savings.p1")}else{@Messages("paac.review-amounts.heading.trigger.savings.p2")}</td>
+            <td>@if(triggerContribution.get.isPeriod1){@Messages("paac.review-amounts.heading.trigger.savings.p1","")}else{@if(triggerContribution.get.isPeriod2){@Messages("paac.review-amounts.heading.trigger.savings.p2","")}else{@Messages("paac.review-amounts.heading.trigger.savings.other",""+triggerContribution.get.taxPeriodStart.taxYear)}}</td>
             <td class="numeric">&pound;@(currencyFormatter.format(triggerContribution.get.amounts.getOrElse(InputAmounts()).moneyPurchase.get/100D))</td>
             <td class="edit_action">
                 <a href="edit/@(controllers.ReviewTotalAmountsController.EDIT_TRIGGER_AMOUNT)">

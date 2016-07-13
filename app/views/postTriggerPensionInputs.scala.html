@@ -1,4 +1,4 @@
-@(paacForm : Form[models.CalculatorFormFields])(implicit request:Request[_])
+@(paacForm : Form[models.CalculatorFormFields], isEdit: Boolean)(implicit request:Request[_])
 
 @import uk.gov.hmrc.play.views.html.helpers._
 @import models._
@@ -62,6 +62,7 @@ backLink = Some((controllers.routes.PostTriggerPensionInputsController.onBack.ur
         args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
 @defining(paacForm.value.getOrElse(errorModel)) { model =>
         <input type="hidden" id="triggerDate" name="triggerDate" value="@(model.triggerDate)"/>
+        <input type="hidden" id="isEdit" name="isEdit" value="@isEdit"/>
         <table>
             <tbody>
               @if(model.triggerDatePeriod.get.isPeriod1()) {
@@ -124,7 +125,7 @@ backLink = Some((controllers.routes.PostTriggerPensionInputsController.onBack.ur
             </tbody>
           </table>
           }
-        <button id="submit" type="submit" class="button" value="Continue">@Messages("paac.calculator.button.continue")</button>
+        <button id="submit" type="submit" class="button" value="Continue">@if(isEdit){@Messages("paac.calculator.button.save")}else{@Messages("paac.calculator.button.continue")}</button>
     }
   }
 }

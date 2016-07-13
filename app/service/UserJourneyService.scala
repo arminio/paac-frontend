@@ -68,8 +68,8 @@ sealed trait PageLocation {
 
   def move(e: Event): PageLocation = {
     e match {
-      case Forward => forward
-      case Backward => backward
+      case Forward => if (state.isEdit) CheckYourAnswers(state) else forward
+      case Backward => if (state.isEdit) CheckYourAnswers(state) else backward
       case Edit => this
     }
   }
@@ -77,36 +77,28 @@ sealed trait PageLocation {
   protected def isSupported(): Boolean = true
 
   protected def backward(): PageLocation = {
-    if (state.isEdit)
-      CheckYourAnswers(state)
+    val subJourney = pageOrder(state.year)
+    val index = subJourney.indexOf(PageLocation.toType(this))
+    if (index <= 0) previousSubJourney()
     else {
-      val subJourney = pageOrder(state.year)
-      val index = subJourney.indexOf(PageLocation.toType(this))
-      if (index <= 0) previousSubJourney()
-      else {
-        val t = subJourney(index-1)
-        val previousStep = PageLocation(t, state)
-        if (!previousStep.isSupported)
-          previousStep.backward
-        else
-          previousStep
-      }
+      val t = subJourney(index-1)
+      val previousStep = PageLocation(t, state)
+      if (!previousStep.isSupported)
+        previousStep.backward
+      else
+        previousStep
     }
   }
 
   protected def forward(): PageLocation = {
-    if (state.isEdit)
-      CheckYourAnswers(state())
+    val subJourney = pageOrder(state.year)
+    val index = subJourney.indexOf(PageLocation.toType(this)) + 1
+    if (index >= subJourney.length) {
+      nextSubJourney()
+    }
     else {
-      val subJourney = pageOrder(state.year)
-      val index = subJourney.indexOf(PageLocation.toType(this)) + 1
-      if (index >= subJourney.length) {
-        nextSubJourney()
-      }
-      else {
-        val t = subJourney(index)
-        PageLocation(t, state())
-      }
+      val t = subJourney(index)
+      PageLocation(t, state())
     }
   }
 

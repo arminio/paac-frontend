@@ -1,4 +1,4 @@
-@(paacForm : Form[models.CalculatorFormFields],isDefinedBenefit: Boolean= false, isDefinedContribution: Boolean= false)(implicit request:Request[_])
+@(paacForm : Form[models.CalculatorFormFields],isDefinedBenefit: Boolean= false, isDefinedContribution: Boolean= false, isEdit: Boolean)(implicit request:Request[_])
 
 @import uk.gov.hmrc.play.views.html.helpers._
 
@@ -42,7 +42,9 @@ backLink = Some((controllers.routes.PensionInputs201516Controller.onBack.url,Mes
 @form(
 action = controllers.routes.PensionInputs201516Controller.onSubmit,
 args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
-
+<input type="hidden" name="isEdit" value="@(isEdit)"/>
+<input type="hidden" name="isDefinedBenefit" value="@(isDefinedBenefit)"/>
+<input type="hidden" name="isDefinedContribution" value="@(isDefinedContribution)"/>
 <p class="lede text"><b>@Messages("paac.201516.pension.inputs.period1")</b></p>
 <p class="text" style="margin: 0"><b>@Messages("paac.201516.pension.inputs.period1.description")</b></p>
 <table style="max-width:12.35em; margin: 0">
@@ -126,6 +128,6 @@ args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
 </table>
 <br/>
 
-<button id="submit" type="submit" class="button" value="Continue">@Messages("paac.calculator.button.continue")</button>
+<button id="submit" type="submit" class="button" value="Continue">@if(isEdit){@Messages("paac.calculator.button.save")}else{@Messages("paac.calculator.button.continue")}</button>
 } @* End of Form *@
 } @* End of paacMain *@
