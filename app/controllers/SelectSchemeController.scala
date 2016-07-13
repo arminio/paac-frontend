@@ -38,17 +38,19 @@ trait SelectSchemeController  extends RedirectController {
                   ("definedContribution"->v(toRead(1))),
                   ("firstDCYear"->v(toRead(2))),
                   ("year"->year.toString))
+      println(m)
       Ok(views.html.selectScheme(SelectSchemeForm.form.bind(m).discardingErrors, year))
     }
   }
 
   val onSubmit = withSession { implicit request =>
-    SelectSchemeForm.form.bindFromRequest().fold(
+    val f = SelectSchemeForm.form.bindFromRequest()
+    f.fold(
       formWithErrors => Future.successful(Ok(views.html.selectScheme(formWithErrors, formRequestData(request)("year").toInt))),
       input => {
         val year = input.year
         if (!input.definedBenefit && !input.definedContribution) {
-          val form = SelectSchemeForm.form.withError("paac.scheme.selection.error","paac.scheme.selection.error")
+          val form = f.withError("paac.scheme.selection.error","paac.scheme.selection.error")
           Future.successful(Ok(views.html.selectScheme(form, year)))
         } else {
           val firstDCYear = if (input.definedContribution && (input.firstDCYear.isEmpty || input.firstDCYear.toInt < year)) year.toString
@@ -62,7 +64,7 @@ trait SelectSchemeController  extends RedirectController {
     )
   }
 
-  val onBack = withSession { implicit request =>
+  def onBack(year:Int) = withSession { implicit request =>
     SelectScheme() go Backward
   }
 }
