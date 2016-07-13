@@ -31,6 +31,7 @@ class YesNoThresholdIncomeControllerSpec extends test.BaseSpec {
   trait ControllerWithMockKeystore extends MockKeystoreFixture {
     MockKeystore.map = MockKeystore.map + (KeystoreService.CURRENT_INPUT_YEAR_KEY -> "2016")
     MockKeystore.map = MockKeystore.map + (KeystoreService.SELECTED_INPUT_YEARS_KEY -> "2016")
+    MockKeystore.map = MockKeystore.map + ("isEdit" -> "false")
     object MockYesNoThresholdIncomeControllerWithMockKeystore extends YesNoThresholdIncomeController {
       val yesNoKeystoreKey = "yesnoForThresholdIncome"
       val yesNoFormKey = "yesNo"
@@ -103,14 +104,14 @@ class YesNoThresholdIncomeControllerSpec extends test.BaseSpec {
         // set up
         implicit val hc = HeaderCarrier()
         implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID))
-                                                             .withFormUrlEncodedBody("yesNo" -> "Yes")
+                                                             .withFormUrlEncodedBody(("yesNo" -> "Yes"),("year"->"2016"))
 
         // test
         val result: Future[Result] = MockYesNoThresholdIncomeControllerWithMockKeystore.onSubmit()(request)
 
         // check
         status(result) shouldBe 303
-        MockKeystore.map should contain key ("yesnoForThresholdIncome")
+        MockKeystore.map should contain key ("yesnoForThresholdIncome_2016")
         MockKeystore.map should contain value ("Yes")
       }
 
@@ -118,47 +119,45 @@ class YesNoThresholdIncomeControllerSpec extends test.BaseSpec {
        // set up
        implicit val hc = HeaderCarrier()
        implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID))
-                                                            .withFormUrlEncodedBody(("yesNo" -> "Yes"))
+                                                            .withFormUrlEncodedBody(("yesNo" -> "Yes"),("year"->"2016"))
 
        // test
        val result: Future[Result] = MockYesNoThresholdIncomeControllerWithMockKeystore.onSubmit()(request)
 
        // check
        status(result) shouldBe 303
-       MockKeystore.map should contain key ("yesnoForThresholdIncome")
+       MockKeystore.map should contain key ("yesnoForThresholdIncome_2016")
        MockKeystore.map should contain value ("Yes")
        redirectLocation(result) shouldBe Some("/paac/adjustedincome")
      }
 
      "with yesNo = No should forward to review page when 2015 not selected" in new ControllerWithMockKeystore{
        // set up
-       MockKeystore.map = MockKeystore.map + ("isEdit" -> "false")
        implicit val hc = HeaderCarrier()
        implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID))
-                                                            .withFormUrlEncodedBody(("yesNo" -> "No"))
+                                                            .withFormUrlEncodedBody(("yesNo" -> "No"),("year"->"2016"))
 
        // test
        val result: Future[Result] = MockYesNoThresholdIncomeControllerWithMockKeystore.onSubmit()(request)
 
        // check
        status(result) shouldBe 303
-       MockKeystore.map should contain key ("yesnoForThresholdIncome")
+       MockKeystore.map should contain key ("yesnoForThresholdIncome_2016")
        MockKeystore.map should contain value ("No")
        redirectLocation(result) shouldBe Some("/paac/review")
      }
 
     "with yesNo = No should set AdjustedIncome value to empty string" in new ControllerWithMockKeystore{
        // set up
-       MockKeystore.map = MockKeystore.map + ("isEdit" -> "false")
        implicit val hc = HeaderCarrier()
        implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID))
-                                                            .withFormUrlEncodedBody(("yesNo" -> "No"))
+                                                            .withFormUrlEncodedBody(("yesNo" -> "No"),("year"->"2016"))
 
        // test
        val result: Future[Result] = MockYesNoThresholdIncomeControllerWithMockKeystore.onSubmit()(request)
 
        // check
-       MockKeystore.map(KeystoreService.YEAR_1617_AI_KEY) shouldBe ("")
+       MockKeystore.map(s"${KeystoreService.AI_PREFIX}2016") shouldBe ("")
      }
     }
   }

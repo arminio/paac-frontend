@@ -27,7 +27,7 @@ backLink = Some((controllers.routes.AdjustedIncome1617InputController.onBack.url
         <ul class="error-summary-list">
           @for(error <- paacForm.errors) {
             @defining(Seq(currentYear)++error.args) { args =>
-              <li><a href="#adjusted_income_input" style="color:#b10e1e;font-weight: bold;">@Messages(error.message, args:_*)</a></li>
+              <li><a href="#adjusted_income_@currentYear" style="color:#b10e1e;font-weight: bold;">@Messages(error.message, args:_*)</a></li>
             }
           }
         </ul>
@@ -37,10 +37,10 @@ backLink = Some((controllers.routes.AdjustedIncome1617InputController.onBack.url
         action = controllers.routes.AdjustedIncome1617InputController.onSubmit,
         args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
         <p class="lede text">@Messages("paac.1617.adjusted.income.description1")</p>
-        <p class="lede text">@Messages("paac.1617.adjusted.income.description2")</p>
+        <p class="lede text">@Messages("paac.1617.adjusted.income.description2", config.PaacConfiguration.forYear(currentYear.toInt)("adjustedIncome"))</p>
         <table>
             <tbody>
-                <fieldset id="adjusted_income_input" class="form-field-group" style="max-width:12.35em;">
+                <fieldset id="adjusted_income_@currentYear" class="form-field-group" style="max-width:12.35em;">
                   <span style="float:right">
                       @if(paacForm.data.contains(s"adjustedIncome.amount_${currentYear}")) {
                       <tr style="text-align:left;min-width: 7em">

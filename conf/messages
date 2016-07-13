@@ -170,24 +170,24 @@ dc=defined contribution
 trigger=Post Flexi-access savings
 trigger.date=Post Flexi-access date
 
-## 2016/17 Pension Input Amounts Page
+## Post-2015 Pension Input Amounts Page
 
 paac.201617.pension.inputs.pagetitle = 2016/17 Pension Inputs
 paac.201617.pension.inputs.heading = What were your pension savings in the tax year 2016 to 2017?
 paac.201617.pension.inputs.description = The savings for defined contributions and defined benefits plans are calculated differently, with defined benefits including investment growth and defined contributions including payments made by, or on behalf of the member. Investment income is not included.
 paac.201617.pension.inputs.description2 = Include all savings for 6 April 2016 to 5 April 2017.
 
-## 2016/17 TaxYear Yes/No Question Pages
+## Post-2015 TaxYear Yes/No Question Pages
 ## Threshold Income
 paac.1617.threshold.income.pagetitle = Threshold Income
-paac.1617.threshold.income.question = Was your threshold income more than £110,000 in the tax year 2016 to 2017?
+paac.1617.threshold.income.question = Was your threshold income more than £{0} in the tax year 2016 to 2017?
 paac.1617.threshold.income.description = Threshold income is your taxable income after deductions. Do not include pension contributions.
 
-## 2016/17 Adjusted Income
+## Post-2015 Adjusted Income
 paac.1617.adjusted.income.input.pagetitle = Adjusted Income
 paac.1617.adjusted.income.input.question = What was your adjusted income in the tax year 2016 to 2017?
 paac.1617.adjusted.income.description1 = Adjusted income is your taxable income after deductions. Include pension contributions made by you, your employer or someone on your behalf.
-paac.1617.adjusted.income.description2 = From 6 April 2016, for every £2 over £150,000 of adjusted income your annual allowance is reduced by £1. The maximum reduction is £30,000.
+paac.1617.adjusted.income.description2 = From 6 April 2016, for every £2 over £{0} of adjusted income your annual allowance is reduced by £1. The maximum reduction is £30,000.
 
 
 
