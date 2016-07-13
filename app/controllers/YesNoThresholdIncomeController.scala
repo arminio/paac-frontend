@@ -32,25 +32,31 @@ trait YesNoThresholdIncomeController extends RedirectController {
   private val yesNoFormKey = "yesNo"
 
   val onPageLoad = withSession { implicit request =>
-    keystore.read[String](TI_YES_NO_KEY).map {
-      (yesNo) =>
-        val fields = Map(yesNo match {
-          case Some(value) => (yesNoFormKey, value)
-          case None => (yesNoFormKey, "Yes")
-        })
-        Ok(views.html.yesno_for_threshold_income(YesNoMPAATriggerEventForm.form.bind(fields).discardingErrors))
+    keystore.read(List(CURRENT_INPUT_YEAR_KEY)).flatMap {
+      (fieldsMap) =>
+      val year = fieldsMap int CURRENT_INPUT_YEAR_KEY
+      keystore.read[String](s"${TI_YES_NO_KEY_PREFIX}${year}").map {
+        (yesNo) =>
+          val value = yesNo match {
+            case Some(value) => value.toString
+            case None => "Yes"
+          }
+          Ok(views.html.yesno_for_threshold_income(YesNoMPAATriggerEventForm.form.fill(value), year))
+      }
     }
   }
 
   val onSubmit = withSession { implicit request =>
+    val data = formRequestData
+    val year = data("year").toInt
     YesNoMPAATriggerEventForm.form.bindFromRequest().fold(
-      formWithErrors => { Future.successful(Ok(views.html.yesno_for_threshold_income(YesNoMPAATriggerEventForm.form))) },
+      formWithErrors => { Future.successful(Ok(views.html.yesno_for_threshold_income(YesNoMPAATriggerEventForm.form, year))) },
       input => {
-        keystore.store(input, TI_YES_NO_KEY)
+        keystore.store(input, s"${TI_YES_NO_KEY_PREFIX}${year}")
         if (input == "Yes")
-          YesNoIncome(PageState(isTI=true)) go Forward
+          YesNoIncome() go Forward
         else
-          keystore.save(List((None,YEAR_1617_AI_KEY)),"").flatMap(_=>YesNoIncome() go Forward)
+          keystore.save(List((None,s"${AI_PREFIX}${year}")),"").flatMap(_=>YesNoIncome() go Forward)
       }
     )
   }

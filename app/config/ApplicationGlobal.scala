@@ -82,6 +82,21 @@ object PaacConfiguration {
       config.flatMap[Int](_.getInt("year")).getOrElse(2015)
     }
   }
+
+  def forYear(year: Int): Map[String,Int] = {
+    config.map { 
+      (m) =>
+      m.getConfig(s"year_${year}").map {
+        (subConfig) =>
+        subConfig.entrySet.map {
+          (pair) =>
+          val (key, value) = pair
+          val v = value.unwrapped
+          (key, v.asInstanceOf[Number].intValue())
+        }.toMap[String,Int]
+      }.getOrElse(Map[String,Int]())
+    }.getOrElse(Map[String,Int]())
+  }
 }
 
 object FrontendGlobal extends FrontendGlobal

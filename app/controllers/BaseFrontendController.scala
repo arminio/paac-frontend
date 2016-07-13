@@ -56,12 +56,12 @@ trait RedirectController extends BaseFrontendController {
     }
 
     protected def updateForYear(page: PageLocation, year: Int)(implicit hc: HeaderCarrier, format: Format[String], request: Request[Any]): Future[PageLocation] = {
-      val toRead = List(DC_FLAG_PREFIX).map(_+year) ++ List(IS_EDIT_KEY, TE_YES_NO_KEY, TI_YES_NO_KEY, SELECTED_INPUT_YEARS_KEY, FIRST_DC_YEAR_KEY)
+      val toRead = List(DC_FLAG_PREFIX,TI_YES_NO_KEY_PREFIX).map(_+year) ++ List(IS_EDIT_KEY, TE_YES_NO_KEY, SELECTED_INPUT_YEARS_KEY, FIRST_DC_YEAR_KEY)
       keystore.read(toRead).map {
         (fieldsMap)=>
         page.update(PageState(isDC = fieldsMap bool toRead(0),
                               isTE = fieldsMap yesNo TE_YES_NO_KEY,
-                              isTI = fieldsMap yesNo TI_YES_NO_KEY,
+                              isTI = fieldsMap yesNo toRead(1),
                               year = if (updateYear) year else page.state.year,
                               selectedYears = fieldsMap(SELECTED_INPUT_YEARS_KEY),
                               isEdit = (fieldsMap bool IS_EDIT_KEY),

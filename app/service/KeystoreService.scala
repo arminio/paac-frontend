@@ -147,7 +147,6 @@ object KeystoreService extends KeystoreService {
   val P1_TRIGGER_DC_KEY = "triggerDefinedContribution_2015_p1"
   val P2_TRIGGER_DC_KEY= "triggerDefinedContribution_2015_p2"
   val TRIGGER_DC_KEY= "triggerDefinedContribution"
-  val YEAR_1617_AI_KEY= "adjustedIncome_2016"
   val SCHEME_TYPE_KEY = "schemeType"
   val CURRENT_INPUT_YEAR_KEY = "Current"
   val SELECTED_INPUT_YEARS_KEY = "SelectedYears"
@@ -160,8 +159,7 @@ object KeystoreService extends KeystoreService {
   val AI_PREFIX = "adjustedIncome_"
   val TA_PREFIX = "taperedAllowance_"
   val TE_YES_NO_KEY = "yesnoForMPAATriggerEvent"
-  val TI_YES_NO_KEY = "yesnoForThresholdIncome"
-  val AI_YES_NO_KEY = "yesnoForAdjustedIncome"
+  val TI_YES_NO_KEY_PREFIX = "yesnoForThresholdIncome_"
   val IS_EDIT_KEY = "isEdit"
 
   def toStringPair(key: String, value: Option[String]): (String, String) = value match {

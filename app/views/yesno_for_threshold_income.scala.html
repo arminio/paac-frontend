@@ -1,10 +1,10 @@
-@(paacForm : Form[String])(implicit request:Request[_])
+@(paacForm : Form[String], year: Int)(implicit request:Request[_])
 
 @import uk.gov.hmrc.play.views.html.helpers._
 
 @common.paacMain(
 pageTitle = Messages("paac.1617.threshold.income.pagetitle"),
-heading = Messages("paac.1617.threshold.income.question"),
+heading = Messages("paac.1617.threshold.income.question", config.PaacConfiguration.forYear(year)("threshold")),
 backLink = Some((controllers.routes.YesNoThresholdIncomeController.onBack.url,Messages("paac.link.text.back")))
 ) {
 
@@ -12,9 +12,9 @@ backLink = Some((controllers.routes.YesNoThresholdIncomeController.onBack.url,Me
         action = controllers.routes.YesNoThresholdIncomeController.onSubmit,
         args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
 
+    <input type="hidden" name="year" value="@year"/>
     <p class="lede text">@Messages("paac.1617.threshold.income.description")</p>
     <div class='form-group'>
-
         <div class='form-group'>
             <fieldset class="inline">
                 @inputRadioGroup(
@@ -22,7 +22,7 @@ backLink = Some((controllers.routes.YesNoThresholdIncomeController.onBack.url,Me
                         ("Yes", Messages("paac.yesno.yes")),
                         ("No", Messages("paac.yesno.no"))
                         ),
-                        '_legend -> Messages("paac.1617.threshold.income.question"),
+                        '_legend -> Messages("paac.1617.threshold.income.question", config.PaacConfiguration.forYear(year)("threshold")),
                         '_legendClass -> "hidden",
                         '_labelAfter -> true,
                         '_labelClass -> "block-label",
