@@ -38,155 +38,39 @@ backLink = Some((controllers.routes.ReviewTotalAmountsController.onBack.url,Mess
 }
 
 @if(reviewForm.hasErrors == false && reviewForm.hasGlobalErrors == false) {
-  @defining(java.text.NumberFormat.getNumberInstance(java.util.Locale.UK)) { currencyFormatter =>
-  @defining(reviewForm.get.toPageValues.reverse.find(_.isTriggered)) { triggerContribution => 
-  @defining((triggerContribution.map((tc)=>reviewForm.get.toPageValues.reverse.filterNot((c1)=>c1==tc||c1.isEmpty)).getOrElse(reviewForm.get.toPageValues.reverse.filterNot(_.isEmpty)))) { contributions =>
-    @for(year <- (2008 to 2100).reverse) {
+    @defining(reviewForm.get.toPageValues.reverse.find(_.isTriggered)) { triggerContribution => 
+        @defining((triggerContribution.map((tc)=>reviewForm.get.toPageValues.reverse.filterNot((c1)=>c1==tc||c1.isEmpty)).getOrElse(reviewForm.get.toPageValues.reverse.filterNot(_.isEmpty)))) { contributions =>
+          @for(year <- (2008 to 2100).reverse) {
+            @if(triggerContribution.isDefined && !contributions.map(_.taxPeriodStart.taxYear).contains(triggerContribution.get.taxPeriodStart.taxYear) && year == triggerContribution.get.taxPeriodStart.taxYear) {
+              @defining(triggerContribution.get) { c =>
+                @contributionReviewTable.table(reviewForm, c, triggerContribution)
+              } @* End of define c *@
+            } @* End of if trigger defined but not display *@
 
-@if(triggerContribution.isDefined && !contributions.map(_.taxPeriodStart.taxYear).contains(triggerContribution.get.taxPeriodStart.taxYear) && year == triggerContribution.get.taxPeriodStart.taxYear) {
-@defining(triggerContribution.get) { c =>
-<table id="@if(c.isPeriod1){period1}else{@if(c.isPeriod2){period2}else{@(c.taxPeriodStart.year)}}">
-<thead>
-<tr>
-    <th scope="50%">
-    @if(c.isPeriod1) {@Messages("paac.review-amounts.heading.period",c.taxPeriodStart.year.toString(), (c.taxPeriodStart.year+1).toString(), 1)}
-    @if(c.isPeriod2) {@Messages("paac.review-amounts.heading.period",c.taxPeriodStart.year.toString(), (c.taxPeriodStart.year+1).toString(), 2)}
-    @if(!c.isPeriod1 && !c.isPeriod2) {@Messages("paac.review-amounts.heading",c.taxPeriodStart.year.toString(), (c.taxPeriodStart.year+1).toString())}
-    </th>
-    <th width="35%"></th>
-    <th class="edit_action" width="15%"></th>
-</tr>
-</thead>
-<tbody>
-    <tr>
-        <td>@Messages("paac.review-amounts.heading.trigger.date")</td>
-        <td class="numeric">
-        @defining(reviewForm.get.triggerDate.getOrElse("2000-1-1").split("-")) { dateParts =>
-        @Messages("paac.review-amounts.value."+dateParts(1), dateParts(2).toInt.toString, dateParts(0))
-        }
-        </td>
-        <td class="edit_action">
-            <a href="edit/@(controllers.ReviewTotalAmountsController.EDIT_TRIGGER_DATE)">
-             @Messages("paac.review-amounts.action.edit") <span class="visuallyhidden">@(c.taxYearLabel())</span>
-            </a>
-        </td>
-    </tr>
-    <tr>
-        <td>@if(c.isPeriod1){@Messages("paac.review-amounts.heading.trigger.savings.p1","")}else{@if(c.isPeriod2){@Messages("paac.review-amounts.heading.trigger.savings.p2","")}else{@Messages("paac.review-amounts.heading.trigger.savings.other",""+c.taxPeriodStart.taxYear)}}</td>
-        <td class="numeric">&pound;@(currencyFormatter.format(c.amounts.getOrElse(InputAmounts()).moneyPurchase.getOrElse(0L)/100D))</td>
-        <td class="edit_action">
-            <a href="edit/@(controllers.ReviewTotalAmountsController.EDIT_TRIGGER_AMOUNT)">
-             @Messages("paac.review-amounts.action.edit") <span class="visuallyhidden">@(c.taxYearLabel())</span>
-            </a>
-        </td>
-    </tr>
-</tbody>
-</table>
-} @* End of define c *@
-} @* End of if trigger defined but not display *@
+            @defining(contributions.find(_.taxPeriodStart.taxYear == year)) { c =>
+              @if(c.isDefined) {
+                @defining(c.get) { contribution =>
+                  @contributionReviewTable.table(reviewForm, contribution, triggerContribution)
+                } @* End of define contribution *@
+              } @* End of if contribution found *@
+            } @* End of define c *@
 
-@defining(contributions.find(_.taxPeriodStart.taxYear == year)) { c =>
-@if(c.isDefined) {
-@defining(c.get) { contribution =>
-    <table id="@if(contribution.isPeriod1){period1}else{@if(contribution.isPeriod2){period2}else{@(contribution.taxPeriodStart.year)}}">
-    <thead>
-    <tr>
-        <th scope="50%">
-        @if(contribution.isPeriod1) {@Messages("paac.review-amounts.heading.period",contribution.taxPeriodStart.year.toString(), (contribution.taxPeriodStart.year+1).toString(), 1)}
-        @if(contribution.isPeriod2) {@Messages("paac.review-amounts.heading.period",contribution.taxPeriodStart.year.toString(), (contribution.taxPeriodStart.year+1).toString(), 2)}
-        @if(!contribution.isPeriod1 && !contribution.isPeriod2) {@Messages("paac.review-amounts.heading",contribution.taxPeriodStart.year.toString(), (contribution.taxPeriodStart.year+1).toString())}
-        </th>
-        <th width="35%"></th>
-        <th class="edit_action" width="15%"></th>
-    </tr>
-    </thead>
-    <tbody>
-        @defining(contribution.amounts.get) { amounts =>
-        @if(amounts.moneyPurchase.isDefined && contribution.taxPeriodStart.year >= 2015){
-        <tr>
-            <td>@Messages("paac.review-amounts.heading.mp")</td>
-            <td class="numeric">&pound;@(currencyFormatter.format(amounts.moneyPurchase.get/100D))</td>
-            <td class="edit_action">
-                @if(contribution.taxPeriodStart.year < 2015 || contribution.taxPeriodStart.year > 2015) {<a href="edit/@contribution.taxPeriodStart.year">}
-                @if(contribution.isPeriod1()) {<a href="edit/2015">}
-                @if(contribution.isPeriod2()) {<a href="edit/2015">}
-                 @Messages("paac.review-amounts.action.edit") <span class="visuallyhidden">@(contribution.taxYearLabel())</span>
-                </a>
-            </td>
-        </tr>
-        } @* End of defined contribution row *@
-
-        @if(amounts.definedBenefit.isDefined){
-        <tr>
-            <td>@if(contribution.taxPeriodStart.year < 2015) { @Messages("paac.review-amounts.heading.total") } else { @Messages("paac.review-amounts.heading.db") }</td>
-            <td class="numeric">&pound;@(currencyFormatter.format(amounts.definedBenefit.get/100D))</td>
-            <td class="edit_action">
-                @if(contribution.taxPeriodStart.year < 2015 || contribution.taxPeriodStart.year > 2015) {<a href="edit/@contribution.taxPeriodStart.year">}
-                @if(contribution.isPeriod1()) {<a href="edit/2015">}
-                @if(contribution.isPeriod2()) {<a href="edit/2015">}
-                 @Messages("paac.review-amounts.action.edit") <span class="visuallyhidden">@(contribution.taxYearLabel())</span>
-                </a>
-            </td>
-        </tr>
-        }@* End of defined benefit row *@
-
-        @if(amounts.income.isDefined){
-        <tr>
-            <td>@Messages("paac.review-amounts.heading.income")</td>
-            <td class="numeric">&pound;@(currencyFormatter.format(amounts.income.get/100D))</td>
-            <td class="edit_action">
-                <a href="edit/income/@contribution.taxPeriodStart.year">
-                 @Messages("paac.review-amounts.action.edit") <span class="visuallyhidden">@(contribution.taxYearLabel())</span>
-                </a>
-            </td>
-        </tr>
-        }@* End of income row *@
-
-        @if(triggerContribution.isDefined) {
-        @if(triggerContribution.get.isPeriod1 && contribution.isPeriod1 || 
-            triggerContribution.get.isPeriod2 && contribution.isPeriod2 || 
-            triggerContribution.get.taxPeriodStart == contribution.taxPeriodEnd) {
-        <tr>
-            <td>@Messages("paac.review-amounts.heading.trigger.date")</td>
-            <td class="numeric">
-            @defining(reviewForm.get.triggerDate.getOrElse("2000-1-1").split("-")) { dateParts =>
-            @Messages("paac.review-amounts.value."+dateParts(1), dateParts(2).toInt.toString, dateParts(0))
+            @if(year == 2015) {
+                @defining(contributions.find(_.taxYearLabel == "2015/16 P2")) { c =>
+                  @if(c.isDefined) {
+                    @defining(c.get) { contribution =>
+                      @contributionReviewTable.table(reviewForm, contribution, triggerContribution)
+                    } @* End of define contribution *@
+                  } @* End of if contribution found *@
+                } @* End of define c *@
             }
-            </td>
-            <td class="edit_action">
-                <a href="edit/@(controllers.ReviewTotalAmountsController.EDIT_TRIGGER_DATE)">
-                 @Messages("paac.review-amounts.action.edit") <span class="visuallyhidden">@(contribution.taxYearLabel())</span>
-                </a>
-            </td>
-        </tr>
-        <tr>
-            <td>@if(triggerContribution.get.isPeriod1){@Messages("paac.review-amounts.heading.trigger.savings.p1","")}else{@if(triggerContribution.get.isPeriod2){@Messages("paac.review-amounts.heading.trigger.savings.p2","")}else{@Messages("paac.review-amounts.heading.trigger.savings.other",""+triggerContribution.get.taxPeriodStart.taxYear)}}</td>
-            <td class="numeric">&pound;@(currencyFormatter.format(triggerContribution.get.amounts.getOrElse(InputAmounts()).moneyPurchase.get/100D))</td>
-            <td class="edit_action">
-                <a href="edit/@(controllers.ReviewTotalAmountsController.EDIT_TRIGGER_AMOUNT)">
-                 @Messages("paac.review-amounts.action.edit") <span class="visuallyhidden">@(contribution.taxYearLabel())</span>
-                </a>
-            </td>
-        </tr>
-        }
-        } @* End of money purchase trigger rows *@
 
-        } @* End of define amounts *@
-    </tbody>
-</table>
-} @* End of define contribution *@
-} @* End of if contribution found *@
-} @* End of define c *@
-} @* End of for *@
-} @* End of define contributions *@
-} @* End of define triggerContribution *@
-} @* End of define currencyFormatter *@
+          } @* End of for *@
+        } @* End of define contributions *@
+    } @* End of define triggerContribution *@
 } @* End of if form has no errors *@
 
-@form(
-action = controllers.routes.ReviewTotalAmountsController.onSubmit,
-args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
-<button id="submit" type="submit" class="button" value="Continue">@Messages("paac.review-amounts.button.continue")
-</button>
+@form(action = controllers.routes.ReviewTotalAmountsController.onSubmit, args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
+<button id="submit" type="submit" class="button" value="Continue">@Messages("paac.review-amounts.button.continue")</button>
 } @* End of form *@
 } @* End of common.paacMain *@

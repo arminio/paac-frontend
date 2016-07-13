@@ -60,8 +60,8 @@ trait DateOfMPAATriggerEventController extends RedirectController {
         // should store as json and read out as json but sticking with string throughout
         keystore.store(input.dateOfMPAATriggerEvent.map(_.toString).getOrElse(""), TRIGGER_DATE_KEY).flatMap {
           (_)=>
-          if (input.dateOfMPAATriggerEvent.isDefined) {
-            val date = input.dateOfMPAATriggerEvent.get
+          input.dateOfMPAATriggerEvent.map {
+            (date)=>
             if (!isValidDate(date)) {
               val form = DateOfMPAATriggerEventForm.form.bindFromRequest().withError("dateOfMPAATriggerEvent", "paac.mpaa.ta.date.page.invalid.date")
               Future.successful(Ok(views.html.date_of_mpaa_trigger_event(form,input)))
@@ -81,7 +81,7 @@ trait DateOfMPAATriggerEventController extends RedirectController {
                 } else
                   TriggerDate() go Forward
               }
-          } else {
+          } getOrElse {
             val form = DateOfMPAATriggerEventForm.form.bindFromRequest().withError("dateOfMPAATriggerEvent", "error.invalid.date.format")
             Future.successful(Ok(views.html.date_of_mpaa_trigger_event(form, input)))
           }

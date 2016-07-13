@@ -36,6 +36,8 @@ backLink = Some((controllers.routes.AdjustedIncome1617InputController.onBack.url
     @form(
         action = controllers.routes.AdjustedIncome1617InputController.onSubmit,
         args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
+        <input type="hidden" name="isEdit" value="@isEdit"/>
+        <input type="hidden" name="year" value="@currentYear"/>
         <p class="lede text">@Messages("paac.1617.adjusted.income.description1")</p>
         <p class="lede text">@Messages("paac.1617.adjusted.income.description2", config.PaacConfiguration.forYear(currentYear.toInt)("adjustedIncome"))</p>
         <table>
