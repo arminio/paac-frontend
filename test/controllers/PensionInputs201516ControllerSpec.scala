@@ -20,14 +20,15 @@ import play.api.mvc.Result
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import service.KeystoreService
+import service.KeystoreService._
 import uk.gov.hmrc.play.http.{HeaderCarrier, SessionKeys}
 
 import scala.concurrent.Future
 
 class PensionInputs201516ControllerSpec extends test.BaseSpec {
   val endPointURL = "/paac/pensionInputs201516"
-  val IS_DB = s"${KeystoreService.DB_FLAG_PREFIX}2015"
-  val IS_DC = s"${KeystoreService.DC_FLAG_PREFIX}2015"
+  val IS_DB = s"${DB_FLAG_PREFIX}2015"
+  val IS_DC = s"${DC_FLAG_PREFIX}2015"
 
   trait ControllerWithMockKeystore extends MockKeystoreFixture {
     object ControllerWithMockKeystore extends PensionInputs201516Controller {
@@ -165,8 +166,8 @@ class PensionInputs201516ControllerSpec extends test.BaseSpec {
         MockKeystore.map = MockKeystore.map + ("isEdit" -> "false")
         MockKeystore.map = MockKeystore.map + (IS_DB -> "true")
         MockKeystore.map = MockKeystore.map + (IS_DC -> "false")
-        MockKeystore.map = MockKeystore.map + (KeystoreService.SELECTED_INPUT_YEARS_KEY -> "2015,2014")
-        MockKeystore.map = MockKeystore.map + (KeystoreService.CURRENT_INPUT_YEAR_KEY -> "2015")
+        MockKeystore.map = MockKeystore.map + (SELECTED_INPUT_YEARS_KEY -> "2015,2014")
+        MockKeystore.map = MockKeystore.map + (CURRENT_INPUT_YEAR_KEY -> "2015")
         implicit val hc = HeaderCarrier()
         implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID)).withFormUrlEncodedBody(("year2015.definedBenefit_2015_p1" -> "40000"),
                                                                                                                                      ("year2015.definedBenefit_2015_p2" -> "0"),
@@ -187,8 +188,8 @@ class PensionInputs201516ControllerSpec extends test.BaseSpec {
         MockKeystore.map = MockKeystore.map + ("isEdit" -> "false")
         MockKeystore.map = MockKeystore.map + (IS_DB -> "true")
         MockKeystore.map = MockKeystore.map + (IS_DC -> "false")
-        MockKeystore.map = MockKeystore.map + (KeystoreService.SELECTED_INPUT_YEARS_KEY -> "2015")
-        MockKeystore.map = MockKeystore.map + (KeystoreService.CURRENT_INPUT_YEAR_KEY -> "2015")
+        MockKeystore.map = MockKeystore.map + (SELECTED_INPUT_YEARS_KEY -> "2015")
+        MockKeystore.map = MockKeystore.map + (CURRENT_INPUT_YEAR_KEY -> "2015")
         implicit val hc = HeaderCarrier()
         implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID)).withFormUrlEncodedBody(("year2015.definedBenefit_2015_p1" -> "40000"),
                                                                                                                                      ("year2015.definedBenefit_2015_p2" -> "0"),
@@ -207,8 +208,8 @@ class PensionInputs201516ControllerSpec extends test.BaseSpec {
 //      "with valid definedBenefit_2015_p1 and in edit mode should redirect to review" in new ControllerWithMockKeystore {
 //        // set up
 //        MockKeystore.map = MockKeystore.map + ("isEdit" -> "true")
-//        MockKeystore.map = MockKeystore.map + (KeystoreService.DB_FLAG -> "true")
-//        MockKeystore.map = MockKeystore.map + (KeystoreService.DC_FLAG -> "false")
+//        MockKeystore.map = MockKeystore.map + (DB_FLAG -> "true")
+//        MockKeystore.map = MockKeystore.map + (DC_FLAG -> "false")
 //        implicit val hc = HeaderCarrier()
 //        implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID)).withFormUrlEncodedBody(("year2015.definedBenefit_2015_p1" -> "40000"),("year2015.definedContribution_2015_p1" -> ""))
 //
@@ -223,8 +224,8 @@ class PensionInputs201516ControllerSpec extends test.BaseSpec {
 //      "with valid definedBenefit_2015_p1 should save to keystore" in new ControllerWithMockKeystore {
 //        // set up
 //        MockKeystore.map = MockKeystore.map + ("isEdit" -> "false")
-//        MockKeystore.map = MockKeystore.map + (KeystoreService.DB_FLAG -> "true")
-//        MockKeystore.map = MockKeystore.map + (KeystoreService.DC_FLAG -> "false")
+//        MockKeystore.map = MockKeystore.map + (DB_FLAG -> "true")
+//        MockKeystore.map = MockKeystore.map + (DC_FLAG -> "false")
 //        implicit val hc = HeaderCarrier()
 //        implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID)).withFormUrlEncodedBody(("year2015.definedBenefit_2015_p1" -> "40000"),("year2015.definedContribution_2015_p1" -> ""))
 //
@@ -297,8 +298,8 @@ class PensionInputs201516ControllerSpec extends test.BaseSpec {
 //      "with valid definedBenefit_2015_p1 should save to keystore" in new ControllerWithMockKeystore {
 //        // set up
 //        MockKeystore.map = MockKeystore.map + ("isEdit" -> "false")
-//        MockKeystore.map = MockKeystore.map + (KeystoreService.DB_FLAG -> "true")
-//        MockKeystore.map = MockKeystore.map + (KeystoreService.DC_FLAG -> "false")
+//        MockKeystore.map = MockKeystore.map + (DB_FLAG -> "true")
+//        MockKeystore.map = MockKeystore.map + (DC_FLAG -> "false")
 //        implicit val hc = HeaderCarrier()
 //        implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID)).withFormUrlEncodedBody(("year2015.definedBenefit_2015_p2" -> "40000"),("year2015.definedContribution_2015_p2" -> ""))
 //
@@ -314,8 +315,8 @@ class PensionInputs201516ControllerSpec extends test.BaseSpec {
 //      "with valid amounts should redirect to trigger question page if dc scheme" in new ControllerWithMockKeystore {
 //        // set up
 //        MockKeystore.map = MockKeystore.map + ("isEdit" -> "false")
-//        MockKeystore.map = MockKeystore.map + (KeystoreService.DB_FLAG -> "false")
-//        MockKeystore.map = MockKeystore.map + (KeystoreService.DC_FLAG -> "true")
+//        MockKeystore.map = MockKeystore.map + (DB_FLAG -> "false")
+//        MockKeystore.map = MockKeystore.map + (DC_FLAG -> "true")
 //        implicit val hc = HeaderCarrier()
 //        implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID)).withFormUrlEncodedBody(("year2015.definedContribution_2015_p2" -> "40000"),("year2015.definedBenefit_2015_p2" -> ""))
 //
@@ -330,10 +331,10 @@ class PensionInputs201516ControllerSpec extends test.BaseSpec {
 //      "with valid amounts should redirect to review page if not dc scheme" in new ControllerWithMockKeystore {
 //        // set up
 //        MockKeystore.map = MockKeystore.map + ("isEdit" -> "false")
-//        MockKeystore.map = MockKeystore.map + (KeystoreService.DB_FLAG -> "true")
-//        MockKeystore.map = MockKeystore.map + (KeystoreService.DC_FLAG -> "false")
-//        MockKeystore.map = MockKeystore.map + (KeystoreService.CURRENT_INPUT_YEAR_KEY -> "2015")
-//        MockKeystore.map = MockKeystore.map + (KeystoreService.SELECTED_INPUT_YEARS_KEY -> "2015")
+//        MockKeystore.map = MockKeystore.map + (DB_FLAG -> "true")
+//        MockKeystore.map = MockKeystore.map + (DC_FLAG -> "false")
+//        MockKeystore.map = MockKeystore.map + (CURRENT_INPUT_YEAR_KEY -> "2015")
+//        MockKeystore.map = MockKeystore.map + (SELECTED_INPUT_YEARS_KEY -> "2015")
 //        implicit val hc = HeaderCarrier()
 //        implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID)).withFormUrlEncodedBody(("year2015.definedBenefit_2015_p2" -> "40000"),("year2015.definedContribution_2015_p2" -> ""))
 //
@@ -409,8 +410,8 @@ class PensionInputs201516ControllerSpec extends test.BaseSpec {
       // set up
       implicit val hc = HeaderCarrier()
       implicit val request = FakeRequest(GET,"/paac/back").withSession{(SessionKeys.sessionId,SESSION_ID)}
-      MockKeystore.map = MockKeystore.map + (KeystoreService.CURRENT_INPUT_YEAR_KEY -> "2015")
-      MockKeystore.map = MockKeystore.map + (KeystoreService.SELECTED_INPUT_YEARS_KEY -> "2015")
+      MockKeystore.map = MockKeystore.map + (CURRENT_INPUT_YEAR_KEY -> "2015")
+      MockKeystore.map = MockKeystore.map + (SELECTED_INPUT_YEARS_KEY -> "2015")
 
       // test
       val result : Future[Result] = ControllerWithMockKeystore.onBack()(request)

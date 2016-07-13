@@ -24,13 +24,21 @@ object Forward extends Event
 object Backward extends Event
 object Edit extends Event
 
-case class PageState(year: Int = PageLocation.PRESTART, selectedYears: String = "", isDC: Boolean = false, isTE: Boolean = false, isTI: Boolean = false, isEdit: Boolean = false, firstDCYear: Int = -1)
+/* Simple data holder for a page used to determine user journey flow. */
+case class PageState(year: Int = PageLocation.PRESTART, 
+                     selectedYears: String = "", 
+                     isDC: Boolean = false, 
+                     isTE: Boolean = false, 
+                     isTI: Boolean = false, 
+                     isEdit: Boolean = false, 
+                     firstDCYear: Int = -1)
 
 object PageLocation {
   val PRESTART = -1
   val START = -2
   val END = Integer.MAX_VALUE
 
+  /* Shouldn't need this but .type is not available */
   def toType(page: Any): Any = page match {
     case TaxYearSelection(_) => TaxYearSelection
     case SelectScheme(_) => SelectScheme
@@ -45,6 +53,9 @@ object PageLocation {
     case _ => AnyRef
   }
 
+  /** 
+    Simple factory method to create a new PageLocation instance
+    given it's type and state.*/
   def apply(page: Any, pageState: PageState): PageLocation = page match {
     case TaxYearSelection => TaxYearSelection(pageState)
     case SelectScheme => SelectScheme(pageState)
@@ -60,54 +71,73 @@ object PageLocation {
   }
 }
 
+/**
+  PageLocation type used with concreate case classes below representing pages in the user journey.
+ */
 sealed trait PageLocation {
+  /** Current state logic for the page. */
   def state(): PageState
+  /** Controller action to display this page location. */
   def action(): Call
-  def firstYear(path: String): Int = path.split(",")(0).toInt
-  def lastYear(path: String): Int = path.split(",").reverse(0).toInt
 
-  def move(e: Event): PageLocation = {
-    e match {
+  /* 
+    Page order is generally determined by these lists where
+    by default the journey moves forward through each list.
+    Concrete PageLocation classes may override forward/backward
+    to jump to new locations based on state.*/
+  private val preJourney = Vector(Start,TaxYearSelection)
+  private val postJourney = Vector(CheckYourAnswers)
+  private val subJournies = Map(("Pre2015"->Vector(PensionInput)),
+                                ("2015"->Vector(SelectScheme,PensionInput,YesNoTrigger,TriggerDate,TriggerAmount)),
+                                ("Post2015"->Vector(SelectScheme,PensionInput,YesNoIncome,AdjustedIncome,YesNoTrigger,TriggerDate,TriggerAmount)))
+
+  /** 
+    Direction to move: Forward, Backward or Edit (to jump to go to this page.=).
+   */
+  def move(e: Event): PageLocation = e match {
       case Forward => if (state.isEdit) CheckYourAnswers(state) else forward
       case Backward => if (state.isEdit) CheckYourAnswers(state) else backward
       case Edit => this
     }
-  }
 
+  def firstYear(): Int = years(0)
+  
+  def lastYear(): Int = years.reverse(0)
+
+  def firstYear(selectedYears: String): Int = selectedYears.split(",").map(_.toInt).head
+  
+  def lastYear(selectedYears: String): Int = selectedYears.split(",").map(_.toInt).reverse(0)
+
+  def update(newState: PageState): PageLocation = PageLocation(PageLocation.toType(this), newState)
+
+  /* Concrete classes may override these methods to control user journey flow. */
+  /** 
+    isSupported returns true if the page should be displayed based on page 
+    state. At present only considered during backward movement. */
   protected def isSupported(): Boolean = true
 
-  protected def backward(): PageLocation = {
-    val subJourney = pageOrder(state.year)
-    val index = subJourney.indexOf(PageLocation.toType(this))
-    if (index <= 0) previousSubJourney()
+  protected def backward(): PageLocation = if (pageOrder(state.year).indexOf(PageLocation.toType(this)) <= 0) 
+      previousSubJourney()
     else {
-      val t = subJourney(index-1)
-      val previousStep = PageLocation(t, state)
+      val previousStep = PageLocation(pageOrder(state.year)(pageOrder(state.year).indexOf(PageLocation.toType(this))-1), state)
       if (!previousStep.isSupported)
         previousStep.backward
       else
         previousStep
     }
-  }
 
   protected def forward(): PageLocation = {
     val subJourney = pageOrder(state.year)
     val index = subJourney.indexOf(PageLocation.toType(this)) + 1
-    if (index >= subJourney.length) {
+    if (index >= subJourney.length)
       nextSubJourney()
-    }
-    else {
-      val t = subJourney(index)
-      PageLocation(t, state())
-    }
+    else
+      PageLocation(subJourney(index), state())
   }
 
   protected lazy val years: Array[Int] = state.selectedYears.split(",").map(_.toInt)
 
-  protected def nextSubJourney() = {
-    val t = pageOrder(nextYear)(0)
-    PageLocation(t, state().copy(year=nextYear))
-  }
+  protected def nextSubJourney() = PageLocation(pageOrder(nextYear)(0), state().copy(year=nextYear))
 
   protected def previousSubJourney() = {
     val s = state().copy(year=previousYear)
@@ -115,41 +145,27 @@ sealed trait PageLocation {
     PageLocation(t, s)
   }
 
-  private val preJourney = Vector(Start,TaxYearSelection)
-
-  private val postJourney = Vector(CheckYourAnswers)
-
-  private val subJournies = Map(("Pre2015"->Vector(PensionInput)),
-                             ("2015"->Vector(SelectScheme,PensionInput,YesNoTrigger,TriggerDate,TriggerAmount)),
-                             ("Post2015"->Vector(SelectScheme,PensionInput,YesNoIncome,AdjustedIncome,YesNoTrigger,TriggerDate,TriggerAmount)))
-
-
   private def pageOrder(year: Int) = if (year <= 0) preJourney
                                      else if (year >= PageLocation.END) postJourney
-                                     else {
-                                      val index = (if (year>2015) "Post2015" else if (year < 2015) "Pre2015" else "2015")
-                                      subJournies(index)
-                                    }
+                                     else subJournies((if (year > 2015) "Post2015" else if (year < 2015) "Pre2015" else "2015"))
 
-  private def nextYear(): Int =
-    if (state.selectedYears.isEmpty)
+  private def nextYear(): Int = if (state.selectedYears.isEmpty)
       PageLocation.START
     else if ((years.indexOf(state.year) + 1) < years.length)
       years(years.indexOf(state.year) + 1)
     else PageLocation.END
 
-  private def previousYear(): Int =
-    if (state.selectedYears.isEmpty)
+  private def previousYear(): Int = if (state.selectedYears.isEmpty)
       PageLocation.END
     else if (state.year >= PageLocation.END)
-      lastYear(state.selectedYears)
+      lastYear
     else if ((years.indexOf(state.year) - 1) < 0)
       PageLocation.START
     else
       years((years.indexOf(state.year) - 1))
-
-  def update(newState: PageState): PageLocation = PageLocation(PageLocation.toType(this), newState)
 }
+
+/* Page location classes */
 
 case class TaxYearSelection(state: PageState=PageState(year=PageLocation.START)) extends PageLocation {
   def action(): Call = controllers.routes.TaxYearSelectionController.onPageLoad()
@@ -166,7 +182,7 @@ case class TriggerDate(state: PageState=PageState()) extends PageLocation {
 
 case class TriggerAmount(state: PageState=PageState()) extends PageLocation {
   def action(): Call = controllers.routes.PostTriggerPensionInputsController.onPageLoad()
-  override def isSupported(): Boolean = state.isTE
+  override def isSupported(): Boolean = state.isTE && YesNoTrigger(state).isSupported
 }
 
 case class Start(state: PageState=PageState(year=PageLocation.PRESTART)) extends PageLocation {
@@ -189,7 +205,8 @@ case class PensionInput(state: PageState=PageState()) extends PageLocation {
 }
 
 case class YesNoTrigger(state: PageState=PageState()) extends PageLocation {
-  override def isSupported(): Boolean = state.year == state.firstDCYear
+  override def isSupported(): Boolean = ((!years.contains(2015) && state.year == state.firstDCYear) || 
+                                          (years.contains(2015) && state.year == 2015 && state.firstDCYear > 0))
   def action(): Call = controllers.routes.YesNoMPAATriggerEventAmountController.onPageLoad()
   override protected def forward(): PageLocation = if (state.isTE) super.forward else nextSubJourney
 }
@@ -204,5 +221,5 @@ case class YesNoIncome(state: PageState=PageState()) extends PageLocation {
 case class AdjustedIncome(state: PageState=PageState()) extends PageLocation {
   override def isSupported(): Boolean = state.isTI
   def action(): Call = controllers.routes.AdjustedIncome1617InputController.onPageLoad()
-  override protected def forward(): PageLocation = if (state.isDC) YesNoTrigger(state) else nextSubJourney
+  override protected def forward(): PageLocation = if (YesNoTrigger(state).isSupported()) YesNoTrigger(state) else nextSubJourney
 }

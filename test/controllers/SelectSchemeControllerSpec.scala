@@ -144,7 +144,7 @@ class SelectSchemeControllerSpec extends test.BaseSpec {
                                                                        ("definedBenefit" -> "false"),
                                                                        ("year"->"2015"),
                                                                        ("firstDCYear"->"2015"))
-        MockKeystore.map = MockKeystore.map + (FIRST_DC_YEAR_KEY -> "")
+        MockKeystore.map = MockKeystore.map + (FIRST_DC_YEAR_KEY -> "2015")
 
         // test
         val result: Future[Result] = MockSelectSchemeControllerWithMockKeystore.onSubmit()(request)
