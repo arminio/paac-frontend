@@ -14,11 +14,6 @@ GET         /yesnothresholdincome                       controllers.YesNoThresho
 POST        /yesnothresholdincome                       controllers.YesNoThresholdIncomeController.onSubmit
 GET         /yesnothresholdincome/back                  controllers.YesNoThresholdIncomeController.onBack
 
-## 2016/17 Adjusted Income Yes/No Page
-GET         /yesnoadjustedincome                        controllers.YesNoAdjustedIncomeController.onPageLoad
-POST        /yesnoadjustedincome                        controllers.YesNoAdjustedIncomeController.onSubmit
-GET         /yesnoadjustedincome/back                   controllers.YesNoAdjustedIncomeController.onBack
-
 ## Pension Input Page
 GET         /adjustedincome                             controllers.AdjustedIncome1617InputController.onPageLoad
 POST        /adjustedincome                             controllers.AdjustedIncome1617InputController.onSubmit
