@@ -46,7 +46,7 @@ case class CalculatorFormFields(definedBenefits: Amounts,
                         contribution.taxPeriodEnd, 
                         Some(InputAmounts(maybeDB.map((_)=>0L), 
                         maybeTriggerDC, None, Some(true)))),
-          contribution.copy(taxPeriodEnd=c.taxPeriodStart))
+          contribution.copy(taxPeriodEnd=c.taxPeriodStart,amounts=contribution.amounts.map(_.copy(triggered=Some(false)))))
 
     def toPeriodContribution(contribution: Contribution, 
                              p1: Contribution => List[Contribution], 

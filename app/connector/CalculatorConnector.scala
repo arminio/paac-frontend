@@ -24,6 +24,8 @@ import uk.gov.hmrc.play.http.{HeaderCarrier, HttpPost, HttpResponse}
 import scala.concurrent.Future
 import play.api.libs.concurrent.Execution.Implicits._
 import play.api.Play
+import play.api.Logger
+import scala.util.{Try, Success, Failure}
 
 object CalculatorConnector extends CalculatorConnector with ServicesConfig {
   override def httpPostRequest = WSHttp
@@ -39,10 +41,17 @@ trait CalculatorConnector {
     val calculationRequest = CalculationRequest(contributions, Some(earliestYear), Some(false))
     val endpoint = Play.current.configuration.getString("microservice.services.paac.endpoints.calculate").getOrElse("/paac/calculate")
     val body = Json.toJson(calculationRequest)
-    val results = httpPostRequest.POST[JsValue, HttpResponse](s"${serviceUrl}${endpoint}",body).map{
+    Logger.info(s"""Making calculation request:\n${contributions.mkString("\n")}\nEarliest year =${earliestYear}""")
+    val results = httpPostRequest.POST[JsValue, HttpResponse](s"${serviceUrl}${endpoint}",body).map {
       (response)=>
       (response.json \ "results").as[List[TaxYearResults]]
-    }
+    } andThen {
+        case Failure(t) => {
+          Logger.error(s"Backend failed to calculate: ${t.getMessage()}")
+          throw t
+        }
+        case Success(results) => results
+      } 
     results
   }
 }
