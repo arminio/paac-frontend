@@ -248,7 +248,7 @@ class UserJourneyServiceSpec extends test.BaseSpec with Results {
             }
             "when showing pension savings page backwards goes to trigger amount when ti is true (only when 2015 not selected)" in {
               backwards(2014, "2016,2014", PensionInput, false, true, true, false, 2016) shouldBe Some("/paac/moneyPurchasePostTriggerValue")
-              backwards(2015, "2016,2015", SelectScheme, false, true, true, false, 2016) shouldBe Some("/paac/dateofmpaate")
+              backwards(2015, "2016,2015", SelectScheme, false, true, true, false, 2016) shouldBe Some("/paac/adjustedincome")
             }
           }
         }
