@@ -177,7 +177,7 @@ case class SelectScheme(state: PageState=PageState()) extends PageLocation {
 
 case class TriggerDate(state: PageState=PageState()) extends PageLocation {
   def action(): Call = controllers.routes.DateOfMPAATriggerEventController.onPageLoad()
-  override def isSupported(): Boolean = state.isTE
+  override def isSupported(): Boolean = state.isTE && YesNoTrigger(state).isSupported
 }
 
 case class TriggerAmount(state: PageState=PageState()) extends PageLocation {
@@ -205,7 +205,7 @@ case class PensionInput(state: PageState=PageState()) extends PageLocation {
 }
 
 case class YesNoTrigger(state: PageState=PageState()) extends PageLocation {
-  override def isSupported(): Boolean = ((!years.contains(2015) && state.year == state.firstDCYear) || 
+  override def isSupported(): Boolean = ((!years.contains(2015) && state.year == state.firstDCYear) ||
                                           (years.contains(2015) && state.year == 2015 && state.firstDCYear > 0))
   def action(): Call = controllers.routes.YesNoMPAATriggerEventAmountController.onPageLoad()
   override protected def forward(): PageLocation = if (state.isTE) super.forward else nextSubJourney
