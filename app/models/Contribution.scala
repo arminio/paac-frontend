@@ -227,9 +227,15 @@ object Contribution {
     Contribution(start, end, Some(amounts))
   }
 
-  def apply(isP1: Boolean, db: Long, dc: Long): Contribution = {
+  def apply(isP1: Boolean, db: Long, dc: Long, triggered: Boolean = false): Contribution = {
     val start = if (isP1) PensionPeriod.PERIOD_1_2015_START else PensionPeriod.PERIOD_2_2015_START
     val end = if (isP1) PensionPeriod.PERIOD_1_2015_END else PensionPeriod.PERIOD_2_2015_END
-    Contribution(start, end, db, dc, false)
+    Contribution(start, end, db, dc, triggered)
+  }
+
+  def apply(isP1: Boolean, amounts: Option[InputAmounts]): Contribution = {
+    val start = if (isP1) PensionPeriod.PERIOD_1_2015_START else PensionPeriod.PERIOD_2_2015_START
+    val end = if (isP1) PensionPeriod.PERIOD_1_2015_END else PensionPeriod.PERIOD_2_2015_END
+    Contribution(start, end, amounts)
   }
 }

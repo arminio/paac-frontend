@@ -22,6 +22,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import service.KeystoreService
 import uk.gov.hmrc.play.http.{HeaderCarrier, SessionKeys}
+import play.api.libs.json._
 
 import scala.concurrent.Future
 
@@ -30,9 +31,26 @@ class RedirectControllerSpec extends test.BaseSpec {
   trait ControllerWithMockKeystore extends MockKeystoreFixture {
     object RedirectController extends RedirectController {
       override val keystore: KeystoreService = MockKeystore
+      override def isEdit()(implicit hc: HeaderCarrier, format: Format[String], request: Request[Any]): Future[Boolean] = {
+        super.isEdit()
+      }
     }
   }
 
   "RedirectController" should {
+    "onEdit" should {
+      "return true if edit flag is set" in new ControllerWithMockKeystore {
+        // set up
+        implicit val request = FakeRequest(GET,"").withSession{(SessionKeys.sessionId,SESSION_ID)}
+        implicit val hc = HeaderCarrier()
+        MockKeystore.map = MockKeystore.map + (KeystoreService.IS_EDIT_KEY -> "true")
+
+        // test
+        val results = RedirectController.isEdit()
+
+        // check
+        await(results) shouldBe true
+      }
+    }
   }
 }

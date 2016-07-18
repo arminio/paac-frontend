@@ -402,7 +402,7 @@ class CalculatorFormFieldSpec extends ModelSpec with BeforeAndAfterAll {
       contributions(8).amounts.get.moneyPurchase.get shouldBe 88800 
       contributions(8).amounts.get.triggered.get shouldBe true
       contributions(9).amounts.get.moneyPurchase.get shouldBe 44400
-      contributions(9).amounts.get.triggered shouldBe None
+      contributions(9).amounts.get.triggered.get shouldBe false
     }
 
     "return contributions for post trigger period 2 moneyPurchase amounts" in {
@@ -439,7 +439,7 @@ class CalculatorFormFieldSpec extends ModelSpec with BeforeAndAfterAll {
       contributions(7).amounts.get.moneyPurchase.get shouldBe 55500 
       contributions(7).amounts.get.triggered.get shouldBe true
       contributions(8).amounts.get.moneyPurchase.get shouldBe 88800
-      contributions(8).amounts.get.triggered shouldBe None
+      contributions(8).amounts.get.triggered.get shouldBe false
       contributions(9).amounts.get.moneyPurchase.get shouldBe 44400
       contributions(9).amounts.get.triggered shouldBe None
     }
@@ -481,7 +481,7 @@ class CalculatorFormFieldSpec extends ModelSpec with BeforeAndAfterAll {
       contributions(8).amounts.get.moneyPurchase.get shouldBe 88800    
       contributions(8).amounts.get.triggered.get shouldBe true
       contributions(9).amounts.get.moneyPurchase.get shouldBe 44400
-      contributions(9).amounts.get.triggered shouldBe None
+      contributions(9).amounts.get.triggered.get shouldBe false
     }
 
     "return contributions for post trigger period 2 moneyPurchase amounts when trigger date is start of period 2" in {
@@ -519,7 +519,7 @@ class CalculatorFormFieldSpec extends ModelSpec with BeforeAndAfterAll {
       contributions(7).amounts.get.moneyPurchase.get shouldBe 88800 
       contributions(7).amounts.get.triggered.get shouldBe true
       contributions(8).amounts.get.moneyPurchase.get shouldBe 55500
-      contributions(8).amounts.get.triggered shouldBe None
+      contributions(8).amounts.get.triggered.get shouldBe false
       contributions(9).amounts.get.moneyPurchase.get shouldBe 44400
       contributions(9).amounts.get.triggered shouldBe None
     }
@@ -632,100 +632,6 @@ class CalculatorFormFieldSpec extends ModelSpec with BeforeAndAfterAll {
     }
   }
 
-  "hasDefinedBenefits" should {
-    "return true if any defined benefit values set" in {
-      // set up
-      val year2015a = Year2015Amounts(Some(BigDecimal(123)))
-      val year2015b = Year2015Amounts(None, None, Some(BigDecimal(123)))
-      val adjustedIncome = Amounts()
-      val definedBenefits = Amounts()
-      val definedContributions = Amounts()
-      val triggeredAmount = None
-      val triggerDate = None
-      val formFields1 = new CalculatorFormFields(definedBenefits,
-                                                definedContributions,
-                                                adjustedIncome,
-                                                year2015a,
-                                                triggeredAmount,
-                                                triggerDate) with Year2016
-      val formFields2 = new CalculatorFormFields(definedBenefits,
-                                                definedContributions,
-                                                adjustedIncome,
-                                                year2015b,
-                                                triggeredAmount,
-                                                triggerDate) with Year2016
-      val formFields3 = new CalculatorFormFields(Amounts(Some(123)),
-                                                definedContributions,
-                                                adjustedIncome,
-                                                Year2015Amounts(),
-                                                triggeredAmount,
-                                                triggerDate) with Year2016
-
-      // test
-      val result1 = formFields1.hasDefinedBenefits
-      val result2 = formFields2.hasDefinedBenefits
-      val result3 = formFields3.hasDefinedBenefits
-
-      // check
-      result1 shouldBe true
-      result2 shouldBe true
-      result3 shouldBe true
-    }
-  }
-
-  "hasTriggerDate" should {
-    "return true if any trigger date is set" in {
-      // set up
-      val triggerDate = Some("2015-1-3")
-      val formFields1 = new CalculatorFormFields(Amounts(),
-                                                Amounts(),
-                                                Amounts(),
-                                                Year2015Amounts(),
-                                                None,
-                                                triggerDate) with Year2016
-
-      // test
-      val result1 = formFields1.hasTriggerDate
-
-      // check
-      result1 shouldBe true
-    }
-
-    "return false if any trigger date is set but is empty" in {
-      // set up
-      val triggerDate = Some("")
-      val formFields1 = new CalculatorFormFields(Amounts(),
-                                                Amounts(),
-                                                Amounts(),
-                                                Year2015Amounts(),
-                                                None,
-                                                triggerDate) with Year2016
-
-      // test
-      val result1 = formFields1.hasTriggerDate
-
-      // check
-      result1 shouldBe false
-    }
-
-    "return false if any trigger date is not set" in {
-      // set up
-      val triggerDate = None
-      val formFields1 = new CalculatorFormFields(Amounts(),
-                                                Amounts(),
-                                                Amounts(),
-                                                Year2015Amounts(),
-                                                None,
-                                                triggerDate) with Year2016
-
-      // test
-      val result1 = formFields1.hasTriggerDate
-
-      // check
-      result1 shouldBe false
-    }
-  }
-
   "toP1TriggerDefinedContribution" should {
     "return None if no period 1 trigger amount" in {
       // set up
@@ -803,29 +709,6 @@ class CalculatorFormFieldSpec extends ModelSpec with BeforeAndAfterAll {
   }
 
   "toDefinedContribution" should {
-    "return some tuple" in {
-      // set up
-      val definedBenefits = Amounts(Some(BigDecimal(123)))
-      val definedContributions = Amounts(Some(BigDecimal(456)))
-      val year2015 = Year2015Amounts(Some(444), None, Some(555), None, None, None)
-      val triggerDate = None
-      val formFields = new CalculatorFormFields(definedBenefits,
-                                                definedContributions,
-                                                Amounts(),
-                                                year2015,
-                                                None,
-                                                triggerDate) with Year2016
-      def first = { (c:Contribution) => c.amounts.isDefined && c.amounts.get.moneyPurchase.isDefined && c.amounts.get.moneyPurchase.get == 45600 }
-
-      // test
-      val result = formFields.toDefinedContribution(first)("Hi")
-
-      // check
-      result should not be None
-      result.get._1 shouldBe 45600
-      result.get._2 shouldBe "Hi"
-    }
-
     "return some tuple for 2016" in {
       // set up
       val definedBenefits = Amounts(Some(BigDecimal(123)))

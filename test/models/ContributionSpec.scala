@@ -208,6 +208,11 @@ class ContributionSpec extends ModelSpec {
         result shouldBe false
       }
     }
+    "taxYear" should {
+      "shoud return previous year if falls before April 6th" in {
+        PensionPeriod(2014, 2, 24).taxYear shouldBe 2013
+      }
+    }
   }
 
   "InputAmounts" can {
@@ -508,7 +513,15 @@ class ContributionSpec extends ModelSpec {
         c.taxPeriodEnd.month shouldBe 4
         c.taxPeriodEnd.day shouldBe 5
       }
-
+      "apply creates contribution" in {
+        Contribution(PensionPeriod.PERIOD_2_2015_START, PensionPeriod.PERIOD_2_2015_END, 1, 2, true) shouldBe Contribution(PensionPeriod.PERIOD_2_2015_START, PensionPeriod.PERIOD_2_2015_END, Some(InputAmounts(Some(1), Some(2), None, Some(true))))
+      }
+      "apply for period 1" in {
+        Contribution(true, 1, 2) shouldBe Contribution(PensionPeriod.PERIOD_1_2015_START, PensionPeriod.PERIOD_1_2015_END, 1, 2, false)
+      }
+      "apply for period 2" in {
+        Contribution(false, 1, 2) shouldBe Contribution(PensionPeriod.PERIOD_2_2015_START, PensionPeriod.PERIOD_2_2015_END, 1, 2, false)
+      }
       "have a defined benefit input amount in pounds" in new ContributionFixture {
         // setup
         val dbAmountInPounds = 39342
