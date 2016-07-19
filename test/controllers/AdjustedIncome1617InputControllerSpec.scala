@@ -20,14 +20,16 @@ import play.api.mvc.Result
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import service.KeystoreService
+import service.KeystoreService._
 import uk.gov.hmrc.play.http.{HeaderCarrier, SessionKeys}
+
 import scala.concurrent.Future
 
 class AdjustedIncome1617InputControllerSpec extends test.BaseSpec {
 
   val endPointURL = "/paac/adjustedincome"
-  val YES_NO_TI_KEY= s"${KeystoreService.TI_YES_NO_KEY_PREFIX}2016"
-  val AI_KEY= s"${KeystoreService.AI_PREFIX}2016"
+  val YES_NO_TI_KEY= s"${TI_YES_NO_KEY_PREFIX}2016"
+  val AI_KEY= s"${AI_PREFIX}2016"
 
   trait ControllerWithMockKeystore extends MockKeystoreFixture {
     object ControllerWithMockKeystore extends AdjustedIncome1617InputController {
@@ -62,7 +64,7 @@ class AdjustedIncome1617InputControllerSpec extends test.BaseSpec {
         val request = FakeRequest(GET, "").withSession {
           (SessionKeys.sessionId, SESSION_ID)
         }
-        MockKeystore.map = MockKeystore.map + (KeystoreService.CURRENT_INPUT_YEAR_KEY -> "2016")
+        MockKeystore.map = MockKeystore.map + (CURRENT_INPUT_YEAR_KEY -> "2016")
         MockKeystore.map = MockKeystore.map + (YES_NO_TI_KEY -> "Yes")
 
         // test
@@ -79,7 +81,7 @@ class AdjustedIncome1617InputControllerSpec extends test.BaseSpec {
         val request = FakeRequest(GET, "").withSession {
           (SessionKeys.sessionId, SESSION_ID)
         }
-        MockKeystore.map = MockKeystore.map + (KeystoreService.CURRENT_INPUT_YEAR_KEY -> "")
+        MockKeystore.map = MockKeystore.map + (CURRENT_INPUT_YEAR_KEY -> "")
         MockKeystore.map = MockKeystore.map + (YES_NO_TI_KEY -> "Yes")
 
         // test
@@ -97,7 +99,7 @@ class AdjustedIncome1617InputControllerSpec extends test.BaseSpec {
         val request = FakeRequest(GET, "").withSession {
           (SessionKeys.sessionId, SESSION_ID)
         }
-        MockKeystore.map = MockKeystore.map + (KeystoreService.CURRENT_INPUT_YEAR_KEY -> "")
+        MockKeystore.map = MockKeystore.map + (CURRENT_INPUT_YEAR_KEY -> "")
         MockKeystore.map = MockKeystore.map + (YES_NO_TI_KEY -> "Yes")
 
         // test
@@ -115,7 +117,7 @@ class AdjustedIncome1617InputControllerSpec extends test.BaseSpec {
         // setup
         val request = FakeRequest(GET,"").withSession{(SessionKeys.sessionId,SESSION_ID)}
         MockKeystore.map = MockKeystore.map + (AI_KEY -> "1000")
-        MockKeystore.map = MockKeystore.map + (KeystoreService.CURRENT_INPUT_YEAR_KEY -> "2016")
+        MockKeystore.map = MockKeystore.map + (CURRENT_INPUT_YEAR_KEY -> "2016")
         MockKeystore.map = MockKeystore.map + (YES_NO_TI_KEY -> "Yes")
 
         // test
@@ -140,21 +142,81 @@ class AdjustedIncome1617InputControllerSpec extends test.BaseSpec {
         status(result.get) shouldBe 303
       }
 
-/*      "with Current Year flag = 2016 value should not go to trigger question page" in new ControllerWithMockKeystore {
+      "with Current Year flag = 2016 and AI field has some value should not go to trigger question page" in new ControllerWithMockKeystore {
         // set up
-        MockKeystore.map = MockKeystore.map + ("isEdit" -> "true")
-        MockKeystore.map = MockKeystore.map + (KeystoreService.CURRENT_INPUT_YEAR_KEY -> "2016")
+        MockKeystore.map = MockKeystore.map + ("isEdit" -> "false")
+        MockKeystore.map = MockKeystore.map + (SELECTED_INPUT_YEARS_KEY -> "2016,2015")
+        MockKeystore.map = MockKeystore.map + (CURRENT_INPUT_YEAR_KEY -> "2016")
         implicit val hc = HeaderCarrier()
         implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID))
-                                                             .withFormUrlEncodedBody("adjustedIncome_2016" -> "2000", "year" -> "2016","isEdit" -> "true")
+                                                             .withFormUrlEncodedBody("adjustedIncome.amount_2016" -> "20000",
+                                                                                     "year" -> "2016",
+                                                                                     "isEdit" -> "false")
+
+        // test
+        val result: Future[Result] = ControllerWithMockKeystore.onSubmit()(request)
+
+        // check
+        status(result) shouldBe 303
+        redirectLocation(result) shouldBe Some("/paac/scheme/2015")
+      }
+
+      "with Current Year flag = 2016 and AI field does NOT have value should go to same page with some error message" in new ControllerWithMockKeystore {
+        // set up
+        MockKeystore.map = MockKeystore.map + ("isEdit" -> "false")
+        MockKeystore.map = MockKeystore.map + (SELECTED_INPUT_YEARS_KEY -> "2016,2015")
+        MockKeystore.map = MockKeystore.map + (CURRENT_INPUT_YEAR_KEY -> "2016")
+        implicit val hc = HeaderCarrier()
+        implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID))
+                                                             .withFormUrlEncodedBody("adjustedIncome.amount_2016" -> "",
+                                                                                     "year" -> "2016",
+                                                                                     "isEdit" -> "false")
 
         // test
         val result: Future[Result] = ControllerWithMockKeystore.onSubmit()(request)
 
         // check
         status(result) shouldBe 200
-        redirectLocation(result) shouldBe Some("/paac/scheme/2015")
-      }*/
+        redirectLocation(result) shouldBe None
+        val htmlPage = contentAsString(await(result))
+        htmlPage should include ("2016 adjusted income amount was incorrect or empty. Please provide an amount between £0 and £5,000,000.")
+      }
+
+      "with Edit functionality Current Year flag = 2016 and AI field has some value should reviews page" in new ControllerWithMockKeystore {
+        // set up
+        MockKeystore.map = MockKeystore.map + ("isEdit" -> "true")
+        MockKeystore.map = MockKeystore.map + (SELECTED_INPUT_YEARS_KEY -> "2016,2015")
+        MockKeystore.map = MockKeystore.map + (CURRENT_INPUT_YEAR_KEY -> "2016")
+        implicit val hc = HeaderCarrier()
+        implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID))
+                                                             .withFormUrlEncodedBody("adjustedIncome.amount_2016" -> "20000",
+                                                                                     "year" -> "2016",
+                                                                                     "isEdit" -> "true")
+
+        // test
+        val result: Future[Result] = ControllerWithMockKeystore.onSubmit()(request)
+
+        // check
+        status(result) shouldBe 303
+        redirectLocation(result) shouldBe Some("/paac/review")
+      }
+    }
+
+    "onBack" should {
+      "redirect to scheme selection page" in new ControllerWithMockKeystore {
+        // set up
+        implicit val hc = HeaderCarrier()
+        implicit val request = FakeRequest(GET,"/paac/back").withSession{(SessionKeys.sessionId,SESSION_ID)}
+        MockKeystore.map = MockKeystore.map + (CURRENT_INPUT_YEAR_KEY -> "2016")
+        MockKeystore.map = MockKeystore.map + (SELECTED_INPUT_YEARS_KEY -> "2016,2015")
+
+        // test
+        val result : Future[Result] = ControllerWithMockKeystore.onBack()(request)
+
+        // check
+        status(result) shouldBe 303
+        redirectLocation(result) shouldBe Some("/paac/yesnothresholdincome")
+      }
     }
   }
 
