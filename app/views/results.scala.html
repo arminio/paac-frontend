@@ -9,13 +9,16 @@ backLink = Some((controllers.routes.ReviewTotalAmountsController.onPageLoad.url,
 ) {
 @defining(java.text.NumberFormat.getNumberInstance(java.util.Locale.UK)) { currencyFormatter =>
 @defining(results.sortWith(_.input.taxPeriodStart.year < _.input.taxPeriodStart.year).dropWhile((v)=>v.input.isEmpty).reverse.filter((c)=>selectedYears.contains(c.input.taxPeriodStart.year))) { sortedResults =>
-  <p class="govuk-box-highlight lede">@Html(Messages("paac.results.p1", if (sortedResults.exists((r)=>r.input.isPeriod1||r.input.isPeriod2)) sortedResults.size - 1 else sortedResults.size, currencyFormatter.format(sortedResults.map(_.summaryResult.chargableAmount).foldLeft(0L)(_+_)/100)))</p>
+@defining(sortedResults.exists((data) => data.summaryResult.isMPA)){ mpaaPresent =>
+    <p class="govuk-box-highlight lede">@Html(Messages("paac.results.p1", if (sortedResults.exists((r)=>r.input.isPeriod1||r.input.isPeriod2)) sortedResults.size - 1 else sortedResults.size, currencyFormatter.format(sortedResults.map(_.summaryResult.chargableAmount).foldLeft(0L)(_+_)/100)))</p>
     <table>
        <thead>
        <tr>
          <th scope="col">@Html(Messages("paac.results.table.col.1"))</th>
          <th class="numeric" scope="col">@Html(Messages("paac.results.table.col.2"))</th>
-         <th class="numeric" scope="col">@Html(Messages("paac.results.table.col.3"))</th>
+         @if(mpaaPresent){
+           <th class="numeric" scope="col">@Html(Messages("paac.results.table.col.3"))</th>
+         }
          <th class="numeric" scope="col">@Html(Messages("paac.results.table.col.4"))</th>
          <th class="numeric" scope="col">@Html(Messages("paac.results.table.col.5"))</th>
          <th class="numeric" scope="col">@Html(Messages("paac.results.table.col.6"))</th>
@@ -34,7 +37,15 @@ backLink = Some((controllers.routes.ReviewTotalAmountsController.onPageLoad.url,
               &pound;@(currencyFormatter.format(result.summaryResult.availableAllowance/100))</td>
             }
           </td>
-          <td class="numeric">@if(result.summaryResult.isMPA){&pound;@(currencyFormatter.format(result.summaryResult.moneyPurchaseAA/100))}</td>
+          @if(mpaaPresent){
+            <td class="numeric">
+                @if(result.input.taxPeriodStart.year >= 2015){
+                  &pound;@(currencyFormatter.format(result.summaryResult.moneyPurchaseAA/100))
+                } else {
+                N/A
+                }
+            </td>
+          }
           <td class="numeric">&pound;@(currencyFormatter.format((result.input.amounts.get.definedBenefit.getOrElse(0L) + result.input.amounts.get.moneyPurchase.getOrElse(0L))/100))</td>
           <td class="numeric">&pound;@(currencyFormatter.format(result.summaryResult.chargableAmount/100))</td>
           <td class="numeric">&pound;@if(result.summaryResult.isMPA){@(currencyFormatter.format(result.summaryResult.unusedAAA/100))} else {@(currencyFormatter.format(result.summaryResult.unusedAllowance/100))}</td>
@@ -52,7 +63,9 @@ backLink = Some((controllers.routes.ReviewTotalAmountsController.onPageLoad.url,
               &pound;@(currencyFormatter.format(result.summaryResult.availableAllowance/100))</td>
             }
           </td>
-          <td class="numeric">@if(result.summaryResult.isMPA){&pound;@(currencyFormatter.format(result.summaryResult.moneyPurchaseAA/100))}</td>
+          @if(mpaaPresent){
+            <td class="numeric">&pound;@(currencyFormatter.format(result.summaryResult.moneyPurchaseAA/100))</td>
+          }
           <td class="numeric">&pound;@(currencyFormatter.format((result.input.amounts.get.definedBenefit.getOrElse(0L) + 
                                                                 result.input.amounts.get.moneyPurchase.getOrElse(0L))
                                                                 /100))</td>
@@ -72,7 +85,9 @@ backLink = Some((controllers.routes.ReviewTotalAmountsController.onPageLoad.url,
               &pound;@(currencyFormatter.format(result.summaryResult.availableAllowance/100))</td>
             }
           </td>
-          <td class="numeric">@if(result.summaryResult.isMPA){&pound;@(currencyFormatter.format(result.summaryResult.moneyPurchaseAA/100))}</td>
+          @if(mpaaPresent){
+            <td class="numeric">&pound;@(currencyFormatter.format(result.summaryResult.moneyPurchaseAA/100))</td>
+          }
           <td class="numeric">&pound;@(currencyFormatter.format((result.input.amounts.get.definedBenefit.getOrElse(0L) + 
                                                                 result.input.amounts.get.moneyPurchase.getOrElse(0L))/100))</td>
           <td class="numeric">&pound;@(currencyFormatter.format((result.summaryResult.chargableAmount)/100))</td>
@@ -84,8 +99,9 @@ backLink = Some((controllers.routes.ReviewTotalAmountsController.onPageLoad.url,
     }
        </tbody>
       </table>
-}
-}
+   } @* End of mpaaPresent *@
+  } @* End of sortedResults *@
+} @* End of currencyFormatter *@
   <div class="panel panel-indent">
     <p>
       You can use these figures to complete your Self Assessment tax return online.
