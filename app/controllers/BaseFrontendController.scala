@@ -80,7 +80,8 @@ trait RedirectController extends BaseFrontendController {
           e match {
             case Backward => {
               val nextYear = (updatedLocation move e).state.year
-              if (nextYear != currentYear && !location.isInstanceOf[CheckYourAnswers])
+
+              if (nextYear != currentYear && !isCheckYourAnswersPage(location))
                 updateForYear(location, nextYear).map((p)=>p.update(p.state.copy(year=updatedLocation.state.year)))
               else
                 Future.successful(updatedLocation)
@@ -97,6 +98,11 @@ trait RedirectController extends BaseFrontendController {
         Logger.info(s"${page} -> ${next}, saving next year as ${next.state.year}")
         keystore.store(next.state.year.toString, CURRENT_INPUT_YEAR_KEY).flatMap((values) => Future.successful(Redirect(next.action)))
       }
+    }
+
+    def isCheckYourAnswersPage(location:PageLocation):Boolean = location match {
+      case CheckYourAnswers(_) => true
+      case _                   => false
     }
   }
 }
