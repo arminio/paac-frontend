@@ -9,6 +9,10 @@ articleClasses=Some("full-width"),
 backLink = Some((controllers.routes.PensionInputsController.onBack.url,Messages("paac.link.text.back")))
 ) {
 
+    @defining(currentYear.toInt) { year =>
+    <p id="paac.pension.inputs.description" class="lede text">@Messages("paac.pension.inputs.description", "Total amount", currentYear, ""+(year+1))</p>
+    }
+
     @if(paacForm.hasErrors) {
       <div class="error-summary" role="group" aria-labelledby="error-summary-heading-example-1" tabindex="-1" style="border: 5px solid #b10e1e;padding: 20px;padding-top: 0px;margin-bottom: 30px;">
 
@@ -39,16 +43,11 @@ backLink = Some((controllers.routes.PensionInputsController.onBack.url,Messages(
     @form(
         action = controllers.routes.PensionInputsController.onSubmit,
         args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
-
-        @defining(currentYear.toInt) { year =>
-        <p id="paac.pension.inputs.description" class="lede text">@Messages("paac.pension.inputs.description", "Total amount", currentYear, ""+(year+1))</p>
-        }
         <input type="hidden" name="year" value="@currentYear"/>
         <input type="hidden" name="isEdit" value="@isEdit"/>
         <table>
             <tbody>
             <fieldset id="input_@currentYear" class="form-field-group" style="max-width:12.35em;">
-
                 <label class="form-element-bold label--full-length numeric" for="definedBenefits.amount_@currentYear" style="width:150%;display: inline-block;@if(paacForm.errors.find(_.key == "definedBenefits.amount_"+currentYear)) {color:#b10e1e;}">
                 <tr style="text-align:left;min-width: 7em">@Messages("paac.pension.inputs.totalamount")</tr><BR/>
                 <span  class="form-hint">@Messages("paac.common.inputfield.example.message")</span>
@@ -64,7 +63,6 @@ backLink = Some((controllers.routes.PensionInputsController.onBack.url,Messages(
                   }
                   </span>
                 </label>
-
             </fieldset>
             </tbody>
         </table>
