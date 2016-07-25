@@ -1,8 +1,12 @@
-## Common
+## Calculator Common
 paac.link.text.back=Back
+paac.common.continue.button = Continue
+paac.common.inputfield.example.message = Example, 62300
+paac.common.pension.inputs.db = Defined benefit
+paac.common.pension.inputs.dc = Defined contribution
 
 ## Calculator Home Page
-paac.nav.title = Pension AA Calculator
+paac.nav.title = Pension Annual Allowance Calculator
 paac.calculator.homepage.heading = PAAC
 paac.calculator.results.heading = PAAC Results
 paac.error.title = Check your information, you need to:
@@ -13,9 +17,6 @@ paac.calculator.button.save = Save
 paac.calculator.button.calculate = Calculate
 paac.calculator.button.back = Back
 paac.calculator.results.pagetitle = Tax Year Results
-
-## Common
-paac.common.continue.button = Continue
 
 ## Start Page
 paac.startpage.pagetitle = Pension Annual Allowance Calculator
@@ -74,8 +75,6 @@ paac.yesno.yes = Yes
 paac.yesno.no = No
 
 ## 2015/16 Period-1 and Period-2 Pension Inputs Page
-paac.1516.pension.inputs.db = Defined benefit
-paac.1516.pension.inputs.dc = Defined contribution
 paac.1516.pension.inputs.pages.heading = What were your pension savings for the tax year 2015 to 2016?
 paac.201516.pension.inputs.pagetitle = 2015/16 Pension Inputs
 paac.201516.pension.inputs.description = The tax year 2015 to 2016 was split into two to align pension input periods (PIPs) with tax years.
@@ -114,7 +113,7 @@ paac.review-amounts.heading.period = Tax year {0} to {1} period {2}
 paac.review-amounts.heading.total = Total amount
 paac.review-amounts.heading.db = Defined benefit
 paac.review-amounts.heading.mp = Defined contribution
-paac.review-amounts.heading.income = Adjusted Income
+paac.review-amounts.heading.income = Adjusted income
 paac.review-amounts.heading.trigger.savings.p1=What were your defined contribution pension savings for the rest of period 1{0}?
 paac.review-amounts.heading.trigger.savings.p2=What were your defined contribution pension savings for the rest of period 2{0}?
 paac.review-amounts.heading.trigger.savings.other=What were your defined contribution pension savings for the rest of {0}?
@@ -135,8 +134,8 @@ paac.review-amounts.value.12={0} December {1}
 
 ## Results Page
 paac.results.table.col.1 = Year
-paac.results.table.col.2 = Annual Allowance<br>Alternative Annual Allowance<br>Reduced Annual Allowance
-paac.results.table.col.3 = Money<br> Purchase<br> Annual<br> Allowance 
+paac.results.table.col.2 = Available<br> Allowance
+paac.results.table.col.3 = Available Money<br> Purchase Annual<br> Allowance
 paac.results.table.col.4 = Pension<br> savings
 paac.results.table.col.5 = Amount<br> on which<br> tax is due
 paac.results.table.col.6 = Unused<br> allowance
