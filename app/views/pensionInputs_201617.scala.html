@@ -54,7 +54,8 @@ args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
     <fieldset id="input_2016" style="max-width:12.35em; margin: 0">
         @if(isDefinedContribution){
         <label class="form-element-bold label--full-length numeric" for="definedContributions.amount_@year" style="width:150%;display: inline-block;@if(paacForm.errors.find(_.key == "definedContributions.amount_@year")) {color:#b10e1e;}">
-        <tr style="text-align:left;min-width: 7em">@Messages("paac.1516.pension.inputs.dc")</tr><BR/>
+        <tr style="text-align:left;min-width: 7em">@Messages("paac.common.pension.inputs.dc")</tr><BR/>
+        <span  class="form-hint">@Messages("paac.common.inputfield.example.message")</span>
           <span style="float:right">
               <tr style="text-align:left;min-width: 7em">
                   £&nbsp;<input type="number" name="definedContributions.amount_@year" id="definedContributions.amount_@year" min="0" step="1" value='@paacForm.data(s"definedContributions.amount_${year}")' max="5000000.00" size="10" style="width:9em;@if(paacForm.errors.find(_.key == s"definedContributions.amount_${year}")) {border: 4px solid #b10e1e;}"/>
@@ -64,7 +65,8 @@ args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
         }
         @if(isDefinedBenefit){
         <label class="form-element-bold label--full-length numeric" for="definedBenefits.amount_@year" style="width:150%;display: inline-block;@if(paacForm.errors.find(_.key == s"definedBenefits.amount_${year}")) {color:#b10e1e;}">
-        <tr style="text-align:left;min-width: 7em">@Messages("paac.1516.pension.inputs.db")</tr><BR/>
+        <tr style="text-align:left;min-width: 7em">@Messages("paac.common.pension.inputs.db")</tr><BR/>
+        <span  class="form-hint">@Messages("paac.common.inputfield.example.message")</span>
           <span style="float:right">
               <tr style="text-align:left;min-width: 7em">
                   £&nbsp;<input type="number" name="definedBenefits.amount_@year" id="definedBenefits.amount_@year" min="0" step="1" value='@paacForm.data(s"definedBenefits.amount_${year}")' max="5000000.00" size="10" style="width:9em;@if(paacForm.errors.find(_.key == s"definedBenefits.amount_${year}")) {border: 4px solid #b10e1e;}"/>
