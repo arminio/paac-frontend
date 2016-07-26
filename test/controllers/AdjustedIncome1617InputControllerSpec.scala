@@ -99,7 +99,7 @@ class AdjustedIncome1617InputControllerSpec extends test.BaseSpec {
         val request = FakeRequest(GET, "").withSession {
           (SessionKeys.sessionId, SESSION_ID)
         }
-        MockKeystore.map = MockKeystore.map + (CURRENT_INPUT_YEAR_KEY -> "")
+        MockKeystore.map = MockKeystore.map + (CURRENT_INPUT_YEAR_KEY -> "2015")
         MockKeystore.map = MockKeystore.map + (YES_NO_TI_KEY -> "Yes")
 
         // test
