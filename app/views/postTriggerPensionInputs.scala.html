@@ -19,7 +19,7 @@ heading = if(paacForm.value.getOrElse(errorModel).triggerDatePeriod.get.isPeriod
             Messages("paac.post.trigger.value.page.question", ""+taxYear, ""+(taxYear+1)),
 backLink = Some((controllers.routes.PostTriggerPensionInputsController.onBack.url,Messages("paac.link.text.back")))
 ) {
-    <p id="paac.post-trigger-value.p1">
+    <p class="lede text">
       @defining(paacForm.data("triggerDate").split("-")) { tDate =>
         @if(paacForm.value.getOrElse(errorModel).triggerDatePeriod.get.isPeriod1()) {
           @Messages("paac.post.trigger.value.description.p1", Messages("paac.review-amounts.value."+tDate(1), tDate(2).toInt.toString, tDate(0)))

@@ -10,7 +10,7 @@ backLink = Some((controllers.routes.PensionInputsController.onBack.url,Messages(
 ) {
 
     @defining(currentYear.toInt) { year =>
-    <p id="paac.pension.inputs.description" class="lede text">@Messages("paac.pension.inputs.description", "Total amount", currentYear, ""+(year+1))</p>
+    <p class="lede text">@Messages("paac.pension.inputs.description", "Total amount", currentYear, ""+(year+1))</p>
     }
 
     @if(paacForm.hasErrors) {
@@ -47,9 +47,9 @@ backLink = Some((controllers.routes.PensionInputsController.onBack.url,Messages(
         <input type="hidden" name="isEdit" value="@isEdit"/>
         <table>
             <tbody>
-            <fieldset id="input_@currentYear" class="form-field-group" style="max-width:12.35em;">
+            <fieldset id="input_@currentYear" style="max-width:12.35em; margin: 0">
                 <label class="form-element-bold label--full-length numeric" for="definedBenefits.amount_@currentYear" style="width:150%;display: inline-block;@if(paacForm.errors.find(_.key == "definedBenefits.amount_"+currentYear)) {color:#b10e1e;}">
-                <tr style="text-align:left;min-width: 7em">@Messages("paac.pension.inputs.totalamount")</tr><BR/>
+                <tr style="text-align:left;min-width: 7em">@Messages("paac.pension.inputs.totalamount")</tr>
                 <span  class="form-hint">@Messages("paac.common.inputfield.example.message")</span>
                   <span style="float:right">
                   @if(paacForm.data.contains("definedBenefits.amount_"+currentYear)) {
@@ -67,7 +67,6 @@ backLink = Some((controllers.routes.PensionInputsController.onBack.url,Messages(
             </tbody>
         </table>
 
-        <br/>
         <button id="submit" type="submit" class="button" value="Continue">@if(isEdit){@Messages("paac.calculator.button.save")}else{@Messages("paac.calculator.button.continue")}</button>
     }
 }
