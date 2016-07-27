@@ -105,6 +105,22 @@ class PensionInputs201617ControllerSpec extends test.BaseSpec {
         MockKeystore.map should contain key ("definedBenefit_2016")
         MockKeystore.map should contain value ("40000")
       }
+
+      "have keystore with definedBenefit_2016 value and year empty when we revisit the same page"  in new ControllerWithMockKeystore {
+        // setup
+        val request = FakeRequest(GET,"").withSession{(SessionKeys.sessionId,SESSION_ID)}
+        MockKeystore.map = MockKeystore.map + ("definedBenefit_2016" -> "40000")
+        MockKeystore.map = MockKeystore.map + (IS_DC -> "true")
+        MockKeystore.map = MockKeystore.map + (IS_DB -> "true")
+        MockKeystore.map = MockKeystore.map + (CURRENT_INPUT_YEAR_KEY -> "-1")
+
+        // test
+        val result : Future[Result] = ControllerWithMockKeystore.onPageLoad()(request)
+
+        // check
+        status(result) shouldBe 303
+        redirectLocation(result) shouldBe Some("/paac")
+      }
     }
 
     "onSubmit with POST request" should {
