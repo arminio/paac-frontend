@@ -182,6 +182,27 @@ class AdjustedIncome1617InputControllerSpec extends test.BaseSpec {
         htmlPage should include ("2016 adjusted income amount was incorrect or empty. Please provide an amount between £0 and £5,000,000.")
       }
 
+      "with Current Year flag = 2016 and AI field have invalid value should go to same page with some error message" in new ControllerWithMockKeystore {
+        // set up
+        MockKeystore.map = MockKeystore.map + ("isEdit" -> "false")
+        MockKeystore.map = MockKeystore.map + (SELECTED_INPUT_YEARS_KEY -> "2016,2015")
+        MockKeystore.map = MockKeystore.map + (CURRENT_INPUT_YEAR_KEY -> "2016")
+        implicit val hc = HeaderCarrier()
+        implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID))
+                                                             .withFormUrlEncodedBody("adjustedIncome.amount_2016" -> "-1000",
+                                                                                     "year" -> "2016",
+                                                                                     "isEdit" -> "false")
+
+        // test
+        val result: Future[Result] = ControllerWithMockKeystore.onSubmit()(request)
+
+        // check
+        status(result) shouldBe 200
+        redirectLocation(result) shouldBe None
+        val htmlPage = contentAsString(await(result))
+        htmlPage should include ("2016 amount was too small and must be either £0 or greater.")
+      }
+
       "with Edit functionality Current Year flag = 2016 and AI field has some value should reviews page" in new ControllerWithMockKeystore {
         // set up
         MockKeystore.map = MockKeystore.map + ("isEdit" -> "true")

@@ -32,8 +32,8 @@ trait PensionInputs201617Controller extends RedirectController {
   val onPageLoad = withSession { implicit request =>
     keystore.read[String](List(CURRENT_INPUT_YEAR_KEY)).flatMap {
       (fieldsMap) =>
-      val cy = fieldsMap(CURRENT_INPUT_YEAR_KEY)
-      if (cy.isEmpty)
+      val cy = fieldsMap int CURRENT_INPUT_YEAR_KEY
+      if (cy <= 2015 || cy == -1)
         Start() go Edit
       else {
         val toRead = List(DB_FLAG_PREFIX, DC_FLAG_PREFIX, DB_PREFIX, DC_PREFIX).map(_.toString+cy) ++ List(IS_EDIT_KEY)
