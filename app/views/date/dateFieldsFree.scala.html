@@ -15,7 +15,7 @@
         @if(elements.args.get('_hintText).isDefined) {
             <span @if(elements.args.get('_hintId).isDefined){id="@elements.args.get('_hintId)"} class="form-hint">@elements.args.get('_hintText)</span>
         } else {
-            <span @if(elements.args.get('_hintId).isDefined){id="@elements.args.get('_hintId)"} class="form-hint">@Messages("cc.date.example")</span>
+            <span @if(elements.args.get('_hintId).isDefined){id="@elements.args.get('_hintId)"} class="form-hint">@Messages("date.example")</span>
         }
 
         @elements.errors(elements.lang).map { error =>

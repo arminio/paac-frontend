@@ -60,6 +60,6 @@ backLink = Some((controllers.routes.DateOfMPAATriggerEventController.onBack.url,
         )
 
         <br/>
-        <button id="submit" type="submit" class="button" value="Continue">@if(paacForm.value.map(_.isEdit).getOrElse(false)){@Messages("paac.calculator.button.save")}else{@Messages("paac.calculator.button.continue")}</button>
+        <button id="submit" type="submit" class="button" value="Continue">@if(model.isEdit){@Messages("paac.calculator.button.save")}else{@Messages("paac.calculator.button.continue")}</button>
     } @* End of Form *@
 } @* End of paacMain *@
