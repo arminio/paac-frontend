@@ -7,7 +7,6 @@ GET         /assets/*file                               controllers.DevAssets.at
 ## PAAC Start Page
 GET         /                                           controllers.StartPageController.startPage
 GET         /new                                        controllers.StartPageController.newSession
-POST        /                                           controllers.StartPageController.onSubmit
 
 ## 2016/17 Threshold Income Yes/No Page
 GET         /yesnothresholdincome                       controllers.YesNoThresholdIncomeController.onPageLoad

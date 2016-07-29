@@ -58,18 +58,6 @@ class StartPageControllerSpec extends test.BaseSpec {
         status(result.get) shouldBe 303
       }
 
-      "create a session onSubmit" in {
-        // set up
-        val request = FakeRequest(GET, "/paac").withSession {(SessionKeys.sessionId,SESSION_ID)}
-
-        // test
-        val result: Future[Result] = StartPageController.onSubmit()(request)
-
-        // check
-        val StartPage = contentAsString(await(result))
-        StartPage should include ("")
-      }
-
       "create a new session" in new MockKeystoreFixture {
         // set up
         val request = FakeRequest(GET, "/paac").withSession {(SessionKeys.sessionId,SESSION_ID)}
