@@ -35,7 +35,7 @@ trait StartPageController extends BaseFrontendController {
     val startPage = withSession { implicit request =>
       keystore.store(false.toString(), KeystoreService.IS_EDIT_KEY).map {
         (_) =>
-        Ok(views.html.startPage(""))
+        Redirect(onSubmitRedirect)
       }
     }
 
@@ -44,9 +44,5 @@ trait StartPageController extends BaseFrontendController {
         (_)=>
         Redirect(routes.StartPageController.startPage()).withNewSession.withSession(createSessionId())
       }
-    }
-
-    val onSubmit = withSession { implicit request =>
-      Future.successful(Redirect(onSubmitRedirect))
     }
 }
