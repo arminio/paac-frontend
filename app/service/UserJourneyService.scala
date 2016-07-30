@@ -20,17 +20,29 @@ import controllers._
 import play.api.mvc._
 
 sealed trait Event
-object Forward extends Event
-object Backward extends Event
-object Edit extends Event
+object Forward extends Event {
+  def using(data: Map[String,String]): Tuple2[Event, Map[String,String]] = {
+    (this, data)
+  }
+}
+object Backward extends Event {
+  def using(data: Map[String,String]): Tuple2[Event, Map[String,String]] = {
+    (this, data)
+  }
+}
+object Edit extends Event {
+  def using(data: Map[String,String]): Tuple2[Event, Map[String,String]] = {
+    (this, data)
+  }
+}
 
 /* Simple data holder for a page used to determine user journey flow. */
-case class PageState(year: Int = PageLocation.PRESTART, 
-                     selectedYears: String = "", 
-                     isDC: Boolean = false, 
-                     isTE: Boolean = false, 
-                     isTI: Boolean = false, 
-                     isEdit: Boolean = false, 
+case class PageState(year: Int = PageLocation.PRESTART,
+                     selectedYears: String = "",
+                     isDC: Boolean = false,
+                     isTE: Boolean = false,
+                     isTI: Boolean = false,
+                     isEdit: Boolean = false,
                      firstDCYear: Int = -1)
 
 object PageLocation {
@@ -53,7 +65,7 @@ object PageLocation {
     case _ => AnyRef
   }
 
-  /** 
+  /**
     Simple factory method to create a new PageLocation instance
     given it's type and state.*/
   def apply(page: Any, pageState: PageState): PageLocation = page match {
@@ -69,6 +81,8 @@ object PageLocation {
     case AdjustedIncome => AdjustedIncome(pageState)
     case _ => Start(pageState)
   }
+
+  def start(): PageLocation = Start()
 }
 
 /**
@@ -80,7 +94,7 @@ sealed trait PageLocation {
   /** Controller action to display this page location. */
   def action(): Call
 
-  /* 
+  /*
     Page order is generally determined by these lists where
     by default the journey moves forward through each list.
     Concrete PageLocation classes may override forward/backward
@@ -91,7 +105,7 @@ sealed trait PageLocation {
                                 ("2015"->Vector(SelectScheme,PensionInput,YesNoTrigger,TriggerDate,TriggerAmount)),
                                 ("Post2015"->Vector(SelectScheme,PensionInput,YesNoIncome,AdjustedIncome,YesNoTrigger,TriggerDate,TriggerAmount)))
 
-  /** 
+  /**
     Direction to move: Forward, Backward or Edit (to jump to go to this page.=).
    */
   def move(e: Event): PageLocation = e match {
@@ -101,22 +115,22 @@ sealed trait PageLocation {
     }
 
   def firstYear(): Int = years(0)
-  
+
   def lastYear(): Int = years.reverse(0)
 
-  def firstYear(selectedYears: String): Int = selectedYears.split(",").map(_.toInt).head
-  
-  def lastYear(selectedYears: String): Int = selectedYears.split(",").map(_.toInt).reverse(0)
+  def firstYear(selectedYears: String): Int = if (selectedYears.isEmpty) PageLocation.START else selectedYears.split(",").map(_.toInt).head
+
+  def lastYear(selectedYears: String): Int = if (selectedYears.isEmpty) PageLocation.END else selectedYears.split(",").map(_.toInt).reverse(0)
 
   def update(newState: PageState): PageLocation = PageLocation(PageLocation.toType(this), newState)
 
   /* Concrete classes may override these methods to control user journey flow. */
-  /** 
-    isSupported returns true if the page should be displayed based on page 
+  /**
+    isSupported returns true if the page should be displayed based on page
     state. At present only considered during backward movement. */
   protected def isSupported(): Boolean = true
 
-  protected def backward(): PageLocation = if (pageOrder(state.year).indexOf(PageLocation.toType(this)) <= 0) 
+  protected def backward(): PageLocation = if (pageOrder(state.year).indexOf(PageLocation.toType(this)) <= 0)
       previousSubJourney()
     else {
       val previousStep = PageLocation(pageOrder(state.year)(pageOrder(state.year).indexOf(PageLocation.toType(this))-1), state)

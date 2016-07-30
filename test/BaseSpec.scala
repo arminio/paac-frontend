@@ -41,26 +41,19 @@ class SimpleBaseSpec extends UnitSpec {
     object MockKeystore extends KeystoreService {
       var map = Map(SessionKeys.sessionId -> SESSION_ID)
 
-      override def storeValue[T](data: T, key: String)
-                                (implicit hc: HeaderCarrier,
-                                          format: play.api.libs.json.Format[T], 
-                                          request: Request[Any]): Future[Option[T]] = {
-        map = map + (key -> data.toString)
-        Future.successful(Some(data))
+      override def saveData(data: Map[String,String])
+                           (implicit hc: HeaderCarrier,
+                                     format: play.api.libs.json.Format[String],
+                                     request: Request[Any]): Future[Boolean] = {
+        map = map ++ data
+        Future.successful(true)
       }
 
-      override def store(data: String, key: String)
-                        (implicit hc: HeaderCarrier, request: Request[Any]) : Future[Option[String]] = {
-        map = map + (key -> data.toString)
-        Future.successful(Some(data))
-      }
-
-      override def read[T](key: String)
-                          (implicit hc: HeaderCarrier,
-                           format: play.api.libs.json.Format[T],
-                           request: Request[Any])
-      : Future[Option[T]] = {
-        Future.successful((map get key).map(_.asInstanceOf[T]))
+      override def readData()
+                           (implicit hc: HeaderCarrier,
+                            format: play.api.libs.json.Format[String],
+                            request: Request[Any]): Future[Map[String,String]] = {
+        Future.successful(map)
       }
 
       override def clear()(implicit hc: HeaderCarrier, request: Request[Any]): Future[Option[Boolean]] = {

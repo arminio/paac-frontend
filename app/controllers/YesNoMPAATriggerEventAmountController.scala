@@ -23,34 +23,30 @@ import service.KeystoreService._
 import scala.concurrent.Future
 
 object YesNoMPAATriggerEventAmountController extends YesNoMPAATriggerEventAmountController {
-  override val keystore: KeystoreService = KeystoreService
+  def keystore: KeystoreService = KeystoreService
 }
 
 trait YesNoMPAATriggerEventAmountController extends RedirectController {
-  val keystore: KeystoreService
-
-  private val yesNoFormKey = "yesNo"
-
-  val onPageLoad = withSession { implicit request =>
-    keystore.read[String](TE_YES_NO_KEY).map {
-      (yesNo) =>
-        val fields = Map(yesNo match {
-          case Some(value) => (yesNoFormKey, value)
-          case None => (yesNoFormKey, "Yes")
-        })
-        Ok(views.html.yesno_mpaa_trigger_amount(YesNoMPAATriggerEventForm.form.bind(fields).discardingErrors))
+  val onPageLoad = withReadSession { implicit request =>
+    val value = request.data.get(TE_YES_NO_KEY) match {
+      case Some(value) => value
+      case None => "Yes"
     }
+    Future.successful(Ok(views.html.yesno_mpaa_trigger_amount(YesNoMPAATriggerEventForm.form.fill(value))))
   }
 
-  val onSubmit = withSession { implicit request =>
+  val onSubmit = withWriteSession { implicit request =>
     YesNoMPAATriggerEventForm.form.bindFromRequest().fold(
-      formWithErrors => { Future.successful(Ok(views.html.yesno_mpaa_trigger_amount(YesNoMPAATriggerEventForm.form))) },
+      formWithErrors => Future.successful(Ok(views.html.yesno_mpaa_trigger_amount(YesNoMPAATriggerEventForm.form))),
       input => {
-        keystore.store(input, TE_YES_NO_KEY)
-        if (input == "Yes")
-          YesNoTrigger(PageState(isTE=true)) go Forward
-        else
-          keystore.save(List((None,P1_TRIGGER_DC_KEY),(None,P2_TRIGGER_DC_KEY),(None,TRIGGER_DATE_KEY)),"").flatMap(_=>YesNoTrigger() go Forward)
+        var sessionData = request.data ++ Map((TE_YES_NO_KEY->input))
+        if (input == "No") {
+          sessionData = sessionData ++ Map((P1_TRIGGER_DC_KEY->""),
+                                           (P2_TRIGGER_DC_KEY->""),
+                                           (TRIGGER_DC_KEY->""),
+                                           (TRIGGER_DATE_KEY->""))
+        }
+        YesNoTrigger() go Forward.using(sessionData)
       }
     )
   }

@@ -37,12 +37,12 @@ class BaseFrontendControllerSpec extends test.BaseSpec {
   trait ControllerWithMockKeystore extends MockKeystoreFixture {
     object RedirectController extends BaseFrontendController {
       val keystorekey = "TaxYearSelection"
-     // override val keystore: KeystoreService = MockKeystore
+      val keystore: KeystoreService = MockKeystore
     }
   }
 
   "BaseFrontendController" should {
-    "get session id should return None if keystore session id is not present" in {
+    /*"get session id should return None if keystore session id is not present" in {
       // set up
       val request = FakeRequest()
       object BaseFrontendController extends BaseFrontendController with SessionProvider {}
@@ -115,18 +115,6 @@ class BaseFrontendControllerSpec extends test.BaseSpec {
 
       // check
       status(result) shouldBe 200
-    }
-
-    "marshall" should {
-      "return 0 when value is Some(0)" in {
-        // set up
-        object BaseFrontendController extends BaseFrontendController with SessionProvider {
-          override def getSessionId()(implicit request : Request[AnyContent]) : Option[String] = Some("NOSESSION")
-        }
-
-        // test
-        BaseFrontendController.marshall("theKeyToEverything", Some("0")) shouldBe (("theKeyToEverything", "0"))
-      }
-    }
+    }*/
   }
 }

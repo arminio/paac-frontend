@@ -62,8 +62,7 @@ class StartPageControllerSpec extends test.BaseSpec {
         // set up
         val request = FakeRequest(GET, "/paac").withSession {(SessionKeys.sessionId,SESSION_ID)}
         object MockedStartPageController extends StartPageController {
-          override val keystore: KeystoreService = MockKeystore
-          override val connector: CalculatorConnector = null
+          def keystore: KeystoreService = MockKeystore
         }
 
         // test
@@ -78,8 +77,7 @@ class StartPageControllerSpec extends test.BaseSpec {
         // set up
         val request = FakeRequest(GET, "/paac"). withSession {(SessionKeys.sessionId,SESSION_ID)}
         object MockedStartPageController extends StartPageController {
-          override val keystore: KeystoreService = MockKeystore
-          override val connector: CalculatorConnector = null
+          def keystore: KeystoreService = MockKeystore
         }
 
         // test

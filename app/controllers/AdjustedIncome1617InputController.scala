@@ -25,44 +25,39 @@ import service.KeystoreService._
 
 
 object AdjustedIncome1617InputController extends AdjustedIncome1617InputController {
-  override val keystore: KeystoreService = KeystoreService
+  def keystore: KeystoreService = KeystoreService
 }
 
 trait AdjustedIncome1617InputController extends RedirectController {
-  val keystore: KeystoreService
 
-  private val onSubmitRedirect = routes.ReviewTotalAmountsController.onPageLoad
-
-  val onPageLoad = withSession { implicit request =>
-    keystore.read[String](List(CURRENT_INPUT_YEAR_KEY)).flatMap {
-      (cyMap) =>
-        val cy = cyMap int CURRENT_INPUT_YEAR_KEY
-        if (cy <= 2015 || cy == -1 )
-          Future.successful(Redirect(onSubmitRedirect))
-        else {
-          keystore.read[String](List(AI_PREFIX + cy,IS_EDIT_KEY)).map {
-            (fieldsMap) =>
-            Ok(views.html.adjusted_income_1617_input(CalculatorForm.bind(fieldsMap).discardingErrors, cy.toString, (fieldsMap bool IS_EDIT_KEY)))
-          }
-        }
+  val onPageLoad = withReadSession { implicit request =>
+    val cy = request.data int CURRENT_INPUT_YEAR_KEY
+    if (cy <= 2015 || cy == -1 ) {
+      CheckYourAnswers() go Edit
+    } else {
+      Future.successful(Ok(views.html.adjusted_income_1617_input(CalculatorForm.bind(request.data).discardingErrors, cy.toString, (request.data bool IS_EDIT_KEY))))
     }
   }
 
-  val onSubmit = withSession { implicit request =>
-    val data = formRequestData
+  val onSubmit = withWriteSession { implicit request =>
+    val data = request.form
     val cy = data("year").toInt
     val isEdit = data("isEdit").toBoolean
-    CalculatorForm.form.bindFromRequest ().fold (
+    CalculatorForm.form.bindFromRequest().fold (
       formWithErrors =>
-        Future.successful (Ok (views.html.adjusted_income_1617_input(formWithErrors, cy.toString, isEdit))),
+        Future.successful(Ok (views.html.adjusted_income_1617_input(formWithErrors, cy.toString, isEdit))),
       input => {
-        val isAIError = !input.toAdjustedIncome(cy).isDefined
-        if (isAIError) {
-          var form = CalculatorForm.form.bindFromRequest()
-          form = form.withError("adjustedIncome.amount_"+cy, "ai.error.bounds")
-          Future.successful(Ok(views.html.adjusted_income_1617_input(form, cy.toString, isEdit)))
-        } else
-          keystore.save(List(input.toAdjustedIncome(cy)), "").flatMap((_)=>AdjustedIncome() go Forward)
+        input.toAdjustedIncome(cy) match {
+          case None => {
+            var form = CalculatorForm.form.bindFromRequest()
+            form = form.withError("adjustedIncome.amount_"+cy, "ai.error.bounds")
+            Future.successful(Ok(views.html.adjusted_income_1617_input(form, cy.toString, isEdit)))
+          }
+          case Some(value) => {
+            val sessionData = request.data ++ Map(value.swap).mapValues(_.toString)
+            AdjustedIncome() go Forward.using(sessionData)
+          }
+        }
       }
     )
   }

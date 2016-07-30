@@ -20,29 +20,22 @@ import connector.CalculatorConnector
 import play.api.mvc._
 import scala.concurrent.Future
 import service._
+import service.KeystoreService._
 
-object StartPageController extends StartPageController{
-    override val connector: CalculatorConnector = CalculatorConnector
-    override val keystore: KeystoreService = KeystoreService
+object StartPageController extends StartPageController {
+  def keystore: KeystoreService = KeystoreService
 }
 
-trait StartPageController extends BaseFrontendController {
-    val connector: CalculatorConnector
-    val keystore: KeystoreService
+trait StartPageController extends RedirectController {
+  val startPage = withWriteSession { implicit request =>
+    val sessionData = request.data ++ Map((IS_EDIT_KEY, "false"))
+    Start() go Forward.using(sessionData)
+  }
 
-    private val onSubmitRedirect: Call = routes.TaxYearSelectionController.onPageLoad()
-
-    val startPage = withSession { implicit request =>
-      keystore.store(false.toString(), KeystoreService.IS_EDIT_KEY).map {
-        (_) =>
-        Redirect(onSubmitRedirect)
-      }
+  val newSession = withSession { implicit request =>
+    keystore.clear.map {
+      (_)=>
+      Redirect(routes.StartPageController.startPage()).withNewSession
     }
-
-    val newSession = withSession { implicit request =>
-      keystore.clear.map {
-        (_)=>
-        Redirect(routes.StartPageController.startPage()).withNewSession.withSession(createSessionId())
-      }
-    }
+  }
 }

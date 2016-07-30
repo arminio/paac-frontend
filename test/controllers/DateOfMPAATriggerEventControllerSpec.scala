@@ -30,7 +30,7 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
 
   trait ControllerWithMockKeystore extends MockKeystoreFixture {
     object ControllerWithMockKeystore extends DateOfMPAATriggerEventController {
-      override val keystore: KeystoreService = MockKeystore
+      def keystore: KeystoreService = MockKeystore
     }
     MockKeystore.map = MockKeystore.map + (CURRENT_INPUT_YEAR_KEY -> "2015")
     MockKeystore.map = MockKeystore.map + (SELECTED_INPUT_YEARS_KEY -> "2015")
@@ -79,16 +79,18 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
     "onSubmit" should {
       "with valid form save date into keystore" in new ControllerWithMockKeystore {
         // set up
-        implicit val hc = HeaderCarrier()
-        implicit val request = FakeRequest(POST, "/paac/d").withSession((SessionKeys.sessionId,SESSION_ID)).withFormUrlEncodedBody(("dateOfMPAATriggerEvent.day" -> "4"),
+        val sessionData = List((SessionKeys.sessionId,SESSION_ID),
+                               (IS_EDIT_KEY -> "false"),
+                               (TE_YES_NO_KEY -> "true"),
+                               (CURRENT_INPUT_YEAR_KEY -> "2015"),
+                               (SELECTED_INPUT_YEARS_KEY -> "2015"))
+        implicit val request = FakeRequest(POST, "/paac/d").withSession(sessionData: _*).withFormUrlEncodedBody(("dateOfMPAATriggerEvent.day" -> "4"),
                                     ("dateOfMPAATriggerEvent.month" -> "7"),
                                     ("dateOfMPAATriggerEvent.year" -> "2015"),
                                     (P1_TRIGGER_DC_KEY -> "0"),
                                     (P2_TRIGGER_DC_KEY -> "0"),
                                     (TRIGGER_DATE_KEY -> "2015-7-4"),
                                     ("originalDate" -> "2013-7-1"))
-        MockKeystore.map = MockKeystore.map + (IS_EDIT_KEY -> "false")
-        MockKeystore.map = MockKeystore.map + (TE_YES_NO_KEY -> "true")
 
         // test
         val result : Future[Result] = ControllerWithMockKeystore.onSubmit()(request)
@@ -102,16 +104,18 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
 
       "with valid date redirect to moneyPurchasePostTriggerValue" in new ControllerWithMockKeystore {
         // set up
-        implicit val hc = HeaderCarrier()
-        implicit val request = FakeRequest(POST, "/paac/d").withSession((SessionKeys.sessionId,SESSION_ID)).withFormUrlEncodedBody(("dateOfMPAATriggerEvent.day" -> "4"),
+        val sessionData = List((SessionKeys.sessionId,SESSION_ID),
+                               (IS_EDIT_KEY -> "false"),
+                               (TE_YES_NO_KEY -> "true"),
+                               (CURRENT_INPUT_YEAR_KEY -> "2015"),
+                               (SELECTED_INPUT_YEARS_KEY -> "2015"))
+        implicit val request = FakeRequest(POST, "/paac/d").withSession(sessionData: _*).withFormUrlEncodedBody(("dateOfMPAATriggerEvent.day" -> "4"),
                                     ("dateOfMPAATriggerEvent.month" -> "7"),
                                     ("dateOfMPAATriggerEvent.year" -> "2015"),
                                     (P1_TRIGGER_DC_KEY -> "0"),
                                     (P2_TRIGGER_DC_KEY -> "0"),
                                     (TRIGGER_DATE_KEY -> "2015-7-4"),
                                     ("originalDate" -> "2013-7-1"))
-        MockKeystore.map = MockKeystore.map + (IS_EDIT_KEY -> "false")
-        MockKeystore.map = MockKeystore.map + (TE_YES_NO_KEY -> "true")
 
         // test
         val result : Future[Result] = ControllerWithMockKeystore.onSubmit()(request)
@@ -123,8 +127,12 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
 
       "with last date in before p1 show invalid error" in new ControllerWithMockKeystore {
         // set up
-        implicit val hc = HeaderCarrier()
-        implicit val request = FakeRequest(POST, "/paac/d").withSession((SessionKeys.sessionId,SESSION_ID)).withFormUrlEncodedBody(("dateOfMPAATriggerEvent.day" -> "5"),
+        val sessionData = List((SessionKeys.sessionId,SESSION_ID),
+                               (IS_EDIT_KEY -> "false"),
+                               (TE_YES_NO_KEY -> "true"),
+                               (CURRENT_INPUT_YEAR_KEY -> "2015"),
+                               (SELECTED_INPUT_YEARS_KEY -> "2015"))
+        implicit val request = FakeRequest(POST, "/paac/d").withSession(sessionData: _*).withFormUrlEncodedBody(("dateOfMPAATriggerEvent.day" -> "5"),
                                     ("dateOfMPAATriggerEvent.month" -> "4"),
                                     ("dateOfMPAATriggerEvent.year" -> "2015"),
                                     (P1_TRIGGER_DC_KEY -> "0"),
@@ -132,7 +140,6 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
                                     (TRIGGER_DATE_KEY -> "2015-4-5"),
                                     (IS_EDIT_KEY -> "false"),
                                     ("originalDate" -> "2013-7-1"))
-        MockKeystore.map = MockKeystore.map + (TE_YES_NO_KEY -> "true")
 
         // test
         val result : Future[Result] = ControllerWithMockKeystore.onSubmit()(request)
@@ -145,8 +152,12 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
 
       "with no date show invalid error" in new ControllerWithMockKeystore {
         // set up
-        implicit val hc = HeaderCarrier()
-        implicit val request = FakeRequest(POST, "/paac/d").withSession((SessionKeys.sessionId,SESSION_ID)).withFormUrlEncodedBody(("dateOfMPAATriggerEvent.day" -> ""),
+        val sessionData = List((SessionKeys.sessionId,SESSION_ID),
+                               (IS_EDIT_KEY -> "false"),
+                               (TE_YES_NO_KEY -> "true"),
+                               (CURRENT_INPUT_YEAR_KEY -> "2015"),
+                               (SELECTED_INPUT_YEARS_KEY -> "2015"))
+        implicit val request = FakeRequest(POST, "/paac/d").withSession(sessionData: _*).withFormUrlEncodedBody(("dateOfMPAATriggerEvent.day" -> ""),
                                     ("dateOfMPAATriggerEvent.month" -> ""),
                                     ("dateOfMPAATriggerEvent.year" -> ""),
                                     (P1_TRIGGER_DC_KEY -> "0"),
@@ -154,7 +165,6 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
                                     (TRIGGER_DATE_KEY -> ""),
                                     (IS_EDIT_KEY -> "false"),
                                     ("originalDate" -> "2013-7-1"))
-        MockKeystore.map = MockKeystore.map + (TE_YES_NO_KEY -> "true")
 
         // test
         val result : Future[Result] = ControllerWithMockKeystore.onSubmit()(request)
@@ -167,8 +177,12 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
 
       "with bad date show invalid error" in new ControllerWithMockKeystore {
         // set up
-        implicit val hc = HeaderCarrier()
-        implicit val request = FakeRequest(POST, "/paac/d").withSession((SessionKeys.sessionId,SESSION_ID)).withFormUrlEncodedBody(("dateOfMPAATriggerEvent.day" -> "-1"),
+        val sessionData = List((SessionKeys.sessionId,SESSION_ID),
+                               (IS_EDIT_KEY -> "false"),
+                               (TE_YES_NO_KEY -> "true"),
+                               (CURRENT_INPUT_YEAR_KEY -> "2015"),
+                               (SELECTED_INPUT_YEARS_KEY -> "2015"))
+        implicit val request = FakeRequest(POST, "/paac/d").withSession(sessionData: _*).withFormUrlEncodedBody(("dateOfMPAATriggerEvent.day" -> "-1"),
                                     ("dateOfMPAATriggerEvent.month" -> "-1"),
                                     ("dateOfMPAATriggerEvent.year" -> "-1"),
                                     (P1_TRIGGER_DC_KEY -> "0"),
@@ -176,7 +190,6 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
                                     (TRIGGER_DATE_KEY -> ""),
                                     (IS_EDIT_KEY -> "false"),
                                     ("originalDate" -> "2013-7-1"))
-        MockKeystore.map = MockKeystore.map + (TE_YES_NO_KEY -> "true")
 
         // test
         val result : Future[Result] = ControllerWithMockKeystore.onSubmit()(request)
@@ -189,16 +202,18 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
 
       "with valid date redirect to next trigger amount page if edit flag not set" in new ControllerWithMockKeystore {
         // set up
-        implicit val hc = HeaderCarrier()
-        implicit val request = FakeRequest(POST, "/paac/d").withSession((SessionKeys.sessionId,SESSION_ID)).withFormUrlEncodedBody(("dateOfMPAATriggerEvent.day" -> "4"),
+        val sessionData = List((SessionKeys.sessionId,SESSION_ID),
+                               (IS_EDIT_KEY -> "false"),
+                               (TE_YES_NO_KEY -> "true"),
+                               (CURRENT_INPUT_YEAR_KEY -> "2015"),
+                               (SELECTED_INPUT_YEARS_KEY -> "2015,2014"))
+        implicit val request = FakeRequest(POST, "/paac/d").withSession(sessionData: _*).withFormUrlEncodedBody(("dateOfMPAATriggerEvent.day" -> "4"),
                                     ("dateOfMPAATriggerEvent.month" -> "7"),
                                     ("dateOfMPAATriggerEvent.year" -> "2015"),
                                     (P1_TRIGGER_DC_KEY -> "0"),
                                     (P2_TRIGGER_DC_KEY -> "0"),
                                     (TRIGGER_DATE_KEY -> "2013-7-1"),
                                     ("originalDate" -> "2013-7-1"))
-
-        MockKeystore.map = MockKeystore.map + (IS_EDIT_KEY -> "false")
 
         // test
         val result : Future[Result] = ControllerWithMockKeystore.onSubmit()(request)
@@ -208,31 +223,14 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
         redirectLocation(result) shouldBe Some("/paac/moneyPurchasePostTriggerValue")
       }
 
-      "with valid date redirect to review page if edit flag set" in new ControllerWithMockKeystore {
-        // set up
-        MockKeystore.map = MockKeystore.map + (IS_EDIT_KEY -> "true")
-        implicit val hc = HeaderCarrier()
-        implicit val request = FakeRequest(POST, "/paac/d").withSession((SessionKeys.sessionId,SESSION_ID)).withFormUrlEncodedBody(("dateOfMPAATriggerEvent.day" -> "4"),
-                                    ("dateOfMPAATriggerEvent.month" -> "11"),
-                                    ("dateOfMPAATriggerEvent.year" -> "2015"),
-                                    (P1_TRIGGER_DC_KEY -> "0"),
-                                    (P2_TRIGGER_DC_KEY -> "0"),
-                                    (TRIGGER_DATE_KEY -> "2013-7-1"),
-                                    (IS_EDIT_KEY -> "true"),
-                                    ("originalDate" -> "2013-7-1"))
-
-        // test
-        val result : Future[Result] = ControllerWithMockKeystore.onSubmit()(request)
-
-        // check
-        status(result) shouldBe 303
-        redirectLocation(result) shouldBe Some("/paac/review")
-      }
-
       "with invalid form display page again" in new ControllerWithMockKeystore {
         // set up
-        implicit val hc = HeaderCarrier()
-        implicit val request = FakeRequest(POST, "/paac/d").withSession((SessionKeys.sessionId,SESSION_ID)).withFormUrlEncodedBody(("dateOfMPAATriggerEvent.day" -> "4"),
+        val sessionData = List((SessionKeys.sessionId,SESSION_ID),
+                               (IS_EDIT_KEY -> "false"),
+                               (TE_YES_NO_KEY -> "true"),
+                               (CURRENT_INPUT_YEAR_KEY -> "2015"),
+                               (SELECTED_INPUT_YEARS_KEY -> "2015"))
+        implicit val request = FakeRequest(POST, "/paac/d").withSession(sessionData: _*).withFormUrlEncodedBody(("dateOfMPAATriggerEvent.day" -> "4"),
                                     ("dateOfMPAATriggerEvent.month" -> "7"),
                                     ("dateOfMPAATriggerEvent.year" -> "2013"),
                                     (P1_TRIGGER_DC_KEY -> "0"),
@@ -254,7 +252,12 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
     "onBack" should {
       "during edit return to review page" in new ControllerWithMockKeystore {
         // set up
-        val request = FakeRequest(GET,"").withSession{(SessionKeys.sessionId,SESSION_ID)}
+        val sessionData = List((SessionKeys.sessionId,SESSION_ID),
+                               (IS_EDIT_KEY -> "true"),
+                               (TE_YES_NO_KEY -> "true"),
+                               (CURRENT_INPUT_YEAR_KEY -> "2015"),
+                               (SELECTED_INPUT_YEARS_KEY -> "2015"))
+        val request = FakeRequest(GET,"").withSession(sessionData: _*)
         MockKeystore.map = MockKeystore.map + (IS_EDIT_KEY -> "true")
 
         // test
@@ -267,11 +270,14 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
 
       "during edit return to yes/no page" in new ControllerWithMockKeystore {
         // set up
-        val request = FakeRequest(GET,"").withSession{(SessionKeys.sessionId,SESSION_ID)}
-        MockKeystore.map = MockKeystore.map + (IS_EDIT_KEY -> "false")
-        MockKeystore.map = MockKeystore.map + (FIRST_DC_YEAR_KEY -> "2015")
-        MockKeystore.map = MockKeystore.map + (TE_YES_NO_KEY -> "Yes")
-        MockKeystore.map = MockKeystore.map + (s"${DC_FLAG_PREFIX}2015" -> "true")
+        val sessionData = List((SessionKeys.sessionId,SESSION_ID),
+                               (IS_EDIT_KEY -> "false"),
+                               (FIRST_DC_YEAR_KEY -> "2015"),
+                               (TE_YES_NO_KEY -> "Yes"),
+                               (s"${DC_FLAG_PREFIX}2015" -> "true"),
+                               (CURRENT_INPUT_YEAR_KEY -> "2015"),
+                               (SELECTED_INPUT_YEARS_KEY -> "2015"))
+        val request = FakeRequest(GET,"").withSession(sessionData: _*)
 
         // test
         val result : Future[Result] = ControllerWithMockKeystore.onBack()(request)

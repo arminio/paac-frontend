@@ -18,65 +18,73 @@ package controllers
 
 import form.CalculatorForm
 import service._
+import models.CalculatorFormFields
+import play.api.data.Form
 import service.KeystoreService._
-
+import play.api.mvc.Request
 import scala.concurrent.Future
 
 object PensionInputs201617Controller extends PensionInputs201617Controller {
-  override val keystore: KeystoreService = KeystoreService
+  def keystore: KeystoreService = KeystoreService
 }
 
 trait PensionInputs201617Controller extends RedirectController {
-  val keystore: KeystoreService
 
-  val onPageLoad = withSession { implicit request =>
-    keystore.read[String](List(CURRENT_INPUT_YEAR_KEY)).flatMap {
-      (fieldsMap) =>
-      val cy = fieldsMap int CURRENT_INPUT_YEAR_KEY
-      if (cy <= 2015 || cy == -1)
-        Start() go Edit
-      else {
-        val toRead = List(DB_FLAG_PREFIX, DC_FLAG_PREFIX, DB_PREFIX, DC_PREFIX).map(_.toString+cy) ++ List(IS_EDIT_KEY)
-        keystore.read[String](toRead).map {
-          (values) =>
-            Ok(views.html.pensionInputs_201617(CalculatorForm.bind(values).discardingErrors,
-              (values bool toRead(0)),
-              (values bool toRead(1)),
-              (values bool IS_EDIT_KEY),
-              (fieldsMap int CURRENT_INPUT_YEAR_KEY)
-              ))
-        }
-      }
+  val onPageLoad = withReadSession { implicit request =>
+    val cy = request.data int CURRENT_INPUT_YEAR_KEY
+    if (cy <= 2015 || cy == -1)
+      Start() go Edit
+    else {
+      showPage(CalculatorForm.bind(request.data).discardingErrors,
+              (request.data bool s"${DB_FLAG_PREFIX}${cy}"),
+              (request.data bool s"${DC_FLAG_PREFIX}${cy}"),
+              (request.data bool IS_EDIT_KEY),
+              cy
+              )
     }
   }
 
-  val onSubmit = withSession { implicit request =>
-    val data = formRequestData
-    val isDB = data("isDefinedBenefit").toBoolean
-    val isDC = data("isDefinedContribution").toBoolean
-    val isEdit = data("isEdit").toBoolean
-    val year = data("year").toInt
-    CalculatorForm.form.bindFromRequest().fold(
-      formWithErrors => { Future.successful(Ok(views.html.pensionInputs_201617(formWithErrors, isDB, isDC, isEdit, year))) },
+  val onSubmit = withWriteSession { implicit request =>
+    val year = request.form int "year"
+    val isDB = request.form bool s"${DB_FLAG_PREFIX}${year}"
+    val isDC = request.form bool s"${DC_FLAG_PREFIX}${year}"
+    val isEdit = request.form bool "isEdit"
+    var form = CalculatorForm.form.bindFromRequest()
+
+    form.fold(
+      formWithErrors => {
+        showPage(formWithErrors, isDB, isDC, isEdit, year)
+      },
       input => {
-        val isDBError = !input.toDefinedBenefit(year).isDefined && isDB
-        val isDCError = !input.toDefinedContribution(year).isDefined && isDC
-        if (isDBError || isDCError) {
-          var form = CalculatorForm.form.bindFromRequest()
-          if (isDBError) {
-            form = form.withError("year2016.definedBenefit", "db.error.bounds")
+        val isDBError = ("year2016.definedBenefit", !input.toDefinedBenefit(year).isDefined && isDB)
+        val isDCError = ("year2016.definedContribution", !input.toDefinedContribution(year).isDefined && isDC)
+        val errors = List(isDBError, isDBError)
+        if (errors.exists(_._2)) {
+          val formWithErrors = errors.foldLeft(form) {
+            (newForm, error) =>
+            newForm.withError(error._1, if (error._1.contains("definedBenefit")) "db.error.bounds" else "dc.error.bounds")
           }
-          if (isDCError) {
-            form = form.withError("year2016.definedContribution", "dc.error.bounds")
+          showPage(formWithErrors, isDB, isDC, isEdit, year)
+        } else {
+          val data = List(input.toDefinedBenefit(year),input.toDefinedContribution(year)).foldLeft(List[(Long, String)]()) {
+            (lst, entry)=>
+            entry match {
+              case Some(v) => lst ++ List(v)
+              case None => lst
+            }
           }
-          Future.successful(Ok(views.html.pensionInputs_201617(form, isDB, isDC, isEdit, year)))
-        } else
-          keystore.save(List(input.toDefinedBenefit(year), input.toDefinedContribution(year)), "").flatMap(_=>PensionInput() go Forward)
+          val sessionData = request.data ++ data.map(_.swap).toMap.mapValues(_.toString)
+          PensionInput() go Forward.using(sessionData)
+        }
       }
     )
   }
 
   val onBack = withSession { implicit request =>
     PensionInput() go Backward
+  }
+
+  protected def showPage(form: Form[CalculatorFormFields] , isDB: Boolean, isDC: Boolean, isEdit: Boolean, year: Int)(implicit request: Request[_]) = {
+    Future.successful(Ok(views.html.pensionInputs_201617(form, isDB, isDC, isEdit, year)))
   }
 }

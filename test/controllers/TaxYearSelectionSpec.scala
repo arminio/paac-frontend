@@ -30,7 +30,7 @@ class TaxYearSelectionSpec extends test.BaseSpec {
   trait ControllerWithMockKeystore extends MockKeystoreFixture {
     object ControllerWithMockKeystore extends TaxYearSelectionController {
       val keystorekey = "TaxYearSelection"
-      override val keystore: KeystoreService = MockKeystore
+      def keystore: KeystoreService = MockKeystore
     }
   }
 

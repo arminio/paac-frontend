@@ -73,99 +73,20 @@ class ReviewTotalAmountsControllerSpec extends test.BaseSpec {
   trait MockControllerFixture extends AMockKeystoreFixture with MockCalculatorConnectorFixture {
     object ControllerWithMocks extends ReviewTotalAmountsController {
       override val connector: CalculatorConnector = MockCalculatorConnector
-      override val keystore: KeystoreService = MockKeystore
+      def keystore: KeystoreService = MockKeystore
     }
   }
 
   trait Mock2016ControllerFixture extends AMockKeystoreFixture with MockCalculatorConnectorFixture {
     object ControllerWithMocks extends ReviewTotalAmountsController with Year2016 {
       override val connector: CalculatorConnector = MockCalculatorConnector
-      override val keystore: KeystoreService = MockKeystore
+      def keystore: KeystoreService = MockKeystore
     }
   }
 
   "ReviewTotalAmountsController" should {
-    "companion object should have keystore" in {
-      ReviewTotalAmountsController.keystore shouldBe KeystoreService
-    }
-
     "companion object should have connector" in {
       ReviewTotalAmountsController.connector shouldBe CalculatorConnector
-    }
-
-    "fetch amounts" can {
-      "should return values for all years in keystore" in new MockControllerFixture {
-        // set up
-        implicit val hc = HeaderCarrier()
-        implicit val request = FakeRequest().withSession((SessionKeys.sessionId,SESSION_ID))
-
-        // test
-        val result: Future[Map[String,String]] = ControllerWithMocks.fetchAmounts()
-
-        // check
-        val values: Map[String,String] = Await.result(result, Duration(1000,MILLISECONDS))
-        values should contain key ("definedBenefit_2011")
-        values should contain value ("12000")
-      }
-
-      "should return values for 2016 values in keystore" in new Mock2016ControllerFixture {
-        // set up
-        implicit val hc = HeaderCarrier()
-        implicit val request = FakeRequest().withSession((SessionKeys.sessionId,SESSION_ID))
-
-        // test
-        val result: Future[Map[String,String]] = ControllerWithMocks.fetchAmounts()
-
-        // check
-        val values: Map[String,String] = Await.result(result, Duration(1000,MILLISECONDS))
-        values should contain key ("definedBenefit_2016")
-        values("definedBenefit_2016") shouldBe "13000"
-      }
-
-      /*"should return 0.00 when keystore has 0 as an amount" in new MockControllerFixture {
-        // set up
-        MockKeystore.map = (MockKeystore.map - "definedBenefit_2006") + ("definedBenefit_2006"->"0")
-        implicit val hc = HeaderCarrier()
-        implicit val request = FakeRequest().withSession((SessionKeys.sessionId,SESSION_ID))
-
-        // test
-        val result: Future[Map[String,String]] = MockedReviewTotalAmountsController.fetchAmounts()
-
-        // check
-        val values: Map[String,String] = Await.result(result, Duration(1000,MILLISECONDS))
-        values should contain key ("definedBenefit_2006") 
-        values should contain value ("0.00")
-      }*/
-
-      "should return money purchase when keystore has money purchase amount for 2015" in new MockControllerFixture {
-        // set up
-        MockKeystore.map = MockKeystore.map + ("definedContribution_2015_p1"->"123400")
-        implicit val hc = HeaderCarrier()
-        implicit val request = FakeRequest().withSession((SessionKeys.sessionId,SESSION_ID))
-
-        // test
-        val result: Future[Map[String,String]] = ControllerWithMocks.fetchAmounts()
-
-        // check
-        val values: Map[String,String] = Await.result(result, Duration(1000,MILLISECONDS))
-        values should contain key ("definedContribution_2015_p1")
-        values should contain value ("1234")
-      }
-
-      "should return defined benefit when keystore has money purchase amount for 2015" in new MockControllerFixture {
-        // set up
-        MockKeystore.map = MockKeystore.map + ("definedBenefit_2015_p1"->"9123400")
-        implicit val hc = HeaderCarrier()
-        implicit val request = FakeRequest().withSession((SessionKeys.sessionId,SESSION_ID))
-
-        // test
-        val result: Future[Map[String,String]] = ControllerWithMocks.fetchAmounts()
-
-        // check
-        val values: Map[String,String] = Await.result(result, Duration(1000,MILLISECONDS))
-        values should contain key ("definedBenefit_2015_p1")
-        values should contain value ("91234")
-      }
     }
 
     "onSubmit" can {
@@ -210,19 +131,6 @@ class ReviewTotalAmountsControllerSpec extends test.BaseSpec {
     }
 
     "onPageLoad" can {
-
-      "reset isEdit and CurrentYear in keystore" in new MockControllerFixture {
-        // set up
-        val request = FakeRequest(GET, "/paac/calculate").withSession {(SessionKeys.sessionId,SESSION_ID)}
-
-        // test
-        val result: Future[Result] = ControllerWithMocks.onPageLoad()(request)
-
-        // check
-        await(result)
-        MockKeystore.map(KeystoreService.IS_EDIT_KEY) shouldBe "false"
-        MockKeystore.map(KeystoreService.CURRENT_INPUT_YEAR_KEY) shouldBe PageLocation.END.toString
-      }
 
       "display table of values that are present in keystore" in new MockControllerFixture {
         // set up
@@ -294,9 +202,9 @@ class ReviewTotalAmountsControllerSpec extends test.BaseSpec {
     "onEditAmount" can {
       "redirect to pension inputs controller when year is less than 2015" in new MockControllerFixture {
         // set up
-        val request = FakeRequest(GET, "/paac/edit").withSession {(SessionKeys.sessionId,SESSION_ID)}
-        MockKeystore.map = MockKeystore.map + (KeystoreService.SELECTED_INPUT_YEARS_KEY -> "2014")
-        MockKeystore.map = MockKeystore.map + ("isEdit" -> "false")
+        val request = FakeRequest(GET, "/paac/edit").withSession((SessionKeys.sessionId,SESSION_ID),
+                                                                 (KeystoreService.SELECTED_INPUT_YEARS_KEY -> "2014"),
+                                                                 (KeystoreService.IS_EDIT_KEY -> "false"))
 
         // test
         val result: Future[Result] = ControllerWithMocks.onEditAmount(2014)(request)
@@ -308,9 +216,9 @@ class ReviewTotalAmountsControllerSpec extends test.BaseSpec {
 
       "redirect to pension inputs 1516 controller on page load when year is 2015 " in new MockControllerFixture {
         // set up
-        val request = FakeRequest(GET, "/paac/edit").withSession {(SessionKeys.sessionId,SESSION_ID)}
-        MockKeystore.map = MockKeystore.map + ("isEdit" -> "false")
-        MockKeystore.map = MockKeystore.map + (KeystoreService.SELECTED_INPUT_YEARS_KEY -> "2015")
+        val request = FakeRequest(GET, "/paac/edit").withSession((SessionKeys.sessionId,SESSION_ID),
+                                                                 (KeystoreService.SELECTED_INPUT_YEARS_KEY -> "2014"),
+                                                                 (KeystoreService.IS_EDIT_KEY -> "false"))
 
         // test
         val result: Future[Result] = ControllerWithMocks.onEditAmount(2015)(request)
@@ -324,16 +232,15 @@ class ReviewTotalAmountsControllerSpec extends test.BaseSpec {
     "onBack" should {
       "redirect to pension input" in new MockControllerFixture {
         // set up
-        implicit val hc = HeaderCarrier()
-        implicit val request = FakeRequest(GET,"/paac/backreview").withSession{(SessionKeys.sessionId,SESSION_ID)}
-        MockKeystore.map = MockKeystore.map + (KeystoreService.SELECTED_INPUT_YEARS_KEY -> "2014")
-  
-          // test
-          val result : Future[Result] = ControllerWithMocks.onBack()(request)
-  
-          // check
-          status(result) shouldBe 303
-          redirectLocation(result) shouldBe Some("/paac/pensionInputs")
+        implicit val request = FakeRequest(GET,"/paac/backreview").withSession((SessionKeys.sessionId,SESSION_ID),
+                                                                               (KeystoreService.SELECTED_INPUT_YEARS_KEY -> "2014"))
+
+        // test
+        val result : Future[Result] = ControllerWithMocks.onBack()(request)
+
+        // check
+        status(result) shouldBe 303
+        redirectLocation(result) shouldBe Some("/paac/pensionInputs")
       }
     }
   }

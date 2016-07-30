@@ -23,6 +23,7 @@ import play.api.mvc.{Result, Request}
 import play.api.test.Helpers._
 import play.api.test.{FakeRequest, FakeApplication}
 import service.KeystoreService
+import service.KeystoreService._
 import uk.gov.hmrc.play.http.{HeaderCarrier, SessionKeys}
 import uk.gov.hmrc.play.test.UnitSpec
 import scala.concurrent.Future
@@ -37,7 +38,7 @@ class YesNoMPAATriggerEventAmountControllerSpec extends test.BaseSpec {
     object MockYesNoMPAATriggerEventAmountControllerWithMockKeystore extends YesNoMPAATriggerEventAmountController {
       val yesNoKeystoreKey = "yesnoForMPAATriggerEvent"
       val yesNoFormKey = "yesNo"
-      override val keystore: KeystoreService = MockKeystore
+      def keystore: KeystoreService = MockKeystore
     }
   }
 
@@ -103,8 +104,10 @@ class YesNoMPAATriggerEventAmountControllerSpec extends test.BaseSpec {
 
       "with invalid yesno key name should show same form with errors and response code 200" in new ControllerWithMockKeystore{
         // set up
-        implicit val hc = HeaderCarrier()
-        implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID))
+        implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID),
+                                                                          (CURRENT_INPUT_YEAR_KEY,"2015"),
+                                                                          (SELECTED_INPUT_YEARS_KEY,"2015"),
+                                                                          (IS_EDIT_KEY,"false"))
           .withFormUrlEncodedBody("yesnoForMPAATriggerEvent" -> "Yes")
 
         // test
@@ -116,8 +119,10 @@ class YesNoMPAATriggerEventAmountControllerSpec extends test.BaseSpec {
 
       "with valid yesNo key and value should save yesnoMPAAATriggerEventAmount key to keystore" in new ControllerWithMockKeystore{
         // set up
-        implicit val hc = HeaderCarrier()
-        implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID)).withFormUrlEncodedBody("yesNo" -> "Yes")
+        implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID),
+                                                                          (CURRENT_INPUT_YEAR_KEY,"2015"),
+                                                                          (SELECTED_INPUT_YEARS_KEY,"2015"),
+                                                                          (IS_EDIT_KEY,"false")).withFormUrlEncodedBody("yesNo" -> "Yes")
 
         // test
         val result: Future[Result] = MockYesNoMPAATriggerEventAmountControllerWithMockKeystore.onSubmit()(request)
@@ -130,9 +135,10 @@ class YesNoMPAATriggerEventAmountControllerSpec extends test.BaseSpec {
 
       "with yesNo = Yes should forward to dateofmpaate" in new ControllerWithMockKeystore{
         // set up
-        implicit val hc = HeaderCarrier()
-        implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID))
-          .withFormUrlEncodedBody(("yesNo" -> "Yes"))
+        implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID),
+                                                                          (CURRENT_INPUT_YEAR_KEY,"2015"),
+                                                                          (SELECTED_INPUT_YEARS_KEY,"2015"),
+                                                                          (IS_EDIT_KEY,"false")).withFormUrlEncodedBody(("yesNo" -> "Yes"))
 
         // test
         val result: Future[Result] = MockYesNoMPAATriggerEventAmountControllerWithMockKeystore.onSubmit()(request)
@@ -146,10 +152,10 @@ class YesNoMPAATriggerEventAmountControllerSpec extends test.BaseSpec {
 
       "with yesNo = No should forward to review page" in new ControllerWithMockKeystore{
         // set up
-        MockKeystore.map = MockKeystore.map + ("isEdit" -> "false")
-        implicit val hc = HeaderCarrier()
-        implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID))
-          .withFormUrlEncodedBody(("yesNo" -> "No"))
+        implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID),
+                                                                          (CURRENT_INPUT_YEAR_KEY,"2015"),
+                                                                          (SELECTED_INPUT_YEARS_KEY,"2015"),
+                                                                          (IS_EDIT_KEY,"false")).withFormUrlEncodedBody(("yesNo" -> "No"))
 
         // test
         val result: Future[Result] = MockYesNoMPAATriggerEventAmountControllerWithMockKeystore.onSubmit()(request)
@@ -163,18 +169,18 @@ class YesNoMPAATriggerEventAmountControllerSpec extends test.BaseSpec {
 
       "with yesNo = No should set trigger values to empty string" in new ControllerWithMockKeystore{
         // set up
-        MockKeystore.map = MockKeystore.map + ("isEdit" -> "false")
-        implicit val hc = HeaderCarrier()
-        implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID))
-          .withFormUrlEncodedBody(("yesNo" -> "No"))
+        implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID),
+                                                                          (CURRENT_INPUT_YEAR_KEY,"2015"),
+                                                                          (SELECTED_INPUT_YEARS_KEY,"2015"),
+                                                                          (IS_EDIT_KEY,"false")).withFormUrlEncodedBody(("yesNo" -> "No"))
 
         // test
         val result: Future[Result] = MockYesNoMPAATriggerEventAmountControllerWithMockKeystore.onSubmit()(request)
 
         // check
-        MockKeystore.map(KeystoreService.P1_TRIGGER_DC_KEY) shouldBe ("")
-        MockKeystore.map(KeystoreService.P2_TRIGGER_DC_KEY) shouldBe ("")
-        MockKeystore.map(KeystoreService.TRIGGER_DATE_KEY) shouldBe ("")
+        MockKeystore.map.contains(KeystoreService.P1_TRIGGER_DC_KEY) shouldBe false
+        MockKeystore.map.contains(KeystoreService.P2_TRIGGER_DC_KEY) shouldBe false
+        MockKeystore.map.contains(KeystoreService.TRIGGER_DATE_KEY) shouldBe false
       }
     }
   }

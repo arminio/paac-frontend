@@ -23,40 +23,29 @@ import service.KeystoreService._
 import scala.concurrent.Future
 
 object YesNoThresholdIncomeController extends YesNoThresholdIncomeController {
-  override val keystore: KeystoreService = KeystoreService
+  def keystore: KeystoreService = KeystoreService
 }
 
 trait YesNoThresholdIncomeController extends RedirectController {
-  val keystore: KeystoreService
-
-  private val yesNoFormKey = "yesNo"
-
-  val onPageLoad = withSession { implicit request =>
-    keystore.read(List(CURRENT_INPUT_YEAR_KEY)).flatMap {
-      (fieldsMap) =>
-      val year = fieldsMap int CURRENT_INPUT_YEAR_KEY
-      keystore.read[String](s"${TI_YES_NO_KEY_PREFIX}${year}").map {
-        (yesNo) =>
-          val value = yesNo match {
-            case Some(value) => value.toString
-            case None => "Yes"
-          }
-          Ok(views.html.yesno_for_threshold_income(YesNoMPAATriggerEventForm.form.fill(value), year))
-      }
+  val onPageLoad = withReadSession { implicit request =>
+    val year = request.data(CURRENT_INPUT_YEAR_KEY)
+    val value = request.data.get(s"${TI_YES_NO_KEY_PREFIX}${year}") match {
+      case Some(value) => value
+      case None => "Yes"
     }
+    Future.successful(Ok(views.html.yesno_for_threshold_income(YesNoMPAATriggerEventForm.form.fill(value), year.toInt)))
   }
 
-  val onSubmit = withSession { implicit request =>
-    val data = formRequestData
-    val year = data("year").toInt
+  val onSubmit = withWriteSession { implicit request =>
+    val year = request.data(CURRENT_INPUT_YEAR_KEY)
     YesNoMPAATriggerEventForm.form.bindFromRequest().fold(
-      formWithErrors => { Future.successful(Ok(views.html.yesno_for_threshold_income(YesNoMPAATriggerEventForm.form, year))) },
+      formWithErrors => Future.successful(Ok(views.html.yesno_for_threshold_income(YesNoMPAATriggerEventForm.form, year.toInt))),
       input => {
-        keystore.store(input, s"${TI_YES_NO_KEY_PREFIX}${year}")
-        if (input == "Yes")
-          YesNoIncome() go Forward
-        else
-          keystore.save(List((None,s"${AI_PREFIX}${year}")),"").flatMap(_=>YesNoIncome() go Forward)
+        var sessionData = request.data ++ Map((s"${TI_YES_NO_KEY_PREFIX}${year}"->input))
+        if (input == "No") {
+          sessionData = sessionData ++ Map((s"${AI_PREFIX}${year}"->""))
+        }
+        YesNoIncome() go Forward.using(sessionData)
       }
     )
   }
