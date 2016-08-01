@@ -43,7 +43,6 @@ class SimpleBaseSpec extends UnitSpec {
 
       override def saveData(data: Map[String,String])
                            (implicit hc: HeaderCarrier,
-                                     format: play.api.libs.json.Format[String],
                                      request: Request[Any]): Future[Boolean] = {
         map = map ++ data
         Future.successful(true)
@@ -51,7 +50,6 @@ class SimpleBaseSpec extends UnitSpec {
 
       override def readData()
                            (implicit hc: HeaderCarrier,
-                            format: play.api.libs.json.Format[String],
                             request: Request[Any]): Future[Map[String,String]] = {
         Future.successful(map)
       }
