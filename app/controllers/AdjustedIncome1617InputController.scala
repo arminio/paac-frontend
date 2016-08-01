@@ -35,7 +35,8 @@ trait AdjustedIncome1617InputController extends RedirectController {
     if (cy <= 2015 || cy == -1 ) {
       CheckYourAnswers() go Edit
     } else {
-      Future.successful(Ok(views.html.adjusted_income_1617_input(CalculatorForm.bind(request.data).discardingErrors, cy.toString, (request.data bool IS_EDIT_KEY))))
+      val form = CalculatorForm.bind(request.data).discardingErrors
+      Future.successful(Ok(views.html.adjusted_income_1617_input(form, cy.toString, (request.data bool IS_EDIT_KEY))))
     }
   }
 
@@ -45,12 +46,12 @@ trait AdjustedIncome1617InputController extends RedirectController {
     val isEdit = data("isEdit").toBoolean
     CalculatorForm.form.bindFromRequest().fold (
       formWithErrors =>
-        Future.successful(Ok (views.html.adjusted_income_1617_input(formWithErrors, cy.toString, isEdit))),
+        Future.successful(Ok(views.html.adjusted_income_1617_input(formWithErrors, cy.toString, isEdit))),
       input => {
         input.toAdjustedIncome(cy) match {
           case None => {
             var form = CalculatorForm.form.bindFromRequest()
-            form = form.withError("adjustedIncome.amount_"+cy, "ai.error.bounds")
+            form = form.withError(s"adjustedIncome.amount_${cy}", "ai.error.bounds")
             Future.successful(Ok(views.html.adjusted_income_1617_input(form, cy.toString, isEdit)))
           }
           case Some(value) => {
