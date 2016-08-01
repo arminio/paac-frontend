@@ -32,15 +32,15 @@ trait KeystoreService {
   val SOURCE = "paac-frontend"
   val sessionCache: SessionCache = PaacSessionCache
 
-  def readData()(implicit hc: HeaderCarrier, format: play.api.libs.json.Format[String], request: Request[Any]): Future[Map[String,String]] = {
+  def readData()(implicit hc: HeaderCarrier, request: Request[Any]): Future[Map[String,String]] = {
     import play.api.libs.json._
+    //implicit val format: Format[String]
     request.session.get(SessionKeys.sessionId) match {
       case Some(id) => {
-        sessionCache.fetchAndGetEntry[String](SOURCE, id, "calculatorForm").map {
+        sessionCache.fetchAndGetEntry[JsValue](SOURCE, id, "calculatorForm").map {
           (maybeValue)=>
           maybeValue match {
-            case Some("") => Map[String,String]()
-            case Some(jsonString) => Json.parse(jsonString).as[Map[String, JsValue]].mapValues(_.as[String])
+            case Some(json) => json.as[Map[String, JsValue]].mapValues(_.as[String])
             case None => Map[String,String]()
           }
         }
@@ -49,12 +49,13 @@ trait KeystoreService {
     }
   }
 
-  def saveData(data: Map[String,String])(implicit hc: HeaderCarrier, format: play.api.libs.json.Format[String], request: Request[Any]): Future[Boolean] = {
+  def saveData(data: Map[String,String])(implicit hc: HeaderCarrier, request: Request[Any]): Future[Boolean] = {
     import play.api.libs.json._
+    //implicit val format: Format[String]
     request.session.get(SessionKeys.sessionId) match {
       case Some(id) => {
-        val v = Json.stringify(Json.toJson(data.filterNot((entry)=>entry._1 == "csrfToken" || entry._1 == "sessionId")))
-        sessionCache.cache[String](SOURCE, id, "calculatorForm", v) map {
+        val json = Json.toJson(data.filterNot((entry)=>entry._1 == "csrfToken" || entry._1 == "sessionId"))
+        sessionCache.cache[JsValue](SOURCE, id, "calculatorForm", json) map {
           (_)=>
           true
         }
