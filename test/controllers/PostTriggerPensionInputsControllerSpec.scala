@@ -48,7 +48,11 @@ class PostTriggerPensionInputsControllerSpec extends test.BaseSpec {
 
     "redirect if trigger date is blank in keystore" in new ControllerWithMockKeystore {
       MockKeystore.map = MockKeystore.map + (KeystoreService.TRIGGER_DATE_KEY -> "")
-      val request = FakeRequest(GET,"").withSession{(SessionKeys.sessionId,SESSION_ID)}
+      val sessionData = List((SessionKeys.sessionId,SESSION_ID),
+                             (KeystoreService.IS_EDIT_KEY -> "true"),
+                             (KeystoreService.CURRENT_INPUT_YEAR_KEY -> "2015"),
+                             (KeystoreService.SELECTED_INPUT_YEARS_KEY -> "2015"))
+      val request = FakeRequest(GET,"").withSession(sessionData: _*)
 
       val result : Future[Result] = ControllerWithMockKeystore.onPageLoad()(request)
 

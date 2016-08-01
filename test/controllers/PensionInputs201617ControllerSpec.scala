@@ -218,8 +218,8 @@ class PensionInputs201617ControllerSpec extends test.BaseSpec {
                                                                           (CURRENT_INPUT_YEAR_KEY -> "2016"),
                                                                           (SELECTED_INPUT_YEARS_KEY -> "2016"))
                                                              .withFormUrlEncodedBody("year"->"2016","isEdit" -> "false",
-                                                                                     "isDefinedBenefit_2016"->"true",
-                                                                                     "isDefinedContribution_2016"->"false",
+                                                                                     "isDefinedBenefit"->"true",
+                                                                                     "isDefinedContribution"->"false",
                                                                                      "definedBenefits.amount_2016" -> "")
         // test
         val result: Future[Result] = ControllerWithMockKeystore.onSubmit()(request)
@@ -230,14 +230,14 @@ class PensionInputs201617ControllerSpec extends test.BaseSpec {
         htmlPage should include ("2016 defined benefit amount was incorrect or empty.")
       }
 
-      "with isEdit = false, DB = false and DC = true with empty DC Input should display the same page with errors"  ignore new ControllerWithMockKeystore {
+      "with isEdit = false, DB = false and DC = true with empty DC Input should display the same page with errors" in new ControllerWithMockKeystore {
         implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID),
                                                                           (IS_EDIT_KEY -> "false"),
                                                                           (CURRENT_INPUT_YEAR_KEY -> "2016"),
                                                                           (SELECTED_INPUT_YEARS_KEY -> "2016"))
                                                              .withFormUrlEncodedBody("year"->"2016","isEdit" -> "false",
-                                                                                     "isDefinedBenefit_2016"->"false",
-                                                                                     "isDefinedContribution_2016"->"true",
+                                                                                     "isDefinedBenefit"->"false",
+                                                                                     "isDefinedContribution"->"true",
                                                                                      "definedContributions.amount_2016" -> "")
 
         // test

@@ -71,5 +71,9 @@ class CalculatorConnectorSpec extends UnitSpec with MockitoSugar with BeforeAndA
       // check
       verify(mockHttpPost).POST[JsValue, HttpResponse]("/paac/calculate", body, null)
     }
+
+    "httpPostRequest hooks is default" in {
+      CalculatorConnector.httpPostRequest.hooks.size shouldBe 1
+    }
   }
 }

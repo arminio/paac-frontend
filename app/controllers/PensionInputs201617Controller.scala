@@ -53,9 +53,12 @@ trait PensionInputs201617Controller extends RedirectController {
         showPage(formWithErrors, isDB, isDC, isEdit, year)
       },
       input => {
-        val isDBError = ("year2016.definedBenefit", !input.toDefinedBenefit(year).isDefined && isDB)
-        val isDCError = ("year2016.definedContribution", !input.toDefinedContribution(year).isDefined && isDC)
-        val errors = List(isDBError, isDBError)
+        val db = input.toDefinedBenefit(year)
+        val dc = input.toDefinedContribution(year)
+
+        val isDBError = ("year2016.definedBenefits", !db.isDefined && isDB)
+        val isDCError = ("year2016.definedContributions", !dc.isDefined && isDC)
+        val errors = List(isDBError, isDCError)
         if (errors.exists(_._2)) {
           val formWithErrors = errors.foldLeft(form) {
             (newForm, error) =>
@@ -63,7 +66,7 @@ trait PensionInputs201617Controller extends RedirectController {
           }
           showPage(formWithErrors, isDB, isDC, isEdit, year)
         } else {
-          val data = List(input.toDefinedBenefit(year),input.toDefinedContribution(year)).foldLeft(List[(Long, String)]()) {
+          val data = List(db,dc).foldLeft(List[(Long, String)]()) {
             (lst, entry)=>
             entry match {
               case Some(v) => lst ++ List(v)
