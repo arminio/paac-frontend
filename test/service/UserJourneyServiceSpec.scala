@@ -37,13 +37,13 @@ class UserJourneyServiceSpec extends test.BaseSpec with Results {
   }
 
   "Going Forward" should {
-    def fullforward(year: String, 
-                    selectedYears: String, 
-                    t: Any, 
-                    isDC: Boolean, 
-                    isTI: Boolean, 
-                    isTE: Boolean, 
-                    isEdit: Boolean = false, 
+    def fullforward(year: String,
+                    selectedYears: String,
+                    t: Any,
+                    isDC: Boolean,
+                    isTI: Boolean,
+                    isTE: Boolean,
+                    isEdit: Boolean = false,
                     firstDCYear: Int = 2015): Option[String] = {
       val location = PageLocation(t, PageState(toInt(year), selectedYears, isDC, isTE, isTI, isEdit, firstDCYear))
       val next = (location move Forward)
@@ -70,7 +70,7 @@ class UserJourneyServiceSpec extends test.BaseSpec with Results {
     "when on simple pre-2015 journey" should {
       "when TaxYearSelection on forward goes to first year inputs" in {
         forwardNoDC("-2", "2012", TaxYearSelection) shouldBe Some("/paac/pensionInputs")
-      }    
+      }
 
       "when on one year on forward goes to end" in {
         forwardNoDC("2012", "2012", PensionInput) shouldBe Some("/paac/review")
@@ -140,10 +140,10 @@ class UserJourneyServiceSpec extends test.BaseSpec with Results {
       }
       "on 5th step goto trigger yes/no if dc and te is true (only when 2015 not selected)" in {
         fullforward("2016", "2016", AdjustedIncome, true, false, true, false, 2016) shouldBe Some("/paac/yesnompaate")
-      }      
+      }
       "on 5th step goto next year if dc is false" in {
         forward("2016", "2016,2014", AdjustedIncome, false, true) shouldBe Some("/paac/pensionInputs")
-      }      
+      }
       "on 5th step goto next year if dc is false and 2015 selected" in {
         forward("2016", "2016,2015", AdjustedIncome, false, true) shouldBe Some("/paac/scheme/2015")
       }
@@ -298,6 +298,11 @@ class UserJourneyServiceSpec extends test.BaseSpec with Results {
     "return first selected year as int" in {
       PageLocation(Start(), PageState(selectedYears="2008,2010")).firstYear shouldBe 2008
     }
+    "return start when no selected years" in {
+      PageLocation(Start(), PageState(selectedYears="2014")).firstYear shouldBe 2014
+      PageLocation(Start(), PageState(selectedYears="2014")).firstYear("") shouldBe PageLocation.START
+      PageLocation(Start(), PageState(selectedYears="2014")).firstYear("2013,2015") shouldBe 2013
+    }
   }
 
   "backward" should {
@@ -312,6 +317,12 @@ class UserJourneyServiceSpec extends test.BaseSpec with Results {
     }
     "on backward" in {
       (Start(PageState(2015, "")) move Backward) shouldBe Start(PageState(2015,"",false,false,false,false,-1))
+    }
+    "nextYear should return START" should {
+      (TriggerAmount(PageState(2015,"")) move Forward).state.year shouldBe PageLocation.START
+    }
+    "previousYear should return END" should {
+      (PensionInput(PageState(2015,"")) move Backward).state.year shouldBe 2015
     }
   }
 }
