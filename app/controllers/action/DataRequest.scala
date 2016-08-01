@@ -22,11 +22,6 @@ class DataRequest[A](val data: Map[String,String], val request: Request[A])
   extends WrappedRequest[A](request) {
   lazy val form: Map[String, String] = {
     val maybeFormData = request.body match {
-      case body @ AnyContentAsXml(_) => body.asFormUrlEncoded
-      case body @ AnyContentAsText(_) => body.asFormUrlEncoded
-      case body @ AnyContentAsMultipartFormData(_) => body.asFormUrlEncoded
-      case body @ AnyContentAsRaw(_) => body.asFormUrlEncoded
-      case body @ AnyContentAsJson(_) => body.asFormUrlEncoded
       case body @ AnyContentAsFormUrlEncoded(_) => body.asFormUrlEncoded
       case _ => None
     }
