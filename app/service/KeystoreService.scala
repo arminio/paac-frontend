@@ -34,7 +34,6 @@ trait KeystoreService {
 
   def readData()(implicit hc: HeaderCarrier, request: Request[Any]): Future[Map[String,String]] = {
     import play.api.libs.json._
-    //implicit val format: Format[String]
     request.session.get(SessionKeys.sessionId) match {
       case Some(id) => {
         sessionCache.fetchAndGetEntry[JsValue](SOURCE, id, "calculatorForm").map {
@@ -51,7 +50,6 @@ trait KeystoreService {
 
   def saveData(data: Map[String,String])(implicit hc: HeaderCarrier, request: Request[Any]): Future[Boolean] = {
     import play.api.libs.json._
-    //implicit val format: Format[String]
     request.session.get(SessionKeys.sessionId) match {
       case Some(id) => {
         val json = Json.toJson(data.filterNot((entry)=>entry._1 == "csrfToken" || entry._1 == "sessionId"))
