@@ -32,9 +32,8 @@ object PostTriggerPensionInputsController extends PostTriggerPensionInputsContro
 trait PostTriggerPensionInputsController extends RedirectController {
 
   val onPageLoad = withReadSession { implicit request =>
-    val dateAsStr = request.data(TRIGGER_DATE_KEY)
-    if (dateAsStr.isEmpty)
-      Future.successful(Redirect(routes.DateOfMPAATriggerEventController.onPageLoad)) // todo
+    if (request.data(TRIGGER_DATE_KEY).isEmpty)
+      TriggerDate() go Edit
     else
       showPage(CalculatorForm.bind(request.data), request.data bool IS_EDIT_KEY)
   }
