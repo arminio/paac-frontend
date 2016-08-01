@@ -31,16 +31,17 @@ case class ReadKeystoreAction(keystore: KeystoreService) extends ActionBuilder[D
     convert(r).flatMap((kr)=>updateSession(kr,block(kr)))
   }
 
-  private val keys = List(SCHEME_TYPE_KEY,
-                          DB_FLAG_PREFIX,
-                          DC_FLAG_PREFIX,
-                          TRIGGER_DATE_KEY,
-                          CURRENT_INPUT_YEAR_KEY,
-                          SELECTED_INPUT_YEARS_KEY,
-                          TE_YES_NO_KEY,
-                          IS_EDIT_KEY)
   private def isValue(key: String): Boolean = {
-    !(keys.contains(key) || key.startsWith(DB_FLAG_PREFIX) || key.startsWith(DC_FLAG_PREFIX))
+    !List(SCHEME_TYPE_KEY,
+          FIRST_DC_YEAR_KEY,
+          DB_FLAG_PREFIX,
+          DC_FLAG_PREFIX,
+          TRIGGER_DATE_KEY,
+          CURRENT_INPUT_YEAR_KEY,
+          SELECTED_INPUT_YEARS_KEY,
+          TE_YES_NO_KEY,
+          TI_YES_NO_KEY_PREFIX,
+          IS_EDIT_KEY).contains(key)
   }
 
   private def convert[T](r: Request[T]): Future[DataRequest[T]] = {
@@ -48,13 +49,15 @@ case class ReadKeystoreAction(keystore: KeystoreService) extends ActionBuilder[D
     implicit val request: Request[T] = r
     keystore.readData().map {
       (d)=>
-      val data = d.mapValues{
-        (v) =>
-        val Pattern = "([0-9]+00)".r
-        v match {
-           case Pattern(c) => f"${(v.toInt / 100.00)}%2.0f".trim
-           case _ => v
+      val data = d.map {
+        (entry) =>
+        val (key, value) = entry
+        val Pattern = "([0-9]+)".r
+        val newValue: String = value match {
+           case Pattern(v) if isValue(key) => f"${(v.toInt / 100.00)}%2.0f".trim
+           case v => v
         }
+        (key,newValue)
       }
       new DataRequest[T](data, request)
     }

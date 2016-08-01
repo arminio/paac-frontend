@@ -31,23 +31,20 @@ object PensionInputs201617Controller extends PensionInputs201617Controller {
 trait PensionInputs201617Controller extends RedirectController {
 
   val onPageLoad = withReadSession { implicit request =>
-    val cy = request.data int CURRENT_INPUT_YEAR_KEY
-    if (cy <= 2015 || cy == -1)
+    val year = request.data int CURRENT_INPUT_YEAR_KEY
+    if (year <= 2015 || year == -1)
       Start() go Edit
     else {
-      showPage(CalculatorForm.bind(request.data).discardingErrors,
-              (request.data bool s"${DB_FLAG_PREFIX}${cy}"),
-              (request.data bool s"${DC_FLAG_PREFIX}${cy}"),
-              (request.data bool IS_EDIT_KEY),
-              cy
-              )
+      val isDB = request.data bool s"${DB_FLAG_PREFIX}${year}"
+      val isDC = request.data bool s"${DC_FLAG_PREFIX}${year}"
+      showPage(CalculatorForm.bind(request.data).discardingErrors, isDB, isDC, (request.data bool IS_EDIT_KEY), year)
     }
   }
 
   val onSubmit = withWriteSession { implicit request =>
     val year = request.form int "year"
-    val isDB = request.form bool s"${DB_FLAG_PREFIX}${year}"
-    val isDC = request.form bool s"${DC_FLAG_PREFIX}${year}"
+    val isDB = request.form bool "isDefinedBenefit"
+    val isDC = request.form bool "isDefinedContribution"
     val isEdit = request.form bool "isEdit"
     var form = CalculatorForm.form.bindFromRequest()
 

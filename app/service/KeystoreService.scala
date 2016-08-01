@@ -53,7 +53,7 @@ trait KeystoreService {
     import play.api.libs.json._
     request.session.get(SessionKeys.sessionId) match {
       case Some(id) => {
-        val v = Json.stringify(Json.toJson(data))
+        val v = Json.stringify(Json.toJson(data.filterNot((entry)=>entry._1 == "csrfToken" || entry._1 == "sessionId")))
         sessionCache.cache[String](SOURCE, id, "calculatorForm", v) map {
           (_)=>
           true
