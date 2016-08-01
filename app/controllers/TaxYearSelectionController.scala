@@ -23,39 +23,39 @@ import scala.concurrent.Future
 import uk.gov.hmrc.play.http.{HeaderCarrier, SessionKeys}
 
 object TaxYearSelectionController extends TaxYearSelectionController {
-  override val keystore: KeystoreService = KeystoreService
+  def keystore: KeystoreService = KeystoreService
 }
 
 trait TaxYearSelectionController extends RedirectController {
-  val keystore: KeystoreService
+  def onYearSelected = withWriteSession { implicit request =>
+    val kkey = request.form.filterKeys(_.contains("TaxYear")).map { case (k,v) => k.drop(7) }.mkString (",")
+    if (kkey.nonEmpty) {
+      val data = request.data ++ sessionData(kkey,request.form("previous"))
+      TaxYearSelection() go Forward.using(data)
+    } else {
+      Future.successful(Ok(views.html.taxyearselection(Array[String](), true)))
+    }
+  }
 
-  def resetData(kkey: String, previous: String)(implicit hc: HeaderCarrier, format: play.api.libs.json.Format[String], request: Request[Any]): Unit = {
-    if (!previous.isEmpty){
+  val onPageLoad = withReadSession { implicit request =>
+    Future.successful(Ok(views.html.taxyearselection(request.data.getOrElse(SELECTED_INPUT_YEARS_KEY, "").split(","), false)))
+  }
+
+  protected def sessionData(kkey: String, previous: String): Map[String,String] = {
+    val m = if (!previous.isEmpty) {
       val deletedYears = previous.split(",").diff(kkey.split(","))
-      val keysToReset = deletedYears.flatMap {
+      deletedYears.flatMap {
         (year)=>
         if (year.size > 0)
-          if (year == "2015")
+          if (year == "2015") // to do 2016+
             List(P1_DB_KEY, P1_DC_KEY, P2_DB_KEY, P2_DC_KEY, P1_TRIGGER_DC_KEY, P2_TRIGGER_DC_KEY, TRIGGER_DATE_KEY, TE_YES_NO_KEY)
           else
             List(DB_PREFIX+year, DC_PREFIX+year)
         else List()
-      }
-      val data = keysToReset.map((k)=>(None,k)).toList
-      keystore.save[String](data, "")
+      }.map((k)=>(k,"")).toList.toMap
+    } else {
+      Map[String,String]()
     }
-  }
-
-  def onYearSelected = withSession { implicit request =>
-    val data: Map[String, Seq[String]] = request.body.asFormUrlEncoded.getOrElse(Map[String, Seq[String]]())
-    val kkey = data.filterKeys(_.contains("TaxYear")).map { case (k,v) => k.drop(7) }.mkString (",")
-    if (kkey.nonEmpty) {
-      resetData(kkey,data("previous")(0))
-      keystore.save[String](List((kkey, SELECTED_INPUT_YEARS_KEY), (PageLocation.START.toString, CURRENT_INPUT_YEAR_KEY))).flatMap(_=>TaxYearSelection() go Forward)
-    } else Future.successful(Ok(views.html.taxyearselection(Array[String](), true)))
-  }
-
-  val onPageLoad = withSession { implicit request =>
-    keystore.read[String](KeystoreService.SELECTED_INPUT_YEARS_KEY).map((taxyears) =>Ok(views.html.taxyearselection(taxyears.getOrElse("").split(","), false)) )
+    m ++ Map((SELECTED_INPUT_YEARS_KEY->kkey), (CURRENT_INPUT_YEAR_KEY->PageLocation.START.toString))
   }
 }

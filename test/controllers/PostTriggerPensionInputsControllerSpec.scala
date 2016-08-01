@@ -35,7 +35,7 @@ class PostTriggerPensionInputsControllerSpec extends test.BaseSpec {
     MockKeystore.map = MockKeystore.map + (KeystoreService.CURRENT_INPUT_YEAR_KEY -> "2015")
     MockKeystore.map = MockKeystore.map + (KeystoreService.SELECTED_INPUT_YEARS_KEY -> "2015")
     object ControllerWithMockKeystore extends PostTriggerPensionInputsController {
-      override val keystore: KeystoreService = MockKeystore
+      def keystore: KeystoreService = MockKeystore
     }
   }
 
@@ -48,7 +48,11 @@ class PostTriggerPensionInputsControllerSpec extends test.BaseSpec {
 
     "redirect if trigger date is blank in keystore" in new ControllerWithMockKeystore {
       MockKeystore.map = MockKeystore.map + (KeystoreService.TRIGGER_DATE_KEY -> "")
-      val request = FakeRequest(GET,"").withSession{(SessionKeys.sessionId,SESSION_ID)}
+      val sessionData = List((SessionKeys.sessionId,SESSION_ID),
+                             (KeystoreService.IS_EDIT_KEY -> "true"),
+                             (KeystoreService.CURRENT_INPUT_YEAR_KEY -> "2015"),
+                             (KeystoreService.SELECTED_INPUT_YEARS_KEY -> "2015"))
+      val request = FakeRequest(GET,"").withSession(sessionData: _*)
 
       val result : Future[Result] = ControllerWithMockKeystore.onPageLoad()(request)
 
@@ -123,7 +127,7 @@ class PostTriggerPensionInputsControllerSpec extends test.BaseSpec {
       status(result) shouldBe 200
       val htmlPage = contentAsString(await(result))
       htmlPage should include ("""<a href="input_year2015.postTriggerDcAmount2015P1" style="color:#b10e1e;font-weight: bold;">2015 amount was empty or negative. Please provide an amount between £0 and £5,000,000.</a>""")
-    }*/
+    }
 
     "saves p2 amount in keystore if valid form" in new ControllerWithMockKeystore {
       // set up
@@ -157,14 +161,16 @@ class PostTriggerPensionInputsControllerSpec extends test.BaseSpec {
       status(result) shouldBe 303
       MockKeystore.map should contain key (KeystoreService.P1_TRIGGER_DC_KEY)
       MockKeystore.map should contain value ("4000000")
-    }
+    }*/
   }
 
     "onBack" should {
       "during edit return to review page" in new ControllerWithMockKeystore {
         // set up
-        val request = FakeRequest(GET,"").withSession{(SessionKeys.sessionId,SESSION_ID)}
-        MockKeystore.map = MockKeystore.map + (KeystoreService.IS_EDIT_KEY -> "true")
+        val request = FakeRequest(GET,"").withSession((SessionKeys.sessionId,SESSION_ID),
+                                                      (KeystoreService.IS_EDIT_KEY -> "true"),
+                                                      (KeystoreService.CURRENT_INPUT_YEAR_KEY -> "2015"),
+                                                      (KeystoreService.SELECTED_INPUT_YEARS_KEY -> "2015"))
 
         // test
         val result : Future[Result] = ControllerWithMockKeystore.onBack()(request)
@@ -176,10 +182,12 @@ class PostTriggerPensionInputsControllerSpec extends test.BaseSpec {
 
       "during edit return to date page" in new ControllerWithMockKeystore {
         // set up
-        val request = FakeRequest(GET,"").withSession{(SessionKeys.sessionId,SESSION_ID)}
-        MockKeystore.map = MockKeystore.map + (KeystoreService.IS_EDIT_KEY -> "false")
-        MockKeystore.map = MockKeystore.map + (KeystoreService.FIRST_DC_YEAR_KEY -> "2015")
-        MockKeystore.map = MockKeystore.map + (KeystoreService.TE_YES_NO_KEY -> "Yes")
+        val request = FakeRequest(GET,"").withSession((SessionKeys.sessionId,SESSION_ID),
+                                                      (KeystoreService.IS_EDIT_KEY -> "false"),
+                                                      (KeystoreService.FIRST_DC_YEAR_KEY -> "2015"),
+                                                      (KeystoreService.TE_YES_NO_KEY -> "Yes"),
+                                                      (KeystoreService.CURRENT_INPUT_YEAR_KEY -> "2015"),
+                                                      (KeystoreService.SELECTED_INPUT_YEARS_KEY -> "2015"))
 
         // test
         val result : Future[Result] = ControllerWithMockKeystore.onBack()(request)

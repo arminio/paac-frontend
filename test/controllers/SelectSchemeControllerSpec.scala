@@ -35,7 +35,7 @@ class SelectSchemeControllerSpec extends test.BaseSpec {
 
   trait ControllerWithMockKeystore extends MockKeystoreFixture {
     object MockSelectSchemeControllerWithMockKeystore extends SelectSchemeController {
-      override val keystore: KeystoreService = MockKeystore
+      def keystore: KeystoreService = MockKeystore
     }
   }
 
@@ -102,10 +102,11 @@ class SelectSchemeControllerSpec extends test.BaseSpec {
 
       "with valid DB and DC schemeType flag value should save to keystore" in new ControllerWithMockKeystore{
         // set up
-        MockKeystore.map = MockKeystore.map + (FIRST_DC_YEAR_KEY -> "")
-        MockKeystore.map = MockKeystore.map + (SELECTED_INPUT_YEARS_KEY -> "2015")
-        implicit val hc = HeaderCarrier()
-        implicit val request = FakeRequest(POST, postEndPointURL).withSession((SessionKeys.sessionId,SESSION_ID))
+        val sessionData = List((FIRST_DC_YEAR_KEY -> ""),
+                               (SELECTED_INPUT_YEARS_KEY -> "2015"),
+                               (CURRENT_INPUT_YEAR_KEY -> "2015"),
+                               (SessionKeys.sessionId,SESSION_ID))
+        implicit val request = FakeRequest(POST, postEndPointURL).withSession(sessionData: _*)
                                                .withFormUrlEncodedBody(("definedContribution" -> "true"),("definedBenefit" -> "true"),("year"->"2015"),("firstDCYear"->"2015"))
 
         // test
@@ -120,8 +121,11 @@ class SelectSchemeControllerSpec extends test.BaseSpec {
 
       "with invalid DB and DC schemeType flag value should show errors" in new ControllerWithMockKeystore{
         // set up
-        implicit val hc = HeaderCarrier()
-        implicit val request = FakeRequest(POST, postEndPointURL).withSession((SessionKeys.sessionId,SESSION_ID))
+        val sessionData = List((FIRST_DC_YEAR_KEY -> ""),
+                               (SELECTED_INPUT_YEARS_KEY -> "2015"),
+                               (CURRENT_INPUT_YEAR_KEY -> "2015"),
+                               (SessionKeys.sessionId,SESSION_ID))
+        implicit val request = FakeRequest(POST, postEndPointURL).withSession(sessionData: _*)
                                                .withFormUrlEncodedBody(("definedContribution" -> ""),
                                                                        ("definedBenefit" -> ""),
                                                                        ("year"->"2015"),

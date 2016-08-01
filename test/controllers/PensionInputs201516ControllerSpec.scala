@@ -33,7 +33,7 @@ class PensionInputs201516ControllerSpec extends test.BaseSpec {
   trait ControllerWithMockKeystore extends MockKeystoreFixture {
     object ControllerWithMockKeystore extends PensionInputs201516Controller {
       val kesystoreKey = "definedBenefit_2015_p1"
-      override val keystore: KeystoreService = MockKeystore
+      def keystore: KeystoreService = MockKeystore
     }
   }
 
@@ -163,13 +163,13 @@ class PensionInputs201516ControllerSpec extends test.BaseSpec {
 
       "with dc flag false should not go to trigger question page" in new ControllerWithMockKeystore {
         // set up
-        MockKeystore.map = MockKeystore.map + ("isEdit" -> "false")
-        MockKeystore.map = MockKeystore.map + (IS_DB -> "true")
-        MockKeystore.map = MockKeystore.map + (IS_DC -> "false")
-        MockKeystore.map = MockKeystore.map + (SELECTED_INPUT_YEARS_KEY -> "2015,2014")
-        MockKeystore.map = MockKeystore.map + (CURRENT_INPUT_YEAR_KEY -> "2015")
-        implicit val hc = HeaderCarrier()
-        implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID)).withFormUrlEncodedBody(("year2015.definedBenefit_2015_p1" -> "40000"),
+        val sessionData = List(("isEdit" -> "false"),
+                              (IS_DB -> "true"),
+                              (IS_DC -> "false"),
+                              (SELECTED_INPUT_YEARS_KEY -> "2015,2014"),
+                              (CURRENT_INPUT_YEAR_KEY -> "2015"),
+                              (SessionKeys.sessionId -> SESSION_ID))
+        implicit val request = FakeRequest(POST, endPointURL).withSession(sessionData: _*).withFormUrlEncodedBody(("year2015.definedBenefit_2015_p1" -> "40000"),
                                                                                                                                      ("year2015.definedBenefit_2015_p2" -> "0"),
                                                                                                                                      ("isDefinedBenefit","true"),
                                                                                                                                      ("isDefinedContribution","false"),
@@ -181,28 +181,6 @@ class PensionInputs201516ControllerSpec extends test.BaseSpec {
         // check
         status(result) shouldBe 303
         redirectLocation(result) shouldBe Some("/paac/pensionInputs")
-      }
-
-      "with dc flag false should go to review page when only 2015 selected" in new ControllerWithMockKeystore {
-        // set up
-        MockKeystore.map = MockKeystore.map + ("isEdit" -> "false")
-        MockKeystore.map = MockKeystore.map + (IS_DB -> "true")
-        MockKeystore.map = MockKeystore.map + (IS_DC -> "false")
-        MockKeystore.map = MockKeystore.map + (SELECTED_INPUT_YEARS_KEY -> "2015")
-        MockKeystore.map = MockKeystore.map + (CURRENT_INPUT_YEAR_KEY -> "2015")
-        implicit val hc = HeaderCarrier()
-        implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID)).withFormUrlEncodedBody(("year2015.definedBenefit_2015_p1" -> "40000"),
-                                                                                                                                     ("year2015.definedBenefit_2015_p2" -> "0"),
-                                                                                                                                     ("isDefinedBenefit","true"),
-                                                                                                                                     ("isDefinedContribution","false"),
-                                                                                                                                     ("isEdit","false"))
-
-        // test
-        val result: Future[Result] = ControllerWithMockKeystore.onSubmit()(request)
-
-        // check
-        status(result) shouldBe 303
-        redirectLocation(result) shouldBe Some("/paac/review")
       }
 
 //      "with valid definedBenefit_2015_p1 and in edit mode should redirect to review" in new ControllerWithMockKeystore {
@@ -408,8 +386,11 @@ class PensionInputs201516ControllerSpec extends test.BaseSpec {
   "onBack" should {
     "redirect to scheme selection page" in new ControllerWithMockKeystore {
       // set up
-      implicit val hc = HeaderCarrier()
-      implicit val request = FakeRequest(GET,"/paac/back").withSession{(SessionKeys.sessionId,SESSION_ID)}
+      val sessionData = List(("isEdit" -> "false"),
+                      (SELECTED_INPUT_YEARS_KEY -> "2015,2014"),
+                      (CURRENT_INPUT_YEAR_KEY -> "2015"),
+                      (SessionKeys.sessionId -> SESSION_ID))
+      implicit val request = FakeRequest(GET,"/paac/back").withSession(sessionData: _*)
       MockKeystore.map = MockKeystore.map + (CURRENT_INPUT_YEAR_KEY -> "2015")
       MockKeystore.map = MockKeystore.map + (SELECTED_INPUT_YEARS_KEY -> "2015")
 

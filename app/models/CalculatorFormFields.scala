@@ -23,6 +23,7 @@ import PensionPeriod._
 
 trait ThisYear {
   def THIS_YEAR = config.PaacConfiguration.year()
+  def POUNDS_AND_PENCE = config.PaacConfiguration.supportPence()
 }
 
 //noinspection ScalaStyle
@@ -38,19 +39,19 @@ case class CalculatorFormFields(definedBenefits: Amounts,
 
   def toPageValues():List[Contribution] = {
     // if db == NONE then will be group 2 calculation otherwise db = 0 and will be group 3
-    def toTriggerContributions(maybeDB: Option[Long], 
-                               maybeTriggerDC: Option[Long], 
-                               c: Contribution, 
-                               contribution: Contribution): List[Contribution] = 
-      List(Contribution(c.taxPeriodStart, 
-                        contribution.taxPeriodEnd, 
-                        Some(InputAmounts(maybeDB.map((_)=>0L), 
+    def toTriggerContributions(maybeDB: Option[Long],
+                               maybeTriggerDC: Option[Long],
+                               c: Contribution,
+                               contribution: Contribution): List[Contribution] =
+      List(Contribution(c.taxPeriodStart,
+                        contribution.taxPeriodEnd,
+                        Some(InputAmounts(maybeDB.map((_)=>0L),
                         maybeTriggerDC, None, Some(true)))),
           contribution.copy(taxPeriodEnd=c.taxPeriodStart,amounts=contribution.amounts.map(_.copy(triggered=Some(false)))))
 
-    def toPeriodContribution(contribution: Contribution, 
-                             p1: Contribution => List[Contribution], 
-                             p2: Contribution => List[Contribution]): List[Contribution] = 
+    def toPeriodContribution(contribution: Contribution,
+                             p1: Contribution => List[Contribution],
+                             p2: Contribution => List[Contribution]): List[Contribution] =
     triggerDatePeriod map ((c)=> if (c.isPeriod1) p1(c) else if (c.isPeriod2) p2(c) else List(contribution)) getOrElse List(contribution)
 
     List.range(settings.START_YEAR, settings.THIS_YEAR + 1).flatMap {

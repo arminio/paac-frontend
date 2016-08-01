@@ -19,6 +19,7 @@ package models
 import play.api.libs.functional.syntax._
 import play.api.libs.json.Reads._
 import play.api.libs.json._
+import org.joda.time.LocalDate
 
 sealed trait CalculationParam
 sealed trait PensionCalculatorValue {
@@ -86,7 +87,7 @@ case class Contribution(taxPeriodStart: PensionPeriod, taxPeriodEnd: PensionPeri
       s"${taxPeriodStart.year.toString().drop(2)}/${taxPeriodEnd.year.toString().drop(2)}   "
     }
   }
-  
+
   def isEmpty(): Boolean = {
     !amounts.isDefined || (amounts.isDefined && amounts.get.isEmpty)
   }
@@ -168,6 +169,10 @@ object PensionPeriod {
   implicit def toPensionPeriod(str: String): PensionPeriod = {
     val parts = (if (str.isEmpty) "2008-01-01" else str).split("-").map(_.toInt)
     PensionPeriod(parts(0), parts(1), parts(2))
+  }
+
+  implicit def toPensionPeriod(joda: LocalDate): PensionPeriod = {
+    PensionPeriod(joda.getYear(), joda.getMonthOfYear(), joda.getDayOfMonth())
   }
 }
 

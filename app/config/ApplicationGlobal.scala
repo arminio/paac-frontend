@@ -75,6 +75,10 @@ object AuditFilter extends FrontendAuditFilter with RunMode with AppName {
 object PaacConfiguration {
   lazy val config:Option[Configuration] = Play.current.configuration.getConfig("microservice.services.paac")
 
+  def supportPence(): Boolean = {
+    config.flatMap[Boolean](_.getBoolean("poundsAndPence")).getOrElse(false)
+  }
+
   def year(): Int = {
     if (config.flatMap[Boolean](_.getBoolean("dynamic")).getOrElse(false)) {
       (new java.util.GregorianCalendar()).get(java.util.Calendar.YEAR)
@@ -84,7 +88,7 @@ object PaacConfiguration {
   }
 
   def forYear(year: Int): Map[String,Int] = {
-    config.map { 
+    config.map {
       (m) =>
       m.getConfig(s"year_${year}").map {
         (subConfig) =>

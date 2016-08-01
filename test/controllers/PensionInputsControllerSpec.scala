@@ -42,15 +42,11 @@ class PensionInputsControllerSpec extends test.BaseSpec {
                     )
 
     object PensionInputsControllerMockedKeystore extends PensionInputsController {
-      override val keystore: KeystoreService = MockKeystore
+      def keystore: KeystoreService = MockKeystore
     }
   }
 
   "PensionInputsController" should {
-    "companion object has keystore" in {
-      PensionInputsController.keystore shouldBe KeystoreService
-    }
-
     "onPageLoad" can {
       "with keystore containing DB flag as true values display DB blank field" in new ControllerWithMockKeystore {
         // setup
@@ -120,9 +116,9 @@ class PensionInputsControllerSpec extends test.BaseSpec {
                                                                   ("isDefinedBenefit","true"),
                                                                   ("isDefinedContribution","false"),
                                                                   ("year","2014"),
-                                                                  ("isEdit","false")).withSession{(SessionKeys.sessionId,SESSION_ID)}
-        MockKeystore.map = MockKeystore.map + ("Current" -> "2014")
-        MockKeystore.map = MockKeystore.map + ("definedBenefit" -> "true")
+                                                                  ("isEdit","false")).withSession((SessionKeys.sessionId,SESSION_ID),
+                                                                                                  ("Current" -> "2014"),
+                                                                                                  ("definedBenefit" -> "true"))
 
         // test
         val result : Future[Result] = PensionInputsControllerMockedKeystore.onSubmit()(request)
@@ -139,10 +135,9 @@ class PensionInputsControllerSpec extends test.BaseSpec {
                                                                   ("isDefinedBenefit","true"),
                                                                   ("isDefinedContribution","false"),
                                                                   ("year","2014"),
-                                                                  ("isEdit","false")).withSession{(SessionKeys.sessionId,SESSION_ID)}
-        MockKeystore.map = MockKeystore.map + ("Current" -> "2014")
-        MockKeystore.map = MockKeystore.map + ("definedBenefit" -> "true")
-
+                                                                  ("isEdit","false")).withSession((SessionKeys.sessionId,SESSION_ID),
+                                                                                                  ("Current" -> "2014"),
+                                                                                                  ("definedBenefit" -> "true"))
         // test
         val result : Future[Result] = PensionInputsControllerMockedKeystore.onSubmit()(request)
 
@@ -154,17 +149,18 @@ class PensionInputsControllerSpec extends test.BaseSpec {
 
     "with valid input amount should save to keystore" in new ControllerWithMockKeystore {
       // set up
-      MockKeystore.map = MockKeystore.map - "definedBenefit_2014"
-      MockKeystore.map = MockKeystore.map + ("Current" -> "2014")
-      MockKeystore.map = MockKeystore.map + ("SelectedYears" -> "2014")
-      MockKeystore.map = MockKeystore.map + ("definedBenefit" -> "true")
-      MockKeystore.map = MockKeystore.map + ("isEdit" -> "false")
+      val formData = List(("definedBenefits.amount_2014"->"1234"),
+                          ("isDefinedBenefit","true"),
+                          ("isDefinedContribution","false"),
+                          ("year","2014"),
+                          ("isEdit","false"))
+      val sessionData = List(("Current" -> "2014"),
+                             ("SelectedYears" -> "2014"),
+                             ("definedBenefit" -> "true"),
+                             ("isEdit" -> "false"),
+                             (SessionKeys.sessionId,SESSION_ID))
       implicit val hc = HeaderCarrier()
-      implicit val request = FakeRequest(POST,"/paac/pensionInputs").withSession{(SessionKeys.sessionId,SESSION_ID)}.withFormUrlEncodedBody(("definedBenefits.amount_2014"->"1234"),
-                                                                                                                                            ("isDefinedBenefit","true"),
-                                                                                                                                            ("isDefinedContribution","false"),
-                                                                                                                                            ("year","2014"),
-                                                                                                                                            ("isEdit","false"))
+      implicit val request = FakeRequest(POST,"/paac/pensionInputs").withSession(sessionData: _*).withFormUrlEncodedBody(formData: _*)
 
       // test
       val result : Future[Result] = PensionInputsControllerMockedKeystore.onSubmit()(request)
@@ -180,7 +176,11 @@ class PensionInputsControllerSpec extends test.BaseSpec {
     "redirect to tax year selection" in new ControllerWithMockKeystore {
       // set up
       implicit val hc = HeaderCarrier()
-      implicit val request = FakeRequest(GET,"/paac/backpensionInputs").withSession{(SessionKeys.sessionId,SESSION_ID)}
+      val sessionData = List(("Current" -> "2014"),
+                             ("SelectedYears" -> "2014"),
+                             ("isEdit" -> "false"),
+                             (SessionKeys.sessionId,SESSION_ID))
+      implicit val request = FakeRequest(GET,"/paac/backpensionInputs").withSession(sessionData: _*)
 
       // test
       val result : Future[Result] = PensionInputsControllerMockedKeystore.onBack()(request)

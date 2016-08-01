@@ -32,50 +32,33 @@ trait KeystoreService {
   val SOURCE = "paac-frontend"
   val sessionCache: SessionCache = PaacSessionCache
 
-  /**
-   * Store data to Keystore using a key
-   */
-  def storeValue[T](data: T, key: String)(implicit hc: HeaderCarrier, format: play.api.libs.json.Format[T], request: Request[Any]): Future[Option[T]] = {
-    request.session.get(SessionKeys.sessionId) match {
-      case Some(id) => sessionCache.cache[T](SOURCE, id, key, data) map { case x => x.getEntry[T](key) }
-      case None => Future.successful(None)
-    }
-  }
-
-  /**
-   * Store data to Keystore using a key
-   */
-  def store(data: String, key: String)(implicit hc: HeaderCarrier, request: Request[Any]): Future[Option[String]] = {
-    request.session.get(SessionKeys.sessionId) match {
-      case Some(id) => sessionCache.cache[String](SOURCE, id, key, data) map { case x => x.getEntry[String](key) }
-      case None => Future.successful(None)
-    }
-  }
-
-  /**
-   * get particular key out of keystore
-   */
-  def read[T](key: String)(implicit hc: HeaderCarrier, format: play.api.libs.json.Format[T], request: Request[Any]): Future[Option[T]] = {
+  def readData()(implicit hc: HeaderCarrier, request: Request[Any]): Future[Map[String,String]] = {
+    import play.api.libs.json._
     request.session.get(SessionKeys.sessionId) match {
       case Some(id) => {
-        sessionCache.fetchAndGetEntry[T](SOURCE, id, key).map {
+        sessionCache.fetchAndGetEntry[JsValue](SOURCE, id, "calculatorForm").map {
           (maybeValue)=>
           maybeValue match {
-            case Some("") => None
-            case Some(x) => Some(x)
-            case None => None
+            case Some(json) => json.as[Map[String, JsValue]].mapValues(_.as[String])
+            case None => Map[String,String]()
           }
         }
       }
-      case None => Future.successful(None)
+      case None => Future.successful(Map[String,String]())
     }
   }
 
-  def read[T](keys: List[String])(implicit marshall: (String, Option[T]) => (String, T), hc: HeaderCarrier, format: play.api.libs.json.Format[T], request: Request[Any]): Future[Map[String, T]] = {
-    val reads: List[Future[(String, T)]] = keys.map((key)=>read[T](key).map(marshall(key,_)))
-    Future.sequence(reads).map {
-      (fields) =>
-      Map[String, T](fields: _*)
+  def saveData(data: Map[String,String])(implicit hc: HeaderCarrier, request: Request[Any]): Future[Boolean] = {
+    import play.api.libs.json._
+    request.session.get(SessionKeys.sessionId) match {
+      case Some(id) => {
+        val json = Json.toJson(data.filterNot((entry)=>entry._1 == "csrfToken" || entry._1 == "sessionId"))
+        sessionCache.cache[JsValue](SOURCE, id, "calculatorForm", json) map {
+          (_)=>
+          true
+        }
+      }
+      case None => Future.successful(false)
     }
   }
 
@@ -86,50 +69,7 @@ trait KeystoreService {
     }
   }
 
-  def save[T](values: List[(Option[T],String)], defaultT: T)(implicit hc: HeaderCarrier, format: play.api.libs.json.Format[T], request: Request[Any]): Future[List[Option[T]]] = {
-    Future.sequence(values.map{
-      (pair)=>
-      val v = pair._1.getOrElse(defaultT)
-      storeValue[T](v, pair._2)
-    })
-  }
-
-  def save[T: ClassTag ,U](values: List[Option[(U,String)]], defaultT: T)(implicit hc: HeaderCarrier, format: play.api.libs.json.Format[T], request: Request[Any]): Future[List[Option[T]]] = {
-    Future.sequence(values.filter(_.isDefined).map{
-      (maybePair)=>
-      val pair = maybePair.get
-      storeValue[T](convert[T](pair._1.asInstanceOf[AnyRef], defaultT), pair._2)
-    })
-  }
-
-  def save[T](values: List[(T,String)])(implicit hc: HeaderCarrier, format: play.api.libs.json.Format[T], request: Request[Any]): Future[List[Option[T]]] = {
-    Future.sequence(values.map{
-      (pair)=>
-      storeValue[T](pair._1, pair._2)
-    })
-  }
-
   protected def buildUri(source: String, id: String): String = s"${sessionCache.baseUri}/${sessionCache.domain}/${source}/${id}"
-
-  def convert[T : ClassTag](value: AnyRef): Option[T] = {
-    val ct = implicitly[ClassTag[T]]
-    val typeStr = ct.toString()
-    value match {
-      case ct(x) => Some(x)
-      case x if typeStr == "java.lang.String" => Some(x.toString().asInstanceOf[T])
-      case _ => None
-    }
-  }
-
-  def convert[T : ClassTag](value: AnyRef, defaultT: T): T = {
-    val ct = implicitly[ClassTag[T]]
-    val typeStr = ct.toString()
-    value match {
-      case ct(x) => x
-      case x if typeStr == "java.lang.String" => x.toString().asInstanceOf[T]
-      case _ => defaultT
-    }
-  }
 
   implicit class RichMap(map: Map[String,String]) {
     def bool(key: String): Boolean = if (!map.isDefinedAt(key) || map(key).isEmpty) false else map(key).toBoolean
@@ -161,9 +101,4 @@ object KeystoreService extends KeystoreService {
   val TE_YES_NO_KEY = "yesnoForMPAATriggerEvent"
   val TI_YES_NO_KEY_PREFIX = "yesnoForThresholdIncome_"
   val IS_EDIT_KEY = "isEdit"
-
-  def toStringPair(key: String, value: Option[String]): (String, String) = value match {
-    case None => (key, "")
-    case Some(v) => (key, v)
-  }
 }

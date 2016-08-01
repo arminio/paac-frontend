@@ -19,43 +19,45 @@ package controllers
 import form.CalculatorForm
 import org.joda.time.LocalDate
 import service._
+import models._
+import play.api.data.Form
 import service.KeystoreService._
-
+import play.api.mvc.Request
 import scala.concurrent.Future
 
 object PostTriggerPensionInputsController extends PostTriggerPensionInputsController {
-  override val keystore: KeystoreService = KeystoreService
+  def keystore: KeystoreService = KeystoreService
 }
 
 trait PostTriggerPensionInputsController extends RedirectController {
-  val keystore: KeystoreService
 
-  val onPageLoad = withSession { implicit request =>
-    keystore.read[String](List(TRIGGER_DATE_KEY, P1_TRIGGER_DC_KEY, P2_TRIGGER_DC_KEY, TRIGGER_DC_KEY, IS_EDIT_KEY)).flatMap {
-      (values) =>
-        val dateAsStr = values(TRIGGER_DATE_KEY)
-        if (dateAsStr.isEmpty)
-          Future.successful(Redirect(routes.DateOfMPAATriggerEventController.onPageLoad))
-        else
-          Future.successful(Ok(views.html.postTriggerPensionInputs(CalculatorForm.bind(values), values bool IS_EDIT_KEY)))
-    }
+  val onPageLoad = withReadSession { implicit request =>
+    if (request.data(TRIGGER_DATE_KEY).isEmpty)
+      TriggerDate() go Edit
+    else
+      showPage(CalculatorForm.bind(request.data), request.data bool IS_EDIT_KEY)
   }
 
-  val onSubmit = withSession { implicit request =>
+  val onSubmit = withWriteSession { implicit request =>
     val f = CalculatorForm.form.bindFromRequest()
-    val data = formRequestData
+    val isEdit = request.form bool IS_EDIT_KEY
+    val data = request.form
     f.fold(
-      formWithErrors => Future.successful(Ok(views.html.postTriggerPensionInputs(formWithErrors, data("isEdit").toBoolean))),
+      formWithErrors => showPage(formWithErrors, isEdit),
       input => {
         val triggerP1 = input.triggerDatePeriod.get.isPeriod1
         val triggerP2 = input.triggerDatePeriod.get.isPeriod2
         if ((triggerP1 && !input.year2015.postTriggerDcAmount2015P1.isDefined) ||
             (triggerP2 && !input.year2015.postTriggerDcAmount2015P2.isDefined) ||
             (!triggerP1 && !triggerP2 && !input.triggerAmount.isDefined))
-          Future.successful(Ok(views.html.postTriggerPensionInputs(f.withError("error.bounds", "error.bounds", 0, 5000000.00), data("isEdit").toBoolean)))
+          showPage(f.withError("error.bounds", "error.bounds", 0, 5000000.00), isEdit)
         else {
-          val toSave: List[Option[(Long, String)]] = List(input.toP1TriggerDefinedContribution, input.toP2TriggerDefinedContribution, Some((input.triggerAmount.map(_*100L).getOrElse(0L), TRIGGER_DC_KEY)))
-          keystore.save[String, Long](toSave, "").flatMap(_=>TriggerAmount() go Forward)
+          val formData = List(input.toP1TriggerDefinedContribution.getOrElse(("",P1_TRIGGER_DC_KEY)),
+                              input.toP2TriggerDefinedContribution.getOrElse(("",P2_TRIGGER_DC_KEY)),
+                              (input.triggerAmount.map(_*100L).getOrElse(0L), TRIGGER_DC_KEY)).map(_.swap).toMap.mapValues(_.toString)
+
+          val sessionData = request.data ++ formData
+          TriggerAmount() go Forward.using(sessionData)
         }
       }
     )
@@ -63,5 +65,9 @@ trait PostTriggerPensionInputsController extends RedirectController {
 
   val onBack = withSession { implicit request =>
     TriggerAmount() go Backward
+  }
+
+  protected def showPage(form: Form[CalculatorFormFields], isEdit: Boolean)(implicit request: Request[_]) = {
+    Future.successful(Ok(views.html.postTriggerPensionInputs(form, isEdit)))
   }
 }

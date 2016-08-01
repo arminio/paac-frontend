@@ -17,6 +17,7 @@
 package form
 
 import models._
+import play.api.data._
 import play.api.data.Form
 import play.api.data.Forms._
 import service.KeystoreService
@@ -36,56 +37,109 @@ object CalculatorForm extends models.ThisYear {
   val CY7 = settings.THIS_YEAR-7
   val CY8 = settings.THIS_YEAR-8
 
-  def formDef(isValidating: Boolean = false): Form[CalculatorFormType] = {
-    val t = if (isValidating) 
-          //optional(bigDecimal(10,2)).verifying(" errorbounds", value=> if (value.isDefined) value.get.longValue >= 0 && value.get.longValue <= 5000000 else true)
-          optional(number(min=0,max=5000000)) 
-        else 
-          //optional(bigDecimal(10,2))
-          optional(number)
+  def isPoundsAndPence(): Boolean = {
+    settings.POUNDS_AND_PENCE
+  }
 
-    // need to figure out the types here so that form can be truly dynamic at present requires recompilation for apply and unapply 
-    //val amountsApply = if (isPence) Amounts.apply _ else Amounts.applyFromInt _
-    //val amountsUnapply = if (isPence) Amounts.unapply _ else Amounts.unapplyFromInt _
-    Form(mapping("definedBenefits" -> mapping(s"amount_${CY0}"->t,
-                                              s"amount_${CY1}"->t,
-                                              s"amount_${CY2}"->t,
-                                              s"amount_${CY3}"->t,
-                                              s"amount_${CY4}"->t,
-                                              s"amount_${CY5}"->t,
-                                              s"amount_${CY6}"->t,
-                                              s"amount_${CY7}"->t,
-                                              s"amount_${CY8}"->t)(Amounts.applyFromInt)(Amounts.unapplyToInt),
-              "definedContributions" -> mapping(s"amount_${CY0}"->t,
-                                                s"amount_${CY1}"->t,
-                                                s"amount_${CY2}"->t,
-                                                s"amount_${CY3}"->t,
-                                                s"amount_${CY4}"->t,
-                                                s"amount_${CY5}"->t,
-                                                s"amount_${CY6}"->t,
-                                                s"amount_${CY7}"->t,
-                                                s"amount_${CY8}"->t)(Amounts.applyFromInt)(Amounts.unapplyToInt),
-              "adjustedIncome" -> mapping(s"amount_${CY0}"->t,
-                                          s"amount_${CY1}"->t,
-                                          s"amount_${CY2}"->t,
-                                          s"amount_${CY3}"->t,
-                                          s"amount_${CY4}"->t,
-                                          s"amount_${CY5}"->t,
-                                          s"amount_${CY6}"->t,
-                                          s"amount_${CY7}"->t,
-                                          s"amount_${CY8}"->t)(Amounts.applyFromInt)(Amounts.unapplyToInt),
-              "year2015" -> mapping("definedBenefit_2015_p1"->t,
-                                    "definedContribution_2015_p1"->t,
-                                    "definedBenefit_2015_p2"->t,
-                                    "definedContribution_2015_p2"->t,
-                                    "postTriggerDcAmount2015P1"->t,
-                                    "postTriggerDcAmount2015P2"->t)
+  protected def formInPoundsAndPence(poundsAndPence: Mapping[Option[BigDecimal]], pounds: Mapping[Option[Int]]) = {
+    Form(mapping("definedBenefits" -> mapping(s"amount_${CY0}"->poundsAndPence,
+                                              s"amount_${CY1}"->poundsAndPence,
+                                              s"amount_${CY2}"->poundsAndPence,
+                                              s"amount_${CY3}"->poundsAndPence,
+                                              s"amount_${CY4}"->poundsAndPence,
+                                              s"amount_${CY5}"->poundsAndPence,
+                                              s"amount_${CY6}"->poundsAndPence,
+                                              s"amount_${CY7}"->poundsAndPence,
+                                              s"amount_${CY8}"->poundsAndPence)(Amounts.apply)(Amounts.unapply),
+              "definedContributions" -> mapping(s"amount_${CY0}"->poundsAndPence,
+                                                s"amount_${CY1}"->poundsAndPence,
+                                                s"amount_${CY2}"->poundsAndPence,
+                                                s"amount_${CY3}"->poundsAndPence,
+                                                s"amount_${CY4}"->poundsAndPence,
+                                                s"amount_${CY5}"->poundsAndPence,
+                                                s"amount_${CY6}"->poundsAndPence,
+                                                s"amount_${CY7}"->poundsAndPence,
+                                                s"amount_${CY8}"->poundsAndPence)(Amounts.apply)(Amounts.unapply),
+              "adjustedIncome" -> mapping(s"amount_${CY0}"->poundsAndPence,
+                                          s"amount_${CY1}"->poundsAndPence,
+                                          s"amount_${CY2}"->poundsAndPence,
+                                          s"amount_${CY3}"->poundsAndPence,
+                                          s"amount_${CY4}"->poundsAndPence,
+                                          s"amount_${CY5}"->poundsAndPence,
+                                          s"amount_${CY6}"->poundsAndPence,
+                                          s"amount_${CY7}"->poundsAndPence,
+                                          s"amount_${CY8}"->poundsAndPence)(Amounts.apply)(Amounts.unapply),
+              "year2015" -> mapping("definedBenefit_2015_p1"->poundsAndPence,
+                                    "definedContribution_2015_p1"->poundsAndPence,
+                                    "definedBenefit_2015_p2"->poundsAndPence,
+                                    "definedContribution_2015_p2"->poundsAndPence,
+                                    "postTriggerDcAmount2015P1"->poundsAndPence,
+                                    "postTriggerDcAmount2015P2"->poundsAndPence)
+                                    (Year2015Amounts.apply)
+                                    (Year2015Amounts.unapply),
+              "triggerAmount" -> pounds,
+              "triggerDate" -> optional(text)
+      )(CalculatorFormFields.apply)(CalculatorFormFields.unapply))
+  }
+
+  protected def formInPounds(pounds: Mapping[Option[Int]]) = {
+    Form(mapping("definedBenefits" -> mapping(s"amount_${CY0}"->pounds,
+                                              s"amount_${CY1}"->pounds,
+                                              s"amount_${CY2}"->pounds,
+                                              s"amount_${CY3}"->pounds,
+                                              s"amount_${CY4}"->pounds,
+                                              s"amount_${CY5}"->pounds,
+                                              s"amount_${CY6}"->pounds,
+                                              s"amount_${CY7}"->pounds,
+                                              s"amount_${CY8}"->pounds)(Amounts.applyFromInt)(Amounts.unapplyToInt),
+              "definedContributions" -> mapping(s"amount_${CY0}"->pounds,
+                                                s"amount_${CY1}"->pounds,
+                                                s"amount_${CY2}"->pounds,
+                                                s"amount_${CY3}"->pounds,
+                                                s"amount_${CY4}"->pounds,
+                                                s"amount_${CY5}"->pounds,
+                                                s"amount_${CY6}"->pounds,
+                                                s"amount_${CY7}"->pounds,
+                                                s"amount_${CY8}"->pounds)(Amounts.applyFromInt)(Amounts.unapplyToInt),
+              "adjustedIncome" -> mapping(s"amount_${CY0}"->pounds,
+                                          s"amount_${CY1}"->pounds,
+                                          s"amount_${CY2}"->pounds,
+                                          s"amount_${CY3}"->pounds,
+                                          s"amount_${CY4}"->pounds,
+                                          s"amount_${CY5}"->pounds,
+                                          s"amount_${CY6}"->pounds,
+                                          s"amount_${CY7}"->pounds,
+                                          s"amount_${CY8}"->pounds)(Amounts.applyFromInt)(Amounts.unapplyToInt),
+              "year2015" -> mapping("definedBenefit_2015_p1"->pounds,
+                                    "definedContribution_2015_p1"->pounds,
+                                    "definedBenefit_2015_p2"->pounds,
+                                    "definedContribution_2015_p2"->pounds,
+                                    "postTriggerDcAmount2015P1"->pounds,
+                                    "postTriggerDcAmount2015P2"->pounds)
                                     (Year2015Amounts.applyFromInt)
                                     (Year2015Amounts.unapplyToInt),
-              "triggerAmount" -> t,
+              "triggerAmount" -> pounds,
               "triggerDate" -> optional(text)
-      )(CalculatorFormFields.apply)(CalculatorFormFields.unapply)
-    )
+      )(CalculatorFormFields.apply)(CalculatorFormFields.unapply))
+  }
+
+  def formDef(isValidating: Boolean = false): Form[CalculatorFormType] = {
+    val poundsAndPence = if (isValidating)
+              optional(bigDecimal(10,2)).verifying(" errorbounds", value=> if (value.isDefined)
+                                                                             value.get.longValue >= 0 && value.get.longValue <= 5000000
+                                                                           else
+                                                                             true)
+        else
+          optional(bigDecimal(10,2))
+    val pounds = if (isValidating)
+                   optional(number(min=0,max=5000000))
+                 else
+                   optional(number)
+    if (isPoundsAndPence) {
+      formInPoundsAndPence(poundsAndPence, pounds)
+    } else {
+      formInPounds(pounds)
+    }
   }
 
   val form = formDef(true)
@@ -99,7 +153,7 @@ object CalculatorForm extends models.ThisYear {
                         ("year2015.definedContribution_2015_p2", data.getOrElse("dcAmount2015P2", data.getOrElse(P2_DC_KEY,""))),
                         ("year2015.postTriggerDcAmount2015P1", data.getOrElse(P1_TRIGGER_DC_KEY,"")),
                         ("year2015.postTriggerDcAmount2015P2", data.getOrElse(P2_TRIGGER_DC_KEY,"")))
-    val yearAmounts = List.range(settings.THIS_YEAR-8, settings.THIS_YEAR + 1).flatMap {
+    val amounts = List.range(settings.THIS_YEAR-8, settings.THIS_YEAR + 1).flatMap {
       (year)=>
       if (year != 2015)
         List((s"definedBenefits.amount_${year}", data.getOrElse("definedBenefit_" + year, "")),
@@ -108,9 +162,20 @@ object CalculatorForm extends models.ThisYear {
       else
         year2015
     }
+    val yearAmounts = amounts.map((pair)=>(pair._1,toAmount(pair._2, isPoundsAndPence)))
     val triggerDateValue = data.get(TRIGGER_DATE_KEY).map((date)=>("triggerDate", date)).getOrElse(("triggerDate", ""))
-    val triggerAmountValue = data.get(TRIGGER_DC_KEY).map((amount)=>("triggerAmount", amount)).getOrElse(("triggerAmount", ""))
+    val triggerAmountValue = data.get(TRIGGER_DC_KEY).map((amount)=>("triggerAmount", toAmount(amount,isPoundsAndPence))).getOrElse(("triggerAmount", ""))
     val values: List[(String,String)] = yearAmounts ++ List(triggerDateValue, triggerAmountValue)
     if (nonValidatingForm) CalculatorForm.nonValidatingForm.bind(Map(values: _*)) else CalculatorForm.form.bind(Map(values: _*))
+  }
+
+  def toAmount(poundsAndPence: String, isPoundsAndPence: Boolean): String = {
+    if (poundsAndPence.isEmpty) {
+      poundsAndPence
+    } else if(isPoundsAndPence) {
+      f"${(poundsAndPence.toInt / 100.00)}%2.2f".trim
+    } else {
+      f"${(poundsAndPence.toInt / 100.00)}%2.0f".trim
+    }
   }
 }

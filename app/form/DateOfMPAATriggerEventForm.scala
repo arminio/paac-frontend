@@ -22,11 +22,50 @@ import play.api.data.Forms._
 import play.api.libs.json.Json
 import service.KeystoreService._
 import uk.gov.hmrc.play.mappers.DateTuple._
+import models.PensionPeriod._
+import models._
 
-case class DateOfMPAATriggerEventPageModel(dateOfMPAATriggerEvent: Option[LocalDate], originalDate: String, p1dctrigger: String, p2dctrigger: String, isEdit: Boolean)
+case class DateOfMPAATriggerEventPageModel(dateOfMPAATriggerEvent: Option[LocalDate], originalDate: String, p1dctrigger: String, p2dctrigger: String, isEdit: Boolean) {
+  def toSessionData(): List[(String,String)] = {
+    val maybeData = dateOfMPAATriggerEvent.map {
+      (date)=>
+      val data = List[(String,String)]((date.toString, TRIGGER_DATE_KEY))
+      if (isEdit) {
+        // In 'edit' mode therefore re-save values into
+        val newDate: PensionPeriod = date
+        val oldDate: PensionPeriod = originalDate
+        if (oldDate.isPeriod1 && newDate.isPeriod2 || oldDate.isPeriod2 && newDate.isPeriod1) {
+          // flip trigger values
+          val v1 = if (newDate.isPeriod1) (p2dctrigger,P1_TRIGGER_DC_KEY) else (p1dctrigger, P2_TRIGGER_DC_KEY)
+          val v2 = ("0", if (newDate.isPeriod1) P2_TRIGGER_DC_KEY else P1_TRIGGER_DC_KEY)
+          List[(String,String)](v1, v2) ++ data
+        } else {
+          data
+        }
+      } else {
+        data
+      }
+    }
+    maybeData.getOrElse(List[(String,String)]())
+  }
+}
 
 object DateOfMPAATriggerEventPageModel {
   implicit val formats = Json.format[DateOfMPAATriggerEventPageModel]
+
+  implicit def toModel(data: Map[String,String]): DateOfMPAATriggerEventPageModel = {
+    val dateAsStr = data.get(TRIGGER_DATE_KEY).getOrElse("")
+    val p1dc = data.get(P1_TRIGGER_DC_KEY).getOrElse("")
+    val p2dc = data.get(P2_TRIGGER_DC_KEY).getOrElse("")
+    val isEdit = data.get(IS_EDIT_KEY).map(_.toBoolean).getOrElse(false)
+    if (dateAsStr.isEmpty) {
+      DateOfMPAATriggerEventPageModel(None, "", p1dc, p2dc, isEdit)
+    } else {
+      val parts = dateAsStr.split("-").map(_.toInt)
+      val date = Some(new LocalDate(parts(0),parts(1),parts(2)))
+      DateOfMPAATriggerEventPageModel(date, dateAsStr, p1dc, p2dc, isEdit)
+    }
+  }
 }
 
 trait DateOfMPAATriggerEvent{

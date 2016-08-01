@@ -14,18 +14,17 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.action
 
-import play.api.mvc.Results._
 import play.api.mvc._
-import play.api.test.FakeRequest
-import play.api.test.Helpers._
-import service.KeystoreService
-import uk.gov.hmrc.play.http.{HeaderCarrier, SessionKeys}
-import play.api.libs.json._
 
-import scala.concurrent.Future
-
-class RedirectControllerSpec extends test.BaseSpec {
-
+class DataRequest[A](val data: Map[String,String], val request: Request[A])
+  extends WrappedRequest[A](request) {
+  lazy val form: Map[String, String] = {
+    val maybeFormData = request.body match {
+      case body @ AnyContentAsFormUrlEncoded(_) => body.asFormUrlEncoded
+      case _ => None
+    }
+    maybeFormData.getOrElse(Map[String, Seq[String]]()).mapValues(_.head)
+  }
 }

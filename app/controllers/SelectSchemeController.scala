@@ -19,52 +19,53 @@ package controllers
 import service._
 import service.KeystoreService._
 import play.api.mvc._
+import play.api.data.Form
+import form._
 import scala.concurrent.Future
 import form.SelectSchemeForm
+import play.api.mvc.Request
 
 object SelectSchemeController extends SelectSchemeController {
-  override val keystore: KeystoreService = KeystoreService
+  def keystore: KeystoreService = KeystoreService
 }
 
 trait SelectSchemeController  extends RedirectController {
-  val keystore: KeystoreService
-
-  def onPageLoad(year:Int) = withSession { implicit request =>
-    implicit val marshall = KeystoreService.toStringPair _
-    val toRead = List(DB_FLAG_PREFIX, DC_FLAG_PREFIX).map(""+_+year) ++ List(FIRST_DC_YEAR_KEY)
-    keystore.read[String](toRead).map{
-      (v)=>
-      val m = Map(("definedBenefit"->v(toRead(0))),
-                  ("definedContribution"->v(toRead(1))),
-                  ("firstDCYear"->v(toRead(2))),
-                  ("year"->year.toString))
-      println(m)
-      Ok(views.html.selectScheme(SelectSchemeForm.form.bind(m).discardingErrors, year))
-    }
+  def onPageLoad(year:Int) = withReadSession { implicit request =>
+    val m = Map(("definedBenefit"->request.data.get(s"${DB_FLAG_PREFIX}${year}").getOrElse("")),
+                ("definedContribution"->request.data.get(s"${DC_FLAG_PREFIX}${year}").getOrElse("")),
+                ("firstDCYear"->request.data.get(FIRST_DC_YEAR_KEY).getOrElse("")),
+                ("year"->year.toString))
+    Future.successful(showPage(SelectSchemeForm.form.bind(m).discardingErrors, year))
   }
 
-  val onSubmit = withSession { implicit request =>
+  val onSubmit = withWriteSession { implicit request =>
     val f = SelectSchemeForm.form.bindFromRequest()
     f.fold(
-      formWithErrors => Future.successful(Ok(views.html.selectScheme(formWithErrors, formRequestData(request)("year").toInt))),
+      formWithErrors => Future.successful(showPage(formWithErrors, request.form("year").toInt)),
       input => {
         val year = input.year
         if (!input.definedBenefit && !input.definedContribution) {
           val form = f.withError("paac.scheme.selection.error","paac.scheme.selection.error")
-          Future.successful(Ok(views.html.selectScheme(form, year)))
+          Future.successful(showPage(form, year))
         } else {
           val firstDCYear = if (input.definedContribution && (input.firstDCYear.isEmpty || input.firstDCYear.toInt < year)) year.toString
                             else if (!input.firstDCYear.isEmpty && !input.definedContribution && input.firstDCYear.toInt == year) ""
                             else input.firstDCYear.toString
-          keystore.save[String](List((s"${input.definedBenefit}", s"${DB_FLAG_PREFIX}${year}"),
-                                     (s"${input.definedContribution}", s"${DC_FLAG_PREFIX}${year}"),
-                                     (firstDCYear, FIRST_DC_YEAR_KEY))).flatMap(_=>SelectScheme() go Forward)
+          val data = List((s"${DB_FLAG_PREFIX}${year}", s"${input.definedBenefit}"),
+                          (s"${DC_FLAG_PREFIX}${year}", s"${input.definedContribution}"),
+                          (FIRST_DC_YEAR_KEY, firstDCYear)).toMap
+          val sessionData = request.data ++ data
+          SelectScheme() go Forward.using(sessionData)
         }
       }
     )
   }
 
-  def onBack(year:Int) = withSession { implicit request =>
+  def onBack(year:Int) = withWriteSession { implicit request =>
     SelectScheme() go Backward
+  }
+
+  protected def showPage(form: Form[SelectSchemeModel], year: Int)(implicit request: Request[_]) = {
+    Ok(views.html.selectScheme(form, year))
   }
 }

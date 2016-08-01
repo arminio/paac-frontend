@@ -35,97 +35,131 @@ import scala.concurrent.Future
 class BaseFrontendControllerSpec extends test.BaseSpec {
 
   trait ControllerWithMockKeystore extends MockKeystoreFixture {
-    object RedirectController extends BaseFrontendController {
-      val keystorekey = "TaxYearSelection"
-     // override val keystore: KeystoreService = MockKeystore
+    object Controller extends BaseFrontendController {
+      def keystore: KeystoreService = MockKeystore
     }
   }
 
   "BaseFrontendController" should {
-    "get session id should return None if keystore session id is not present" in {
-      // set up
-      val request = FakeRequest()
-      object BaseFrontendController extends BaseFrontendController with SessionProvider {}
-
-      // test
-      val maybeSessionId = BaseFrontendController.getSessionId()(request)
-
-      // check
-      maybeSessionId shouldBe empty
-    }
-
-    "get session id should return Some if keystore session id is present" in {
-      // set up
-      val request = FakeRequest().withSession { (SessionKeys.sessionId, "session-test") }
-      object BaseFrontendController extends BaseFrontendController with SessionProvider {}
-
-      // test
-      val maybeSessionId = BaseFrontendController.getSessionId()(request)
-
-      // check
-      maybeSessionId should not be None
-    }
-
-    "withSession should redirect if no session" in {
-      // set up
-      val request = FakeRequest().withSession { (SessionKeys.sessionId, "session-test") }
-      object BaseFrontendController extends BaseFrontendController with SessionProvider {
-        override def getSessionId()(implicit request : Request[AnyContent]) : Option[String] = Some("NOSESSION")
-      }
-
-      // test
-      val noSessionAction = BaseFrontendController.withSession { implicit request =>
-        Future.successful(Ok("Done"))
-      }
-      val result = await(noSessionAction(request))
-
-      // check
-      status(result) shouldBe 303
-    }
-
-    "withSession should redirect if no session id" in {
-      // set up
-      val request = FakeRequest().withSession { (SessionKeys.sessionId, "session-test") }
-      object BaseFrontendController extends BaseFrontendController with SessionProvider {
-        override def getSessionId()(implicit request : Request[AnyContent]) : Option[String] = None
-      }
-
-      // test
-      val noSessionAction = BaseFrontendController.withSession { implicit request =>
-        Future.successful(Ok("Done"))
-      }
-      val result = await(noSessionAction(request))
-
-      // check
-      status(result) shouldBe 303
-    }
-
-    "withSession should not redirect if session id is present" in {
-      // set up
-      val request = FakeRequest().withSession { (SessionKeys.sessionId, "session-test") }
-      object BaseFrontendController extends BaseFrontendController with SessionProvider {
-        override def getSessionId()(implicit request : Request[AnyContent]) : Option[String] = Some("session-test")
-      }
-
-      // test
-      val noSessionAction = BaseFrontendController.withSession { implicit request =>
-        Future.successful(Ok("Done"))
-      }
-      val result = await(noSessionAction(request))
-
-      // check
-      status(result) shouldBe 200
-    }
-
-    "marshall" should {
-      "return 0 when value is Some(0)" in {
+    "withSession" must {
+      "redirect if no session" in new ControllerWithMockKeystore {
         // set up
-        object BaseFrontendController extends BaseFrontendController with SessionProvider {
-          override def getSessionId()(implicit request : Request[AnyContent]) : Option[String] = Some("NOSESSION")
-        }
+        val request = FakeRequest().withSession()
 
         // test
-        BaseFrontendController.marshall("theKeyToEverything", Some("0")) shouldBe (("theKeyToEverything", "0"))
+        val noSessionAction = Controller.withSession { implicit request =>
+          Future.successful(Ok("Done"))
+        }
+        val result = await(noSessionAction(request))
+
+        // check
+        status(result) shouldBe 303
+      }
+
+      "not redirect if session id is present" in new ControllerWithMockKeystore {
+        // set up
+        val request = FakeRequest().withSession { (SessionKeys.sessionId, "session-test") }
+
+        // test
+        val noSessionAction = Controller.withSession { implicit request =>
+          Future.successful(Ok("Done"))
+        }
+        val result = await(noSessionAction(request))
+
+        // check
+        status(result) shouldBe 200
+      }
+    }
+
+    "withReadSession" must {
+      "redirect if no session" in new ControllerWithMockKeystore {
+        // set up
+        val request = FakeRequest().withSession()
+
+        // test
+        val noSessionAction = Controller.withReadSession { implicit request =>
+          Future.successful(Ok("Done"))
+        }
+        val result = await(noSessionAction(request))
+
+        // check
+        status(result) shouldBe 303
+      }
+
+      "not redirect if session id is present" in new ControllerWithMockKeystore {
+        // set up
+        val request = FakeRequest().withSession { (SessionKeys.sessionId, "session-test") }
+
+        // test
+        val noSessionAction = Controller.withReadSession { implicit request =>
+          Future.successful(Ok("Done"))
+        }
+        val result = await(noSessionAction(request))
+
+        // check
+        status(result) shouldBe 200
+      }
+
+      "read data from keystore and decorate request" in new ControllerWithMockKeystore {
+        // set up
+        MockKeystore.map = MockKeystore.map + ("msg"->"Hello world!")
+        val request = FakeRequest().withSession { (SessionKeys.sessionId, "session-test") }
+
+        // test
+        val noSessionAction = Controller.withReadSession { implicit request =>
+          Future.successful(Ok(request.data("msg")))
+        }
+        val result = await(noSessionAction(request))
+
+        // check
+        status(result) shouldBe 200
+        contentAsString(result) shouldBe "Hello world!"
+      }
+    }
+
+    "withWriteSession" must {
+      "redirect if no session" in new ControllerWithMockKeystore {
+        // set up
+        val request = FakeRequest().withSession()
+
+        // test
+        val noSessionAction = Controller.withReadSession { implicit request =>
+          Future.successful(Ok("Done"))
+        }
+        val result = await(noSessionAction(request))
+
+        // check
+        status(result) shouldBe 303
+      }
+
+      "not redirect if session id is present" in new ControllerWithMockKeystore {
+        // set up
+        val request = FakeRequest().withSession { (SessionKeys.sessionId, "session-test") }
+
+        // test
+        val noSessionAction = Controller.withReadSession { implicit request =>
+          Future.successful(Ok("Done"))
+        }
+        val result = await(noSessionAction(request))
+
+        // check
+        status(result) shouldBe 200
+      }
+
+
+      "save data to keystore from session" in new ControllerWithMockKeystore {
+        // set up
+        val request = FakeRequest().withSession { (SessionKeys.sessionId, "session-test") }
+
+        // test
+        val noSessionAction = Controller.withWriteSession { implicit request =>
+          Future.successful(Ok("hi").addingToSession("msg"->"A value to be persisted"))
+        }
+        val result = await(noSessionAction(request))
+
+        // check
+        status(result) shouldBe 200
+        MockKeystore.map("msg") shouldBe "A value to be persisted"
       }
     }
   }

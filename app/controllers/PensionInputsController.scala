@@ -24,48 +24,48 @@ import play.api.data.Form
 import play.api.data.Forms._
 import play.api.mvc._
 import scala.concurrent.Future
+import play.api.mvc.Request
 
 object PensionInputsController extends PensionInputsController {
-  override val keystore: KeystoreService = KeystoreService
+  def keystore: KeystoreService = KeystoreService
 }
 
 trait PensionInputsController extends RedirectController {
-  val keystore: KeystoreService
 
-  protected def show(form: Form[CalculatorFormFields], year: Int, isEditing: Boolean)(implicit request: Request[Any]) = {
-    Ok(views.html.pensionInputs(form, year.toString, isEditing))
+  val onPageLoad = withReadSession { implicit request =>
+    val cy = request.data(CURRENT_INPUT_YEAR_KEY)
+    if (cy.isEmpty || cy.toInt <= 0)
+      Start() go Edit
+    else
+      showPage(CalculatorForm.bind(request.data).discardingErrors, cy, request.data bool IS_EDIT_KEY)
   }
 
-  val onPageLoad = withSession { implicit request =>
-    keystore.read[String](List(CURRENT_INPUT_YEAR_KEY,IS_EDIT_KEY)).flatMap {
-      (fieldsMap) =>
-      val cy = fieldsMap(CURRENT_INPUT_YEAR_KEY)
-      if (cy.isEmpty || cy.toInt <= 0)
-        Start() go Edit
-      else
-        keystore.read[String](List((DB_PREFIX + cy),(DC_PREFIX + cy))).map((v)=>show(CalculatorForm.bind(v).discardingErrors, cy.toInt, (fieldsMap bool IS_EDIT_KEY)))
-    }
-  }
-
-  val onSubmit = withSession { implicit request =>
-    val data = formRequestData
-    val cy = data("year").toInt
+  val onSubmit = withWriteSession { implicit request =>
+    val cy = request.form("year")
+    val isEdit = request.form bool IS_EDIT_KEY
     val form = CalculatorForm.form.bindFromRequest()
+
     form.fold(
       formWithErrors =>
-        Future.successful(show(formWithErrors, cy, data("isEdit").toBoolean)),
+        showPage(formWithErrors, cy, isEdit),
       fields => {
-        if (!fields.toDefinedBenefit(cy).isDefined)
-          Future.successful(show(form.withError("definedBenefits.amount_"+cy, "db.error.bounds"), 
-                                 cy, 
-                                 data("isEdit").toBoolean))
-        else
-          keystore.save(List(fields.toDefinedBenefit(cy)), "").flatMap(_=>PensionInput() go Forward)
+        val data = fields.toDefinedBenefit(cy.toInt)
+        data match {
+          case None => showPage(form.withError(s"definedBenefits.amount_${cy}", "db.error.bounds"), cy, isEdit)
+          case Some(value) => {
+            val sessionData = request.data ++ Map(value.swap).mapValues(_.toString)
+            PensionInput() go Forward.using(sessionData)
+          }
+        }
       }
     )
   }
 
-  val onBack = withSession { implicit request =>
+  val onBack = withWriteSession { implicit request =>
     PensionInput() go Backward
+  }
+
+  protected def showPage(form: Form[CalculatorFormFields], year: String, isEditing: Boolean)(implicit request: Request[Any]) = {
+    Future.successful(Ok(views.html.pensionInputs(form, year, isEditing)))
   }
 }
