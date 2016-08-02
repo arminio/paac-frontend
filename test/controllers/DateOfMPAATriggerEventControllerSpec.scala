@@ -28,6 +28,8 @@ import scala.concurrent.Future
 
 class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
 
+  val endPointURL = "/paac/dateofmpaate"
+
   trait ControllerWithMockKeystore extends MockKeystoreFixture {
     object ControllerWithMockKeystore extends DateOfMPAATriggerEventController {
       def keystore: KeystoreService = MockKeystore
@@ -84,7 +86,7 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
                                (TE_YES_NO_KEY -> "true"),
                                (CURRENT_INPUT_YEAR_KEY -> "2015"),
                                (SELECTED_INPUT_YEARS_KEY -> "2015"))
-        implicit val request = FakeRequest(POST, "/paac/d").withSession(sessionData: _*).withFormUrlEncodedBody(("dateOfMPAATriggerEvent.day" -> "4"),
+        implicit val request = FakeRequest(POST, endPointURL).withSession(sessionData: _*).withFormUrlEncodedBody(("dateOfMPAATriggerEvent.day" -> "4"),
                                     ("dateOfMPAATriggerEvent.month" -> "7"),
                                     ("dateOfMPAATriggerEvent.year" -> "2015"),
                                     (P1_TRIGGER_DC_KEY -> "0"),
@@ -109,7 +111,7 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
                                (TE_YES_NO_KEY -> "true"),
                                (CURRENT_INPUT_YEAR_KEY -> "2015"),
                                (SELECTED_INPUT_YEARS_KEY -> "2015"))
-        implicit val request = FakeRequest(POST, "/paac/d").withSession(sessionData: _*).withFormUrlEncodedBody(("dateOfMPAATriggerEvent.day" -> "4"),
+        implicit val request = FakeRequest(POST, endPointURL).withSession(sessionData: _*).withFormUrlEncodedBody(("dateOfMPAATriggerEvent.day" -> "4"),
                                     ("dateOfMPAATriggerEvent.month" -> "7"),
                                     ("dateOfMPAATriggerEvent.year" -> "2015"),
                                     (P1_TRIGGER_DC_KEY -> "0"),
@@ -132,7 +134,7 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
                                (TE_YES_NO_KEY -> "true"),
                                (CURRENT_INPUT_YEAR_KEY -> "2015"),
                                (SELECTED_INPUT_YEARS_KEY -> "2015"))
-        implicit val request = FakeRequest(POST, "/paac/d").withSession(sessionData: _*).withFormUrlEncodedBody(("dateOfMPAATriggerEvent.day" -> "5"),
+        implicit val request = FakeRequest(POST, endPointURL).withSession(sessionData: _*).withFormUrlEncodedBody(("dateOfMPAATriggerEvent.day" -> "5"),
                                     ("dateOfMPAATriggerEvent.month" -> "4"),
                                     ("dateOfMPAATriggerEvent.year" -> "2015"),
                                     (P1_TRIGGER_DC_KEY -> "0"),
@@ -157,7 +159,7 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
                                (TE_YES_NO_KEY -> "true"),
                                (CURRENT_INPUT_YEAR_KEY -> "2015"),
                                (SELECTED_INPUT_YEARS_KEY -> "2015"))
-        implicit val request = FakeRequest(POST, "/paac/d").withSession(sessionData: _*).withFormUrlEncodedBody(("dateOfMPAATriggerEvent.day" -> ""),
+        implicit val request = FakeRequest(POST, endPointURL).withSession(sessionData: _*).withFormUrlEncodedBody(("dateOfMPAATriggerEvent.day" -> ""),
                                     ("dateOfMPAATriggerEvent.month" -> ""),
                                     ("dateOfMPAATriggerEvent.year" -> ""),
                                     (P1_TRIGGER_DC_KEY -> "0"),
@@ -182,7 +184,7 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
                                (TE_YES_NO_KEY -> "true"),
                                (CURRENT_INPUT_YEAR_KEY -> "2015"),
                                (SELECTED_INPUT_YEARS_KEY -> "2015"))
-        implicit val request = FakeRequest(POST, "/paac/d").withSession(sessionData: _*).withFormUrlEncodedBody(("dateOfMPAATriggerEvent.day" -> "-1"),
+        implicit val request = FakeRequest(POST, endPointURL).withSession(sessionData: _*).withFormUrlEncodedBody(("dateOfMPAATriggerEvent.day" -> "-1"),
                                     ("dateOfMPAATriggerEvent.month" -> "-1"),
                                     ("dateOfMPAATriggerEvent.year" -> "-1"),
                                     (P1_TRIGGER_DC_KEY -> "0"),
@@ -207,7 +209,7 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
                                (TE_YES_NO_KEY -> "true"),
                                (CURRENT_INPUT_YEAR_KEY -> "2015"),
                                (SELECTED_INPUT_YEARS_KEY -> "2015,2014"))
-        implicit val request = FakeRequest(POST, "/paac/d").withSession(sessionData: _*).withFormUrlEncodedBody(("dateOfMPAATriggerEvent.day" -> "4"),
+        implicit val request = FakeRequest(POST, endPointURL).withSession(sessionData: _*).withFormUrlEncodedBody(("dateOfMPAATriggerEvent.day" -> "4"),
                                     ("dateOfMPAATriggerEvent.month" -> "7"),
                                     ("dateOfMPAATriggerEvent.year" -> "2015"),
                                     (P1_TRIGGER_DC_KEY -> "0"),
@@ -230,7 +232,7 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
                                (TE_YES_NO_KEY -> "true"),
                                (CURRENT_INPUT_YEAR_KEY -> "2015"),
                                (SELECTED_INPUT_YEARS_KEY -> "2015"))
-        implicit val request = FakeRequest(POST, "/paac/d").withSession(sessionData: _*).withFormUrlEncodedBody(("dateOfMPAATriggerEvent.day" -> "4"),
+        implicit val request = FakeRequest(POST, endPointURL).withSession(sessionData: _*).withFormUrlEncodedBody(("dateOfMPAATriggerEvent.day" -> "4"),
                                     ("dateOfMPAATriggerEvent.month" -> "7"),
                                     ("dateOfMPAATriggerEvent.year" -> "2013"),
                                     (P1_TRIGGER_DC_KEY -> "0"),
@@ -238,6 +240,284 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
                                     (TRIGGER_DATE_KEY -> "2013-7-1"),
                                     (IS_EDIT_KEY -> "false"),
                                     ("originalDate" -> "2013-7-1"))
+
+        // test
+        val result : Future[Result] = ControllerWithMockKeystore.onSubmit()(request)
+
+        // check
+        status(result) shouldBe 200
+        val htmlPage = contentAsString(await(result))
+        htmlPage should include ("The date must fall within or after 2015")
+      }
+    }
+
+
+    "onSubmit for TE Date Restriction for Selected TaxYear(s)" should {
+
+      "with Selected TaxYear= 2016, should accept any date in 2016/17 Tax year" in new ControllerWithMockKeystore {
+        // set up
+        val sessionData = List((SessionKeys.sessionId,SESSION_ID),
+                                                              (IS_EDIT_KEY -> "false"),
+                                                              (TE_YES_NO_KEY -> "true"),
+                                                              (CURRENT_INPUT_YEAR_KEY -> "2016"),
+                                                              (SELECTED_INPUT_YEARS_KEY -> "2016"))
+        implicit val request = FakeRequest(POST, endPointURL).withSession(sessionData: _*)
+                                                              .withSession((SessionKeys.sessionId,SESSION_ID))
+                                                              .withFormUrlEncodedBody(("dateOfMPAATriggerEvent.day" -> "1"),
+                                                                ("dateOfMPAATriggerEvent.month" -> "5"),
+                                                                ("dateOfMPAATriggerEvent.year" -> "2016"),
+                                                                (P1_TRIGGER_DC_KEY -> "0"),
+                                                                (P2_TRIGGER_DC_KEY -> "0"),
+                                                                (TRIGGER_DATE_KEY -> ""),
+                                                                (IS_EDIT_KEY -> "false"),
+                                                                ("originalDate" -> "2015-7-1"))
+        MockKeystore.map = MockKeystore.map + (TE_YES_NO_KEY -> "true")
+
+        // test
+        val result : Future[Result] = ControllerWithMockKeystore.onSubmit()(request)
+
+        // check
+        status(result) shouldBe 303
+        redirectLocation(result) shouldBe  Some("/paac/moneyPurchasePostTriggerValue")
+      }
+
+      "with Selected TaxYear= 2016, should accept start date of 2016/17 Tax year" in new ControllerWithMockKeystore {
+        // set up
+        val sessionData = List((SessionKeys.sessionId,SESSION_ID),
+                                                              (IS_EDIT_KEY -> "false"),
+                                                              (TE_YES_NO_KEY -> "true"),
+                                                              (CURRENT_INPUT_YEAR_KEY -> "2016"),
+                                                              (SELECTED_INPUT_YEARS_KEY -> "2016"))
+        implicit val request = FakeRequest(POST, endPointURL).withSession(sessionData: _*)
+                                                              .withSession((SessionKeys.sessionId,SESSION_ID))
+                                                              .withFormUrlEncodedBody(("dateOfMPAATriggerEvent.day" -> "6"),
+                                                                ("dateOfMPAATriggerEvent.month" -> "4"),
+                                                                ("dateOfMPAATriggerEvent.year" -> "2016"),
+                                                                (P1_TRIGGER_DC_KEY -> "0"),
+                                                                (P2_TRIGGER_DC_KEY -> "0"),
+                                                                (TRIGGER_DATE_KEY -> ""),
+                                                                (IS_EDIT_KEY -> "false"),
+                                                                ("originalDate" -> "2015-7-1"))
+        MockKeystore.map = MockKeystore.map + (TE_YES_NO_KEY -> "true")
+
+        // test
+        val result : Future[Result] = ControllerWithMockKeystore.onSubmit()(request)
+
+        // check
+        status(result) shouldBe 303
+        redirectLocation(result) shouldBe  Some("/paac/moneyPurchasePostTriggerValue")
+      }
+
+      "with Selected TaxYear= 2016, should accept end date of 2016/17 Tax year" in new ControllerWithMockKeystore {
+        // set up
+        val sessionData = List((SessionKeys.sessionId,SESSION_ID),
+                                                              (IS_EDIT_KEY -> "false"),
+                                                              (TE_YES_NO_KEY -> "true"),
+                                                              (CURRENT_INPUT_YEAR_KEY -> "2016"),
+                                                              (SELECTED_INPUT_YEARS_KEY -> "2016"))
+        implicit val request = FakeRequest(POST, endPointURL).withSession(sessionData: _*)
+                                                              .withSession((SessionKeys.sessionId,SESSION_ID))
+                                                              .withFormUrlEncodedBody(("dateOfMPAATriggerEvent.day" -> "5"),
+                                                                ("dateOfMPAATriggerEvent.month" -> "4"),
+                                                                ("dateOfMPAATriggerEvent.year" -> "2017"),
+                                                                (P1_TRIGGER_DC_KEY -> "0"),
+                                                                (P2_TRIGGER_DC_KEY -> "0"),
+                                                                (TRIGGER_DATE_KEY -> ""),
+                                                                (IS_EDIT_KEY -> "false"),
+                                                                ("originalDate" -> "2015-7-1"))
+        MockKeystore.map = MockKeystore.map + (TE_YES_NO_KEY -> "true")
+
+        // test
+        val result : Future[Result] = ControllerWithMockKeystore.onSubmit()(request)
+
+        // check
+        status(result) shouldBe 303
+        redirectLocation(result) shouldBe  Some("/paac/moneyPurchasePostTriggerValue")
+      }
+
+      "with Selected TaxYear= 2016, should not accept other than 2016/17 Tax year date and should show invalid date error" in new ControllerWithMockKeystore {
+        // set up
+        val sessionData = List((SessionKeys.sessionId,SESSION_ID),
+                                                              (IS_EDIT_KEY -> "false"),
+                                                              (TE_YES_NO_KEY -> "true"),
+                                                              (CURRENT_INPUT_YEAR_KEY -> "2016"),
+                                                              (SELECTED_INPUT_YEARS_KEY -> "2016"))
+        implicit val request = FakeRequest(POST, endPointURL).withSession(sessionData: _*)
+                                                              .withSession((SessionKeys.sessionId,SESSION_ID))
+                                                              .withFormUrlEncodedBody(("dateOfMPAATriggerEvent.day" -> "1"),
+                                                                ("dateOfMPAATriggerEvent.month" -> "1"),
+                                                                ("dateOfMPAATriggerEvent.year" -> "2016"),
+                                                                (P1_TRIGGER_DC_KEY -> "0"),
+                                                                (P2_TRIGGER_DC_KEY -> "0"),
+                                                                (TRIGGER_DATE_KEY -> ""),
+                                                                (IS_EDIT_KEY -> "false"),
+                                                                ("originalDate" -> "2015-7-1"))
+        MockKeystore.map = MockKeystore.map + (TE_YES_NO_KEY -> "true")
+
+        // test
+        val result : Future[Result] = ControllerWithMockKeystore.onSubmit()(request)
+
+        // check
+        status(result) shouldBe 200
+        val htmlPage = contentAsString(await(result))
+        htmlPage should include ("The date must fall within or after 2015")
+      }
+
+      "with Selected TaxYear= 2015, should accept any date in 2015/16 Tax year" in new ControllerWithMockKeystore {
+        // set up
+        val sessionData = List((SessionKeys.sessionId,SESSION_ID),
+                                                              (IS_EDIT_KEY -> "false"),
+                                                              (TE_YES_NO_KEY -> "true"),
+                                                              (CURRENT_INPUT_YEAR_KEY -> "2015"),
+                                                              (SELECTED_INPUT_YEARS_KEY -> "2015"))
+        implicit val request = FakeRequest(POST, endPointURL).withSession(sessionData: _*)
+                                                              .withSession((SessionKeys.sessionId,SESSION_ID))
+                                                              .withFormUrlEncodedBody(("dateOfMPAATriggerEvent.day" -> "1"),
+                                                                ("dateOfMPAATriggerEvent.month" -> "5"),
+                                                                ("dateOfMPAATriggerEvent.year" -> "2015"),
+                                                                (P1_TRIGGER_DC_KEY -> "0"),
+                                                                (P2_TRIGGER_DC_KEY -> "0"),
+                                                                (TRIGGER_DATE_KEY -> ""),
+                                                                (IS_EDIT_KEY -> "false"),
+                                                                ("originalDate" -> "2015-7-1"))
+        MockKeystore.map = MockKeystore.map + (TE_YES_NO_KEY -> "true")
+
+        // test
+        val result : Future[Result] = ControllerWithMockKeystore.onSubmit()(request)
+
+        // check
+        status(result) shouldBe 303
+        redirectLocation(result) shouldBe  Some("/paac/moneyPurchasePostTriggerValue")
+      }
+
+      "with Selected TaxYear= 2015, should accept start date of 2015/16 Tax year" in new ControllerWithMockKeystore {
+        // set up
+        val sessionData = List((SessionKeys.sessionId,SESSION_ID),
+                                                              (IS_EDIT_KEY -> "false"),
+                                                              (TE_YES_NO_KEY -> "true"),
+                                                              (CURRENT_INPUT_YEAR_KEY -> "2015"),
+                                                              (SELECTED_INPUT_YEARS_KEY -> "2015"))
+        implicit val request = FakeRequest(POST, endPointURL).withSession(sessionData: _*)
+                                                              .withSession((SessionKeys.sessionId,SESSION_ID))
+                                                              .withFormUrlEncodedBody(("dateOfMPAATriggerEvent.day" -> "6"),
+                                                                ("dateOfMPAATriggerEvent.month" -> "4"),
+                                                                ("dateOfMPAATriggerEvent.year" -> "2015"),
+                                                                (P1_TRIGGER_DC_KEY -> "0"),
+                                                                (P2_TRIGGER_DC_KEY -> "0"),
+                                                                (TRIGGER_DATE_KEY -> ""),
+                                                                (IS_EDIT_KEY -> "false"),
+                                                                ("originalDate" -> "2015-7-1"))
+        MockKeystore.map = MockKeystore.map + (TE_YES_NO_KEY -> "true")
+
+        // test
+        val result : Future[Result] = ControllerWithMockKeystore.onSubmit()(request)
+
+        // check
+        status(result) shouldBe 303
+        redirectLocation(result) shouldBe  Some("/paac/moneyPurchasePostTriggerValue")
+      }
+
+      "with Selected TaxYear= 2015, should accept end date of 2015/16 Tax year" in new ControllerWithMockKeystore {
+        // set up
+        val sessionData = List((SessionKeys.sessionId,SESSION_ID),
+                                                              (IS_EDIT_KEY -> "false"),
+                                                              (TE_YES_NO_KEY -> "true"),
+                                                              (CURRENT_INPUT_YEAR_KEY -> "2015"),
+                                                              (SELECTED_INPUT_YEARS_KEY -> "2015"))
+        implicit val request = FakeRequest(POST, endPointURL).withSession(sessionData: _*)
+                                                              .withSession((SessionKeys.sessionId,SESSION_ID))
+                                                              .withFormUrlEncodedBody(("dateOfMPAATriggerEvent.day" -> "5"),
+                                                                ("dateOfMPAATriggerEvent.month" -> "4"),
+                                                                ("dateOfMPAATriggerEvent.year" -> "2016"),
+                                                                (P1_TRIGGER_DC_KEY -> "0"),
+                                                                (P2_TRIGGER_DC_KEY -> "0"),
+                                                                (TRIGGER_DATE_KEY -> ""),
+                                                                (IS_EDIT_KEY -> "false"),
+                                                                ("originalDate" -> "2015-7-1"))
+        MockKeystore.map = MockKeystore.map + (TE_YES_NO_KEY -> "true")
+
+        // test
+        val result : Future[Result] = ControllerWithMockKeystore.onSubmit()(request)
+
+        // check
+        status(result) shouldBe 303
+        redirectLocation(result) shouldBe  Some("/paac/moneyPurchasePostTriggerValue")
+      }
+
+      "with Selected TaxYear= 2015, should not accept other than 2015/16 Tax year date and should show invalid date error" in new ControllerWithMockKeystore {
+        // set up
+        val sessionData = List((SessionKeys.sessionId,SESSION_ID),
+                                                              (IS_EDIT_KEY -> "false"),
+                                                              (TE_YES_NO_KEY -> "true"),
+                                                              (CURRENT_INPUT_YEAR_KEY -> "2015"),
+                                                              (SELECTED_INPUT_YEARS_KEY -> "2015"))
+        implicit val request = FakeRequest(POST, endPointURL).withSession(sessionData: _*)
+                                                              .withSession((SessionKeys.sessionId,SESSION_ID))
+                                                              .withFormUrlEncodedBody(("dateOfMPAATriggerEvent.day" -> "1"),
+                                                                ("dateOfMPAATriggerEvent.month" -> "5"),
+                                                                ("dateOfMPAATriggerEvent.year" -> "2016"),
+                                                                (P1_TRIGGER_DC_KEY -> "0"),
+                                                                (P2_TRIGGER_DC_KEY -> "0"),
+                                                                (TRIGGER_DATE_KEY -> ""),
+                                                                (IS_EDIT_KEY -> "false"),
+                                                                ("originalDate" -> "2015-7-1"))
+        MockKeystore.map = MockKeystore.map + (TE_YES_NO_KEY -> "true")
+
+        // test
+        val result : Future[Result] = ControllerWithMockKeystore.onSubmit()(request)
+
+        // check
+        status(result) shouldBe 200
+        val htmlPage = contentAsString(await(result))
+        htmlPage should include ("The date must fall within or after 2015")
+      }
+
+
+      "with Selected TaxYear= '2016,2015', should accept any date in 2016/17 and 2015/16 Tax years" in new ControllerWithMockKeystore {
+        // set up
+        val sessionData = List((SessionKeys.sessionId,SESSION_ID),
+                                                              (IS_EDIT_KEY -> "false"),
+                                                              (TE_YES_NO_KEY -> "true"),
+                                                              (CURRENT_INPUT_YEAR_KEY -> "2016"),
+                                                              (SELECTED_INPUT_YEARS_KEY -> "2016,2015"))
+        implicit val request = FakeRequest(POST, endPointURL).withSession(sessionData: _*)
+                                                              .withSession((SessionKeys.sessionId,SESSION_ID))
+                                                              .withFormUrlEncodedBody(("dateOfMPAATriggerEvent.day" -> "6"),
+                                                                ("dateOfMPAATriggerEvent.month" -> "4"),
+                                                                ("dateOfMPAATriggerEvent.year" -> "2016"),
+                                                                (P1_TRIGGER_DC_KEY -> "0"),
+                                                                (P2_TRIGGER_DC_KEY -> "0"),
+                                                                (TRIGGER_DATE_KEY -> ""),
+                                                                (IS_EDIT_KEY -> "false"),
+                                                                ("originalDate" -> "2015-5-4"))
+        MockKeystore.map = MockKeystore.map + (TE_YES_NO_KEY -> "true")
+
+        // test
+        val result : Future[Result] = ControllerWithMockKeystore.onSubmit()(request)
+
+        // check
+        status(result) shouldBe 303
+        redirectLocation(result) shouldBe  Some("/paac/moneyPurchasePostTriggerValue")
+      }
+
+      "with Selected Year= '2016,2015', should not accept other than 2016/17 & 2015/16 dates & show invalid date error" in new ControllerWithMockKeystore {
+        // set up
+        val sessionData = List((SessionKeys.sessionId,SESSION_ID),
+                                                              (IS_EDIT_KEY -> "false"),
+                                                              (TE_YES_NO_KEY -> "true"),
+                                                              (CURRENT_INPUT_YEAR_KEY -> "2016"),
+                                                              (SELECTED_INPUT_YEARS_KEY -> "2016,2015"))
+        implicit val request = FakeRequest(POST, endPointURL).withSession(sessionData: _*)
+                                                              .withSession((SessionKeys.sessionId,SESSION_ID))
+                                                              .withFormUrlEncodedBody(("dateOfMPAATriggerEvent.day" -> "5"),
+                                                                ("dateOfMPAATriggerEvent.month" -> "4"),
+                                                                ("dateOfMPAATriggerEvent.year" -> "2015"),
+                                                                (P1_TRIGGER_DC_KEY -> "0"),
+                                                                (P2_TRIGGER_DC_KEY -> "0"),
+                                                                (TRIGGER_DATE_KEY -> ""),
+                                                                (IS_EDIT_KEY -> "false"),
+                                                                ("originalDate" -> "2015-7-1"))
+        MockKeystore.map = MockKeystore.map + (TE_YES_NO_KEY -> "true")
 
         // test
         val result : Future[Result] = ControllerWithMockKeystore.onSubmit()(request)
