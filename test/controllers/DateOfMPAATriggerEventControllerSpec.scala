@@ -22,7 +22,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import service.KeystoreService
 import service.KeystoreService._
-import uk.gov.hmrc.play.http.{HeaderCarrier, SessionKeys}
+import uk.gov.hmrc.play.http.SessionKeys
 
 import scala.concurrent.Future
 
@@ -147,7 +147,7 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
         // check
         status(result) shouldBe 200
         val htmlPage = contentAsString(await(result))
-        htmlPage should include ("The date must fall within or after 2015")
+        htmlPage should include ("Enter a date between 6 4 2015 and 5 4 2016 inclusive")
       }
 
       "with no date show invalid error" in new ControllerWithMockKeystore {
@@ -245,7 +245,7 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
         // check
         status(result) shouldBe 200
         val htmlPage = contentAsString(await(result))
-        htmlPage should include ("The date must fall within or after 2015")
+        htmlPage should include ("Enter a date between 6 4 2015 and 5 4 2016 inclusive")
       }
     }
 

@@ -21,7 +21,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import service.KeystoreService
 import service.KeystoreService._
-import uk.gov.hmrc.play.http.{HeaderCarrier, SessionKeys}
+import uk.gov.hmrc.play.http.SessionKeys
 
 import scala.concurrent.Future
 
@@ -227,7 +227,7 @@ class PensionInputs201617ControllerSpec extends test.BaseSpec {
         // check
         status(result) shouldBe 200
         val htmlPage = contentAsString(await(result))
-        htmlPage should include ("2016 defined benefit amount was incorrect or empty.")
+        htmlPage should include ("Enter your total defined benefit pension savings for 2016 even if it is 0.")
       }
 
       "with isEdit = false, DB = false and DC = true with empty DC Input should display the same page with errors" in new ControllerWithMockKeystore {
@@ -246,7 +246,7 @@ class PensionInputs201617ControllerSpec extends test.BaseSpec {
         // check
         status(result) shouldBe 200
         val htmlPage = contentAsString(await(result))
-        htmlPage should include ("2016 defined contribution amount was incorrect or empty.")
+        htmlPage should include ("Enter your total defined contribution pension savings for 2016 even if it is 0.")
       }
     }
   }

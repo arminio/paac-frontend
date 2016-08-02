@@ -251,7 +251,7 @@ class PensionInputs201516ControllerSpec extends test.BaseSpec {
         // check
         status(result) shouldBe 200
         val htmlPage = contentAsString(await(result))
-        htmlPage should include ("2015 P1 defined benefit amount was incorrect or empty.")
+        htmlPage should include ("Enter your total defined benefit pension savings for 2015 P1 even if it is 0.")
       }
 
       "with empty dc amount redisplay page with errors" in new ControllerWithMockKeystore {
@@ -270,7 +270,7 @@ class PensionInputs201516ControllerSpec extends test.BaseSpec {
         // check
         status(result) shouldBe 200
         val htmlPage = contentAsString(await(result))
-        htmlPage should include ("2015 P1 defined contribution amount was incorrect or empty.")
+        htmlPage should include ("Enter your total defined contribution pension savings for 2015 P1 even if it is 0.")
       }
 
 //      "with valid definedBenefit_2015_p1 should save to keystore" in new ControllerWithMockKeystore {
@@ -359,7 +359,7 @@ class PensionInputs201516ControllerSpec extends test.BaseSpec {
         // check
         status(result) shouldBe 200
         val htmlPage = contentAsString(await(result))
-        htmlPage should include ("2015 P1 defined benefit amount was incorrect or empty.")
+        htmlPage should include ("Enter your total defined benefit pension savings for 2015 P1 even if it is 0.")
       }
 
       "with empty dc amount redisplay page with errors 2" in new ControllerWithMockKeystore {
@@ -378,7 +378,7 @@ class PensionInputs201516ControllerSpec extends test.BaseSpec {
         // check
         status(result) shouldBe 200
         val htmlPage = contentAsString(await(result))
-        htmlPage should include ("2015 P1 defined contribution amount was incorrect or empty.")
+        htmlPage should include ("Enter your total defined benefit pension savings for 2015 P1 even if it is 0.")
       }
     }
   }

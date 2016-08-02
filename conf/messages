@@ -38,6 +38,7 @@ paac.scheme.selection.heading = What types of pension schemes did you have in th
 paac.scheme.selection.p1 = Select all that apply.
 paac.scheme.selection.dc.label = <B>Defined contribution</B><P>A pension based on how much is paid in to it. These are usually personal or stakeholder pensions.</P>
 paac.scheme.selection.db.label = <B>Defined benefit</B><P>A pension based on your salary and how long you have worked for your employer. These are always workplace pensions.</P>
+paac.scheme.selection.error = Choose at least 1 type of pension scheme.
 
 ## PAAC TaxYear Text
 paac.0809.taxyear.text = 2008/09
@@ -48,14 +49,6 @@ paac.1213.taxyear.text = 2012/13
 paac.1314.taxyear.text = 2013/14
 paac.1415.taxyear.text = 2014/15
 paac.1516.taxyear.text = 2015/16
-
-## Error Messages
-#Tax year Selection page
-paac.taxyear.selection.error = Choose at least 1 tax year.
-# Scheme Selection Page
-paac.scheme.selection.error = Choose at least 1 type of pension scheme.
-
-
 
 paac.calculator.form.error = This field is required
 paac.calculator.error.number= Enter an amount that contains only numbers
@@ -76,6 +69,7 @@ paac.taxyear.selection.heading = Choose tax years
 paac.taxyear.selection.p1 = Select which tax years you want to check if you owe any tax on your pension savings or if you can carry over any unused allowance.
 paac.taxyear.selection.p2 = You can also check for years when you were member of a registered pension scheme or a qualifying overseas pension scheme but made no contributions.
 paac.taxyear.selection.p3 = A tax year is 6 April to 5 April.
+paac.taxyear.selection.error = Choose at least 1 tax year.
 
 ## Yes/No Questions Text
 paac.yesno.yes = Yes

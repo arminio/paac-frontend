@@ -109,7 +109,7 @@ class TaxYearSelectionSpec extends test.BaseSpec {
       // check
       status(result) shouldBe 200
       val htmlPage = contentAsString(await(result))
-      htmlPage should include ("""Please select years you were a member of a pension scheme.""")
+      htmlPage should include ("""Choose at least 1 tax year.""")
     }
 
     "not return result NOT_FOUND" in {
