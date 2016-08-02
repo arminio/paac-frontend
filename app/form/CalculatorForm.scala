@@ -23,7 +23,7 @@ import play.api.data.Forms._
 import service.KeystoreService
 import service.KeystoreService._
 
-object CalculatorForm extends models.ThisYear {
+trait CalculatorForm extends models.ThisYear {
   settings: ThisYear =>
 
   type CalculatorFormType = CalculatorFormFields
@@ -125,7 +125,7 @@ object CalculatorForm extends models.ThisYear {
 
   def formDef(isValidating: Boolean = false): Form[CalculatorFormType] = {
     val poundsAndPence = if (isValidating)
-              optional(bigDecimal(10,2)).verifying(" errorbounds", value=> if (value.isDefined)
+              optional(bigDecimal(10,2)).verifying("errorbounds", value=> if (value.isDefined)
                                                                              value.get.longValue >= 0 && value.get.longValue <= 5000000
                                                                            else
                                                                              true)
@@ -169,7 +169,7 @@ object CalculatorForm extends models.ThisYear {
     if (nonValidatingForm) CalculatorForm.nonValidatingForm.bind(Map(values: _*)) else CalculatorForm.form.bind(Map(values: _*))
   }
 
-  def toAmount(poundsAndPence: String, isPoundsAndPence: Boolean): String = {
+  protected def toAmount(poundsAndPence: String, isPoundsAndPence: Boolean): String = {
     if (poundsAndPence.isEmpty) {
       poundsAndPence
     } else if(isPoundsAndPence) {
@@ -178,4 +178,7 @@ object CalculatorForm extends models.ThisYear {
       f"${(poundsAndPence.toInt / 100.00)}%2.0f".trim
     }
   }
+}
+
+object CalculatorForm extends CalculatorForm {
 }

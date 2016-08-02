@@ -24,6 +24,7 @@ import play.api.data.validation._
 import org.scalatest._
 import org.scalatest.Matchers._
 import org.scalatest.OptionValues._
+import org.joda.time.LocalDate
 
 class ContributionSpec extends ModelSpec {
   trait TaxPeriodFixture {
@@ -213,6 +214,15 @@ class ContributionSpec extends ModelSpec {
         PensionPeriod(2014, 2, 24).taxYear shouldBe 2013
       }
     }
+    "cast from LocalDate to PensionPeriod" in {
+      // test
+      val pp: PensionPeriod = new LocalDate("2015-03-04")
+
+      // check
+      pp.year shouldBe 2015
+      pp.month shouldBe 3
+      pp.day shouldBe 4
+    }
   }
 
   "InputAmounts" can {
@@ -387,7 +397,7 @@ class ContributionSpec extends ModelSpec {
         // set up
         val c = Contribution(2008, 0)
 
-        // do it 
+        // do it
         val label = c.taxYearLabel
 
         // check
@@ -398,7 +408,7 @@ class ContributionSpec extends ModelSpec {
         // set up
         val c = Contribution(PensionPeriod.PERIOD_1_2015_START, PensionPeriod.PERIOD_1_2015_END, Some(InputAmounts(0,0)))
 
-        // do it 
+        // do it
         val label = c.taxYearLabel
 
         // check
@@ -409,7 +419,7 @@ class ContributionSpec extends ModelSpec {
         // set up
         val c = Contribution(PensionPeriod.PERIOD_2_2015_START, PensionPeriod.PERIOD_2_2015_END, Some(InputAmounts(0,0)))
 
-        // do it 
+        // do it
         val label = c.taxYearLabel
 
         // check
@@ -420,7 +430,7 @@ class ContributionSpec extends ModelSpec {
         // set up
         val c = Contribution(PensionPeriod.PERIOD_1_2015_START, PensionPeriod(2015, 4, 12), Some(InputAmounts(0,0)))
 
-        // do it 
+        // do it
         val label = c.taxYearLabel
 
         // check
@@ -431,7 +441,7 @@ class ContributionSpec extends ModelSpec {
         // set up
         val c = Contribution(PensionPeriod(2015, 9, 12), PensionPeriod.PERIOD_2_2015_END, Some(InputAmounts(0,0)))
 
-        // do it 
+        // do it
         val label = c.taxYearLabel
 
         // check
@@ -444,7 +454,7 @@ class ContributionSpec extends ModelSpec {
         // set up
         val c = Contribution(2008, 0)
 
-        // do it 
+        // do it
         val label = c.label
 
         // check
@@ -455,7 +465,7 @@ class ContributionSpec extends ModelSpec {
         // set up
         val c = Contribution(PensionPeriod.PERIOD_1_2015_START, PensionPeriod.PERIOD_1_2015_END, Some(InputAmounts(0,0)))
 
-        // do it 
+        // do it
         val label = c.label
 
         // check
@@ -466,18 +476,18 @@ class ContributionSpec extends ModelSpec {
         // set up
         val c = Contribution(PensionPeriod.PERIOD_2_2015_START, PensionPeriod.PERIOD_2_2015_END, Some(InputAmounts(0,0)))
 
-        // do it 
+        // do it
         val label = c.label
 
         // check
         label shouldBe "15/16 P2 B"
-      }      
+      }
 
       "have a 2015 Period 1 triggered label" in {
         // set up
         val c = Contribution(PensionPeriod.PERIOD_1_2015_START, PensionPeriod.PERIOD_1_2015_END, Some(InputAmounts(Some(0), Some(0), None, Some(true))))
 
-        // do it 
+        // do it
         val label = c.label
 
         // check
@@ -488,7 +498,7 @@ class ContributionSpec extends ModelSpec {
         // set up
         val c = Contribution(PensionPeriod.PERIOD_2_2015_START, PensionPeriod.PERIOD_2_2015_END, Some(InputAmounts(Some(0), Some(0), None, Some(true))))
 
-        // do it 
+        // do it
         val label = c.label
 
         // check
@@ -729,7 +739,7 @@ class ContributionSpec extends ModelSpec {
         // check
         val jsonTaxYear = json \ "taxPeriodStart" \ "year"
         jsonTaxYear.as[Int] shouldBe 2010
-        val v = json \ "amounts" 
+        val v = json \ "amounts"
         v.as[Option[InputAmounts]] shouldBe Some(InputAmounts(None,None))
       }
 
@@ -857,7 +867,7 @@ class ContributionSpec extends ModelSpec {
         // check
         c3 shouldBe c1
       }
-    }    
+    }
   }
 
   "Array of contributions" can {
