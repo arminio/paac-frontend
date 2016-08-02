@@ -49,6 +49,6 @@ object WhitelistFilter extends AkamaiWhitelistFilter
       Call("GET", path)}
   }
 
-  override def destination: Call = Call("GET", "https://www.tax.service.gov.uk/outage-paac/index.html")
+  override def destination: Call = Call("GET", "https://www.tax.service.gov.uk/paac-outage/index.html")
 
 }

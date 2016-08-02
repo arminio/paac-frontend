@@ -7,6 +7,7 @@ paac.common.pension.inputs.dc = Defined contribution
 
 ## Calculator Home Page
 paac.nav.title = Pension Annual Allowance Calculator
+paac.nav.title2 = GOV.UK
 paac.calculator.homepage.heading = PAAC
 paac.calculator.results.heading = PAAC Results
 paac.error.title = Check your information, you need to:
@@ -32,7 +33,7 @@ paac.startpage.beforeInfo.p3 = If you have a total income of £110,000 or more, 
 paac.startpage.beforeInfo.p4 = Find out more about <a href="https://www.gov.uk/tax-on-your-private-pension">tax on your private pension contributions and your annual allowance</a>.
 
 ## Scheme Selection Page
-paac.scheme.selection.pagetitle = Scheme Selection
+paac.scheme.selection.pagetitle = Pension schemes in {0} to {1}
 paac.scheme.selection.heading = What types of pension schemes did you have in the tax year {0} to {1}?
 paac.scheme.selection.p1 = Select all that apply.
 paac.scheme.selection.dc.label = <B>Defined contribution</B><P>A pension based on how much is paid in to it. These are usually personal or stakeholder pensions.</P>
@@ -63,7 +64,7 @@ ai.error.bounds={0} adjusted income amount was incorrect or empty. Please provid
 error.real.precision={0} amount must not be empty. (Amount must have no more than {1} numbers, including {2} decimal places, and should be £0 or larger and under £5,000,000.)
 
 ## Tax Year Selection
-paac.taxyear.selection.pagetitle = Tax Year Selection
+paac.taxyear.selection.pagetitle = Choose tax years
 paac.taxyear.selection.heading = Choose tax years
 paac.taxyear.selection.p1 = Select which tax years you want to check if you owe any tax on your pension savings or if you can carry over any unused allowance.
 paac.taxyear.selection.p2 = You can also check for years when you were member of a registered pension scheme or a qualifying overseas pension scheme but made no contributions.
@@ -76,7 +77,7 @@ paac.yesno.no = No
 
 ## 2015/16 Period-1 and Period-2 Pension Inputs Page
 paac.1516.pension.inputs.pages.heading = What were your pension savings for the tax year 2015 to 2016?
-paac.201516.pension.inputs.pagetitle = 2015/16 Pension Inputs
+paac.201516.pension.inputs.pagetitle = Pension savings 2015 to 2016
 paac.201516.pension.inputs.description = The tax year 2015 to 2016 was split into two to align pension input periods (PIPs) with tax years.
 paac.201516.pension.inputs.description2 = Include pension savings for the PIPs that ended in this tax year. Use only numbers and round to the nearest pound.
 paac.201516.pension.inputs.period1 = Period 1
@@ -85,19 +86,19 @@ paac.201516.pension.inputs.period2 = Period 2
 paac.201516.pension.inputs.period2.description = Include all pension savings made between 9 July 2015 to 5 April 2016.
 
 ## Pension Inputs Page
-paac.pension.inputs.pagetitle = Pension Inputs
+paac.pension.inputs.pagetitle = Pension savings {0} to {1}
 paac.pension.inputs.heading = What were your pension savings in the tax year {1} to {2}?
 paac.pension.inputs.description = Include all pension savings where pension input periods ended in the tax year 6 April {1} to 5 April {2}. Use only numbers and round to the nearest pound.
 paac.pension.inputs.totalamount = Total amount
 paac.pension.inputs.error = Enter your pension savings for the tax year {0}
 
 ## MPAA Trigger Event Yes/No Page
-paac.mpaa.te.yesno.pagetitle = MPAA
+paac.mpaa.te.yesno.pagetitle = Flexible access since 2015
 paac.mpaa.te.yesno.question = Have you flexibly accessed your pension savings since 6 April 2015?
 paac.mpaa.te.yesno.description = Your pension provider will have sent you a flexible access statement confirming this.
 
 ## Date Of MPAA Trigger Event
-paac.mpaa.ta.date.page.title = MPAA Date
+paac.mpaa.ta.date.page.title = Flexible access date
 paac.mpaa.ta.date.page.heading = When did you first flexibly access your pension savings?
 paac.mpaa.ta.date.page.description = This will also be on your flexible access statement.
 paac.mpaa.ta.date.page.datehint = For example, 21 6 2015
@@ -145,14 +146,14 @@ paac.results.taxyearlabel.p2 = 2015 to 2016 period 2
 paac.results.link.new.href = new
 paac.results.link.new = Start again
 paac.results.page.heading = Results
-paac.results.page.title = PAAC Results
+paac.results.page.title = Pension annual allowance calculator results
 paac.results.p1 = Based on your answers, you have exceeded your annual allowance by &pound;{1}. You will have to pay tax on this.
 
 ## Post Trigger Pension Inputs Page
 paac.post.trigger.value.page.question = What were your defined contribution savings for the rest of {0} / {1}?
 paac.post.trigger.value.page.question.p1 = What were your defined contribution savings for the rest of period 1?
 paac.post.trigger.value.page.question.p2 = What were your defined contribution savings for the rest of period 2?
-paac.post.trigger.value.page.title = Money Purchase Value After Flexi Access
+paac.post.trigger.value.page.title = Input since flexible access date
 paac.post.trigger.value.description.p1 = Include all pension savings after you first flexibly accessed your defined contribution scheme on {0} to the end of the period on 8 July 2015. Use only numbers and round to the nearest pound.
 paac.post.trigger.value.description.p2 = Include all pension savings after you first flexibly accessed your defined contribution scheme on {0} to the end of the period on 5 April 2016. Use only numbers and round to the nearest pound.
 paac.post.trigger.value.description.other = Include all pension savings after you first flexibly accessed your defined contribution scheme on {0} to 5 April {1}. Use only numbers and round to the nearest pound.
@@ -171,18 +172,18 @@ trigger.date=Post Flexi-access date
 
 ## Post-2015 Pension Input Amounts Page
 
-paac.201617.pension.inputs.pagetitle = 2016/17 Pension Inputs
+paac.201617.pension.inputs.pagetitle = Pension savings 2016 to 2017
 paac.201617.pension.inputs.heading = What were your pension savings in the tax year 2016 to 2017?
 paac.201617.pension.inputs.description = The savings for defined contributions and defined benefits plans are calculated differently, with defined benefits including investment growth and defined contributions including payments made by, or on behalf of the member. Investment income is not included.
 paac.201617.pension.inputs.description2 = Include all savings for 6 April 2016 to 5 April 2017. Use only numbers and round to the nearest pound.
 ## Post-2015 TaxYear Yes/No Question Pages
 ## Threshold Income
-paac.1617.threshold.income.pagetitle = Threshold Income
+paac.1617.threshold.income.pagetitle = Threshold income 2016 to 2017
 paac.1617.threshold.income.question = Was your threshold income more than £{0} in the tax year 2016 to 2017?
 paac.1617.threshold.income.description = Threshold income is your taxable income after deductions. Do not include pension contributions.
 
 ## Post-2015 Adjusted Income
-paac.1617.adjusted.income.input.pagetitle = Adjusted Income
+paac.1617.adjusted.income.input.pagetitle = Adjusted income 2016 to 2017
 paac.1617.adjusted.income.input.question = What was your adjusted income in the tax year 2016 to 2017?
 paac.1617.adjusted.income.description1 = Adjusted income is your taxable income after deductions. Include pension contributions made by you, your employer or someone on your behalf.
 paac.1617.adjusted.income.description2 = From 6 April 2016, for every £2 over £{0} of adjusted income your annual allowance is reduced by £1. The maximum reduction is £30,000. Use only numbers and round to the nearest pound.

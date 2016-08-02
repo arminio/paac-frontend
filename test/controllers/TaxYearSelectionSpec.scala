@@ -203,7 +203,7 @@ class TaxYearSelectionSpec extends test.BaseSpec {
 
       // check
       val htmlSummaryPage = contentAsString(await(result))
-      htmlSummaryPage should include ("Tax Year")
+      htmlSummaryPage should include ("Choose tax years")
     }
 
   }
