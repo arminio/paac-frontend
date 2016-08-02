@@ -29,7 +29,7 @@ trait SessionProvider {
     Session(request.session.data + createSessionId())
 }
 
-object CheckSessionAction extends ActionBuilder[Request] with ActionFilter[Request] with SessionProvider {
+trait CheckSessionAction extends ActionBuilder[Request] with ActionFilter[Request] with SessionProvider {
   sessionProvider: SessionProvider =>
   val NOSESSION = "NOSESSION"
 
@@ -45,3 +45,5 @@ object CheckSessionAction extends ActionBuilder[Request] with ActionFilter[Reque
 
   protected lazy val redirectTo = Results.Redirect(service.PageLocation.start.action)
 }
+
+object CheckSessionAction extends CheckSessionAction

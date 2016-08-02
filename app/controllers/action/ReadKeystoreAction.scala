@@ -26,12 +26,10 @@ import scala.util.{Try, Success, Failure, Either}
 import play.api.libs.json._
 import play.api.libs.concurrent.Execution.Implicits._
 
-case class ReadKeystoreAction(keystore: KeystoreService) extends ActionBuilder[DataRequest] {
-  def invokeBlock[A](r: Request[A], block: DataRequest[A] => Future[Result]): Future[Result] = {
-    convert(r).flatMap((kr)=>updateSession(kr,block(kr)))
-  }
+trait ReadKeystore extends ActionBuilder[DataRequest] {
+  def keystore: KeystoreService
 
-  private def convert[T](r: Request[T]): Future[DataRequest[T]] = {
+  protected def convert[T](r: Request[T]): Future[DataRequest[T]] = {
     implicit val hc = HeaderCarrier()
     implicit val request: Request[T] = r
     keystore.readData().map {
@@ -50,5 +48,11 @@ case class ReadKeystoreAction(keystore: KeystoreService) extends ActionBuilder[D
       }
       updatedResponse
     }
+  }
+}
+
+case class ReadKeystoreAction(keystore: KeystoreService) extends ReadKeystore {
+  def invokeBlock[A](r: Request[A], block: DataRequest[A] => Future[Result]): Future[Result] = {
+    convert(r).flatMap((kr)=>updateSession(kr,block(kr)))
   }
 }
