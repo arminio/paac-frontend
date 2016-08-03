@@ -22,10 +22,9 @@ import play.api.mvc.Result
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import service._
-import uk.gov.hmrc.play.http.{HeaderCarrier, SessionKeys}
+import uk.gov.hmrc.play.http.SessionKeys
 
-import scala.concurrent.duration._
-import scala.concurrent.{Await, Future}
+import scala.concurrent.Future
 
 class ReviewTotalAmountsControllerSpec extends test.BaseSpec {
   val contribution0 = Contribution(2008, 500000)
@@ -126,7 +125,9 @@ class ReviewTotalAmountsControllerSpec extends test.BaseSpec {
 
         // check
         val htmlSummaryPage = contentAsString(await(result))
-        htmlSummaryPage should include ("definedBenefits.amount_2009 amount was too small and must be either £0 or greater.")
+        info(htmlSummaryPage)
+
+        htmlSummaryPage should include ("Enter an amount that is £5,000,000 or less.")
       }
     }
 
@@ -195,7 +196,7 @@ class ReviewTotalAmountsControllerSpec extends test.BaseSpec {
 
         // check
         val htmlSummaryPage = contentAsString(await(result))
-        htmlSummaryPage should include ("definedBenefits.amount_2009 amount was too small and must be either £0 or greater.")
+        htmlSummaryPage should include ("Enter an amount that is £5,000,000 or less.")
       }
     }
 

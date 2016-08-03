@@ -16,18 +16,15 @@
 
 package controllers
 
-import java.util.UUID
-import org.scalatest.BeforeAndAfterAll
-import play.api.Play
-import play.api.mvc.{ Request, Result}
+import form._
+import play.api.mvc.Result
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.api.test.{FakeApplication, FakeRequest}
 import service.KeystoreService
 import service.KeystoreService._
 import uk.gov.hmrc.play.http.{HeaderCarrier, SessionKeys}
-import uk.gov.hmrc.play.test.UnitSpec
+
 import scala.concurrent.Future
-import form._
 
 class SelectSchemeControllerSpec extends test.BaseSpec {
   val endPointURL = "/paac/scheme/2015"
@@ -137,7 +134,7 @@ class SelectSchemeControllerSpec extends test.BaseSpec {
         // check
         status(result) shouldBe 200
         val htmlPage = contentAsString(await(result))
-        htmlPage should include ("There was a problem")
+        htmlPage should include ("There is a problem")
       }
 
       "with false DB and DC schemeType flag value should show errors" in new ControllerWithMockKeystore{
@@ -156,7 +153,7 @@ class SelectSchemeControllerSpec extends test.BaseSpec {
         // check
         status(result) shouldBe 200
         val htmlPage = contentAsString(await(result))
-        htmlPage should include ("Please select each pension scheme type you are a member of.")
+        htmlPage should include ("Choose at least 1 type of pension scheme.")
       }
     }
 

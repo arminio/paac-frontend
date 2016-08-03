@@ -126,7 +126,7 @@ class PensionInputsControllerSpec extends test.BaseSpec {
         // check
         status(result) shouldBe 200
         val htmlPage = contentAsString(await(result))
-        htmlPage should include ("""There was a problem with the amounts you reported to us""")
+        htmlPage should include ("""There is a problem""")
     }
 
     "with empty db value returns to page with errors" in new ControllerWithMockKeystore {
@@ -144,7 +144,7 @@ class PensionInputsControllerSpec extends test.BaseSpec {
         // check
         status(result) shouldBe 200
         val htmlPage = contentAsString(await(result))
-        htmlPage should include ("There was a problem with the amounts you reported to us")
+        htmlPage should include ("There is a problem")
     }
 
     "with valid input amount should save to keystore" in new ControllerWithMockKeystore {

@@ -21,7 +21,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import service.KeystoreService
 import service.KeystoreService._
-import uk.gov.hmrc.play.http.{HeaderCarrier, SessionKeys}
+import uk.gov.hmrc.play.http.SessionKeys
 
 import scala.concurrent.Future
 
@@ -181,7 +181,7 @@ class AdjustedIncome1617InputControllerSpec extends test.BaseSpec {
         status(result) shouldBe 200
         redirectLocation(result) shouldBe None
         val htmlPage = contentAsString(await(result))
-        htmlPage should include ("2016 adjusted income amount was incorrect or empty. Please provide an amount between £0 and £5,000,000.")
+        htmlPage should include ("Enter your Adjusted Income for this year even if it is 0.")
       }
 
       "with Current Year flag = 2016 and AI field have invalid value should go to same page with some error message" in new ControllerWithMockKeystore {
@@ -202,7 +202,7 @@ class AdjustedIncome1617InputControllerSpec extends test.BaseSpec {
         status(result) shouldBe 200
         redirectLocation(result) shouldBe None
         val htmlPage = contentAsString(await(result))
-        htmlPage should include ("2016 amount was too small and must be either £0 or greater.")
+        htmlPage should include ("Enter an amount that is £5,000,000 or less.")
       }
 
       "with Edit functionality Current Year flag = 2016 and AI field has some value should reviews page" in new ControllerWithMockKeystore {
