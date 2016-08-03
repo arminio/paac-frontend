@@ -227,6 +227,34 @@ class ReviewTotalAmountsControllerSpec extends test.BaseSpec {
         status(result) shouldBe 303
         redirectLocation(result) shouldBe Some("/paac/pensionInputs201516")
       }
+
+      "redirect to trigger amount on page load when year is -4" in new MockControllerFixture {
+        // set up
+        val request = FakeRequest(GET, "/paac/edit").withSession((SessionKeys.sessionId,SESSION_ID),
+                                                                 (KeystoreService.SELECTED_INPUT_YEARS_KEY -> "2014"),
+                                                                 (KeystoreService.IS_EDIT_KEY -> "false"))
+
+        // test
+        val result: Future[Result] = ControllerWithMocks.onEditAmount(-4)(request)
+
+        // check
+        status(result) shouldBe 303
+        redirectLocation(result) shouldBe Some("/paac/moneyPurchasePostTriggerValue")
+      }
+
+      "redirect to trigger date on page load when year is -5" in new MockControllerFixture {
+        // set up
+        val request = FakeRequest(GET, "/paac/edit").withSession((SessionKeys.sessionId,SESSION_ID),
+                                                                 (KeystoreService.SELECTED_INPUT_YEARS_KEY -> "2014"),
+                                                                 (KeystoreService.IS_EDIT_KEY -> "false"))
+
+        // test
+        val result: Future[Result] = ControllerWithMocks.onEditAmount(-5)(request)
+
+        // check
+        status(result) shouldBe 303
+        redirectLocation(result) shouldBe Some("/paac/dateofmpaate")
+      }
     }
 
     "onEditIncome" can {

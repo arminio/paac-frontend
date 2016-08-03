@@ -46,12 +46,12 @@ trait TaxYearSelectionController extends RedirectController {
       val deletedYears = previous.split(",").diff(kkey.split(","))
       deletedYears.flatMap {
         (year)=>
-        if (year.size > 0)
-          if (year == "2015") // to do 2016+
-            List(P1_DB_KEY, P1_DC_KEY, P2_DB_KEY, P2_DC_KEY, P1_TRIGGER_DC_KEY, P2_TRIGGER_DC_KEY, TRIGGER_DATE_KEY, TE_YES_NO_KEY)
-          else
-            List(DB_PREFIX+year, DC_PREFIX+year)
-        else List()
+        if (year == "2015") // to do 2016+
+          List(P1_DB_KEY, P1_DC_KEY, P2_DB_KEY, P2_DC_KEY, P1_TRIGGER_DC_KEY, P2_TRIGGER_DC_KEY, TRIGGER_DATE_KEY, TE_YES_NO_KEY, SCHEME_TYPE_KEY,FIRST_DC_YEAR_KEY)
+        else if (year.toInt >= 2016)
+          List(P1_DB_KEY, P1_DC_KEY, P2_DB_KEY, P2_DC_KEY, P1_TRIGGER_DC_KEY, P2_TRIGGER_DC_KEY, TRIGGER_DATE_KEY, TE_YES_NO_KEY, TRIGGER_DC_KEY, SCHEME_TYPE_KEY,FIRST_DC_YEAR_KEY, DB_PREFIX+year, DC_PREFIX+year, DB_FLAG_PREFIX+year, DC_FLAG_PREFIX+year, TH_PREFIX+year, AI_PREFIX+year, TA_PREFIX+year, TI_YES_NO_KEY_PREFIX)
+        else
+          List(DB_PREFIX+year, DC_PREFIX+year)
       }.map((k)=>(k,"")).toList.toMap
     } else {
       Map[String,String]()
