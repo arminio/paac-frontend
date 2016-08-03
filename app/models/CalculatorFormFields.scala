@@ -48,7 +48,9 @@ trait CalculatorFields extends ThisYear {
       List(Contribution(c.taxPeriodStart,
                         contribution.taxPeriodEnd,
                         Some(InputAmounts(maybeDB.map((_)=>0L),
-                        maybeTriggerDC, None, Some(true)))),
+                        maybeTriggerDC.orElse(Some(0)),
+                        None,
+                        Some(true)))),
           contribution.copy(taxPeriodEnd=c.taxPeriodStart,amounts=contribution.amounts.map(_.copy(triggered=Some(false)))))
 
     def toPeriodContribution(contribution: Contribution,
@@ -73,16 +75,16 @@ trait CalculatorFields extends ThisYear {
         case _ => {
           val delta = settings.THIS_YEAR - year
           val pp = PensionPeriod.toPensionPeriod(triggerDate.getOrElse("0000-01-1"))
-          val isTriggered = triggerAmount.isDefined && triggerDate.isDefined && pp.taxYear >= year
-          if (isTriggered && pp.taxYear == year) {
-            val contribution = Contribution(year, toInputAmounts(DB_PREFIX + delta, DC_PREFIX + delta, AI_PREFIX + delta, false))
+          val isTriggered = triggerDate.isDefined && pp.taxYear == year
+          if (isTriggered) {
+            val contribution = Contribution(year, toInputAmounts(DB_PREFIX + delta, DC_PREFIX + delta, AI_PREFIX + delta))
             // $COVERAGE-OFF$
             // This is probably never used and should be investigated if this can be removed.
             val moneyPurchase = contribution.amounts.flatMap(_.moneyPurchase)
             // $COVERAGE-ON$
             toTriggerContributions(moneyPurchase, triggerAmount.map(_.toLong*100L), triggerDatePeriod.get, contribution)
           } else
-            List(Contribution(year, toInputAmounts(DB_PREFIX + delta, DC_PREFIX + delta, AI_PREFIX + delta, isTriggered)))
+            List(Contribution(year, toInputAmounts(DB_PREFIX + delta, DC_PREFIX + delta, AI_PREFIX + delta)))
         }
       }
     }
@@ -120,8 +122,8 @@ trait CalculatorFields extends ThisYear {
           v <- value(amounts)
         } yield v).map((_,key))
     }
-  protected def toInputAmounts(name1: String, name2: String, name3: String = "", isTriggered: Boolean = false): Option[InputAmounts] = {
-    val a = InputAmounts(get(name1), get(name2), get(name3), if (isTriggered) Some(true) else None)
+  protected def toInputAmounts(name1: String, name2: String, name3: String = ""): Option[InputAmounts] = {
+    val a = InputAmounts(get(name1), get(name2), get(name3), None)
     if (a.isEmpty) None else Some(a)
   }
   protected val DB_PREFIX = "dbCurrentYearMinus"
