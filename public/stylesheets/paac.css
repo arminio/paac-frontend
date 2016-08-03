@@ -186,3 +186,11 @@ table td.numeric {
 .bold-small {
     font-weight: 500;
 }
+
+.form-field--error {
+    background-color: #fff;
+    border-left: 3px solid #df3034;
+    padding: 0.75em 1em;
+    box-sizing: border-box;
+    padding: 0.75em 1em 0.75em 1em;
+}
