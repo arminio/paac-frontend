@@ -144,7 +144,7 @@ class PostTriggerPensionInputsControllerSpec extends test.BaseSpec {
       // check
       status(result) shouldBe 200
       val htmlPage = contentAsString(await(result))
-      htmlPage should include ("""2016 amount was empty or negative. Please provide an amount between £0 and £5,000,000.""")
+      htmlPage should include ("""Enter your defined contribution pension savings for rest of 2016 to 2017 even if it is 0.""")
     }
 
     "saves p2 amount in keystore if valid form" in new ControllerWithMockKeystore {
