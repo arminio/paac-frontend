@@ -159,6 +159,22 @@ class SelectSchemeControllerSpec extends test.BaseSpec {
         htmlPage should include ("Please select each pension scheme type you are a member of.")
       }
     }
+
+   "onBack" should {
+      "redirect to tax years selection page" in new ControllerWithMockKeystore {
+        // set up
+        implicit val request = FakeRequest(GET,"/paac/back").withSession((SessionKeys.sessionId,SESSION_ID),
+                                                                         (CURRENT_INPUT_YEAR_KEY -> "2016"),
+                                                                         (SELECTED_INPUT_YEARS_KEY -> "2016"))
+
+        // test
+        val result : Future[Result] = MockSelectSchemeControllerWithMockKeystore.onBack(2015)(request)
+
+        // check
+        status(result) shouldBe 303
+        redirectLocation(result) shouldBe Some("/paac/taxyearselection")
+      }
+    }
   }
 
   "SelectSchemeForm" should {

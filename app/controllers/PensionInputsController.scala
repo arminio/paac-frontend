@@ -27,7 +27,9 @@ import scala.concurrent.Future
 import play.api.mvc.Request
 
 object PensionInputsController extends PensionInputsController {
+  // $COVERAGE-OFF$
   def keystore: KeystoreService = KeystoreService
+  // $COVERAGE-ON$
 }
 
 trait PensionInputsController extends RedirectController {

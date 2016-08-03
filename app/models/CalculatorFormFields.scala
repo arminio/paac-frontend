@@ -27,13 +27,15 @@ trait ThisYear {
 }
 
 //noinspection ScalaStyle
-case class CalculatorFormFields(definedBenefits: Amounts,
-                                definedContributions: Amounts,
-                                adjustedIncome: Amounts,
-                                year2015: Year2015Amounts,
-                                triggerAmount: Option[Int],
-                                triggerDate: Option[String]) extends ThisYear {
+trait CalculatorFields extends ThisYear {
   settings: ThisYear =>
+
+  def definedBenefits: Amounts
+  def definedContributions: Amounts
+  def adjustedIncome: Amounts
+  def year2015: Year2015Amounts
+  def triggerAmount: Option[Int]
+  def triggerDate: Option[String]
 
   val START_YEAR = settings.THIS_YEAR-8
 
@@ -74,7 +76,11 @@ case class CalculatorFormFields(definedBenefits: Amounts,
           val isTriggered = triggerAmount.isDefined && triggerDate.isDefined && pp.taxYear >= year
           if (isTriggered && pp.taxYear == year) {
             val contribution = Contribution(year, toInputAmounts(DB_PREFIX + delta, DC_PREFIX + delta, AI_PREFIX + delta, false))
-            toTriggerContributions(contribution.amounts.flatMap(_.moneyPurchase), triggerAmount.map(_.toLong*100L), triggerDatePeriod.get, contribution)
+            // $COVERAGE-OFF$
+            // This is probably never used and should be investigated if this can be removed.
+            val moneyPurchase = contribution.amounts.flatMap(_.moneyPurchase)
+            // $COVERAGE-ON$
+            toTriggerContributions(moneyPurchase, triggerAmount.map(_.toLong*100L), triggerDatePeriod.get, contribution)
           } else
             List(Contribution(year, toInputAmounts(DB_PREFIX + delta, DC_PREFIX + delta, AI_PREFIX + delta, isTriggered)))
         }
@@ -132,5 +138,12 @@ case class CalculatorFormFields(definedBenefits: Amounts,
           None
         }).flatMap(Amounts.retrieveValue(_, name.replaceAll("^(dbC|dcC|aiC)", "c")))
 }
+
+case class CalculatorFormFields(definedBenefits: Amounts,
+                                definedContributions: Amounts,
+                                adjustedIncome: Amounts,
+                                year2015: Year2015Amounts,
+                                triggerAmount: Option[Int],
+                                triggerDate: Option[String]) extends CalculatorFields
 
 object CalculatorFormFields

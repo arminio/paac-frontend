@@ -229,6 +229,23 @@ class ReviewTotalAmountsControllerSpec extends test.BaseSpec {
       }
     }
 
+    "onEditIncome" can {
+      "redirect to income inputs controller and set current year in keystore" in new MockControllerFixture {
+        // set up
+        val request = FakeRequest(GET, "/paac/edit").withSession((SessionKeys.sessionId,SESSION_ID),
+                                                                 (KeystoreService.SELECTED_INPUT_YEARS_KEY -> "2014"),
+                                                                 (KeystoreService.IS_EDIT_KEY -> "false"))
+
+        // test
+        val result: Future[Result] = ControllerWithMocks.onEditIncome(2016)(request)
+
+        // check
+        status(result) shouldBe 303
+        redirectLocation(result) shouldBe Some("/paac/adjustedincome")
+        MockKeystore.map.get(KeystoreService.CURRENT_INPUT_YEAR_KEY) shouldBe Some("2016")
+      }
+    }
+
     "onBack" should {
       "redirect to pension input" in new MockControllerFixture {
         // set up
