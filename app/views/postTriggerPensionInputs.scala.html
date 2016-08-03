@@ -64,23 +64,23 @@ backLink = Some((controllers.routes.PostTriggerPensionInputsController.onBack.ur
         <input type="hidden" id="triggerDate" name="triggerDate" value="@(model.triggerDate)"/>
         <input type="hidden" id="isEdit" name="isEdit" value="@isEdit"/>
         <table>
-            <tbody>
+            <tr>
               @if(model.triggerDatePeriod.get.isPeriod1()) {
                 @defining("year2015.postTriggerDcAmount2015P1") { id =>
-                <fieldset id="triggerAmountFieldset" class="form-field-group" style="max-width:12.35em;">
+                <fieldset id="triggerAmountFieldset" class="form-field-group @if(paacForm.hasErrors) {form-field--error} " style="max-width:12.35em;">
                       <span style="float:right">
                       @if(model.year2015.postTriggerDcAmount2015P1 != None) {
-                        <tr style="text-align:left;min-width: 7em">
-                            <p>@Messages("paac.post.trigger.amount.input.label")</p>
+                        <span style="text-align:left;min-width: 7em">
+                            @Messages("paac.post.trigger.amount.input.label")
                             <span  class="form-hint">@Messages("paac.common.inputfield.example.message")</span>
                             &pound;&nbsp;<input type="number" name="@id" id="@id" min="0" class="input--no-spinner" value='@(model.year2015.postTriggerDcAmount2015P1.get)' max="5000000" size="7" style="width:9em;@if(paacForm.errors.find(_.key == id)) {border: 4px solid #b10e1e;}"/>
-                        </tr>
+                        </span>
                       } else {
-                        <tr style="text-align:left;min-width: 7em">
+                        <span style="text-align:left;min-width: 7em">
                             <p>@Messages("paac.post.trigger.amount.input.label")</p>
                             <span  class="form-hint">@Messages("paac.common.inputfield.example.message")</span>
                             &pound;&nbsp;<input type="number" name="@id" id="@id" min="0" class="input--no-spinner" value='' max="5000000" size="7" style="width:9em;@if(paacForm.errors.find(_.key == id)) {border: 4px solid #b10e1e;}"/>
-                        </tr>
+                        </span>
                       }
                       </span>
                 </fieldset>
@@ -88,20 +88,20 @@ backLink = Some((controllers.routes.PostTriggerPensionInputsController.onBack.ur
               }
               @if(model.triggerDatePeriod.get.isPeriod2()) {
                 @defining("year2015.postTriggerDcAmount2015P2") { id =>
-                <fieldset id="triggerAmountFieldset" class="form-field-group" style="max-width:12.35em;">
+                <fieldset id="triggerAmountFieldset" class="form-field-group @if(paacForm.hasErrors) {form-field--error}" style="max-width:12.35em;">
                       <span style="float:right">
                       @if(model.year2015.postTriggerDcAmount2015P2 != None) {
-                        <tr style="text-align:left;min-width: 7em">
+                        <span style="text-align:left;min-width: 7em">
                             <p>@Messages("paac.post.trigger.amount.input.label")</p>
                             <span  class="form-hint">@Messages("paac.common.inputfield.example.message")</span>
                             &pound;&nbsp;<input type="number" name="@id" id="@id" min="0" class="input--no-spinner" value='@(model.year2015.postTriggerDcAmount2015P2.get)' max="5000000" size="7" style="width:9em;@if(paacForm.errors.find(_.key == id)) {border: 4px solid #b10e1e;}"/>
-                        </tr>
+                        </span>
                       } else {
-                        <tr style="text-align:left;min-width: 7em">
+                        <span style="text-align:left;min-width: 7em">
                             <p>@Messages("paac.post.trigger.amount.input.label")</p>
                             <span  class="form-hint">@Messages("paac.common.inputfield.example.message")</span>
                             &pound;&nbsp;<input type="number" name="@id" id="@id" min="0" class="input--no-spinner" value='' max="5000000" size="7" style="width:9em;@if(paacForm.errors.find(_.key == id)) {border: 4px solid #b10e1e;}"/>
-                        </tr>
+                        </span>
                       }
                       </span>
                 </fieldset>
@@ -109,25 +109,25 @@ backLink = Some((controllers.routes.PostTriggerPensionInputsController.onBack.ur
               }
               @if(!model.triggerDatePeriod.get.isPeriod1() && !model.triggerDatePeriod.get.isPeriod2()) {
                 @defining("triggerAmount") { id =>
-                <fieldset id="triggerAmountFieldset" class="form-field-group" style="max-width:12.35em;">
+                <fieldset id="triggerAmountFieldset" class="form-field-group @if(paacForm.hasErrors) {form-field--error}" style="max-width:12.35em;">
                       <span style="float:right">
                       @if(model.triggerAmount != None) {
-                        <tr style="text-align:left;min-width: 7em">
+                        <span style="text-align:left;min-width: 7em">
                             <p>@Messages("paac.post.trigger.amount.input.label")</p>
                             <span  class="form-hint">@Messages("paac.common.inputfield.example.message")</span>
                             &pound;&nbsp;<input type="number" name="@id" id="@id" min="0" class="input--no-spinner" value='@(model.triggerAmount.get)' max="5000000" size="7" style="width:9em;@if(paacForm.errors.find(_.key == id)) {border: 4px solid #b10e1e;}"/>
-                        </tr>
+                        </span>
                       } else {
-                        <tr style="text-align:left;min-width: 7em">
+                        <span style="text-align:left;min-width: 7em">
                             <p>@Messages("paac.post.trigger.amount.input.label")</p>
                             <span  class="form-hint">@Messages("paac.common.inputfield.example.message")</span>
                             &pound;&nbsp;<input type="number" name="@id" id="@id" min="0" class="input--no-spinner" value='' max="5000000" size="7" style="width:9em;@if(paacForm.errors.find(_.key == id)) {border: 4px solid #b10e1e;}"/>
-                        </tr>
+                        </span>
                       }
                       </span>
                 </fieldset>
                 }
-              }
+              }</tr>
             </tbody>
           </table>
           }
