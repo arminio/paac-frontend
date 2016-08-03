@@ -71,6 +71,30 @@ class CalculatorConnectorSpec extends UnitSpec with MockitoSugar with BeforeAndA
       // check
       verify(mockHttpPost).POST[JsValue, HttpResponse]("/paac/calculate", body, null)
     }
+    "convert results to TaxYearResults" in {
+      // set up
+      implicit val hc = uk.gov.hmrc.play.http.HeaderCarrier()
+      val mockHttpPost = mock[HttpPost]
+      object MockCalculatorConnector extends CalculatorConnector {
+        override def httpPostRequest: HttpPost = mockHttpPost
+        override def serviceUrl: String = ""
+      }
+      val body = Json.toJson(CalculationRequest(List(Contribution(2008,5000)),Some(2008),Some(false)))
+      val resultsBody = Json.obj("status" -> JsNumber(OK),
+                                 "message" -> JsString("Valid pension calculation request received."),
+                                 "results" -> Json.toJson(List(
+                                              TaxYearResults(Contribution(2008,5000),SummaryResult(availableAAWithCCF=5000)),
+                                              TaxYearResults(Contribution(2009,15000),SummaryResult(availableAAWithCCF=15000))
+                                                               )))
+      stub(mockHttpPost.POST[JsValue, HttpResponse]("/paac/calculate", body, null)).toReturn(Future.successful(HttpResponse(200,responseJson=Some(resultsBody))))
+
+      // test
+      val results = await(MockCalculatorConnector.connectToPAACService(List(Contribution(2008,5000))))
+
+      // check
+      results.size shouldBe 2
+      results.map(_.summaryResult.availableAAWithCCF) shouldBe List(5000,15000)
+    }
 
     "httpPostRequest hooks is default" in {
       CalculatorConnector.httpPostRequest.hooks.size shouldBe 1

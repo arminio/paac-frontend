@@ -251,20 +251,6 @@ class CalculatorFormSpec extends test.BaseSpec {
         // check
         result shouldBe "1235"
       }
-      "return errors for out of bounds pound and pence value" ignore {
-        // set up
-        var form = new CalculatorForm() with Year2016WithPence
-
-        // test
-        val result = form.bind(Map[String,String](s"definedBenefits.amount_$thisYear" -> "50000000000.01")).fold (
-            formWithErrors => {
-              formWithErrors.errors should not be empty
-              formWithErrors.errors.head.key shouldBe s"definedBenefits.amount_$thisYear"
-              formWithErrors.errors.head.messages.head shouldBe "error.number"
-            },
-            formWithoutErrors => formWithoutErrors shouldBe None
-          )
-      }
     }
 
     "trigger amount should be bound" in {
@@ -278,6 +264,72 @@ class CalculatorFormSpec extends test.BaseSpec {
       // check
       result.isDefined shouldBe true
       result.get shouldBe "12"
+    }
+
+    "pounds and pence fields should return validating field mapping" in {
+      // set up
+      var form = new CalculatorForm() with Year2016WithPence {
+        def test() = poundsAndPenceField(true)
+      }
+
+      // test
+      val field = form.test
+      val (data,errors) = field.unbindAndValidate(Some(BigDecimal(5000001)))
+
+      // check
+      errors(0).messages(0) shouldBe "errorbounds"
+    }
+    "pounds and pence fields should be valid when value is none" in {
+      // set up
+      var form = new CalculatorForm() with Year2016WithPence {
+        def test() = poundsAndPenceField(true)
+      }
+
+      // test
+      val field = form.test
+      val (data,errors) = field.unbindAndValidate(None)
+
+      // check
+      errors.size shouldBe 0
+    }
+    "pounds and pence fields should return non-validating field mapping" in {
+      // set up
+      var form = new CalculatorForm() with Year2016WithPence {
+        def test() = poundsAndPenceField(false)
+      }
+
+      // test
+      val field = form.test
+      val (data,errors) = field.unbindAndValidate(Some(BigDecimal(5000001)))
+
+      // check
+      errors.size shouldBe 0
+    }
+    "pounds fields should return validating field mapping" in {
+      // set up
+      var form = new CalculatorForm() with Year2016WithPence {
+        def test() = poundsField(true)
+      }
+
+      // test
+      val field = form.test
+      val (data,errors) = field.unbindAndValidate(Some(5000001))
+
+      // check
+      errors(0).messages(0) shouldBe "error.max"
+    }
+    "pounds fields should return non-validating field mapping" in {
+      // set up
+      var form = new CalculatorForm() with Year2016WithPence {
+        def test() = poundsField(false)
+      }
+
+      // test
+      val field = form.test
+      val (data,errors) = field.unbindAndValidate(Some(5000001))
+
+      // check
+      errors.size shouldBe 0
     }
   }
 }
