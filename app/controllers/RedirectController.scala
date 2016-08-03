@@ -62,7 +62,7 @@ trait RedirectController extends BaseFrontendController {
       }
 
       val next = page move e
-      Logger.info(s"!!!!!!!!!!!!!!! ${page} -> ${next}, saving next year as ${next.state.year}")
+      Logger.info(s"${page} -> ${next}, saving next year as ${next.state.year}")
 
       val data = newSessionData ++ Map(CURRENT_INPUT_YEAR_KEY->next.state.year.toString)
       Future.successful(Redirect(next.action).addingToSession(data.toSeq: _*))
