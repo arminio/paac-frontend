@@ -213,6 +213,31 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
         htmlPage should include ("You must specify a valid date")
       }
 
+      "with bad date show invalid error (no dc flag)" in new ControllerWithMockKeystore {
+        // set up
+        val sessionData = List((SessionKeys.sessionId,SESSION_ID),
+                               (IS_EDIT_KEY -> "false"),
+                               (TE_YES_NO_KEY -> "true"),
+                               (CURRENT_INPUT_YEAR_KEY -> "2015"),
+                               (DC_FLAG_PREFIX_2016 -> "true"),
+                               (SELECTED_INPUT_YEARS_KEY -> "2019,2015,2014"))
+        implicit val request = FakeRequest(POST, endPointURL).withSession(sessionData: _*).withFormUrlEncodedBody(("dateOfMPAATriggerEvent.day" -> "4"),
+                                    ("dateOfMPAATriggerEvent.month" -> "7"),
+                                    ("dateOfMPAATriggerEvent.year" -> "2011"),
+                                    (P1_TRIGGER_DC_KEY -> "0"),
+                                    (P2_TRIGGER_DC_KEY -> "0"),
+                                    (TRIGGER_DATE_KEY -> "2011-7-4"),
+                                    ("originalDate" -> "2013-7-1"))
+
+        // test
+        val result : Future[Result] = ControllerWithMockKeystore.onSubmit()(request)
+
+        // check
+        status(result) shouldBe 200
+        val htmlPage = contentAsString(await(result))
+        htmlPage should include ("The date must fall within or after 2015")
+      }
+
       "with valid date redirect to next trigger amount page if edit flag not set" in new ControllerWithMockKeystore {
         // set up
         val sessionData = List((SessionKeys.sessionId,SESSION_ID),
