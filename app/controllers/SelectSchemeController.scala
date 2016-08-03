@@ -41,7 +41,9 @@ trait SelectSchemeController  extends RedirectController {
   val onSubmit = withWriteSession { implicit request =>
     val f = SelectSchemeForm.form.bindFromRequest()
     f.fold(
-      formWithErrors => Future.successful(showPage(formWithErrors, request.form("year").toInt)),
+      formWithErrors => {
+        Future.successful(showPage(formWithErrors, request.form("year").toInt))
+      },
       input => {
         val year = input.year
         if (!input.definedBenefit && !input.definedContribution) {

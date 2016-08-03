@@ -158,6 +158,48 @@ class SelectSchemeControllerSpec extends test.BaseSpec {
         val htmlPage = contentAsString(await(result))
         htmlPage should include ("Please select each pension scheme type you are a member of.")
       }
+
+      "set FirstDCYear flag" should {
+        "when firstDCYear is empty set to year" in new ControllerWithMockKeystore {
+          // set up
+          val sessionData = List((FIRST_DC_YEAR_KEY -> ""),
+                       (SELECTED_INPUT_YEARS_KEY -> "2015"),
+                       (CURRENT_INPUT_YEAR_KEY -> "2015"),
+                       (SessionKeys.sessionId,SESSION_ID))
+          implicit val request = FakeRequest(POST, postEndPointURL).withSession(sessionData: _*)
+                                                 .withFormUrlEncodedBody(("definedContribution" -> "true"),
+                                                                         ("definedBenefit" -> "false"),
+                                                                         ("year"->"2015"),
+                                                                         ("firstDCYear"->""))
+
+          // test
+          val result: Future[Result] = MockSelectSchemeControllerWithMockKeystore.onSubmit()(request)
+
+          // check
+          status(result) shouldBe 303
+          MockKeystore.map(FIRST_DC_YEAR_KEY) shouldBe "2015"
+        }
+        "when firstDCYear is not empty set to ''" in new ControllerWithMockKeystore {
+          // set up
+          val sessionData = List((FIRST_DC_YEAR_KEY -> ""),
+                       (SELECTED_INPUT_YEARS_KEY -> "2015"),
+                       (CURRENT_INPUT_YEAR_KEY -> "2015"),
+                       (SessionKeys.sessionId,SESSION_ID))
+          implicit val request = FakeRequest(POST, postEndPointURL).withSession(sessionData: _*)
+                                                 .withFormUrlEncodedBody(("definedContribution" -> "false"),
+                                                                         ("definedBenefit" -> "true"),
+                                                                         ("year"->"2015"),
+                                                                         ("firstDCYear"->"2015"))
+
+          // test
+          val result: Future[Result] = await(MockSelectSchemeControllerWithMockKeystore.onSubmit()(request))
+
+          // check
+          //info(contentAsString(result))
+          status(result) shouldBe 303
+          MockKeystore.map(FIRST_DC_YEAR_KEY) shouldBe ""
+        }
+      }
     }
 
    "onBack" should {
