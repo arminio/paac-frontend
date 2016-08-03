@@ -155,13 +155,15 @@ sealed trait PageLocation {
 
   protected def previousSubJourney() = {
     val s = state().copy(year=previousYear)
+    // $COVERAGE-OFF$
     val t = pageOrder(previousYear).reverse.find(PageLocation(_,s).isSupported).getOrElse(preJourney(0))
+    // $COVERAGE-ON$
     PageLocation(t, s)
   }
 
   private def pageOrder(year: Int) = if (year <= 0) preJourney
-                                     else if (year >= PageLocation.END) postJourney
-                                     else subJournies((if (year > 2015) "Post2015" else if (year < 2015) "Pre2015" else "2015"))
+                                    else if (year >= PageLocation.END) postJourney
+                                    else subJournies((if (year > 2015) "Post2015" else if (year < 2015) "Pre2015" else "2015"))
 
   private def nextYear(): Int = if (state.selectedYears.isEmpty)
       PageLocation.START
@@ -169,9 +171,11 @@ sealed trait PageLocation {
       years(years.indexOf(state.year) + 1)
     else PageLocation.END
 
-  private def previousYear(): Int = if (state.selectedYears.isEmpty)
+  private def previousYear(): Int = if (state.selectedYears.isEmpty) {
+      // $COVERAGE-OFF$
       PageLocation.END
-    else if (state.year >= PageLocation.END)
+      // $COVERAGE-ON$
+    } else if (state.year >= PageLocation.END)
       lastYear
     else if ((years.indexOf(state.year) - 1) < 0)
       PageLocation.START

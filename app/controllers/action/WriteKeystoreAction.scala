@@ -25,17 +25,14 @@ import scala.util.{Try, Success, Failure, Either}
 import play.api.libs.json._
 import play.api.libs.concurrent.Execution.Implicits._
 
-case class WriteKeystoreAction(keystore: KeystoreService) extends ActionBuilder[DataRequest] {
-  def invokeBlock[A](r: Request[A], block: DataRequest[A] => Future[Result]): Future[Result] = {
-    val request = convert(r)
-    updateKeystore(request,block(request))
-  }
+trait WriteKeystore extends ActionBuilder[DataRequest] {
+  def keystore: KeystoreService
 
-  private def convert[T](request: Request[T]): DataRequest[T] = {
+  protected def convert[T](request: Request[T]): DataRequest[T] = {
       new DataRequest[T](request.session.data, request)
   }
 
-  private def updateKeystore[A](dataRequest: DataRequest[A], response: Future[Result]): Future[Result] = {
+  protected def updateKeystore[A](dataRequest: DataRequest[A], response: Future[Result]): Future[Result] = {
     response.flatMap {
       (r) =>
       implicit val hc = HeaderCarrier()
@@ -45,5 +42,12 @@ case class WriteKeystoreAction(keystore: KeystoreService) extends ActionBuilder[
         r
       }
     }
+  }
+}
+
+case class WriteKeystoreAction(keystore: KeystoreService) extends WriteKeystore {
+  def invokeBlock[A](r: Request[A], block: DataRequest[A] => Future[Result]): Future[Result] = {
+    val request = convert(r)
+    updateKeystore(request,block(request))
   }
 }

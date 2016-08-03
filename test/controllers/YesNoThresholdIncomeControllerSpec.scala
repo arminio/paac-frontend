@@ -154,7 +154,22 @@ class YesNoThresholdIncomeControllerSpec extends test.BaseSpec {
        redirectLocation(result) shouldBe Some("/paac/review")
      }
 
-    "with yesNo = No should set AdjustedIncome value to empty string" ignore new ControllerWithMockKeystore{
+    "with invalid form data should show same form with errors and response code 200" in new ControllerWithMockKeystore {
+      // set up
+      implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID),
+                                                                        (CURRENT_INPUT_YEAR_KEY,"2016"),
+                                                                        (SELECTED_INPUT_YEARS_KEY,"2016"),
+                                                                        (IS_EDIT_KEY,"false"))
+                                                            .withFormUrlEncodedBody(("year"->"2016"))
+
+      // test
+      val result: Future[Result] = MockYesNoThresholdIncomeControllerWithMockKeystore.onSubmit()(request)
+
+      // check
+      status(result) shouldBe 200
+    }
+
+    "with yesNo = No should set AdjustedIncome value to empty string" in new ControllerWithMockKeystore {
        // set up
        implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID),
                                                                           (IS_EDIT_KEY -> "false"),
@@ -169,6 +184,22 @@ class YesNoThresholdIncomeControllerSpec extends test.BaseSpec {
        // check
        MockKeystore.map.contains(s"${KeystoreService.AI_PREFIX}2016") shouldBe false
      }
+   }
+
+   "onBack" should {
+      "redirect to pension inputs post 2015 page" in new ControllerWithMockKeystore {
+        // set up
+        implicit val request = FakeRequest(GET,"/paac/back").withSession((SessionKeys.sessionId,SESSION_ID),
+                                                                         (CURRENT_INPUT_YEAR_KEY -> "2016"),
+                                                                         (SELECTED_INPUT_YEARS_KEY -> "2016"))
+
+        // test
+        val result : Future[Result] = MockYesNoThresholdIncomeControllerWithMockKeystore.onBack()(request)
+
+        // check
+        status(result) shouldBe 303
+        redirectLocation(result) shouldBe Some("/paac/pensionInputsPost2015")
+      }
     }
   }
 

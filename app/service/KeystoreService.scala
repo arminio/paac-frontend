@@ -26,6 +26,7 @@ import reflect.ClassTag
 import uk.gov.hmrc.play.http._
 import scala.util.{Failure, Success}
 import uk.gov.hmrc.http.cache.client._
+import play.Logger
 
 
 trait KeystoreService {
@@ -40,7 +41,10 @@ trait KeystoreService {
           (maybeValue)=>
           maybeValue match {
             case Some(json) => json.as[Map[String, JsValue]].mapValues(_.as[String])
-            case None => Map[String,String]()
+            case None => {
+              Logger.error(s"Keystore fetchAndGetEntry did not find 'calculatorForm' resource for session ${id}. Returning empty data map.")
+              Map[String,String]()
+            }
           }
         }
       }
@@ -48,23 +52,37 @@ trait KeystoreService {
     }
   }
 
-  def saveData(data: Map[String,String])(implicit hc: HeaderCarrier, request: Request[Any]): Future[Boolean] = {
+  def saveData(data: Map[String,String])(implicit hc: HeaderCarrier, request: Request[Any]): Future[Option[Map[String,String]]] = {
     import play.api.libs.json._
     request.session.get(SessionKeys.sessionId) match {
       case Some(id) => {
         val json = Json.toJson(data.filterNot((entry)=>entry._1 == "csrfToken" || entry._1 == "sessionId"))
         sessionCache.cache[JsValue](SOURCE, id, "calculatorForm", json) map {
-          (_)=>
-          true
+          (cache)=>
+          cache.data.get("calculatorForm").map(_.as[Map[String, JsValue]].mapValues(_.as[String]))
         }
       }
-      case None => Future.successful(false)
+      case None => Future.successful(None)
     }
   }
 
   def clear()(implicit hc: HeaderCarrier, request: Request[Any]): Future[Option[Boolean]] = {
     request.session.get(SessionKeys.sessionId) match {
-      case Some(id) => sessionCache.delete(buildUri(sessionCache.defaultSource, id)).map((r)=>Some(true))
+      case Some(id) => {
+        val uri = buildUri(sessionCache.defaultSource, id)
+        Logger.info(s"Deleting keystore session ${uri}")
+        sessionCache.delete(uri).map{
+          (r)=>
+          r.status match {
+            case responseStatus if responseStatus >= 200 && responseStatus < 300 => Some(true)
+            case responseStatus => {
+              Logger.warn(s"""Deleting keystore session appears to have failed with status code: ${responseStatus}: ${r.body}.""")
+              Some(false)
+            }
+          }
+
+        }
+      }
       case None => Future.successful(None)
     }
   }

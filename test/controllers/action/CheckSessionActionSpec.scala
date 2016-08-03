@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.action
 
 import java.util.UUID
 
@@ -32,88 +32,55 @@ import uk.gov.hmrc.play.http.SessionKeys
 import scala.concurrent.Future
 
 class CheckSessionActionSpec extends test.BaseSpec {
-
-  trait ControllerWithMockKeystore extends MockKeystoreFixture {
-    object RedirectController extends BaseFrontendController {
-      val keystorekey = "TaxYearSelection"
-      val keystore: KeystoreService = MockKeystore
-    }
-  }
-
   "CheckSessionAction" should {
-    /*"get session id should return None if keystore session id is not present" in {
-      // set up
-      val request = FakeRequest()
-      object BaseFrontendController extends BaseFrontendController with SessionProvider {}
-
-      // test
-      val maybeSessionId = BaseFrontendController.getSessionId()(request)
-
-      // check
-      maybeSessionId shouldBe empty
-    }
-
-    "get session id should return Some if keystore session id is present" in {
-      // set up
-      val request = FakeRequest().withSession { (SessionKeys.sessionId, "session-test") }
-      object BaseFrontendController extends BaseFrontendController with SessionProvider {}
-
-      // test
-      val maybeSessionId = BaseFrontendController.getSessionId()(request)
-
-      // check
-      maybeSessionId should not be None
-    }
-
     "withSession should redirect if no session" in {
       // set up
-      val request = FakeRequest().withSession { (SessionKeys.sessionId, "session-test") }
-      object BaseFrontendController extends BaseFrontendController with SessionProvider {
-        override def getSessionId()(implicit request : Request[AnyContent]) : Option[String] = Some("NOSESSION")
-      }
+      val request = FakeRequest()
+      val action = new CheckSessionAction(){}
 
       // test
-      val noSessionAction = BaseFrontendController.withSession { implicit request =>
-        Future.successful(Ok("Done"))
-      }
-      val result = await(noSessionAction(request))
+      val result = await(action.filter(request))
 
       // check
-      status(result) shouldBe 303
+      status(result.get) shouldBe 303
     }
 
-    "withSession should redirect if no session id" in {
-      // set up
-      val request = FakeRequest().withSession { (SessionKeys.sessionId, "session-test") }
-      object BaseFrontendController extends BaseFrontendController with SessionProvider {
-        override def getSessionId()(implicit request : Request[AnyContent]) : Option[String] = None
+    "filter" should {
+      "redirect if no session id" in {
+        // set up
+        val request = FakeRequest().withSession()
+        val action = new CheckSessionAction(){}
+
+        // test
+        val result = await(action.filter(request))
+
+        // check
+        status(result.get) shouldBe 303
       }
 
-      // test
-      val noSessionAction = BaseFrontendController.withSession { implicit request =>
-        Future.successful(Ok("Done"))
-      }
-      val result = await(noSessionAction(request))
+      "redirect if session id not set" in {
+        // set up
+        val request = FakeRequest().withSession((SessionKeys.sessionId, "NOSESSION"))
+        val action = new CheckSessionAction(){}
 
-      // check
-      status(result) shouldBe 303
+        // test
+        val result = await(action.filter(request))
+
+        // check
+        status(result.get) shouldBe 303
+      }
+
+      "return None if session id is present" in {
+        // set up
+        val request = FakeRequest().withSession((SessionKeys.sessionId, "session-id"))
+        val action = new CheckSessionAction(){}
+
+        // test
+        val result = await(action.filter(request))
+
+        // check
+        result shouldBe None
+      }
     }
-
-    "withSession should not redirect if session id is present" in {
-      // set up
-      val request = FakeRequest().withSession { (SessionKeys.sessionId, "session-test") }
-      object BaseFrontendController extends BaseFrontendController with SessionProvider {
-        override def getSessionId()(implicit request : Request[AnyContent]) : Option[String] = Some("session-test")
-      }
-
-      // test
-      val noSessionAction = BaseFrontendController.withSession { implicit request =>
-        Future.successful(Ok("Done"))
-      }
-      val result = await(noSessionAction(request))
-
-      // check
-      status(result) shouldBe 200
-    }*/
   }
 }

@@ -43,9 +43,9 @@ class SimpleBaseSpec extends UnitSpec {
 
       override def saveData(data: Map[String,String])
                            (implicit hc: HeaderCarrier,
-                                     request: Request[Any]): Future[Boolean] = {
+                                     request: Request[Any]): Future[Option[Map[String,String]]] = {
         map = map ++ data
-        Future.successful(true)
+        Future.successful(Some(map))
       }
 
       override def readData()
