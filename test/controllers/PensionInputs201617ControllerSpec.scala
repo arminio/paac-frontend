@@ -227,7 +227,7 @@ class PensionInputs201617ControllerSpec extends test.BaseSpec {
         // check
         status(result) shouldBe 200
         val htmlPage = contentAsString(await(result))
-        htmlPage should include ("Enter your total defined benefit pension savings for 2016 even if it is 0.")
+        htmlPage should include ("Enter your total defined benefit pension savings for this year even if it is 0.")
       }
 
       "with isEdit = false, DB = false and DC = true with empty DC Input should display the same page with errors" in new ControllerWithMockKeystore {
@@ -246,7 +246,7 @@ class PensionInputs201617ControllerSpec extends test.BaseSpec {
         // check
         status(result) shouldBe 200
         val htmlPage = contentAsString(await(result))
-        htmlPage should include ("Enter your total defined contribution pension savings for 2016 even if it is 0.")
+        htmlPage should include ("Enter your total defined contribution pension savings for this year even if it is 0.")
       }
     }
   }

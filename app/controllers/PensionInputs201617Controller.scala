@@ -60,9 +60,11 @@ trait PensionInputs201617Controller extends RedirectController {
         val isDCError = ("year2016.definedContributions", !dc.isDefined && isDC)
         val errors = List(isDBError, isDCError)
         if (errors.exists(_._2)) {
-          val formWithErrors = errors.foldLeft(form) {
-            (newForm, error) =>
-            newForm.withError(error._1, if (error._1.contains("definedBenefit")) "db.error.bounds" else "dc.error.bounds")
+          val formWithErrors = errors.filter(_._2).foldLeft(form) {
+            (newForm, error) => {
+              var args = if (error._1.contains("definedBenefit")) List("benefit") else List("contribution")
+              newForm.withError(error._1, "post1516.error.bounds", args: _*)
+            }
           }
           showPage(formWithErrors, isDB, isDC, isEdit, year)
         } else {
