@@ -22,8 +22,8 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import service.KeystoreService
 import service.KeystoreService._
-import uk.gov.hmrc.play.http.SessionKeys
-
+import uk.gov.hmrc.play.http.{HeaderCarrier, SessionKeys}
+import org.joda.time.LocalDate
 import scala.concurrent.Future
 
 class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
@@ -596,6 +596,113 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
           success =>
             success should not be Some(-1)
         )
+      }
+    }
+  }
+
+  "TriggerDateModel" should {
+    "toSessionData" must {
+      "in edit mode reset trigger date" in {
+        // set up
+        val model = new TriggerDateModel() {
+          def dateOfMPAATriggerEvent: Option[LocalDate] = Some(new LocalDate("2015-07-11"))
+          def originalDate: String = "2015-04-12"
+          def p1dctrigger: String = "100"
+          def p2dctrigger: String = "0"
+          def isEdit: Boolean = true
+        }
+
+        // test
+        val result = model.toSessionData()
+
+        // check
+        result(0) shouldBe (("100","triggerDefinedContribution_2015_p2"))
+        result(1) shouldBe (("0","triggerDefinedContribution_2015_p1"))
+        result(2) shouldBe (("2015-07-11","dateOfMPAATriggerEvent"))
+      }
+      "in edit mode reset trigger date (p2)" in {
+        // set up
+        val model = new TriggerDateModel() {
+          def dateOfMPAATriggerEvent: Option[LocalDate] = Some(new LocalDate("2015-04-11"))
+          def originalDate: String = "2015-07-12"
+          def p1dctrigger: String = "0"
+          def p2dctrigger: String = "100"
+          def isEdit: Boolean = true
+        }
+
+        // test
+        val result = model.toSessionData()
+
+        // check
+        result(0) shouldBe (("100","triggerDefinedContribution_2015_p1"))
+        result(1) shouldBe (("0","triggerDefinedContribution_2015_p2"))
+        result(2) shouldBe (("2015-04-11","dateOfMPAATriggerEvent"))
+      }
+      "in edit mode reset trigger date when new date is in 2016" in {
+        // set up
+        val model = new TriggerDateModel() {
+          def dateOfMPAATriggerEvent: Option[LocalDate] = Some(new LocalDate("2016-07-11"))
+          def originalDate: String = "2015-04-12"
+          def p1dctrigger: String = "100"
+          def p2dctrigger: String = "0"
+          def isEdit: Boolean = true
+        }
+
+        // test
+        val result = model.toSessionData()
+
+        // check
+        result(0) shouldBe (("0","triggerDefinedContribution_2015_p1"))
+        result(1) shouldBe (("0","triggerDefinedContribution_2015_p2"))
+        result(2) shouldBe (("2016-07-11","dateOfMPAATriggerEvent"))
+      }
+      "in edit mode return trigger date when new and old date is in 2016" in {
+        // set up
+        val model = new TriggerDateModel() {
+          def dateOfMPAATriggerEvent: Option[LocalDate] = Some(new LocalDate("2016-07-11"))
+          def originalDate: String = "2016-04-12"
+          def p1dctrigger: String = "0"
+          def p2dctrigger: String = "0"
+          def isEdit: Boolean = true
+        }
+
+        // test
+        val result = model.toSessionData()
+
+        // check
+        result(0) shouldBe (("2016-07-11","dateOfMPAATriggerEvent"))
+      }
+      "not editing return trigger date" in {
+        // set up
+        val model = new TriggerDateModel() {
+          def dateOfMPAATriggerEvent: Option[LocalDate] = Some(new LocalDate("2016-07-11"))
+          def originalDate: String = "2016-04-12"
+          def p1dctrigger: String = "0"
+          def p2dctrigger: String = "0"
+          def isEdit: Boolean = false
+        }
+
+        // test
+        val result = model.toSessionData()
+
+        // check
+        result(0) shouldBe (("2016-07-11","dateOfMPAATriggerEvent"))
+      }
+      "return emtpy list when no date" in {
+        // set up
+        val model = new TriggerDateModel() {
+          def dateOfMPAATriggerEvent: Option[LocalDate] = None
+          def originalDate: String = "2016-04-12"
+          def p1dctrigger: String = "0"
+          def p2dctrigger: String = "0"
+          def isEdit: Boolean = false
+        }
+
+        // test
+        val result = model.toSessionData()
+
+        // check
+        result.size shouldBe 0
       }
     }
   }

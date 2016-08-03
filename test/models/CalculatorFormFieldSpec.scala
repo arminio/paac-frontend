@@ -24,6 +24,10 @@ trait Year2016 extends models.ThisYear {
   override def THIS_YEAR = 2016
 }
 
+trait Year2018 extends models.ThisYear {
+  override def THIS_YEAR = 2018
+}
+
 class CalculatorFormFieldSpec extends ModelSpec with BeforeAndAfterAll {
   val app = FakeApplication()
 
@@ -399,7 +403,7 @@ class CalculatorFormFieldSpec extends ModelSpec with BeforeAndAfterAll {
 
       contributions(7).amounts.get.moneyPurchase.get shouldBe 55500
       contributions(7).amounts.get.triggered.get shouldBe true
-      contributions(8).amounts.get.moneyPurchase.get shouldBe 88800 
+      contributions(8).amounts.get.moneyPurchase.get shouldBe 88800
       contributions(8).amounts.get.triggered.get shouldBe true
       contributions(9).amounts.get.moneyPurchase.get shouldBe 44400
       contributions(9).amounts.get.triggered.get shouldBe false
@@ -436,7 +440,7 @@ class CalculatorFormFieldSpec extends ModelSpec with BeforeAndAfterAll {
       contributions(8).taxPeriodStart.year shouldBe 2015
       contributions(9).taxPeriodStart.year shouldBe 2015
 
-      contributions(7).amounts.get.moneyPurchase.get shouldBe 55500 
+      contributions(7).amounts.get.moneyPurchase.get shouldBe 55500
       contributions(7).amounts.get.triggered.get shouldBe true
       contributions(8).amounts.get.moneyPurchase.get shouldBe 88800
       contributions(8).amounts.get.triggered.get shouldBe false
@@ -476,9 +480,9 @@ class CalculatorFormFieldSpec extends ModelSpec with BeforeAndAfterAll {
       contributions(9).taxPeriodStart.year shouldBe 2015
       contributions(10).taxPeriodStart.year shouldBe 2016
 
-      contributions(7).amounts.get.moneyPurchase.get shouldBe 55500  
+      contributions(7).amounts.get.moneyPurchase.get shouldBe 55500
       contributions(7).amounts.get.triggered.get shouldBe true
-      contributions(8).amounts.get.moneyPurchase.get shouldBe 88800    
+      contributions(8).amounts.get.moneyPurchase.get shouldBe 88800
       contributions(8).amounts.get.triggered.get shouldBe true
       contributions(9).amounts.get.moneyPurchase.get shouldBe 44400
       contributions(9).amounts.get.triggered.get shouldBe false
@@ -516,7 +520,7 @@ class CalculatorFormFieldSpec extends ModelSpec with BeforeAndAfterAll {
       contributions(9).taxPeriodStart.year shouldBe 2015
       contributions(10).taxPeriodStart.year shouldBe 2016
 
-      contributions(7).amounts.get.moneyPurchase.get shouldBe 88800 
+      contributions(7).amounts.get.moneyPurchase.get shouldBe 88800
       contributions(7).amounts.get.triggered.get shouldBe true
       contributions(8).amounts.get.moneyPurchase.get shouldBe 55500
       contributions(8).amounts.get.triggered.get shouldBe false
@@ -556,7 +560,7 @@ class CalculatorFormFieldSpec extends ModelSpec with BeforeAndAfterAll {
       contributions(8).taxPeriodStart.year shouldBe 2015
       contributions(9).taxPeriodStart.year shouldBe 2016
 
-      contributions(7).amounts.get.moneyPurchase.get shouldBe 55500 
+      contributions(7).amounts.get.moneyPurchase.get shouldBe 55500
       contributions(7).amounts.get.triggered shouldBe None
       contributions(8).amounts.get.moneyPurchase.get shouldBe 44400
       contributions(8).amounts.get.triggered shouldBe None
@@ -629,6 +633,42 @@ class CalculatorFormFieldSpec extends ModelSpec with BeforeAndAfterAll {
       contributions(7).taxPeriodStart.year shouldBe 2015
       contributions(8).taxPeriodStart.year shouldBe 2015
       contributions(9).taxPeriodStart.year shouldBe 2016
+    }
+
+    "return contributions when trigger date is 2017" in {
+      // set up
+      val definedBenefits = Amounts(Some(BigDecimal(123)))
+      val definedContributions = Amounts(Some(BigDecimal(456)))
+      val adjustedIncome = Amounts(Some(BigDecimal(789)))
+      val year2015 = Year2015Amounts(None, Some(444), None, Some(555), None, Some(888))
+      val triggeredAmount = Some(999)
+      val triggerDate = Some("2017-7-9")
+      val formFields = new CalculatorFormFields(definedBenefits,
+                                                definedContributions,
+                                                adjustedIncome,
+                                                year2015,
+                                                triggeredAmount,
+                                                triggerDate) with Year2018
+
+      // test
+      val contributions = formFields.toPageValues
+
+      // check
+      contributions.length shouldBe 11
+      contributions(0).taxPeriodStart.year shouldBe 2010
+      contributions(1).taxPeriodStart.year shouldBe 2011
+      contributions(2).taxPeriodStart.year shouldBe 2012
+      contributions(3).taxPeriodStart.year shouldBe 2013
+      contributions(4).taxPeriodStart.year shouldBe 2014
+      contributions(5).taxPeriodStart.year shouldBe 2015
+      contributions(6).taxPeriodStart.year shouldBe 2015
+      contributions(7).taxPeriodStart.year shouldBe 2016
+      contributions(8).taxPeriodStart.year shouldBe 2017
+      contributions(9).taxPeriodStart.year shouldBe 2017
+      contributions(10).taxPeriodStart.year shouldBe 2018
+
+      contributions(8).amounts.get.moneyPurchase.get shouldBe 99900
+      contributions(8).amounts.get.triggered.get shouldBe true
     }
   }
 
@@ -755,6 +795,27 @@ class CalculatorFormFieldSpec extends ModelSpec with BeforeAndAfterAll {
       // check
       result should not be None
       result.get.isPeriod1 shouldBe true
+    }
+  }
+
+  "get" should {
+    "return None when not supported" in {
+      // set up
+      val test = new CalculatorFields() {
+        def test(string:String): Option[Long] = super.get(string)
+        def definedBenefits: Amounts = Amounts()
+        def definedContributions: Amounts = Amounts()
+        def adjustedIncome: Amounts = Amounts()
+        def year2015: Year2015Amounts = Year2015Amounts()
+        def triggerAmount: Option[Int] = None
+        def triggerDate: Option[String] = None
+      }
+
+      // test
+      val result = test.test("abcdef")
+
+      // check
+      result shouldBe None
     }
   }
 }

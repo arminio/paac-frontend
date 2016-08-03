@@ -25,7 +25,13 @@ import uk.gov.hmrc.play.mappers.DateTuple._
 import models.PensionPeriod._
 import models._
 
-case class DateOfMPAATriggerEventPageModel(dateOfMPAATriggerEvent: Option[LocalDate], originalDate: String, p1dctrigger: String, p2dctrigger: String, isEdit: Boolean) {
+trait TriggerDateModel {
+  def dateOfMPAATriggerEvent: Option[LocalDate]
+  def originalDate: String
+  def p1dctrigger: String
+  def p2dctrigger: String
+  def isEdit: Boolean
+
   def toSessionData(): List[(String,String)] = {
     val maybeData = dateOfMPAATriggerEvent.map {
       (date)=>
@@ -39,6 +45,8 @@ case class DateOfMPAATriggerEventPageModel(dateOfMPAATriggerEvent: Option[LocalD
           val v1 = if (newDate.isPeriod1) (p2dctrigger,P1_TRIGGER_DC_KEY) else (p1dctrigger, P2_TRIGGER_DC_KEY)
           val v2 = ("0", if (newDate.isPeriod1) P2_TRIGGER_DC_KEY else P1_TRIGGER_DC_KEY)
           List[(String,String)](v1, v2) ++ data
+        } else if (!newDate.isPeriod1 && !newDate.isPeriod2 && (oldDate.isPeriod1 || oldDate.isPeriod2)) {
+          List(("0",P1_TRIGGER_DC_KEY),("0",P2_TRIGGER_DC_KEY)) ++ data
         } else {
           data
         }
@@ -49,6 +57,8 @@ case class DateOfMPAATriggerEventPageModel(dateOfMPAATriggerEvent: Option[LocalD
     maybeData.getOrElse(List[(String,String)]())
   }
 }
+
+case class DateOfMPAATriggerEventPageModel(dateOfMPAATriggerEvent: Option[LocalDate], originalDate: String, p1dctrigger: String, p2dctrigger: String, isEdit: Boolean) extends TriggerDateModel
 
 object DateOfMPAATriggerEventPageModel {
   implicit val formats = Json.format[DateOfMPAATriggerEventPageModel]
@@ -72,10 +82,7 @@ trait DateOfMPAATriggerEvent{
   val mpaaDate = "dateOfMPAATriggerEvent"
 }
 
-object DateOfMPAATriggerEventForm extends DateOfMPAATriggerEvent with DateOfMPAATriggerEventForm
-
 trait DateOfMPAATriggerEventForm extends DateOfMPAATriggerEvent {
-
   val form: Form[DateOfMPAATriggerEventPageModel] = Form(
     mapping(
       mpaaDate -> dateTuple(validate = true),
@@ -86,3 +93,5 @@ trait DateOfMPAATriggerEventForm extends DateOfMPAATriggerEvent {
     )(DateOfMPAATriggerEventPageModel.apply)(DateOfMPAATriggerEventPageModel.unapply)
   )
 }
+
+object DateOfMPAATriggerEventForm extends DateOfMPAATriggerEvent with DateOfMPAATriggerEventForm
