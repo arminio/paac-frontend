@@ -18,11 +18,9 @@ package controllers
 
 import form.{DateOfMPAATriggerEventPageModel, DateOfMPAATriggerEventForm}
 import org.joda.time.LocalDate
-import play.api.mvc._
 import service._
 import service.KeystoreService._
 import scala.concurrent.Future
-import models._
 import play.api.data.Form
 import play.api.mvc.Request
 
@@ -47,7 +45,8 @@ trait DateOfMPAATriggerEventController extends RedirectController {
       input => {
         input.dateOfMPAATriggerEvent.map {
           (date)=>
-          if (!isValidDate(date)) {
+          val selectedTaxYears: String = request.data.get(SELECTED_INPUT_YEARS_KEY).getOrElse("2014")
+          if (!isValidDate(date,selectedTaxYears)) {
             val newForm = form.withError("dateOfMPAATriggerEvent", "paac.mpaa.ta.date.page.invalid.date")
             showPage(newForm, input)
           } else {
@@ -70,11 +69,9 @@ trait DateOfMPAATriggerEventController extends RedirectController {
     Future.successful(Ok(views.html.date_of_mpaa_trigger_event(form,model)))
   }
 
-  private def isValidDate(date: LocalDate): Boolean  = {
-    (date.getYear() == 2016) ||
-    (date.getYear() == 2015 && date.getMonthOfYear() > 4) ||
-    (date.getYear() == 2015 && date.getMonthOfYear() == 4 && date.getDayOfMonth() >= 6) ||
-    (date.getYear() == 2017 && date.getMonthOfYear() < 4) ||
-    (date.getYear() == 2017 && date.getMonthOfYear() == 4 && date.getDayOfMonth() < 6)
-  }
+  private def isValidDate(date: LocalDate, selectedTaxYears: String): Boolean  = selectedTaxYears.split(",").map(_.toInt).filter(_ >= 2015)
+      .map((year) => (new LocalDate(year, 4, 5), new LocalDate(year + 1, 4, 6)))
+      .exists { pair => date.isAfter(pair._1) && date.isBefore(pair._2) }
+
+
 }
