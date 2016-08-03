@@ -123,22 +123,28 @@ trait CalculatorForm extends models.ThisYear {
       )(CalculatorFormFields.apply)(CalculatorFormFields.unapply))
   }
 
+  protected def poundsAndPenceField(isValidating: Boolean = false) = {
+    if (isValidating)
+          optional(bigDecimal(10,2)).verifying("errorbounds", value=> if (value.isDefined)
+                                                                         value.get.longValue >= 0 && value.get.longValue <= 5000000
+                                                                       else
+                                                                         true)
+    else
+      optional(bigDecimal(10,2))
+  }
+
+  protected def poundsField(isValidating: Boolean = false) = {
+    if (isValidating)
+       optional(number(min=0,max=5000000))
+     else
+       optional(number)
+  }
+
   def formDef(isValidating: Boolean = false): Form[CalculatorFormType] = {
-    val poundsAndPence = if (isValidating)
-              optional(bigDecimal(10,2)).verifying("errorbounds", value=> if (value.isDefined)
-                                                                             value.get.longValue >= 0 && value.get.longValue <= 5000000
-                                                                           else
-                                                                             true)
-        else
-          optional(bigDecimal(10,2))
-    val pounds = if (isValidating)
-                   optional(number(min=0,max=5000000))
-                 else
-                   optional(number)
     if (isPoundsAndPence) {
-      formInPoundsAndPence(poundsAndPence, pounds)
+      formInPoundsAndPence(poundsAndPenceField(isValidating), poundsField(isValidating))
     } else {
-      formInPounds(pounds)
+      formInPounds(poundsField(isValidating))
     }
   }
 
