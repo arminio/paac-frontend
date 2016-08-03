@@ -37,21 +37,24 @@ trait DateOfMPAATriggerEventController extends RedirectController {
 
   val onSubmit = withWriteSession { implicit request =>
     val form = DateOfMPAATriggerEventForm.form.bindFromRequest()
+    val reqData = request.data
     form.fold (
       formWithErrors => {
-        val model: DateOfMPAATriggerEventPageModel = request.data
+        val model: DateOfMPAATriggerEventPageModel = reqData
         showPage(formWithErrors, model.copy(dateOfMPAATriggerEvent=None, originalDate=request.form("originalDate")))
       },
       input => {
         input.dateOfMPAATriggerEvent.map {
           (date)=>
-          val selectedTaxYears: String = request.data.get(SELECTED_INPUT_YEARS_KEY).getOrElse("2014")
-          if (!isValidDate(date,selectedTaxYears)) {
-            val newForm = form.withError("dateOfMPAATriggerEvent", "paac.mpaa.ta.date.page.invalid.date")
-            showPage(newForm, input)
-          } else {
-            val sessionData = request.data ++ input.toSessionData.map(_.swap).toMap
-            TriggerDate() go Forward.using(sessionData)
+            // Get all selected tax years >= 2015 whose DC flag is true
+            val selectedTaxYears:Seq[Int] = reqData.get(SELECTED_INPUT_YEARS_KEY).getOrElse("2014").split(",").map(_.toInt).filter(_ >= 2015)
+                                                      .filter( year => reqData.getOrElse(DC_FLAG_PREFIX+year,"false").toBoolean)
+            if (!isValidDate(date,selectedTaxYears)) {
+              val newForm = form.withError("dateOfMPAATriggerEvent", "paac.mpaa.ta.date.page.invalid.date")
+              showPage(newForm, input)
+            } else {
+              val sessionData = reqData ++ input.toSessionData.map(_.swap).toMap
+              TriggerDate() go Forward.using(sessionData)
           }
         } getOrElse {
           val newForm = form.withError("dateOfMPAATriggerEvent", "error.invalid.date.format")
@@ -69,9 +72,9 @@ trait DateOfMPAATriggerEventController extends RedirectController {
     Future.successful(Ok(views.html.date_of_mpaa_trigger_event(form,model)))
   }
 
-  private def isValidDate(date: LocalDate, selectedTaxYears: String): Boolean  = selectedTaxYears.split(",").map(_.toInt).filter(_ >= 2015)
-      .map((year) => (new LocalDate(year, 4, 5), new LocalDate(year + 1, 4, 6)))
+  private def isValidDate(date: LocalDate, selectedTaxYears: Seq[Int]): Boolean  = {
+    selectedTaxYears.map((year) => (new LocalDate(year, 4, 5), new LocalDate(year + 1, 4, 6)))
       .exists { pair => date.isAfter(pair._1) && date.isBefore(pair._2) }
-
+  }
 
 }
