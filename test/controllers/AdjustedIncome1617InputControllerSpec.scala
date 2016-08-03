@@ -202,7 +202,7 @@ class AdjustedIncome1617InputControllerSpec extends test.BaseSpec {
         status(result) shouldBe 200
         redirectLocation(result) shouldBe None
         val htmlPage = contentAsString(await(result))
-        htmlPage should include ("2016 amount was too small and must be either £0 or greater.")
+        htmlPage should include ("Enter an amount that is £5,000,000 or less.")
       }
 
       "with Edit functionality Current Year flag = 2016 and AI field has some value should reviews page" in new ControllerWithMockKeystore {

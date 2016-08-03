@@ -360,7 +360,7 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
         // check
         status(result) shouldBe 200
         val htmlPage = contentAsString(await(result))
-        htmlPage should include ("The date must fall within or after 2015")
+        htmlPage should include ("Enter a date between 6 4 2015 and 5 4 2016 inclusive")
       }
 
       "with Selected TaxYear= 2015, should accept any date in 2015/16 Tax year" in new ControllerWithMockKeystore {
@@ -469,7 +469,7 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
         // check
         status(result) shouldBe 200
         val htmlPage = contentAsString(await(result))
-        htmlPage should include ("The date must fall within or after 2015")
+        htmlPage should include ("Enter a date between 6 4 2015 and 5 4 2016 inclusive")
       }
 
 
@@ -525,7 +525,7 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
         // check
         status(result) shouldBe 200
         val htmlPage = contentAsString(await(result))
-        htmlPage should include ("The date must fall within or after 2015")
+        htmlPage should include ("Enter a date between 6 4 2015 and 5 4 2016 inclusive")
       }
     }
 

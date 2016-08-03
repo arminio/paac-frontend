@@ -209,7 +209,7 @@ class PensionInputs201617ControllerSpec extends test.BaseSpec {
         // check
         status(result) shouldBe 200
         val htmlPage = contentAsString(await(result))
-        htmlPage should include ("2016 amount was too small and must be either £0 or greater.")
+        htmlPage should include ("Enter an amount that is £5,000,000 or less.")
       }
 
       "with isEdit = false, DB = true and DC = false with empty DB Input should display the same page with errors" in new ControllerWithMockKeystore {

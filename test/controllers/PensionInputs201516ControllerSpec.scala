@@ -232,7 +232,7 @@ class PensionInputs201516ControllerSpec extends test.BaseSpec {
         // check
         status(result) shouldBe 200
         val htmlPage = contentAsString(await(result))
-        htmlPage should include ("2015 P1 amount was too small and must be either £0 or greater.")
+        htmlPage should include ("Enter an amount that is £5,000,000 or less.")
       }
 
       "with empty db amount redisplay page with errors" in new ControllerWithMockKeystore {
@@ -340,7 +340,7 @@ class PensionInputs201516ControllerSpec extends test.BaseSpec {
         // check
         status(result) shouldBe 200
         val htmlPage = contentAsString(await(result))
-        htmlPage should include ("2015 P1 amount was too small and must be either £0 or greater.")
+        htmlPage should include ("Enter an amount that is £5,000,000 or less.")
       }
 
       "with empty db amount redisplay page with errors 2" in new ControllerWithMockKeystore {
