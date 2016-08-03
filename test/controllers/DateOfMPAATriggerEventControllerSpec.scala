@@ -39,6 +39,10 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
   }
 
   "DateOfMPAATriggerEventControllerSpec" when {
+    "object should define keystore" in {
+      DateOfMPAATriggerEventController.keystore should not be null
+    }
+
     "onPageLoad" should {
       "display form page with no date if no keystore value" in new ControllerWithMockKeystore {
         // setup
