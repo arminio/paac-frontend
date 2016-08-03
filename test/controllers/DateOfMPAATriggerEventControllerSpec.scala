@@ -29,6 +29,8 @@ import scala.concurrent.Future
 class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
 
   val endPointURL = "/paac/dateofmpaate"
+  val DC_FLAG_PREFIX_2016 = s"${DC_FLAG_PREFIX}2016"
+  val DC_FLAG_PREFIX_2015 = s"${DC_FLAG_PREFIX}2015"
 
   trait ControllerWithMockKeystore extends MockKeystoreFixture {
     object ControllerWithMockKeystore extends DateOfMPAATriggerEventController {
@@ -89,6 +91,7 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
                                (IS_EDIT_KEY -> "false"),
                                (TE_YES_NO_KEY -> "true"),
                                (CURRENT_INPUT_YEAR_KEY -> "2015"),
+                               (DC_FLAG_PREFIX_2015 -> "true"),
                                (SELECTED_INPUT_YEARS_KEY -> "2015"))
         implicit val request = FakeRequest(POST, endPointURL).withSession(sessionData: _*).withFormUrlEncodedBody(("dateOfMPAATriggerEvent.day" -> "4"),
                                     ("dateOfMPAATriggerEvent.month" -> "7"),
@@ -114,6 +117,7 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
                                (IS_EDIT_KEY -> "false"),
                                (TE_YES_NO_KEY -> "true"),
                                (CURRENT_INPUT_YEAR_KEY -> "2015"),
+                               (DC_FLAG_PREFIX_2015 -> "true"),
                                (SELECTED_INPUT_YEARS_KEY -> "2015"))
         implicit val request = FakeRequest(POST, endPointURL).withSession(sessionData: _*).withFormUrlEncodedBody(("dateOfMPAATriggerEvent.day" -> "4"),
                                     ("dateOfMPAATriggerEvent.month" -> "7"),
@@ -137,6 +141,7 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
                                (IS_EDIT_KEY -> "false"),
                                (TE_YES_NO_KEY -> "true"),
                                (CURRENT_INPUT_YEAR_KEY -> "2015"),
+                               (DC_FLAG_PREFIX_2015 -> "true"),
                                (SELECTED_INPUT_YEARS_KEY -> "2015"))
         implicit val request = FakeRequest(POST, endPointURL).withSession(sessionData: _*).withFormUrlEncodedBody(("dateOfMPAATriggerEvent.day" -> "5"),
                                     ("dateOfMPAATriggerEvent.month" -> "4"),
@@ -162,6 +167,7 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
                                (IS_EDIT_KEY -> "false"),
                                (TE_YES_NO_KEY -> "true"),
                                (CURRENT_INPUT_YEAR_KEY -> "2015"),
+                               (DC_FLAG_PREFIX_2015 -> "true"),
                                (SELECTED_INPUT_YEARS_KEY -> "2015"))
         implicit val request = FakeRequest(POST, endPointURL).withSession(sessionData: _*).withFormUrlEncodedBody(("dateOfMPAATriggerEvent.day" -> ""),
                                     ("dateOfMPAATriggerEvent.month" -> ""),
@@ -187,6 +193,7 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
                                (IS_EDIT_KEY -> "false"),
                                (TE_YES_NO_KEY -> "true"),
                                (CURRENT_INPUT_YEAR_KEY -> "2015"),
+                               (DC_FLAG_PREFIX_2015 -> "true"),
                                (SELECTED_INPUT_YEARS_KEY -> "2015"))
         implicit val request = FakeRequest(POST, endPointURL).withSession(sessionData: _*).withFormUrlEncodedBody(("dateOfMPAATriggerEvent.day" -> "-1"),
                                     ("dateOfMPAATriggerEvent.month" -> "-1"),
@@ -212,6 +219,7 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
                                (IS_EDIT_KEY -> "false"),
                                (TE_YES_NO_KEY -> "true"),
                                (CURRENT_INPUT_YEAR_KEY -> "2015"),
+                               (DC_FLAG_PREFIX_2015 -> "true"),
                                (SELECTED_INPUT_YEARS_KEY -> "2015,2014"))
         implicit val request = FakeRequest(POST, endPointURL).withSession(sessionData: _*).withFormUrlEncodedBody(("dateOfMPAATriggerEvent.day" -> "4"),
                                     ("dateOfMPAATriggerEvent.month" -> "7"),
@@ -235,6 +243,7 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
                                (IS_EDIT_KEY -> "false"),
                                (TE_YES_NO_KEY -> "true"),
                                (CURRENT_INPUT_YEAR_KEY -> "2015"),
+                               (DC_FLAG_PREFIX_2015 -> "true"),
                                (SELECTED_INPUT_YEARS_KEY -> "2015"))
         implicit val request = FakeRequest(POST, endPointURL).withSession(sessionData: _*).withFormUrlEncodedBody(("dateOfMPAATriggerEvent.day" -> "4"),
                                     ("dateOfMPAATriggerEvent.month" -> "7"),
@@ -264,6 +273,7 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
                                                               (IS_EDIT_KEY -> "false"),
                                                               (TE_YES_NO_KEY -> "true"),
                                                               (CURRENT_INPUT_YEAR_KEY -> "2016"),
+                                                              (DC_FLAG_PREFIX_2016 -> "true"),
                                                               (SELECTED_INPUT_YEARS_KEY -> "2016"))
         implicit val request = FakeRequest(POST, endPointURL).withSession(sessionData: _*)
                                                               .withSession((SessionKeys.sessionId,SESSION_ID))
@@ -291,6 +301,7 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
                                                               (IS_EDIT_KEY -> "false"),
                                                               (TE_YES_NO_KEY -> "true"),
                                                               (CURRENT_INPUT_YEAR_KEY -> "2016"),
+                                                              (DC_FLAG_PREFIX_2016 -> "true"),
                                                               (SELECTED_INPUT_YEARS_KEY -> "2016"))
         implicit val request = FakeRequest(POST, endPointURL).withSession(sessionData: _*)
                                                               .withSession((SessionKeys.sessionId,SESSION_ID))
@@ -318,6 +329,7 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
                                                               (IS_EDIT_KEY -> "false"),
                                                               (TE_YES_NO_KEY -> "true"),
                                                               (CURRENT_INPUT_YEAR_KEY -> "2016"),
+                                                              (DC_FLAG_PREFIX_2016 -> "true"),
                                                               (SELECTED_INPUT_YEARS_KEY -> "2016"))
         implicit val request = FakeRequest(POST, endPointURL).withSession(sessionData: _*)
                                                               .withSession((SessionKeys.sessionId,SESSION_ID))
@@ -344,6 +356,7 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
         val sessionData = List((SessionKeys.sessionId,SESSION_ID),
                                                               (IS_EDIT_KEY -> "false"),
                                                               (TE_YES_NO_KEY -> "true"),
+                                                              (DC_FLAG_PREFIX_2016 -> "true"),
                                                               (CURRENT_INPUT_YEAR_KEY -> "2016"),
                                                               (SELECTED_INPUT_YEARS_KEY -> "2016"))
         implicit val request = FakeRequest(POST, endPointURL).withSession(sessionData: _*)
@@ -373,6 +386,7 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
                                                               (IS_EDIT_KEY -> "false"),
                                                               (TE_YES_NO_KEY -> "true"),
                                                               (CURRENT_INPUT_YEAR_KEY -> "2015"),
+                                                              (DC_FLAG_PREFIX_2015 -> "true"),
                                                               (SELECTED_INPUT_YEARS_KEY -> "2015"))
         implicit val request = FakeRequest(POST, endPointURL).withSession(sessionData: _*)
                                                               .withSession((SessionKeys.sessionId,SESSION_ID))
@@ -400,6 +414,7 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
                                                               (IS_EDIT_KEY -> "false"),
                                                               (TE_YES_NO_KEY -> "true"),
                                                               (CURRENT_INPUT_YEAR_KEY -> "2015"),
+                                                              (DC_FLAG_PREFIX_2015 -> "true"),
                                                               (SELECTED_INPUT_YEARS_KEY -> "2015"))
         implicit val request = FakeRequest(POST, endPointURL).withSession(sessionData: _*)
                                                               .withSession((SessionKeys.sessionId,SESSION_ID))
@@ -427,6 +442,7 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
                                                               (IS_EDIT_KEY -> "false"),
                                                               (TE_YES_NO_KEY -> "true"),
                                                               (CURRENT_INPUT_YEAR_KEY -> "2015"),
+                                                              (DC_FLAG_PREFIX_2015 -> "true"),
                                                               (SELECTED_INPUT_YEARS_KEY -> "2015"))
         implicit val request = FakeRequest(POST, endPointURL).withSession(sessionData: _*)
                                                               .withSession((SessionKeys.sessionId,SESSION_ID))
@@ -454,6 +470,7 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
                                                               (IS_EDIT_KEY -> "false"),
                                                               (TE_YES_NO_KEY -> "true"),
                                                               (CURRENT_INPUT_YEAR_KEY -> "2015"),
+                                                              (DC_FLAG_PREFIX_2015 -> "true"),
                                                               (SELECTED_INPUT_YEARS_KEY -> "2015"))
         implicit val request = FakeRequest(POST, endPointURL).withSession(sessionData: _*)
                                                               .withSession((SessionKeys.sessionId,SESSION_ID))
@@ -483,6 +500,7 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
                                                               (IS_EDIT_KEY -> "false"),
                                                               (TE_YES_NO_KEY -> "true"),
                                                               (CURRENT_INPUT_YEAR_KEY -> "2016"),
+                                                              (DC_FLAG_PREFIX_2016 -> "true"),(DC_FLAG_PREFIX_2015 -> "true"),
                                                               (SELECTED_INPUT_YEARS_KEY -> "2016,2015"))
         implicit val request = FakeRequest(POST, endPointURL).withSession(sessionData: _*)
                                                               .withSession((SessionKeys.sessionId,SESSION_ID))
@@ -510,6 +528,7 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
                                                               (IS_EDIT_KEY -> "false"),
                                                               (TE_YES_NO_KEY -> "true"),
                                                               (CURRENT_INPUT_YEAR_KEY -> "2016"),
+                                                              (DC_FLAG_PREFIX_2016 -> "true"),(DC_FLAG_PREFIX_2015 -> "true"),
                                                               (SELECTED_INPUT_YEARS_KEY -> "2016,2015"))
         implicit val request = FakeRequest(POST, endPointURL).withSession(sessionData: _*)
                                                               .withSession((SessionKeys.sessionId,SESSION_ID))
