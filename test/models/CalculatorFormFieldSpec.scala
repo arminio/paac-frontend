@@ -19,6 +19,7 @@ package models
 import org.scalatest.BeforeAndAfterAll
 import play.api.Play
 import play.api.test._
+import service.KeystoreService._
 
 trait Year2016 extends models.ThisYear {
   override def THIS_YEAR = 2016
@@ -668,6 +669,42 @@ class CalculatorFormFieldSpec extends ModelSpec with BeforeAndAfterAll {
       contributions(10).taxPeriodStart.year shouldBe 2018
 
       contributions(8).amounts.get.moneyPurchase.get shouldBe 99900
+      contributions(8).amounts.get.triggered.get shouldBe true
+    }
+
+    "return contributions when trigger date is 2017 but trigger amount not defined" in {
+      // set up
+      val definedBenefits = Amounts(Some(BigDecimal(123)))
+      val definedContributions = Amounts(Some(BigDecimal(456)))
+      val adjustedIncome = Amounts(Some(BigDecimal(789)))
+      val year2015 = Year2015Amounts(None, Some(444), None, Some(555), None, Some(888))
+      val triggeredAmount = None
+      val triggerDate = Some("2017-7-9")
+      val formFields = new CalculatorFormFields(definedBenefits,
+                                                definedContributions,
+                                                adjustedIncome,
+                                                year2015,
+                                                triggeredAmount,
+                                                triggerDate) with Year2018
+
+      // test
+      val contributions = formFields.toPageValues
+
+      // check
+      contributions.length shouldBe 11
+      contributions(0).taxPeriodStart.year shouldBe 2010
+      contributions(1).taxPeriodStart.year shouldBe 2011
+      contributions(2).taxPeriodStart.year shouldBe 2012
+      contributions(3).taxPeriodStart.year shouldBe 2013
+      contributions(4).taxPeriodStart.year shouldBe 2014
+      contributions(5).taxPeriodStart.year shouldBe 2015
+      contributions(6).taxPeriodStart.year shouldBe 2015
+      contributions(7).taxPeriodStart.year shouldBe 2016
+      contributions(8).taxPeriodStart.year shouldBe 2017
+      contributions(9).taxPeriodStart.year shouldBe 2017
+      contributions(10).taxPeriodStart.year shouldBe 2018
+
+      contributions(8).amounts.get.moneyPurchase.get shouldBe 0
       contributions(8).amounts.get.triggered.get shouldBe true
     }
   }

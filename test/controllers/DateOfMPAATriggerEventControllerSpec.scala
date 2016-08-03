@@ -235,7 +235,7 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
         // check
         status(result) shouldBe 200
         val htmlPage = contentAsString(await(result))
-        htmlPage should include ("The date must fall within or after 2015")
+        htmlPage should include ("Enter a date between 6 4 2015 and 5 4 2016 inclusive")
       }
 
       "with valid date redirect to next trigger amount page if edit flag not set" in new ControllerWithMockKeystore {
