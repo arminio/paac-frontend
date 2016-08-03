@@ -128,6 +128,25 @@ class PostTriggerPensionInputsControllerSpec extends test.BaseSpec {
       htmlPage should include ("""Enter your defined contribution pension savings for rest of 2016 to 2017 even if it is 0.""")
     }
 
+    "display errors if amount is blank when trigger is 2016" in new ControllerWithMockKeystore {
+      // set up
+      val sessionData = List((SessionKeys.sessionId,SESSION_ID),
+                             (KeystoreService.TRIGGER_DATE_KEY -> "2016-11-15"),
+                             ("isEdit" -> "false"),
+                             (KeystoreService.CURRENT_INPUT_YEAR_KEY, "2016"),
+                             (KeystoreService.SELECTED_INPUT_YEARS_KEY, "2016"))
+      implicit val request = FakeRequest(POST, endPointURL).withSession(sessionData: _*).withFormUrlEncodedBody(("triggerAmount" -> ""),
+                               ("triggerDate", "2016-11-15"))
+
+      // test
+      val result: Future[Result] = ControllerWithMockKeystore.onSubmit()(request)
+
+      // check
+      status(result) shouldBe 200
+      val htmlPage = contentAsString(await(result))
+      htmlPage should include ("""2016 amount was empty or negative. Please provide an amount between £0 and £5,000,000.""")
+    }
+
     "saves p2 amount in keystore if valid form" in new ControllerWithMockKeystore {
       // set up
       val sessionData = List((SessionKeys.sessionId,SESSION_ID),

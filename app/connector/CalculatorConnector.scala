@@ -42,7 +42,7 @@ trait CalculatorConnector {
     val endpoint = Play.current.configuration.getString("microservice.services.paac.endpoints.calculate").getOrElse("/paac/calculate")
     val body = Json.toJson(calculationRequest)
     Logger.info(s"""Making calculation request:\n${contributions.mkString("\n")}\nEarliest year =${earliestYear}""")
-    val results = httpPostRequest.POST[JsValue, HttpResponse](s"${serviceUrl}${endpoint}",body).map {
+    httpPostRequest.POST[JsValue, HttpResponse](s"${serviceUrl}${endpoint}",body).map {
       (response)=>
       (response.json \ "results").as[List[TaxYearResults]]
     } andThen {
@@ -51,7 +51,6 @@ trait CalculatorConnector {
           throw t
         }
         case Success(results) => results
-      } 
-    results
+      }
   }
 }

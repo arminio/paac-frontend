@@ -47,6 +47,7 @@ trait PostTriggerPensionInputsController extends RedirectController {
       input => {
         val triggerP1 = input.triggerDatePeriod.get.isPeriod1
         val triggerP2 = input.triggerDatePeriod.get.isPeriod2
+        println(s"${!triggerP1} && ${!triggerP2} && ${!input.triggerAmount.isDefined} ${request.data(CURRENT_INPUT_YEAR_KEY)}")
         if ((triggerP1 && !input.year2015.postTriggerDcAmount2015P1.isDefined) ||
             (triggerP2 && !input.year2015.postTriggerDcAmount2015P2.isDefined) ||
             (!triggerP1 && !triggerP2 && !input.triggerAmount.isDefined))
