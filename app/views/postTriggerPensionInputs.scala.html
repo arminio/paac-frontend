@@ -36,7 +36,7 @@ backLink = Some((controllers.routes.PostTriggerPensionInputsController.onBack.ur
       <div class="error-summary" role="group" aria-labelledby="error-summary-heading-example-1" tabindex="-1" style="border: 5px solid #b10e1e;padding: 20px;padding-top: 0px;margin-bottom: 30px;">
 
         <h1 class="heading-medium error-summary-heading">
-          There was a problem with the amount you reported to us
+            @Messages("paac.error.generic")
         </h1>
 
         @if(paacForm.hasGlobalErrors) {

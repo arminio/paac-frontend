@@ -55,13 +55,14 @@ paac.calculator.error.number= Enter an amount that contains only numbers
 error.number= Enter an amount that contains only numbers
 paac.calculator.error.number.zero= Enter a number greater than 0
 error.number.zero= Enter a number greater than 0
-error.min={0} amount was too small and must be either £0 or greater.
-error.max={0} amount was too large and must be either £{1} or less.
-error.bounds={0} amount was incorrect or empty. Please provide an amount between £0 and £5,000,000.
+error.min= Enter an amount that is £5,000,000 or less.
+error.max= Enter an amount that is £5,000,000 or less.
+error.bounds= Enter an amount that is £5,000,000 or less.
 db.error.bounds= Enter your total defined benefit pension savings for {0} even if it is 0.
 dc.error.bounds= Enter your total defined contribution pension savings for {0} even if it is 0.
 ai.error.bounds= Enter your Adjusted Income for this year even if it is 0.
 error.real.precision={0} amount must not be empty. (Amount must have no more than {1} numbers, including {2} decimal places, and should be £0 or larger and under £5,000,000.)
+paac.error.generic = There is a problem
 
 ## Tax Year Selection
 paac.taxyear.selection.pagetitle = Choose tax years
