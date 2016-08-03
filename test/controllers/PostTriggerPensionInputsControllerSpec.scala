@@ -16,17 +16,13 @@
 
 package controllers
 
-import org.scalatest.BeforeAndAfterAll
-import uk.gov.hmrc.play.test.UnitSpec
-import play.api.test.{FakeApplication, FakeRequest}
+import play.api.mvc.Result
+import play.api.test.FakeRequest
+import play.api.test.Helpers._
 import service.KeystoreService
 import uk.gov.hmrc.play.http.{HeaderCarrier, SessionKeys}
-import scala.concurrent.Future
-import play.api.Play
-import play.api.mvc.{Request, Result}
-import play.api.test.Helpers._
 
-import java.util.UUID
+import scala.concurrent.Future
 
 class PostTriggerPensionInputsControllerSpec extends test.BaseSpec {
   val endPointURL = "/paac/moneyPurchasePostTriggerValue"
@@ -108,7 +104,7 @@ class PostTriggerPensionInputsControllerSpec extends test.BaseSpec {
       // check
       status(result) shouldBe 200
       val htmlPage = contentAsString(await(result))
-      htmlPage should include ("""2015 amount was too small and must be either £0 or greater.""")
+      htmlPage should include ("""Enter an amount that is £5,000,000 or less.""")
     }
 
     "display errors if amount is blank" in new ControllerWithMockKeystore {
@@ -129,7 +125,7 @@ class PostTriggerPensionInputsControllerSpec extends test.BaseSpec {
       // check
       status(result) shouldBe 200
       val htmlPage = contentAsString(await(result))
-      htmlPage should include ("""2015 amount was empty or negative. Please provide an amount between £0 and £5,000,000.""")
+      htmlPage should include ("""Enter your defined contribution pension savings for rest of 2016 to 2017 even if it is 0.""")
     }
 
     "saves p2 amount in keystore if valid form" in new ControllerWithMockKeystore {
