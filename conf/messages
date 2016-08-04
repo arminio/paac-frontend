@@ -150,7 +150,8 @@ paac.results.link.new.href = new
 paac.results.link.new = Start again
 paac.results.page.heading = Results
 paac.results.page.title = Pension annual allowance calculator results
-paac.results.p1 = Based on your answers, you have exceeded your annual allowance by &pound;{1}. You will have to pay tax on this.
+paac.results.p1 = Based on your answers, you have exceeded your annual allowance by &pound;{0}. You will have to pay tax on this.
+paac.results.p2 = Based on your answers you have &pound;{0} of unused allowance and no tax to pay.
 
 ## Post Trigger Pension Inputs Page
 paac.post.trigger.value.page.question = What were your defined contribution savings for the rest of  the tax year {0} to {1}?
