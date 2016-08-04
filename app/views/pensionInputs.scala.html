@@ -60,11 +60,9 @@ backLink = Some((controllers.routes.PensionInputsController.onBack.url,Messages(
                 }
                 <span class="form-hint" style="text-align:left;min-width: 7em">@Messages("paac.common.inputfield.example.message")</span>
                   @if(paacForm.data.contains("definedBenefits.amount_"+currentYear)) {
-
-                          £&nbsp;<input type="number" name="definedBenefits.amount_@currentYear" id="definedBenefits.amount_@currentYear" min="0" value='@paacForm.data("definedBenefits.amount_"+currentYear)' max="5000000.00" size="10" class="input--no-spinner" style="width:9em;@if(paacForm.errors.find(_.key == "definedBenefits.amount_"+currentYear)) {border: 4px solid #b10e1e;}"/>
+                     £&nbsp;<input type="number" name="definedBenefits.amount_@currentYear" id="definedBenefits.amount_@currentYear" min="0" value='@paacForm.data("definedBenefits.amount_"+currentYear)' max="5000000.00" size="10" class="input--no-spinner" style="width:9em;@if(paacForm.errors.find(_.key == "definedBenefits.amount_"+currentYear)) {border: 4px solid #b10e1e;}"/>
                   } else {
-                          £&nbsp;<input type="number" name="definedBenefits.amount_@currentYear" id="definedBenefits.amount_@currentYear" min="0" value='' max="5000000.00" size="10" class="input--no-spinner" style="width:9em;@if(paacForm.errors.find(_.key == "definedBenefits.amount_"+currentYear)) {border: 4px solid #b10e1e;}"/>
-
+                     £&nbsp;<input type="number" name="definedBenefits.amount_@currentYear" id="definedBenefits.amount_@currentYear" min="0" value='' max="5000000.00" size="10" class="input--no-spinner" style="width:9em;@if(paacForm.errors.find(_.key == "definedBenefits.amount_"+currentYear)) {border: 4px solid #b10e1e;}"/>
                   }
                 </label>
             </fieldset>
