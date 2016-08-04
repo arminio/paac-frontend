@@ -38,7 +38,6 @@ paac.scheme.selection.heading = What types of pension schemes did you have in th
 paac.scheme.selection.p1 = Select all that apply.
 paac.scheme.selection.dc.label = <B>Defined contribution</B><P>A pension based on how much is paid in to it. These are usually personal or stakeholder pensions.</P>
 paac.scheme.selection.db.label = <B>Defined benefit</B><P>A pension based on your salary and how long you have worked for your employer. These are always workplace pensions.</P>
-paac.scheme.selection.error = Choose at least 1 type of pension scheme.
 
 ## PAAC TaxYear Text
 paac.0809.taxyear.text = 2008/09
@@ -50,6 +49,7 @@ paac.1314.taxyear.text = 2013/14
 paac.1415.taxyear.text = 2014/15
 paac.1516.taxyear.text = 2015/16
 
+## Total PAAC App Error messages
 paac.calculator.form.error = This field is required
 paac.calculator.error.number= Enter an amount that contains only numbers
 error.number= Enter an amount that contains only numbers
@@ -58,11 +58,15 @@ error.number.zero= Enter a number greater than 0
 error.min= Enter an amount that is £5,000,000 or less.
 error.max= Enter an amount that is £5,000,000 or less.
 error.bounds= Enter an amount that is £5,000,000 or less.
-db.error.bounds= Enter your total defined benefit pension savings for {0} even if it is 0.
-dc.error.bounds= Enter your total defined contribution pension savings for {0} even if it is 0.
 ai.error.bounds= Enter your Adjusted Income for this year even if it is 0.
 error.real.precision={0} amount must not be empty. (Amount must have no more than {1} numbers, including {2} decimal places, and should be £0 or larger and under £5,000,000.)
 paac.error.generic = There is a problem
+paac.scheme.selection.error = Choose at least 1 type of pension scheme.
+paac.taxyear.selection.error = Choose at least 1 tax year.
+## DB & DC, Total Amount Intput Field Error messages.
+post1516.error.bounds= Enter your total defined {0} pension savings for this year even if it is 0.
+year1516.error.bounds= Enter your total defined {0} pension savings for period {1} even if it is 0.
+pre1516.amount.error.bounds= Enter your total amount for this year even if it is 0.
 
 ## Tax Year Selection
 paac.taxyear.selection.pagetitle = Choose tax years
@@ -70,7 +74,6 @@ paac.taxyear.selection.heading = Choose tax years
 paac.taxyear.selection.p1 = Select which tax years you want to check if you owe any tax on your pension savings or if you can carry over any unused allowance.
 paac.taxyear.selection.p2 = You can also check for years when you were member of a registered pension scheme or a qualifying overseas pension scheme but made no contributions.
 paac.taxyear.selection.p3 = A tax year is 6 April to 5 April.
-paac.taxyear.selection.error = Choose at least 1 tax year.
 
 ## Yes/No Questions Text
 paac.yesno.yes = Yes
@@ -91,7 +94,6 @@ paac.pension.inputs.pagetitle = Pension savings {0} to {1}
 paac.pension.inputs.heading = What were your pension savings in the tax year {1} to {2}?
 paac.pension.inputs.description = Include all pension savings where pension input periods ended in the tax year 6 April {1} to 5 April {2}. Use only numbers and round to the nearest pound.
 paac.pension.inputs.totalamount = Total amount
-paac.pension.inputs.error = Enter your pension savings for the tax year {0}
 
 ## MPAA Trigger Event Yes/No Page
 paac.mpaa.te.yesno.pagetitle = Flexible access since 2015
@@ -172,11 +174,11 @@ trigger=Post Flexi-access savings
 trigger.date=Post Flexi-access date
 
 ## Post-2015 Pension Input Amounts Page
-
 paac.201617.pension.inputs.pagetitle = Pension savings 2016 to 2017
 paac.201617.pension.inputs.heading = What were your pension savings in the tax year 2016 to 2017?
 paac.201617.pension.inputs.description = The savings for defined contributions and defined benefits plans are calculated differently, with defined benefits including investment growth and defined contributions including payments made by, or on behalf of the member. Investment income is not included.
 paac.201617.pension.inputs.description2 = Include all savings for 6 April 2016 to 5 April 2017. Use only numbers and round to the nearest pound.
+
 ## Post-2015 TaxYear Yes/No Question Pages
 ## Threshold Income
 paac.1617.threshold.income.pagetitle = Threshold income 2016 to 2017

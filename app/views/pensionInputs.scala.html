@@ -31,9 +31,7 @@ backLink = Some((controllers.routes.PensionInputsController.onBack.url,Messages(
         <ul class="error-summary-list">
           @for(error <- paacForm.errors) {
             @defining(currentYear) { year =>
-              @defining(Seq(models.Contribution(currentYear.toInt,0).taxYearLabel())++error.args) { args =>
-                <li><a href="#input_@year" style="color:#b10e1e;font-weight: bold;">@Messages("paac.pension.inputs.error", args:_*)</a></li>
-              }
+                <li><a href="#input_@year" style="color:#b10e1e;font-weight: bold;">@Messages(error.message)</a></li>
             }
           }
         </ul>

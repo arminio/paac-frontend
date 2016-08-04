@@ -53,7 +53,7 @@ trait PensionInputsController extends RedirectController {
       fields => {
         val data = fields.toDefinedBenefit(cy.toInt)
         data match {
-          case None => showPage(form.withError(s"definedBenefits.amount_${cy}", "db.error.bounds"), cy, isEdit)
+          case None => showPage(form.withError(s"definedBenefits.amount_${cy}", "pre1516.amount.error.bounds"), cy, isEdit)
           case Some(value) => {
             val sessionData = request.data ++ Map(value.swap).mapValues(_.toString)
             PensionInput() go Forward.using(sessionData)
