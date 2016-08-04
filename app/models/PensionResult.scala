@@ -35,8 +35,9 @@ trait Summary {
   def exceedingMPAA: Long
   def exceedingAAA: Long
   def isMPA: Boolean
-  def moneyPurchaseAA: Long 
+  def moneyPurchaseAA: Long
   def alternativeAA: Long
+  def isACA: Boolean
 }
 
 case class SummaryResult(chargableAmount: Long = 0,
@@ -51,7 +52,8 @@ case class SummaryResult(chargableAmount: Long = 0,
                          exceedingAAA: Long = 0,
                          isMPA: Boolean = false,
                          moneyPurchaseAA: Long = 0,
-                         alternativeAA: Long = 0) extends Summary
+                         alternativeAA: Long = 0,
+                         isACA: Boolean = false) extends Summary
 
 case class ExtendedSummaryFields(chargableAmount: Long = 0,
                                  exceedingAAAmount: Long = 0,
@@ -75,23 +77,25 @@ case class ExtendedSummaryFields(chargableAmount: Long = 0,
                                  postFlexiSavings: Long = 0,
                                  isMPA: Boolean = false,
                                  acaCF: Long = 0,
-                                 dcaCF: Long = 0) extends Summary
+                                 dcaCF: Long = 0,
+                                 isACA: Boolean = false) extends Summary
 
 object Summary {
   implicit val summaryResultWrites: Writes[Summary] = (
     (JsPath \ "chargableAmount").write[Long] and
-    (JsPath \ "exceedingAAAmount").write[Long] and 
+    (JsPath \ "exceedingAAAmount").write[Long] and
     (JsPath \ "availableAllowance").write[Long] and
-    (JsPath \ "unusedAllowance").write[Long] and 
+    (JsPath \ "unusedAllowance").write[Long] and
     (JsPath \ "availableAAWithCF").write[Long] and
     (JsPath \ "availableAAWithCCF").write[Long] and
     (JsPath \ "unusedAAA").write[Long] and
-    (JsPath \ "unusedMPAA").write[Long] and 
-    (JsPath \ "exceedingMPAA").write[Long] and 
+    (JsPath \ "unusedMPAA").write[Long] and
+    (JsPath \ "exceedingMPAA").write[Long] and
     (JsPath \ "exceedingAAA").write[Long] and
-    (JsPath \ "isMPA").write[Boolean] and 
+    (JsPath \ "isMPA").write[Boolean] and
     (JsPath \ "moneyPurchaseAA").write[Long] and
-    (JsPath \ "alternativeAA").write[Long]
+    (JsPath \ "alternativeAA").write[Long] and
+    (JsPath \ "isACA").write[Boolean]
   )(Summary.toTuple _ )
 
   implicit val summaryResultReads: Reads[Summary] = (
@@ -103,15 +107,16 @@ object Summary {
     (JsPath \ "availableAAWithCCF").read[Long] and
     (JsPath \ "unusedAAA").read[Long] and
     (JsPath \ "unusedMPAA").read[Long] and
-    (JsPath \ "exceedingMPAA").read[Long] and 
+    (JsPath \ "exceedingMPAA").read[Long] and
     (JsPath \ "exceedingAAA").read[Long] and
     (JsPath \ "isMPA").read[Boolean] and
     (JsPath \ "moneyPurchaseAA").read[Long] and
-    (JsPath \ "alternativeAA").read[Long]
+    (JsPath \ "alternativeAA").read[Long] and
+    (JsPath \ "isACA").read[Boolean]
   )(Summary.toSummary _)
 
-  def toTuple(summary: Summary): (Long, Long, Long, Long, Long, Long, Long, Long, Long, Long, Boolean, Long, Long) = {
-    (summary.chargableAmount, summary.exceedingAAAmount, summary.availableAllowance, summary.unusedAllowance, summary.availableAAWithCF, summary.availableAAWithCCF, summary.unusedAAA, summary.unusedMPAA, summary.exceedingMPAA, summary.exceedingAAA, summary.isMPA, summary.moneyPurchaseAA, summary.alternativeAA)
+  def toTuple(summary: Summary): (Long, Long, Long, Long, Long, Long, Long, Long, Long, Long, Boolean, Long, Long, Boolean) = {
+    (summary.chargableAmount, summary.exceedingAAAmount, summary.availableAllowance, summary.unusedAllowance, summary.availableAAWithCF, summary.availableAAWithCCF, summary.unusedAAA, summary.unusedMPAA, summary.exceedingMPAA, summary.exceedingAAA, summary.isMPA, summary.moneyPurchaseAA, summary.alternativeAA, summary.isACA)
   }
 
   def toSummary(chargableAmount: Long = 0,
@@ -125,8 +130,9 @@ object Summary {
                 exceedingMPAA: Long = 0,
                 exceedingAAA: Long = 0,
                 isMPA: Boolean = false,
-                moneyPurchaseAA: Long = 0, 
-                alternativeAA: Long = 0): Summary = {
+                moneyPurchaseAA: Long = 0,
+                alternativeAA: Long = 0,
+                isACA: Boolean = false): Summary = {
     SummaryResult(chargableAmount,
                   exceedingAAAmount,
                   availableAllowance,
@@ -139,14 +145,15 @@ object Summary {
                   exceedingAAA,
                   isMPA,
                   moneyPurchaseAA,
-                  alternativeAA)
+                  alternativeAA,
+                  isACA)
   }
 }
 
 object TaxYearResults {
   implicit val summaryWrites: Writes[TaxYearResults] = (
     (JsPath \ "input").write[Contribution] and
-    (JsPath \ "summaryResult").write[Summary] 
+    (JsPath \ "summaryResult").write[Summary]
   )(unlift(TaxYearResults.unapply))
 
   implicit val summaryReads: Reads[TaxYearResults] = (
