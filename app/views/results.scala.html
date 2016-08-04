@@ -11,14 +11,21 @@ backLink = Some((controllers.routes.ReviewTotalAmountsController.onPageLoad.url,
 @defining(results.sortWith(_.input.taxPeriodStart.year < _.input.taxPeriodStart.year).dropWhile((v)=>v.input.isEmpty).reverse.filter((c)=>selectedYears.contains(c.input.taxPeriodStart.year))) { sortedResults =>
 @defining(sortedResults.exists((data) => data.summaryResult.isMPA)){ mpaaPresent =>
 
-        <p class="govuk-box-highlight lede">@Html(Messages("paac.results.p1",
-            if (sortedResults.exists((r)=>r.input.isPeriod1||r.input.isPeriod2)) sortedResults.size - 1 else sortedResults.size,
-            (if (sortedResults.headOption.getOrElse(TaxYearResults()).input.taxPeriodStart.year == 2015)
-                currencyFormatter.format(sortedResults.take(2).map(_.summaryResult.chargableAmount).foldLeft(0L)(_+_)/100)
-            else
-                currencyFormatter.format(sortedResults.headOption.getOrElse(TaxYearResults()).summaryResult.chargableAmount/100))
-         ))</p>
+@defining(sortedResults.headOption.getOrElse(TaxYearResults()).input.taxPeriodStart.year == 2015){ year1516 =>
 
+    @if(year1516 && sortedResults.take(2).map(_.summaryResult.chargableAmount).foldLeft(0L)(_+_) > 0){
+    <p class="govuk-box-highlight lede">@Html(Messages("paac.results.p1",
+        currencyFormatter.format(sortedResults.take(2).map(_.summaryResult.chargableAmount).foldLeft(0L)(_+_)/100)))</p>
+    } else {
+        @if(!year1516 && sortedResults.headOption.getOrElse(TaxYearResults()).summaryResult.chargableAmount > 0) {
+           <p class="govuk-box-highlight lede">@Html(Messages("paac.results.p1",
+              currencyFormatter.format(sortedResults.headOption.getOrElse(TaxYearResults()).summaryResult.chargableAmount/100)))</p>
+        } else {
+           <p class="govuk-box-highlight lede">@Html(Messages("paac.results.p2",
+              currencyFormatter.format(sortedResults.headOption.getOrElse(TaxYearResults()).summaryResult.unusedAllowance/100)))</p>
+        }
+    }
+}
       <table>
        <thead>
        <tr>
