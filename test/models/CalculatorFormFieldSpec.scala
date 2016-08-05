@@ -357,18 +357,18 @@ class CalculatorFormFieldSpec extends ModelSpec with BeforeAndAfterAll {
 
       // check
       contributions.length shouldBe 10
-      contributions(0).taxPeriodStart.year shouldBe 2008
-      contributions(1).taxPeriodStart.year shouldBe 2009
-      contributions(2).taxPeriodStart.year shouldBe 2010
-      contributions(3).taxPeriodStart.year shouldBe 2011
-      contributions(4).taxPeriodStart.year shouldBe 2012
-      contributions(5).taxPeriodStart.year shouldBe 2013
-      contributions(6).taxPeriodStart.year shouldBe 2014
-      contributions(7).taxPeriodStart.year shouldBe 2015
-      contributions(8).taxPeriodStart.year shouldBe 2015
-      contributions(9).taxPeriodStart.year shouldBe 2016
-      contributions(9).amounts.get.definedBenefit.get shouldBe 12300
-      contributions(9).amounts.get.moneyPurchase.get shouldBe 45600
+      contributions(0).taxPeriodStart.taxYear shouldBe 2008
+      contributions(1).taxPeriodStart.taxYear shouldBe 2009
+      contributions(2).taxPeriodStart.taxYear shouldBe 2010
+      contributions(3).taxPeriodStart.taxYear shouldBe 2011
+      contributions(4).taxPeriodStart.taxYear shouldBe 2012
+      contributions(5).taxPeriodStart.taxYear shouldBe 2013
+      contributions(6).taxPeriodStart.taxYear shouldBe 2014
+      contributions(7).taxPeriodStart.taxYear shouldBe 2015
+      contributions(8).taxPeriodStart.taxYear shouldBe 2015
+      contributions(9).taxPeriodStart.taxYear shouldBe 2016
+      contributions(9).definedBenefit shouldBe 12300
+      contributions(9).moneyPurchase shouldBe 45600
     }
 
     "return contributions for post trigger period 1 and 2 moneyPurchase amounts" in {
@@ -391,23 +391,23 @@ class CalculatorFormFieldSpec extends ModelSpec with BeforeAndAfterAll {
 
       // check
       contributions.length shouldBe 11
-      contributions(0).taxPeriodStart.year shouldBe 2008
-      contributions(1).taxPeriodStart.year shouldBe 2009
-      contributions(2).taxPeriodStart.year shouldBe 2010
-      contributions(3).taxPeriodStart.year shouldBe 2011
-      contributions(4).taxPeriodStart.year shouldBe 2012
-      contributions(5).taxPeriodStart.year shouldBe 2013
-      contributions(6).taxPeriodStart.year shouldBe 2014
-      contributions(7).taxPeriodStart.year shouldBe 2015
-      contributions(8).taxPeriodStart.year shouldBe 2015
-      contributions(9).taxPeriodStart.year shouldBe 2015
+      contributions(0).taxPeriodStart.taxYear shouldBe 2008
+      contributions(1).taxPeriodStart.taxYear shouldBe 2009
+      contributions(2).taxPeriodStart.taxYear shouldBe 2010
+      contributions(3).taxPeriodStart.taxYear shouldBe 2011
+      contributions(4).taxPeriodStart.taxYear shouldBe 2012
+      contributions(5).taxPeriodStart.taxYear shouldBe 2013
+      contributions(6).taxPeriodStart.taxYear shouldBe 2014
+      contributions(7).taxPeriodStart.taxYear shouldBe 2015
+      contributions(8).taxPeriodStart.taxYear shouldBe 2015
+      contributions(9).taxPeriodStart.taxYear shouldBe 2015
 
-      contributions(7).amounts.get.moneyPurchase.get shouldBe 55500
-      contributions(7).amounts.get.triggered.get shouldBe true
-      contributions(8).amounts.get.moneyPurchase.get shouldBe 88800
-      contributions(8).amounts.get.triggered.get shouldBe true
-      contributions(9).amounts.get.moneyPurchase.get shouldBe 44400
-      contributions(9).amounts.get.triggered.get shouldBe false
+      contributions(7).moneyPurchase shouldBe 44400
+      contributions(7).isTriggered shouldBe false
+      contributions(8).moneyPurchase shouldBe 88800
+      contributions(8).isTriggered shouldBe true
+      contributions(9).moneyPurchase shouldBe 55500
+      contributions(9).isTriggered shouldBe true
     }
 
     "return contributions for post trigger period 2 moneyPurchase amounts" in {
@@ -430,23 +430,23 @@ class CalculatorFormFieldSpec extends ModelSpec with BeforeAndAfterAll {
 
       // check
       contributions.length shouldBe 11
-      contributions(0).taxPeriodStart.year shouldBe 2008
-      contributions(1).taxPeriodStart.year shouldBe 2009
-      contributions(2).taxPeriodStart.year shouldBe 2010
-      contributions(3).taxPeriodStart.year shouldBe 2011
-      contributions(4).taxPeriodStart.year shouldBe 2012
-      contributions(5).taxPeriodStart.year shouldBe 2013
-      contributions(6).taxPeriodStart.year shouldBe 2014
-      contributions(7).taxPeriodStart.year shouldBe 2015
-      contributions(8).taxPeriodStart.year shouldBe 2015
-      contributions(9).taxPeriodStart.year shouldBe 2015
+      contributions(0).taxPeriodStart.taxYear shouldBe 2008
+      contributions(1).taxPeriodStart.taxYear shouldBe 2009
+      contributions(2).taxPeriodStart.taxYear shouldBe 2010
+      contributions(3).taxPeriodStart.taxYear shouldBe 2011
+      contributions(4).taxPeriodStart.taxYear shouldBe 2012
+      contributions(5).taxPeriodStart.taxYear shouldBe 2013
+      contributions(6).taxPeriodStart.taxYear shouldBe 2014
+      contributions(7).taxPeriodStart.taxYear shouldBe 2015
+      contributions(8).taxPeriodStart.taxYear shouldBe 2015
+      contributions(9).taxPeriodStart.taxYear shouldBe 2015
 
-      contributions(7).amounts.get.moneyPurchase.get shouldBe 55500
-      contributions(7).amounts.get.triggered.get shouldBe true
-      contributions(8).amounts.get.moneyPurchase.get shouldBe 88800
-      contributions(8).amounts.get.triggered.get shouldBe false
-      contributions(9).amounts.get.moneyPurchase.get shouldBe 44400
-      contributions(9).amounts.get.triggered shouldBe None
+      contributions(7).moneyPurchase shouldBe 44400
+      contributions(7).isTriggered shouldBe false
+      contributions(8).moneyPurchase shouldBe 88800
+      contributions(8).isTriggered shouldBe false
+      contributions(9).moneyPurchase shouldBe 55500
+      contributions(9).isTriggered shouldBe true
     }
 
     "return contributions for post trigger period 1 and 2 moneyPurchase amounts when trigger date is the start of period 1" in {
@@ -469,24 +469,24 @@ class CalculatorFormFieldSpec extends ModelSpec with BeforeAndAfterAll {
 
       // check
       contributions.length shouldBe 11
-      contributions(0).taxPeriodStart.year shouldBe 2008
-      contributions(1).taxPeriodStart.year shouldBe 2009
-      contributions(2).taxPeriodStart.year shouldBe 2010
-      contributions(3).taxPeriodStart.year shouldBe 2011
-      contributions(4).taxPeriodStart.year shouldBe 2012
-      contributions(5).taxPeriodStart.year shouldBe 2013
-      contributions(6).taxPeriodStart.year shouldBe 2014
-      contributions(7).taxPeriodStart.year shouldBe 2015
-      contributions(8).taxPeriodStart.year shouldBe 2015
-      contributions(9).taxPeriodStart.year shouldBe 2015
-      contributions(10).taxPeriodStart.year shouldBe 2016
+      contributions(0).taxPeriodStart.taxYear shouldBe 2008
+      contributions(1).taxPeriodStart.taxYear shouldBe 2009
+      contributions(2).taxPeriodStart.taxYear shouldBe 2010
+      contributions(3).taxPeriodStart.taxYear shouldBe 2011
+      contributions(4).taxPeriodStart.taxYear shouldBe 2012
+      contributions(5).taxPeriodStart.taxYear shouldBe 2013
+      contributions(6).taxPeriodStart.taxYear shouldBe 2014
+      contributions(7).taxPeriodStart.taxYear shouldBe 2015
+      contributions(8).taxPeriodStart.taxYear shouldBe 2015
+      contributions(9).taxPeriodStart.taxYear shouldBe 2015
+      contributions(10).taxPeriodStart.taxYear shouldBe 2016
 
-      contributions(7).amounts.get.moneyPurchase.get shouldBe 55500
-      contributions(7).amounts.get.triggered.get shouldBe true
-      contributions(8).amounts.get.moneyPurchase.get shouldBe 88800
-      contributions(8).amounts.get.triggered.get shouldBe true
-      contributions(9).amounts.get.moneyPurchase.get shouldBe 44400
-      contributions(9).amounts.get.triggered.get shouldBe false
+      contributions(7).moneyPurchase shouldBe 44400
+      contributions(7).isTriggered shouldBe false
+      contributions(8).moneyPurchase shouldBe 88800
+      contributions(8).isTriggered shouldBe true
+      contributions(9).moneyPurchase shouldBe 55500
+      contributions(9).isTriggered shouldBe true
     }
 
     "return contributions for post trigger period 2 moneyPurchase amounts when trigger date is start of period 2" in {
@@ -509,24 +509,24 @@ class CalculatorFormFieldSpec extends ModelSpec with BeforeAndAfterAll {
 
       // check
       contributions.length shouldBe 11
-      contributions(0).taxPeriodStart.year shouldBe 2008
-      contributions(1).taxPeriodStart.year shouldBe 2009
-      contributions(2).taxPeriodStart.year shouldBe 2010
-      contributions(3).taxPeriodStart.year shouldBe 2011
-      contributions(4).taxPeriodStart.year shouldBe 2012
-      contributions(5).taxPeriodStart.year shouldBe 2013
-      contributions(6).taxPeriodStart.year shouldBe 2014
-      contributions(7).taxPeriodStart.year shouldBe 2015
-      contributions(8).taxPeriodStart.year shouldBe 2015
-      contributions(9).taxPeriodStart.year shouldBe 2015
-      contributions(10).taxPeriodStart.year shouldBe 2016
+      contributions(0).taxPeriodStart.taxYear shouldBe 2008
+      contributions(1).taxPeriodStart.taxYear shouldBe 2009
+      contributions(2).taxPeriodStart.taxYear shouldBe 2010
+      contributions(3).taxPeriodStart.taxYear shouldBe 2011
+      contributions(4).taxPeriodStart.taxYear shouldBe 2012
+      contributions(5).taxPeriodStart.taxYear shouldBe 2013
+      contributions(6).taxPeriodStart.taxYear shouldBe 2014
+      contributions(7).taxPeriodStart.taxYear shouldBe 2015
+      contributions(8).taxPeriodStart.taxYear shouldBe 2015
+      contributions(9).taxPeriodStart.taxYear shouldBe 2015
+      contributions(10).taxPeriodStart.taxYear shouldBe 2016
 
-      contributions(7).amounts.get.moneyPurchase.get shouldBe 88800
-      contributions(7).amounts.get.triggered.get shouldBe true
-      contributions(8).amounts.get.moneyPurchase.get shouldBe 55500
-      contributions(8).amounts.get.triggered.get shouldBe false
-      contributions(9).amounts.get.moneyPurchase.get shouldBe 44400
-      contributions(9).amounts.get.triggered shouldBe None
+      contributions(7).moneyPurchase shouldBe 44400
+      contributions(7).isTriggered shouldBe false
+      contributions(8).moneyPurchase shouldBe 55500
+      contributions(8).isTriggered shouldBe false
+      contributions(9).moneyPurchase shouldBe 88800
+      contributions(9).isTriggered shouldBe true
     }
 
 
@@ -550,21 +550,21 @@ class CalculatorFormFieldSpec extends ModelSpec with BeforeAndAfterAll {
 
       // check
       contributions.length shouldBe 10
-      contributions(0).taxPeriodStart.year shouldBe 2008
-      contributions(1).taxPeriodStart.year shouldBe 2009
-      contributions(2).taxPeriodStart.year shouldBe 2010
-      contributions(3).taxPeriodStart.year shouldBe 2011
-      contributions(4).taxPeriodStart.year shouldBe 2012
-      contributions(5).taxPeriodStart.year shouldBe 2013
-      contributions(6).taxPeriodStart.year shouldBe 2014
-      contributions(7).taxPeriodStart.year shouldBe 2015
-      contributions(8).taxPeriodStart.year shouldBe 2015
-      contributions(9).taxPeriodStart.year shouldBe 2016
+      contributions(0).taxPeriodStart.taxYear  shouldBe 2008
+      contributions(1).taxPeriodStart.taxYear  shouldBe 2009
+      contributions(2).taxPeriodStart.taxYear  shouldBe 2010
+      contributions(3).taxPeriodStart.taxYear  shouldBe 2011
+      contributions(4).taxPeriodStart.taxYear  shouldBe 2012
+      contributions(5).taxPeriodStart.taxYear  shouldBe 2013
+      contributions(6).taxPeriodStart.taxYear  shouldBe 2014
+      contributions(7).taxPeriodStart.taxYear  shouldBe 2015
+      contributions(8).taxPeriodStart.taxYear  shouldBe 2015
+      contributions(9).taxPeriodStart.taxYear  shouldBe 2016
 
-      contributions(7).amounts.get.moneyPurchase.get shouldBe 55500
-      contributions(7).amounts.get.triggered shouldBe None
-      contributions(8).amounts.get.moneyPurchase.get shouldBe 44400
-      contributions(8).amounts.get.triggered shouldBe None
+      contributions(7).moneyPurchase shouldBe 44400
+      contributions(7).isTriggered shouldBe false
+      contributions(8).moneyPurchase shouldBe 55500
+      contributions(8).isTriggered shouldBe false
     }
 
     "return contributions for periods 1 and 2 defined benefits amounts" in {
@@ -587,21 +587,21 @@ class CalculatorFormFieldSpec extends ModelSpec with BeforeAndAfterAll {
 
       // check
       contributions.length shouldBe 10
-      contributions(0).taxPeriodStart.year shouldBe 2008
-      contributions(1).taxPeriodStart.year shouldBe 2009
-      contributions(2).taxPeriodStart.year shouldBe 2010
-      contributions(3).taxPeriodStart.year shouldBe 2011
-      contributions(4).taxPeriodStart.year shouldBe 2012
-      contributions(5).taxPeriodStart.year shouldBe 2013
-      contributions(6).taxPeriodStart.year shouldBe 2014
-      contributions(7).taxPeriodStart.year shouldBe 2015
-      contributions(8).taxPeriodStart.year shouldBe 2015
-      contributions(9).taxPeriodStart.year shouldBe 2016
+      contributions(0).taxPeriodStart.taxYear shouldBe 2008
+      contributions(1).taxPeriodStart.taxYear shouldBe 2009
+      contributions(2).taxPeriodStart.taxYear shouldBe 2010
+      contributions(3).taxPeriodStart.taxYear shouldBe 2011
+      contributions(4).taxPeriodStart.taxYear shouldBe 2012
+      contributions(5).taxPeriodStart.taxYear shouldBe 2013
+      contributions(6).taxPeriodStart.taxYear shouldBe 2014
+      contributions(7).taxPeriodStart.taxYear shouldBe 2015
+      contributions(8).taxPeriodStart.taxYear shouldBe 2015
+      contributions(9).taxPeriodStart.taxYear shouldBe 2016
 
-      contributions(7).amounts.get.definedBenefit.get shouldBe 55500
-      contributions(7).amounts.get.triggered shouldBe None
-      contributions(8).amounts.get.definedBenefit.get shouldBe 44400
-      contributions(8).amounts.get.triggered shouldBe None
+      contributions(7).definedBenefit shouldBe 44400
+      contributions(7).isTriggered shouldBe false
+      contributions(8).definedBenefit shouldBe 55500
+      contributions(8).isTriggered shouldBe false
     }
 
     "return simple 2015 contributions if trigger date is after period 2" in {
@@ -624,16 +624,16 @@ class CalculatorFormFieldSpec extends ModelSpec with BeforeAndAfterAll {
 
       // check
       contributions.length shouldBe 10
-      contributions(0).taxPeriodStart.year shouldBe 2008
-      contributions(1).taxPeriodStart.year shouldBe 2009
-      contributions(2).taxPeriodStart.year shouldBe 2010
-      contributions(3).taxPeriodStart.year shouldBe 2011
-      contributions(4).taxPeriodStart.year shouldBe 2012
-      contributions(5).taxPeriodStart.year shouldBe 2013
-      contributions(6).taxPeriodStart.year shouldBe 2014
-      contributions(7).taxPeriodStart.year shouldBe 2015
-      contributions(8).taxPeriodStart.year shouldBe 2015
-      contributions(9).taxPeriodStart.year shouldBe 2016
+      contributions(0).taxPeriodStart.taxYear shouldBe 2008
+      contributions(1).taxPeriodStart.taxYear shouldBe 2009
+      contributions(2).taxPeriodStart.taxYear shouldBe 2010
+      contributions(3).taxPeriodStart.taxYear shouldBe 2011
+      contributions(4).taxPeriodStart.taxYear shouldBe 2012
+      contributions(5).taxPeriodStart.taxYear shouldBe 2013
+      contributions(6).taxPeriodStart.taxYear shouldBe 2014
+      contributions(7).taxPeriodStart.taxYear shouldBe 2015
+      contributions(8).taxPeriodStart.taxYear shouldBe 2015
+      contributions(9).taxPeriodStart.taxYear shouldBe 2016
     }
 
     "return contributions when trigger date is 2017" in {
@@ -656,20 +656,20 @@ class CalculatorFormFieldSpec extends ModelSpec with BeforeAndAfterAll {
 
       // check
       contributions.length shouldBe 11
-      contributions(0).taxPeriodStart.year shouldBe 2010
-      contributions(1).taxPeriodStart.year shouldBe 2011
-      contributions(2).taxPeriodStart.year shouldBe 2012
-      contributions(3).taxPeriodStart.year shouldBe 2013
-      contributions(4).taxPeriodStart.year shouldBe 2014
-      contributions(5).taxPeriodStart.year shouldBe 2015
-      contributions(6).taxPeriodStart.year shouldBe 2015
-      contributions(7).taxPeriodStart.year shouldBe 2016
-      contributions(8).taxPeriodStart.year shouldBe 2017
-      contributions(9).taxPeriodStart.year shouldBe 2017
-      contributions(10).taxPeriodStart.year shouldBe 2018
+      contributions(0).taxPeriodStart.taxYear shouldBe 2010
+      contributions(1).taxPeriodStart.taxYear shouldBe 2011
+      contributions(2).taxPeriodStart.taxYear shouldBe 2012
+      contributions(3).taxPeriodStart.taxYear shouldBe 2013
+      contributions(4).taxPeriodStart.taxYear shouldBe 2014
+      contributions(5).taxPeriodStart.taxYear shouldBe 2015
+      contributions(6).taxPeriodStart.taxYear shouldBe 2015
+      contributions(7).taxPeriodStart.taxYear shouldBe 2016
+      contributions(8).taxPeriodStart.taxYear shouldBe 2017
+      contributions(9).taxPeriodStart.taxYear shouldBe 2017
+      contributions(10).taxPeriodStart.taxYear shouldBe 2018
 
-      contributions(8).amounts.get.moneyPurchase.get shouldBe 99900
-      contributions(8).amounts.get.triggered.get shouldBe true
+      contributions(9).moneyPurchase shouldBe 99900
+      contributions(9).isTriggered shouldBe true
     }
 
     "return contributions when trigger date is 2017 but trigger amount not defined" in {
@@ -692,20 +692,22 @@ class CalculatorFormFieldSpec extends ModelSpec with BeforeAndAfterAll {
 
       // check
       contributions.length shouldBe 11
-      contributions(0).taxPeriodStart.year shouldBe 2010
-      contributions(1).taxPeriodStart.year shouldBe 2011
-      contributions(2).taxPeriodStart.year shouldBe 2012
-      contributions(3).taxPeriodStart.year shouldBe 2013
-      contributions(4).taxPeriodStart.year shouldBe 2014
-      contributions(5).taxPeriodStart.year shouldBe 2015
-      contributions(6).taxPeriodStart.year shouldBe 2015
-      contributions(7).taxPeriodStart.year shouldBe 2016
-      contributions(8).taxPeriodStart.year shouldBe 2017
-      contributions(9).taxPeriodStart.year shouldBe 2017
-      contributions(10).taxPeriodStart.year shouldBe 2018
+      contributions(0).taxPeriodStart.taxYear shouldBe 2010
+      contributions(1).taxPeriodStart.taxYear shouldBe 2011
+      contributions(2).taxPeriodStart.taxYear shouldBe 2012
+      contributions(3).taxPeriodStart.taxYear shouldBe 2013
+      contributions(4).taxPeriodStart.taxYear shouldBe 2014
+      contributions(5).taxPeriodStart.taxYear shouldBe 2015
+      contributions(6).taxPeriodStart.taxYear shouldBe 2015
+      contributions(7).taxPeriodStart.taxYear shouldBe 2016
+      contributions(8).taxPeriodStart.taxYear shouldBe 2017
+      contributions(9).taxPeriodStart.taxYear shouldBe 2017
+      contributions(10).taxPeriodStart.taxYear shouldBe 2018
 
-      contributions(8).amounts.get.moneyPurchase.get shouldBe 0
-      contributions(8).amounts.get.triggered.get shouldBe true
+      contributions(9).moneyPurchase shouldBe 0
+      contributions(9).isTriggered shouldBe true
+
+      contributions(10).income shouldBe 78900L
     }
   }
 
@@ -853,6 +855,31 @@ class CalculatorFormFieldSpec extends ModelSpec with BeforeAndAfterAll {
 
       // check
       result shouldBe None
+    }
+  }
+
+  "period 2" should {
+    "be found in list of page values" in {
+      // set up
+      val c0 = Contribution(PensionPeriod(2008,4,6),PensionPeriod(2009,4,5),Some(InputAmounts(Some(700000),None,None,None)))
+      val c1 = Contribution(PensionPeriod(2009,4,6),PensionPeriod(2010,4,5),Some(InputAmounts(Some(800000),None,None,None)))
+      val c2 = Contribution(PensionPeriod(2010,4,6),PensionPeriod(2011,4,5),Some(InputAmounts(Some(900000),None,None,None)))
+      val c3 = Contribution(PensionPeriod(2011,4,6),PensionPeriod(2012,4,5),Some(InputAmounts(Some(1000000),None,None,None)))
+      val c4 = Contribution(PensionPeriod(2012,4,6),PensionPeriod(2013,4,5),Some(InputAmounts(Some(1100000),None,None,None)))
+      val c5 = Contribution(PensionPeriod(2013,4,6),PensionPeriod(2014,4,5),Some(InputAmounts(Some(1200000),None,None,None)))
+      val c6 = Contribution(PensionPeriod(2014,4,6),PensionPeriod(2015,4,5),Some(InputAmounts(Some(1300000),None,None,None)))
+      val c7 = Contribution(PensionPeriod(2015,7,9),PensionPeriod(2016,4,5),Some(InputAmounts(None,None,None,Some(true))))
+      val c8 = Contribution(PensionPeriod(2015,5,10),PensionPeriod(2015,7,8),Some(InputAmounts(Some(0),Some(123400),None,Some(true))))
+      val c9 = Contribution(PensionPeriod(2015,4,6),PensionPeriod(2015,5,10),Some(InputAmounts(Some(9000),Some(10000),None,Some(false))))
+      val c10 = Contribution(PensionPeriod(2016,4,6),PensionPeriod(2017,4,5),Some(InputAmounts(Some(1300000),None,None,Some(true))))
+      val pageValues = List(c0,c1,c2,c3,c4,c5,c6,c7,c8,c9,c10).sortWith(Contribution.sortByYearAndPeriod)
+      val triggered = pageValues.find(_.isTriggered).get
+
+      // test
+      val result = pageValues.find((c)=>c.isPeriod2 && c != triggered)
+
+      // check
+      result shouldBe Some(Contribution(PensionPeriod(2015,7,9),PensionPeriod(2016,4,5),Some(InputAmounts(None,None,None,Some(true)))))
     }
   }
 }
