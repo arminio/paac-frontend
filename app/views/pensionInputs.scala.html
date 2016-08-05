@@ -47,7 +47,7 @@ backLink = Some((controllers.routes.PensionInputsController.onBack.url,Messages(
         <table>
             <tbody>
             <fieldset id="input_@currentYear" style="max-width:12.35em; margin: 0" class="form-field-group @if(paacForm.hasErrors) {form-field--error}">
-                <label class="label--full-length numeric" for="definedBenefits.amount_@currentYear" style="width:150%;display: inline-block;@if(paacForm.errors.find(_.key == "definedBenefits.amount_"+currentYear)) {color:#b10e1e;}">
+                <label class="label--full-length numeric" for="definedBenefits.amount_@currentYear" style="width:150%;display: inline-block;"@if(paacForm.errors.find(_.key == "definedBenefits.amount_"+currentYear)) {color:#b10e1e;}">
                 <p style="text-align:left;min-width: 7em">@Messages("paac.pension.inputs.totalamount")</p>
                 @if(paacForm.hasErrors) {
                 <ul class="error-summary-list">
