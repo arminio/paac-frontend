@@ -50,29 +50,37 @@ args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
 <input type="hidden" name="year" value="@(year)"/>
 <table>
     <tbody>
-    @if(paacForm.hasErrors) {
-    <ul class="error-summary-list">
-        @for(error <- paacForm.errors) {
-        @defining(error.args) { args =>
-        <li style="color:#b10e1e;font-weight: bold;">@Messages(error.message, args:_*)</li>
-        }
-        }
-    </ul>
-    }
-    <fieldset id="input_2016" style="max-width:12.35em; margin: 0" class="form-field-group @if(paacForm.hasErrors) {form-field--error}">
+
+    <fieldset id="input_2016" style="margin: 0" class="form-field-group">
+
         @if(isDefinedContribution){
-        <label class="form-element-bold label--full-length numeric" for="definedContributions.amount_@year" style="width:150%;display: inline-block;@if(paacForm.errors.find(_.key == "definedContributions.amount_@year")) {color:#b10e1e;}">
+
+        <label class="form-element-bold label--full-length numeric @if(paacForm.hasErrors) {form-field--error}" for="definedContributions.amount_@year" style="width:150%;display: inline-block;@if(paacForm.errors.find(_.key == "definedContributions.amount_@year")) {color:#b10e1e;}">
         <p style="text-align:left;min-width: 7em">@Messages("paac.common.pension.inputs.dc")</p>
         <span class="form-hint">@Messages("paac.common.inputfield.example.message")</span>
-          <p style="float:left; text-align:left;min-width: 7em">
+        @defining(paacForm.errors.find(_.key.contains("definedContributions"))){ maybeError =>
+          @if(maybeError.isDefined) {
+            @defining(maybeError.get) { error =>
+            <p style="color:#b10e1e;font-weight: bold;">@Messages(error.message, error.args:_*)</p>
+            }
+          }
+        }
+          <p style="float:left; text-align:left;min-width: 7em" >
               £&nbsp;<input type="number" name="definedContributions.amount_@year" id="definedContributions.amount_@year" min="0" class="input--no-spinner" value='@paacForm.data(s"definedContributions.amount_${year}")' max="5000000.00" size="10" style="width:9em;@if(paacForm.errors.find(_.key == s"definedContributions.amount_${year}")) {border: 4px solid #b10e1e;}"/>
           </p>
         </label>
         }
         @if(isDefinedBenefit){
-        <label class="form-element-bold label--full-length numeric" for="definedBenefits.amount_@year" style="width:150%;display: inline-block;@if(paacForm.errors.find(_.key == s"definedBenefits.amount_${year}")) {color:#b10e1e;}">
+        <label class="form-element-bold label--full-length numeric @if(paacForm.hasErrors) {form-field--error}" for="definedBenefits.amount_@year" style="width:150%;display: inline-block;@if(paacForm.errors.find(_.key == s"definedBenefits.amount_${year}")) {color:#b10e1e;}">
         <p style=" float:left text-align:left;min-width: 7em">@Messages("paac.common.pension.inputs.db")</p>
-        <span  class="form-hint">@Messages("paac.common.inputfield.example.message")</span>
+        @defining(paacForm.errors.find(_.key.contains("definedBenefits"))){ maybeError =>
+        @if(maybeError.isDefined) {
+        @defining(maybeError.get) { error =>
+        <p style="color:#b10e1e;font-weight: bold;">@Messages(error.message, error.args:_*)</p>
+            }
+          }
+        }
+        <p  class="form-hint">@Messages("paac.common.inputfield.example.message")</p>
           <p style=" text-align:left;min-width: 7em">
                   £&nbsp;<input type="number" name="definedBenefits.amount_@year" id="definedBenefits.amount_@year" min="0" class="input--no-spinner" value='@paacForm.data(s"definedBenefits.amount_${year}")' max="5000000.00" size="10" style="width:9em;@if(paacForm.errors.find(_.key == s"definedBenefits.amount_${year}")) {border: 4px solid #b10e1e;}"/>
           </p>
