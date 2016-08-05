@@ -75,19 +75,20 @@ trait CalculatorFields extends ThisYear {
         case _ => {
           val delta = settings.THIS_YEAR - year
           val pp = PensionPeriod.toPensionPeriod(triggerDate.getOrElse("0000-01-1"))
-          val isTriggered = triggerDate.isDefined && pp.taxYear == year
-          if (isTriggered) {
-            val contribution = Contribution(year, toInputAmounts(DB_PREFIX + delta, DC_PREFIX + delta, AI_PREFIX + delta))
+          val isTriggered = triggerDate.isDefined && pp.taxYear <= year
+          // val isTriggered = triggerDate.isDefined && pp.taxYear == year
+          if (isTriggered && pp.taxYear == year) {
+            val contribution = Contribution(year, toInputAmounts(DB_PREFIX + delta, DC_PREFIX + delta, AI_PREFIX + delta, false))
             // $COVERAGE-OFF$
             // This is probably never used and should be investigated if this can be removed.
             val moneyPurchase = contribution.amounts.flatMap(_.moneyPurchase)
             // $COVERAGE-ON$
             toTriggerContributions(moneyPurchase, triggerAmount.map(_.toLong*100L), triggerDatePeriod.get, contribution)
           } else
-            List(Contribution(year, toInputAmounts(DB_PREFIX + delta, DC_PREFIX + delta, AI_PREFIX + delta)))
+            List(Contribution(year, toInputAmounts(DB_PREFIX + delta, DC_PREFIX + delta, AI_PREFIX + delta, isTriggered)))
         }
       }
-    }
+    }.sortWith(Contribution.sortByYearAndPeriod)
   }
   // Utility methods for views and controllers
   def toContributions():List[Contribution] = toPageValues().filter(_.isEmpty() == false)
@@ -122,8 +123,8 @@ trait CalculatorFields extends ThisYear {
           v <- value(amounts)
         } yield v).map((_,key))
     }
-  protected def toInputAmounts(name1: String, name2: String, name3: String = ""): Option[InputAmounts] = {
-    val a = InputAmounts(get(name1), get(name2), get(name3), None)
+  protected def toInputAmounts(name1: String, name2: String, name3: String = "", isTriggered: Boolean): Option[InputAmounts] = {
+    val a = InputAmounts(get(name1), get(name2), get(name3), if(isTriggered) Some(true) else None)
     if (a.isEmpty) None else Some(a)
   }
   protected val DB_PREFIX = "dbCurrentYearMinus"
