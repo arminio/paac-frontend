@@ -133,16 +133,36 @@ case class Contribution(taxPeriodStart: PensionPeriod, taxPeriodEnd: PensionPeri
     amounts.get.definedBenefit.isDefined)
   }
 
-  def isTriggered(): Boolean = {
-    amounts.map(_.triggered.getOrElse(false)).getOrElse(false)
-  }
+  def isTriggered(): Boolean =
+    (for {
+      inputs <- amounts
+      triggered <- inputs.triggered
+    } yield triggered) getOrElse false
+
+  def definedBenefit(): Long =
+    (for {
+      inputs <- amounts
+      definedBenefit <- inputs.definedBenefit
+    } yield definedBenefit) getOrElse 0L
+
+  def moneyPurchase(): Long =
+    (for {
+      inputs <- amounts
+      moneyPurchase <- inputs.moneyPurchase
+    } yield moneyPurchase) getOrElse 0L
+
+  def income(): Long =
+    (for {
+      inputs <- amounts
+      income <- inputs.income
+    } yield income) getOrElse 0L
 }
 
 object PensionPeriod {
   // Unlike front-end backend must have fixed supported start and end years
   // as calculation rules are very dependant on a varying set of rules for each year
   val EARLIEST_YEAR_SUPPORTED:Int = 2008
-  val LATEST_YEAR_SUPPORTED:Int = 2016
+  val LATEST_YEAR_SUPPORTED:Int = 2100
 
   val MIN_MONTH_VALUE:Int = 1
   val MIN_DAY_VALUE:Int = 1
@@ -242,5 +262,19 @@ object Contribution {
     val start = if (isP1) PensionPeriod.PERIOD_1_2015_START else PensionPeriod.PERIOD_2_2015_START
     val end = if (isP1) PensionPeriod.PERIOD_1_2015_END else PensionPeriod.PERIOD_2_2015_END
     Contribution(start, end, amounts)
+  }
+
+  /**
+    Helper function to sort pension contributions by pension period start date, considering periods 1 and 2 for 2015.
+  */
+  def sortByYearAndPeriod(left: Contribution, right: Contribution): Boolean = {
+    if (left.taxPeriodStart.year == 2015 &&
+        right.taxPeriodStart.year == 2015) {
+      left.isPeriod1 && right.isPeriod2 ||
+      (left.isPeriod1 && right.isPeriod1 && !left.amounts.get.triggered.get) ||
+      (left.isPeriod2 && right.isPeriod2 && !left.amounts.get.triggered.get)
+    } else {
+      left.taxPeriodStart < right.taxPeriodStart
+    }
   }
 }

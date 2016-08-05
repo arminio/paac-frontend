@@ -125,8 +125,7 @@ class ReviewTotalAmountsControllerSpec extends test.BaseSpec {
 
         // check
         val htmlSummaryPage = contentAsString(await(result))
-        info(htmlSummaryPage)
-
+        //info(htmlSummaryPage)
         htmlSummaryPage should include ("Enter an amount that is £5,000,000 or less.")
       }
     }
