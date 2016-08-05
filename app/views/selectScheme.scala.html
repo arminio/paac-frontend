@@ -2,6 +2,7 @@
 
 @import uk.gov.hmrc.play.views.html.helpers._
 
+
 @common.paacMain(
 pageTitle = Messages("paac.scheme.selection.pagetitle", ""+year, ""+(year+1)),
 heading = Messages("paac.scheme.selection.heading", ""+year, ""+(year+1)),
@@ -39,8 +40,16 @@ backLink = Some((controllers.routes.SelectSchemeController.onBack(year).url,Mess
         args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
     <input type="hidden" name="year" value="@(year)"/>
     <input type="hidden" name="firstDCYear" value="@(paacForm.data("firstDCYear"))"/>
-    <div class='form-group'>
-
+    <div class="form-field-group @if(paacForm.hasErrors) {form-field--error}">
+        @if(paacForm.hasErrors) {
+        <ul class="error-summary-list">
+            @for(error <- paacForm.errors) {
+            @defining(error.args) { args =>
+            <li style="color:#b10e1e;font-weight: bold;">@Messages(error.message, args:_*)</a></li>
+            }
+            }
+        </ul>
+        }
         <fieldset class="inline">
             @checkbox.singleCheckbox(
                 paacForm("definedContribution"),
