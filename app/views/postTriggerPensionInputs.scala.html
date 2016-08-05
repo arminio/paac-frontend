@@ -61,26 +61,27 @@ backLink = Some((controllers.routes.PostTriggerPensionInputsController.onBack.ur
         action = controllers.routes.PostTriggerPensionInputsController.onSubmit,
         args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
 
-@if(paacForm.hasErrors) {
-<ul class="error-summary-list">
-    @for(error <- paacForm.errors) {
-    @defining(Seq(taxYear.toString)++error.args) { args =>
-    <li style="color:#b10e1e;font-weight: bold;">@Messages("paac.post.trigger.value."+error.message, args:_*)</li>
-    }
-    }
-</ul>
-}
+
 @defining(paacForm.value.getOrElse(errorModel)) { model =>
         <input type="hidden" id="triggerDate" name="triggerDate" value="@(model.triggerDate)"/>
         <input type="hidden" id="isEdit" name="isEdit" value="@isEdit"/>
 
 
         <table>
-            <fieldset class="form-field-group @if(paacForm.hasErrors) {form-field--error}" style="max-width:12.35em;">
+            <fieldset class="form-field-group @if(paacForm.hasErrors) {form-field--error}">
               @if(model.triggerDatePeriod.get.isPeriod1()) {
                 @defining("year2015.postTriggerDcAmount2015P1") { id =>
                 <label class="label--full-length numeric" id="triggerAmountFieldset" for="@id" style="width:150%;display: inline-block;">
                     <p style="text-align:left;min-width: 7em">@Messages("paac.post.trigger.amount.input.label")</p>
+                    @if(paacForm.hasErrors) {
+                    <ul class="error-summary-list">
+                        @for(error <- paacForm.errors) {
+                        @defining(Seq(taxYear.toString)++error.args) { args =>
+                        <li style="color:#b10e1e;font-weight: bold;">@Messages("paac.post.trigger.value."+error.message, args:_*)</li>
+                        }
+                        }
+                    </ul>
+                    }
                     <span class="form-hint">@Messages("paac.common.inputfield.example.message")</span>
                       @if(model.year2015.postTriggerDcAmount2015P1 != None) {
                             £&nbsp;<input type="number" name="@id" id="@id" min="0" class="input--no-spinner" value='@(model.year2015.postTriggerDcAmount2015P1.get)' max="5000000" size="7" style="width:9em;@if(paacForm.errors.find(_.key == id)) {border: 4px solid #b10e1e;}"/>
@@ -97,6 +98,15 @@ backLink = Some((controllers.routes.PostTriggerPensionInputsController.onBack.ur
                 <label class="label--full-length numeric" id="triggerAmountFieldset" for="@id" style="width:150%;display: inline-block;">
                     <p style="text-align:left;min-width: 7em">@Messages("paac.post.trigger.amount.input.label")</p>
                         <span class="form-hint">@Messages("paac.common.inputfield.example.message")</span>
+                    @if(paacForm.hasErrors) {
+                    <ul class="error-summary-list">
+                        @for(error <- paacForm.errors) {
+                        @defining(Seq(taxYear.toString)++error.args) { args =>
+                        <li style="color:#b10e1e;font-weight: bold;">@Messages("paac.post.trigger.value."+error.message, args:_*)</li>
+                        }
+                        }
+                    </ul>
+                    }
                         @if(model.year2015.postTriggerDcAmount2015P2 != None) {
                     £&nbsp;<input type="number" name="@id" id="@id" min="0" class="input--no-spinner" value='@(model.year2015.postTriggerDcAmount2015P2.get)' max="5000000" size="7" style="width:9em;@if(paacForm.errors.find(_.key == id)) {border: 4px solid #b10e1e;}"/>
                     } else {
@@ -108,9 +118,19 @@ backLink = Some((controllers.routes.PostTriggerPensionInputsController.onBack.ur
 
               @if(!model.triggerDatePeriod.get.isPeriod1() && !model.triggerDatePeriod.get.isPeriod2()) {
                 @defining("triggerAmount") { id =>
-                <label class="label--full-length numeric" id="triggerAmountFieldset" for="@id" style="width:150%;display: inline-block;">
+                <label class="label--full-length numeric" id="triggerAmountFieldset" for="@id" style="width:150%; display: inline-block;">
                 <p style="text-align:left;min-width: 7em">@Messages("paac.post.trigger.amount.input.label")</p>
+                    @if(paacForm.hasErrors) {
+                    <ul class="error-summary-list">
+                        @for(error <- paacForm.errors) {
+                        @defining(Seq(taxYear.toString)++error.args) { args =>
+                        <li style="color:#b10e1e;font-weight: bold;">@Messages("paac.post.trigger.value."+error.message, args:_*)</li>
+                        }
+                        }
+                    </ul>
+                    }
                     <span class="form-hint">@Messages("paac.common.inputfield.example.message")</span>
+
                       @if(model.triggerAmount != None) {
                           £&nbsp;<input type="number" name="@id" id="@id" min="0" class="input--no-spinner" value='@(model.triggerAmount.get)' max="5000000" size="7" style="width:9em;@if(paacForm.errors.find(_.key == id)) {border: 4px solid #b10e1e;}"/>
                       } else {
