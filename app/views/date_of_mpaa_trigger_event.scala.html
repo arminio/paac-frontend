@@ -56,10 +56,10 @@ backLink = Some((controllers.routes.DateOfMPAATriggerEventController.onBack.url,
             '_groupClass -> "form-date form-group dateOfBirth",
             '_idName -> "dateOfMPAATriggerEvent",
             '_hintText -> Messages("paac.mpaa.ta.date.page.datehint"),
-            '_hintId -> "dateOfBirth-hint"
+            '_hintId -> "dateOfBirth-hint",
+            '_labelHighlight -> true
         )
 
-        <br/>
         <button id="submit" type="submit" class="button" value="Continue">@if(model.isEdit){@Messages("paac.calculator.button.save")}else{@Messages("paac.calculator.button.continue")}</button>
     } @* End of Form *@
 } @* End of paacMain *@
