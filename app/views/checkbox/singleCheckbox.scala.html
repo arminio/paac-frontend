@@ -6,7 +6,9 @@
 
 @elements = @{ new FieldElements(field.id, field, null, args.toMap, lang) }
 @value = @{ field.value match { case Some(x) => x case None => "false" case x => x }}
+
 <label for="@elements.id"
+       @if(elements.args.contains('_isError) && elements.args.get('_isError).get == true){style="border: 4px solid #b10e1e;"}
         @if(value=="true"){ class="block-label selected"} else { class="block-label"}>
 
     @elements.errors(elements.lang).map { error =>
