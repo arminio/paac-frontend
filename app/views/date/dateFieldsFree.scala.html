@@ -8,7 +8,7 @@
 @import views.html.helper._
 
 @elements = @{ new FieldElements(formItem(fieldName).id, formItem(fieldName), null, args.toMap, lang) }
-
+@labelHighlight = @{ elements.args.get('_labelHighlight).getOrElse(false).asInstanceOf[Boolean] }
     <fieldset id="@elements.args.get('_idName)" class="@elements.args.get('_groupClass) @if(elements.hasErrors) {form-field--error}">
         <legend class="@elements.args.get('_legendClass)">@label</legend>
 
@@ -19,7 +19,10 @@
         }
 
         @elements.errors(elements.lang).map { error =>
+
+            @if(labelHighlight){<strong>}
             @helpers.errorInline({elements.field.name.replaceAll("""[\.\[\]]""", "-")}, Messages(error))
+            @if(labelHighlight){</strong>}
         }
 
         <div class='date-of-birth'>

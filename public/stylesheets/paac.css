@@ -194,8 +194,12 @@ table td.numeric {
     box-sizing: border-box;
     padding: 0.75em 1em 0.75em 1em;
 }
-.form-field--error p, .form-field--error span
+.form-field--error p, .form-field--error > span
 {
-
     font-weight: normal;
+}
+.form-field--error strong span
+{
+    font-size: large !important;
+    font-weight: bold !important;
 }
