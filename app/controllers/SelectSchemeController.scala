@@ -21,6 +21,7 @@ import service.KeystoreService._
 import play.api.mvc._
 import play.api.data.Form
 import form._
+import models._
 import scala.concurrent.Future
 import form.SelectSchemeForm
 import play.api.mvc.Request
@@ -58,7 +59,12 @@ trait SelectSchemeController  extends RedirectController {
                           (s"${DB_FLAG_PREFIX}${year}", s"${input.definedBenefit}")).toMap
 
           val toRemove = if (!input.definedContribution) {
-            if (input.year == 2015) List(P1_DC_KEY, P2_DC_KEY) else List(DC_PREFIX+year)
+            val l = if (input.year == 2015) List(P1_DC_KEY, P2_DC_KEY) else List(DC_PREFIX+year)
+            val triggerDate: PensionPeriod = if (request.data.contains(TRIGGER_DATE_KEY)) request.data(TRIGGER_DATE_KEY) else ""
+            if (triggerDate.taxYear == year)
+              l ++ List(TRIGGER_DATE_KEY, P1_TRIGGER_DC_KEY, P2_TRIGGER_DC_KEY, TRIGGER_DC_KEY)
+            else
+              l
           } else if (!input.definedBenefit) {
             if (input.year == 2015) List(P1_DB_KEY, P2_DB_KEY) else List(DB_PREFIX+year)
           } else {
