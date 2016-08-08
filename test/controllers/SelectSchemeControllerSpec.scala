@@ -260,6 +260,44 @@ class SelectSchemeControllerSpec extends test.BaseSpec {
         data should not contain key (DC_PREFIX+"2016")
         data should not contain key (DB_PREFIX+"2016")
       }
+      "with valid schemeType flag changing flag should delete trigger date and amount" in new ControllerWithMockKeystore {
+        // set up
+        val sessionData = List((FIRST_DC_YEAR_KEY -> ""),
+                               (SELECTED_INPUT_YEARS_KEY -> "2016,2015"),
+                               (CURRENT_INPUT_YEAR_KEY -> "2016"),
+                               (TRIGGER_DATE_KEY -> "2017-01-01"),
+                               (TRIGGER_DC_KEY -> "123400"),
+                               (SessionKeys.sessionId,SESSION_ID))
+        implicit val request = FakeRequest(POST, postEndPointURL).withSession(sessionData: _*)
+                                               .withFormUrlEncodedBody(("definedContribution" -> "false"),("definedBenefit" -> "true"),("year"->"2016"),("firstDCYear"->"2016"))
+
+        // test
+        val result: Future[Result] = MockSelectSchemeControllerWithMockKeystore.onSubmit()(request)
+
+        // check
+        val data = session(result).data
+        data should not contain key (TRIGGER_DATE_KEY)
+        data should not contain key (TRIGGER_DC_KEY)
+      }
+      "with valid schemeType flag changing flag should not delete trigger date and amount if not for current year" in new ControllerWithMockKeystore {
+        // set up
+        val sessionData = List((FIRST_DC_YEAR_KEY -> ""),
+                               (SELECTED_INPUT_YEARS_KEY -> "2016,2015"),
+                               (CURRENT_INPUT_YEAR_KEY -> "2016"),
+                               (TRIGGER_DATE_KEY -> "2015-07-01"),
+                               (TRIGGER_DC_KEY -> "123400"),
+                               (SessionKeys.sessionId,SESSION_ID))
+        implicit val request = FakeRequest(POST, postEndPointURL).withSession(sessionData: _*)
+                                               .withFormUrlEncodedBody(("definedContribution" -> "false"),("definedBenefit" -> "true"),("year"->"2016"),("firstDCYear"->"2016"))
+
+        // test
+        val result: Future[Result] = MockSelectSchemeControllerWithMockKeystore.onSubmit()(request)
+
+        // check
+        val data = session(result).data
+        data should contain key (TRIGGER_DATE_KEY)
+        data should contain key (TRIGGER_DC_KEY)
+      }
     }
 
    "onBack" should {
