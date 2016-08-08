@@ -46,7 +46,9 @@ backLink = Some((controllers.routes.ReviewTotalAmountsController.onBack.url,Mess
                 @defining(triggerContribution.flatMap((tc)=>pageValues.find((c)=>c.isPeriod1 && c != tc)).orElse(pageValues.find(_.isPeriod1))) { c =>
                   @if(c.isDefined) {
                     @defining(c.get) { contribution =>
-                      @contributionReviewTable.table(reviewForm, contribution, triggerContribution)
+                      @if(!contribution.isEmpty) {
+                        @contributionReviewTable.table(reviewForm, contribution, triggerContribution)
+                      }
                     }
                   }
                 } @* End of define c *@
