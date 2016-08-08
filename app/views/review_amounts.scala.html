@@ -57,7 +57,7 @@ backLink = Some((controllers.routes.ReviewTotalAmountsController.onBack.url,Mess
             } @* End of define c *@
 
             @if(year == 2015) {
-                @defining(triggerContribution.flatMap((tc)=>pageValues.find((c)=>c.isPeriod1 && c != tc)).orElse(pageValues.find(_.isPeriod2))) { c =>
+                @defining(triggerContribution.flatMap((tc)=>pageValues.find((c)=>c.isPeriod1 && c != tc)).orElse(pageValues.find(_.isPeriod1))) { c =>
                   @if(c.isDefined) {
                     @defining(c.get) { contribution =>
                       @contributionReviewTable.table(reviewForm, contribution, triggerContribution)
