@@ -18,7 +18,7 @@ package controllers.action
 
 import scala.concurrent.Future
 import play.api.mvc._
-
+import play.api.Logger
 import service._
 import uk.gov.hmrc.play.http.{HeaderCarrier, SessionKeys}
 import scala.util.{Try, Success, Failure, Either}
@@ -37,6 +37,7 @@ trait WriteKeystore extends ActionBuilder[DataRequest] {
       (r) =>
       implicit val hc = HeaderCarrier()
       implicit val request: Request[A] = dataRequest
+      Logger.debug(s"""Saving to keystore ${r.session.data.mkString(" ")}""")
       keystore.saveData(r.session.data).map {
         (_)=>
         r
