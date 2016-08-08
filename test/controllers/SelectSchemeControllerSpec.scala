@@ -197,6 +197,69 @@ class SelectSchemeControllerSpec extends test.BaseSpec {
           MockKeystore.map(FIRST_DC_YEAR_KEY) shouldBe ""
         }
       }
+      "with valid schemeType flag for after 2015 year value should save to keystore" in new ControllerWithMockKeystore{
+        // set up
+        val sessionData = List((FIRST_DC_YEAR_KEY -> ""),
+                               (SELECTED_INPUT_YEARS_KEY -> "2016"),
+                               (CURRENT_INPUT_YEAR_KEY -> "2016"),
+                               (SessionKeys.sessionId,SESSION_ID))
+        implicit val request = FakeRequest(POST, postEndPointURL).withSession(sessionData: _*)
+                                               .withFormUrlEncodedBody(("definedContribution" -> "true"),("definedBenefit" -> "false"),("year"->"2016"),("firstDCYear"->"2016"))
+
+        // test
+        val result: Future[Result] = MockSelectSchemeControllerWithMockKeystore.onSubmit()(request)
+
+        // check
+        val data = session(result).data
+        data should contain key (DB_FLAG_PREFIX + "2016")
+        data should contain key (DC_FLAG_PREFIX + "2016")
+        data(DC_FLAG_PREFIX + "2016") shouldBe "true"
+        data(DB_FLAG_PREFIX + "2016") shouldBe "false"
+        data should not contain key (DC_PREFIX+"2016")
+        data should not contain key (DB_PREFIX+"2016")
+      }
+      "with valid schemeType flag changing 2015 flags should update keystore" in new ControllerWithMockKeystore{
+        // set up
+        val sessionData = List((FIRST_DC_YEAR_KEY -> ""),
+                               (SELECTED_INPUT_YEARS_KEY -> "2016,2015"),
+                               (CURRENT_INPUT_YEAR_KEY -> "2015"),
+                               (SessionKeys.sessionId,SESSION_ID))
+        implicit val request = FakeRequest(POST, postEndPointURL).withSession(sessionData: _*)
+                                               .withFormUrlEncodedBody(("definedContribution" -> "true"),("definedBenefit" -> "false"),("year"->"2015"),("firstDCYear"->"2016"))
+
+        // test
+        val result: Future[Result] = MockSelectSchemeControllerWithMockKeystore.onSubmit()(request)
+
+        // check
+        val data = session(result).data
+        data should contain key (DB_FLAG_PREFIX + "2015")
+        data should contain key (DC_FLAG_PREFIX + "2015")
+        data(DC_FLAG_PREFIX + "2015") shouldBe "true"
+        data(DB_FLAG_PREFIX + "2015") shouldBe "false"
+        data should not contain key (P1_DB_KEY)
+        data should not contain key (P2_DB_KEY)
+      }
+      "with valid schemeType flag changing 2016 flags should update keystore" in new ControllerWithMockKeystore{
+        // set up
+        val sessionData = List((FIRST_DC_YEAR_KEY -> ""),
+                               (SELECTED_INPUT_YEARS_KEY -> "2016,2015"),
+                               (CURRENT_INPUT_YEAR_KEY -> "2016"),
+                               (SessionKeys.sessionId,SESSION_ID))
+        implicit val request = FakeRequest(POST, postEndPointURL).withSession(sessionData: _*)
+                                               .withFormUrlEncodedBody(("definedContribution" -> "false"),("definedBenefit" -> "true"),("year"->"2016"),("firstDCYear"->"2016"))
+
+        // test
+        val result: Future[Result] = MockSelectSchemeControllerWithMockKeystore.onSubmit()(request)
+
+        // check
+        val data = session(result).data
+        data should contain key (DB_FLAG_PREFIX + "2016")
+        data should contain key (DC_FLAG_PREFIX + "2016")
+        data(DC_FLAG_PREFIX + "2016") shouldBe "false"
+        data(DB_FLAG_PREFIX + "2016") shouldBe "true"
+        data should not contain key (DC_PREFIX+"2016")
+        data should not contain key (DB_PREFIX+"2016")
+      }
     }
 
    "onBack" should {

@@ -42,6 +42,18 @@ backLink = Some((controllers.routes.ReviewTotalAmountsController.onBack.url,Mess
     @defining(pageValues.find(_.isTriggered)) { triggerContribution =>
         @defining((triggerContribution.map((tc)=>pageValues.reverse.filterNot((c1)=>c1==tc||c1.isEmpty)).getOrElse(pageValues.reverse.filterNot(_.isEmpty)))) { contributions =>
           @for(year <- (PensionPeriod.EARLIEST_YEAR_SUPPORTED to PensionPeriod.LATEST_YEAR_SUPPORTED).reverse) {
+            @if(year == 2015) {
+                @defining(triggerContribution.flatMap((tc)=>pageValues.find((c)=>c.isPeriod1 && c != tc)).orElse(pageValues.find(_.isPeriod1))) { c =>
+                  @if(c.isDefined) {
+                    @defining(c.get) { contribution =>
+                      @if(!contribution.isEmpty) {
+                        @contributionReviewTable.table(reviewForm, contribution, triggerContribution)
+                      }
+                    }
+                  }
+                } @* End of define c *@
+            }
+
             @if(triggerContribution.isDefined && !contributions.map(_.taxPeriodStart.taxYear).contains(triggerContribution.get.taxPeriodStart.taxYear) && year == triggerContribution.get.taxPeriodStart.taxYear) {
               @defining(triggerContribution.get) { c =>
                 @contributionReviewTable.table(reviewForm, c, triggerContribution)
@@ -55,16 +67,6 @@ backLink = Some((controllers.routes.ReviewTotalAmountsController.onBack.url,Mess
                 } @* End of define contribution *@
               } @* End of if contribution found *@
             } @* End of define c *@
-
-            @if(year == 2015) {
-                @defining(triggerContribution.flatMap((tc)=>pageValues.find((c)=>c.isPeriod1 && c != tc)).orElse(pageValues.find(_.isPeriod1))) { c =>
-                  @if(c.isDefined) {
-                    @defining(c.get) { contribution =>
-                      @contributionReviewTable.table(reviewForm, contribution, triggerContribution)
-                    }
-                  }
-                } @* End of define c *@
-            }
           } @* End of for *@
         } @* End of define contributions *@
     } @* End of define triggerContribution *@

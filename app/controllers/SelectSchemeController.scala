@@ -53,10 +53,21 @@ trait SelectSchemeController  extends RedirectController {
           val firstDCYear = if (input.definedContribution && (input.firstDCYear.isEmpty || input.firstDCYear.toInt < year)) year.toString
                             else if (!input.firstDCYear.isEmpty && !input.definedContribution && input.firstDCYear.toInt == year) ""
                             else input.firstDCYear.toString
-          val data = List((s"${DB_FLAG_PREFIX}${year}", s"${input.definedBenefit}"),
+          val data = request.data ++ List((FIRST_DC_YEAR_KEY, firstDCYear),
                           (s"${DC_FLAG_PREFIX}${year}", s"${input.definedContribution}"),
-                          (FIRST_DC_YEAR_KEY, firstDCYear)).toMap
-          val sessionData = request.data ++ data
+                          (s"${DB_FLAG_PREFIX}${year}", s"${input.definedBenefit}")).toMap
+
+          val toRemove = if (!input.definedContribution) {
+            if (input.year == 2015) List(P1_DC_KEY, P2_DC_KEY) else List(DC_PREFIX+year)
+          } else if (!input.definedBenefit) {
+            if (input.year == 2015) List(P1_DB_KEY, P2_DB_KEY) else List(DB_PREFIX+year)
+          } else {
+            List()
+          }
+          val sessionData = toRemove.foldLeft(data) {
+            (lst,key) =>
+            lst - key
+          }
           SelectScheme() go Forward.using(sessionData)
         }
       }

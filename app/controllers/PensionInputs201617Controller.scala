@@ -23,6 +23,7 @@ import play.api.data.Form
 import service.KeystoreService._
 import play.api.mvc.Request
 import scala.concurrent.Future
+import play.api.Logger
 
 object PensionInputs201617Controller extends PensionInputs201617Controller {
   def keystore: KeystoreService = KeystoreService
@@ -35,6 +36,7 @@ trait PensionInputs201617Controller extends RedirectController {
     if (year <= 2015 || year == -1)
       Start() go Edit
     else {
+      println(request.data)
       val isDB = request.data bool s"${DB_FLAG_PREFIX}${year}"
       val isDC = request.data bool s"${DC_FLAG_PREFIX}${year}"
       showPage(CalculatorForm.bind(request.data).discardingErrors, isDB, isDC, (request.data bool IS_EDIT_KEY), year)

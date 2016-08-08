@@ -65,7 +65,13 @@ trait RedirectController extends BaseFrontendController {
       Logger.info(s"${page} -> ${next}, saving next year as ${next.state.year}")
 
       val data = newSessionData ++ Map(CURRENT_INPUT_YEAR_KEY->next.state.year.toString)
-      Future.successful(Redirect(next.action).addingToSession(data.toSeq: _*))
+      Future.successful(updateSession(data, Redirect(next.action)))
+    }
+
+    protected def updateSession(newSessionData: Map[String,String], results: Result)(implicit request: Request[Any]): Result = {
+      val r = results.addingToSession(newSessionData.toSeq: _*)
+      val keysToRemove = r.session.data.filterKeys(!newSessionData.isDefinedAt(_)).keys.toList
+      r.removingFromSession(keysToRemove: _*)
     }
 
     protected def isCheckYourAnswersPage(location:PageLocation):Boolean = location match {
