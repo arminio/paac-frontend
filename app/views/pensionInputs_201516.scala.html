@@ -11,12 +11,12 @@ backLink = Some((controllers.routes.PensionInputs201516Controller.onBack.url,Mes
 
 
 <p class="lede text">@Messages("paac.201516.pension.inputs.description")</p>
-<p class="lede text">@Messages("paac.201516.pension.inputs.description2")</p>
+<p class="text">@Messages("paac.201516.pension.inputs.description2")</p>
 
 @if(paacForm.hasErrors) {
-<div class="error-summary" role="group" aria-labelledby="error-summary-heading-example-1" tabindex="-1" style="border: 5px solid #b10e1e;padding: 20px;padding-top: 0px;margin-bottom: 30px;">
+<div class="error-summary" role="group" aria-labelledby="error-summary-heading" tabindex="-1" style="border: 5px solid #b10e1e;padding: 20px;padding-top: 0px;margin-bottom: 30px;">
 
-    <h1 class="heading-medium error-summary-heading">
+    <h1 class="heading-medium error-summary-heading" id="error-summary-heading">
         @Messages("paac.error.generic")
     </h1>
 
@@ -73,7 +73,7 @@ args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
         }
         @if(isDefinedBenefit){
         <label class=" label--full-length numeric @if(paacForm.hasErrors) {form-field--error}" for="year2015.definedBenefit_2015_p1" style="width:150%;display: inline-block;">
-        <span style="text-align:left;min-width: 7em">@Messages("paac.common.pension.inputs.db")</span>
+        <p style="text-align:left;min-width: 7em">@Messages("paac.common.pension.inputs.db")</p>
         <span class="form-hint">@Messages("paac.common.inputfield.example.message")</span>
               @if(paacForm.data.contains("year2015.definedBenefit_2015_p1")) {
 
@@ -104,8 +104,8 @@ args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
     <fieldset id="input_2015_p2" style="margin: 0" class="form-field-group">
         @if(isDefinedContribution){
         <label class="label--full-length numeric @if(paacForm.hasErrors) {form-field--error}" for="year2015.definedContribution_2015_p2" style="width:150%;display: inline-block;">
-        <span style="text-align:left;min-width: 7em">@Messages("paac.common.pension.inputs.dc")</span>
-        <p  class="form-hint">@Messages("paac.common.inputfield.example.message")</p>
+        <p style="text-align:left;min-width: 7em">@Messages("paac.common.pension.inputs.dc")</p>
+        <p class="form-hint">@Messages("paac.common.inputfield.example.message")</p>
           <span style="text-align:left; min-width: 7em">
           @if(paacForm.data.contains("year2015.definedContribution_2015_p2")) {
               @defining(paacForm.errors.find(_.key.contains("definedContribution_2015_p2"))){ maybeError =>
@@ -127,7 +127,7 @@ args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
         }
         @if(isDefinedBenefit){
         <label class="label--full-length numeric  @if(paacForm.hasErrors) {form-field--error}" for="year2015.definedBenefit_2015_p2" style="width:150%;display: inline-block;">
-        <span style="text-align:left;min-width: 7em">@Messages("paac.common.pension.inputs.db")</span>
+        <p style="text-align:left;min-width: 7em">@Messages("paac.common.pension.inputs.db")</p>
         <span class="form-hint">@Messages("paac.common.inputfield.example.message")</span>
           <span style="text-align:left;min-width: 7em">
           @if(paacForm.data.contains("year2015.definedBenefit_2015_p2")) {
