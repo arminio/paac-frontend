@@ -10,9 +10,9 @@ backLink = Some((controllers.routes.AdjustedIncome1617InputController.onBack.url
 ) {
 
     @if(paacForm.hasErrors) {
-      <div class="error-summary" role="group" aria-labelledby="error-summary-heading-example-1" tabindex="-1" style="border: 5px solid #b10e1e;padding: 20px;padding-top: 0px;margin-bottom: 30px;">
+      <div class="error-summary" role="group" aria-labelledby="error-summary-heading" tabindex="-1" style="border: 5px solid #b10e1e;padding: 20px;padding-top: 0px;margin-bottom: 30px;">
 
-        <h1 class="heading-medium error-summary-heading">
+        <h1 class="heading-medium error-summary-heading" id="error-summary-heading">
             @Messages("paac.error.generic")
         </h1>
 
@@ -39,34 +39,33 @@ backLink = Some((controllers.routes.AdjustedIncome1617InputController.onBack.url
         <input type="hidden" name="isEdit" value="@isEdit"/>
         <input type="hidden" name="year" value="@currentYear"/>
         <p class="lede text">@Messages("paac.1617.adjusted.income.description1")</p>
-        <p class="lede text">@Messages("paac.1617.adjusted.income.description2", config.PaacConfiguration.forYear(currentYear.toInt)("adjustedIncome"))</p>
+        <p class="text" >@Messages("paac.1617.adjusted.income.description2", config.PaacConfiguration.forYear(currentYear.toInt)("adjustedIncome"))</p>
         <table>
             <tbody>
                 <fieldset id="adjusted_income_@currentYear" class="form-field-group @if(paacForm.hasErrors) {form-field--error}">
-                    @if(paacForm.hasErrors) {
 
+                    <span style="float:left">
+                      <p class="form-hint" style="text-align:left;min-width: 7em">@Messages("paac.common.inputfield.example.message") </p>
+                          @if(paacForm.hasErrors) {
                     <ul class="error-summary-list">
                         @for(error <- paacForm.errors) {
                         @defining(Seq(currentYear)++error.args) { args =>
                         <li style="color:#b10e1e;font-weight: bold;">@Messages(error.message, args:_*)</li>
-                        }
+                           }
                         }
                     </ul>
                     }
-                  <span style="float:left">
+                        <label class="label--full-length numeric" style="width:150%; display: inline-block;" @if(paacForm.errors.find(_.key == s"adjustedIncome.amount_${currentYear}")) {color:#b10e1e;}">
                       @if(paacForm.data.contains(s"adjustedIncome.amount_${currentYear}")) {
-
-                          <p class="form-hint" style="text-align:left;min-width: 7em">@Messages("paac.common.inputfield.example.message") </p>
                           £&nbsp;<input type="number" name="adjustedIncome.amount_@currentYear" id="adjustedIncome.amount_@currentYear" min="0" class="input--no-spinner" value='@paacForm.data(s"adjustedIncome.amount_${currentYear}")' max="5000000.00" size="10" style="width:9em;@if(paacForm.errors.find(_.key == s"adjustedIncome.amount_${currentYear}")) {border: 4px solid #b10e1e;}"/>
                       } else {
-                          <p class="form-hint" style="text-align:left;min-width: 7em">@Messages("paac.common.inputfield.example.message")</p>
                           £&nbsp;<input type="number" name="adjustedIncome.amount_@currentYear" id="adjustedIncome.amount_@currentYear" min="0" class="input--no-spinner" value='' max="5000000.00" size="10" style="width:9em;@if(paacForm.errors.find(_.key == "adjustedIncome.amount_@currentYear")) {border: 4px solid #b10e1e;}"/>
                       }
                   </span>
+                    </label>
                 </fieldset>
             </tbody>
         </table>
-
         <button id="submit" type="submit" class="button" value="Continue">@if(isEdit){@Messages("paac.calculator.button.save")}else{@Messages("paac.calculator.button.continue")}</button>
     } @* End of Form *@
 } @* End of paacMain *@
