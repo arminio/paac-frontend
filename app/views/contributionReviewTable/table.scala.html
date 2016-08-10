@@ -54,7 +54,7 @@
             <td width="25%" class="edit_action">
                 <a href="edit/income/@contribution.taxPeriodStart.year">
                  @Messages("paac.review-amounts.action.edit") <span class="visuallyhidden">@(contribution.taxYearLabel())</span>
-                </a></a></a>
+                </a>
             </td>
         </tr>
         }@* End of income row *@
@@ -73,7 +73,7 @@
             <td width="25%" class="edit_action">
                 <a href="edit/@(controllers.ReviewTotalAmountsController.EDIT_TRIGGER_DATE)">
                  @Messages("paac.review-amounts.action.edit") <span class="visuallyhidden">@(contribution.taxYearLabel())</span>
-                </a></a></a>
+                </a>
             </td>
         </tr>
         <tr>
@@ -82,7 +82,7 @@
             <td width="25%" class="edit_action">
                 <a href="edit/@(controllers.ReviewTotalAmountsController.EDIT_TRIGGER_AMOUNT)">
                  @Messages("paac.review-amounts.action.edit") <span class="visuallyhidden">@(contribution.taxYearLabel())</span>
-                </a></a></a>
+                </a>
             </td>
         </tr>
         }
