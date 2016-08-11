@@ -44,17 +44,17 @@ args = 'class -> "form",
 
 <fieldset id="input_2015_p1" class="form-field-group">
   @for(id <- if (isDefinedBenefit && isDefinedContribution) List("definedBenefit_2015_"+p, "definedContribution_2015_"+p) else if (isDefinedBenefit) List("definedBenefit_2015_"+p) else List("definedContribution_2015_"+p)) {
-    <label class="label--full-length numeric @if(paacForm.hasErrors) {form-field--error}" for="@id" style="width:150%;display: inline-block;">
-    <p style="text-align:left; min-width: 7em;">@Messages(if (id.contains("Benefit")) "paac.common.pension.inputs.db" else "paac.common.pension.inputs.dc")</p>
-    <span class="form-hint">@Messages("paac.common.inputfield.example.message")</span>
+    <label class="label--full-length numeric @if(paacForm.errors.find(_.key == id)) {form-field--error}" for="@id" style="width:150%;display: inline-block;">
+      <p style="text-align:left; min-width: 7em;">@Messages(if (id.contains("Benefit")) "paac.common.pension.inputs.db" else "paac.common.pension.inputs.dc")</p>
+      <span class="form-hint">@Messages("paac.common.inputfield.example.message")</span>
     @defining(paacForm.errors.find(_.key.contains(id))){ maybeError =>
       @if(maybeError.isDefined) {
         @defining(maybeError.get) { error =>
-    <p style="color:#b10e1e;font-weight: bold;">@Messages(error.message, error.args:_*)</p>
+      <p style="color:#b10e1e;font-weight: bold;">@Messages(error.message, error.args:_*)</p>
         } @* End of define error *@
       } @* End of if *@
     } @* End of define maybeError *@
-    &pound;&nbsp;<input type="number" name="@id" id="@id" min="0" class="input--no-spinner" value='@if(paacForm.data.contains(id)){@paacForm.data(id)}' max="5000000.00" size="10" style="width:9em;@if(paacForm.errors.find(_.key == id)) {border: 4px solid #b10e1e;}"/>
+      @helpers.valueField(id, paacForm.data.getOrElse(id,""), paacForm.errors.find(_.key == id))
     </label>
   } @* End of for id *@
 </fieldset>
