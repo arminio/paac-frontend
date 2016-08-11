@@ -102,7 +102,9 @@ trait RedirectController extends BaseFrontendController with ThisYear {
   protected def convert(data: Map[String,String]): Map[String,String] = {
     data.map{
       (entry)=>
-      if (List(P1_DB_KEY, P2_DB_KEY, P1_DC_KEY,P2_DC_KEY).contains(entry._1)) {
+      if (List(P1_DB_KEY, P2_DB_KEY, P1_DC_KEY, P2_DC_KEY).contains(entry._1) ||
+          entry._1.startsWith(DB_PREFIX) ||
+          entry._1.startsWith(DC_PREFIX)) {
         if (settings.POUNDS_AND_PENCE) (entry._1, toDecimal(entry._2)) else (entry._1, toInt(entry._2))
       } else {
         entry

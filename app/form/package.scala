@@ -66,4 +66,11 @@ package object utilities {
       (t._1.intValue,t._2.intValue)
     }
   }
+
+  implicit def bigDecimalToInt(maybeDecimal: Option[BigDecimal]): Option[Int] = {
+    maybeDecimal.map {
+      (v) =>
+      (v.intValue)
+    }
+  }
 }
