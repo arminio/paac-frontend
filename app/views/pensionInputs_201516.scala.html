@@ -1,4 +1,4 @@
-@(paacForm : Form[models.CalculatorFormFields],isDefinedBenefit: Boolean= false, isDefinedContribution: Boolean= false, isEdit: Boolean)(implicit request:Request[_])
+@(paacForm : Form[_ <: form.Year2015Fields],isDefinedBenefit: Boolean= false, isDefinedContribution: Boolean= false, isEdit: Boolean)(implicit request:Request[_])
 
 @import uk.gov.hmrc.play.views.html.helpers._
 
@@ -8,150 +8,58 @@ heading = Messages("paac.1516.pension.inputs.pages.heading", (if(isDefinedBenefi
 articleClasses=Some("full-width"),
 backLink = Some((controllers.routes.PensionInputs201516Controller.onBack.url,Messages("paac.link.text.back")))
 ) {
-
-
 <p class="lede text">@Messages("paac.201516.pension.inputs.description")</p>
 <p class="text">@Messages("paac.201516.pension.inputs.description2")</p>
 
 @if(paacForm.hasErrors) {
 <div class="error-summary" role="group" aria-labelledby="error-summary-heading" tabindex="-1" style="border: 5px solid #b10e1e;padding: 20px;padding-top: 0px;margin-bottom: 30px;">
-
     <h1 class="heading-medium error-summary-heading" id="error-summary-heading">
         @Messages("paac.error.generic")
     </h1>
-
     @if(paacForm.hasGlobalErrors) {
     <ul>
-        @for(error <- paacForm.globalErrors) {
-        <li>@error.message</li>
-        }
+      @for(error <- paacForm.globalErrors) {<li>error.message</li>}
     </ul>
-    }
+    } @* End of if *@
 
     <ul class="error-summary-list">
       @for(error <- paacForm.errors) {
-        @defining(error.args) { args =>
-          <li><a href="#input_2015_p1" style="color:#b10e1e;font-weight: bold;">@Messages(error.message, args:_*)</a></li>
-        }
-      }
+      <li><a href="#@error.key" style="color:#b10e1e;font-weight: bold;">@Messages(error.message, error.args:_*)</a></li>
+      } @* End of for *@
     </ul>
 </div>
 }
 
 @form(
 action = controllers.routes.PensionInputs201516Controller.onSubmit,
-args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
-<input type="hidden" name="isEdit" value="@(isEdit)"/>
-<input type="hidden" name="isDefinedBenefit" value="@(isDefinedBenefit)"/>
-<input type="hidden" name="isDefinedContribution" value="@(isDefinedContribution)"/>
-<p class="lede text"><b>@Messages("paac.201516.pension.inputs.period1")</b></p>
-<p class="text" style="margin: 0"><b>@Messages("paac.201516.pension.inputs.period1.description")</b></p>
-<table style="margin: 0">
-    <tbody>
+args = 'class -> "form",
+'autocomplete -> "off",
+'novalidate -> "") {
 
-    <fieldset id="input_2015_p1" style="margin: 0" class="form-field-group">
+@for(p <- List("p1","p2")) {
+  @defining(if (p == "p1") "paac.201516.pension.inputs.period1" else "paac.201516.pension.inputs.period2") { msg =>
+<p class="lede text"><b>@Messages(msg)</b></p>
+<p class="text" style="margin: 0"><b>@Messages(msg+".description")</b></p>
+  }
 
-        @if(isDefinedContribution){
-        <label class="label--full-length numeric @if(paacForm.hasErrors) {form-field--error}" for="year2015.definedContribution_2015_p1" style="width:150%;display: inline-block;">
-        <p style="text-align:left; min-width: 7em;">@Messages("paac.common.pension.inputs.dc")</p>
-        <span class="form-hint">@Messages("paac.common.inputfield.example.message")</span>
-
-        @if(paacForm.data.contains("year2015.definedContribution_2015_p1")) {
-        @defining(paacForm.errors.find(_.key.contains("definedContribution_2015_p1"))){ maybeError =>
-        @if(maybeError.isDefined) {
+<fieldset id="input_2015_p1" class="form-field-group">
+  @for(id <- if (isDefinedBenefit && isDefinedContribution) List("definedBenefit_2015_"+p, "definedContribution_2015_"+p) else if (isDefinedBenefit) List("definedBenefit_2015_"+p) else List("definedContribution_2015_"+p)) {
+    <label class="label--full-length numeric @if(paacForm.hasErrors) {form-field--error}" for="@id" style="width:150%;display: inline-block;">
+    <p style="text-align:left; min-width: 7em;">@Messages(if (id.contains("Benefit")) "paac.common.pension.inputs.db" else "paac.common.pension.inputs.dc")</p>
+    <span class="form-hint">@Messages("paac.common.inputfield.example.message")</span>
+    @defining(paacForm.errors.find(_.key.contains(id))){ maybeError =>
+      @if(maybeError.isDefined) {
         @defining(maybeError.get) { error =>
-        <p style="color:#b10e1e;font-weight: bold;">@Messages(error.message, error.args:_*)</p>
-            }
-          }
-        }
-                  £&nbsp;<input type="number" name="year2015.definedContribution_2015_p1" id="year2015.definedContribution_2015_p1" min="0" class="input--no-spinner" value='@paacForm.data("year2015.definedContribution_2015_p1")' max="5000000.00" size="10" style="width:9em;@if(paacForm.errors.find(_.key == "year2015.definedContribution_2015_p1")) {border: 4px solid #b10e1e;}"/>
-              } else {
-
-                  £&nbsp;<input type="number" name="year2015.definedContribution_2015_p1" id="year2015.definedContribution_2015_p1" min="0" class="input--no-spinner" value='' max="5000000.00" size="10" style="width:9em;@if(paacForm.errors.find(_.key == "year2015.definedContribution_2015_p1")) {border: 4px solid #b10e1e;}"/>
-              }
-        </label>
-        }
-        @if(isDefinedBenefit){
-        <label class=" label--full-length numeric @if(paacForm.hasErrors) {form-field--error}" for="year2015.definedBenefit_2015_p1" style="width:150%;display: inline-block;">
-        <p style="text-align:left;min-width: 7em">@Messages("paac.common.pension.inputs.db")</p>
-        <span class="form-hint">@Messages("paac.common.inputfield.example.message")</span>
-              @if(paacForm.data.contains("year2015.definedBenefit_2015_p1")) {
-
-             @defining(paacForm.errors.find(_.key.contains("definedBenefit_2015_p1"))){ maybeError =>
-                @if(maybeError.isDefined) {
-                @defining(maybeError.get) { error =>
-                <p style="color:#b10e1e;font-weight: bold;">@Messages(error.message, error.args:_*)</p>
-                 }
-                }
-            }
-                  £&nbsp;<input type="number" name="year2015.definedBenefit_2015_p1" id="year2015.definedBenefit_2015_p1" min="0" class="input--no-spinner" value='@paacForm.data("year2015.definedBenefit_2015_p1")' max="5000000.00" size="10" style="width:9em;@if(paacForm.errors.find(_.key == "year2015.definedBenefit_2015_p1")) {border: 4px solid #b10e1e;}"/>
-
-              } else {
-
-                  £&nbsp;<input type="number" name="year2015.definedBenefit_2015_p1" id="year2015.definedBenefit_2015_p1" min="0" class="input--no-spinner" value='' max="5000000.00" size="10" style="width:9em;@if(paacForm.errors.find(_.key == "year2015.definedBenefit_2015_p1")) {border: 4px solid #b10e1e;}"/>
-
-              }
-        </label>
-        }
-    </fieldset>
-    </tbody>
-</table>
-<br>
-<p class="lede text"><b>@Messages("paac.201516.pension.inputs.period2")</b></p>
-<p class="text" style="margin: 0"><b>@Messages("paac.201516.pension.inputs.period2.description")</b></p>
-<table>
-    <tbody>
-    <fieldset id="input_2015_p2" style="margin: 0" class="form-field-group">
-        @if(isDefinedContribution){
-        <label class="label--full-length numeric @if(paacForm.hasErrors) {form-field--error}" for="year2015.definedContribution_2015_p2" style="width:150%;display: inline-block;">
-        <p style="text-align:left;min-width: 7em">@Messages("paac.common.pension.inputs.dc")</p>
-        <p class="form-hint">@Messages("paac.common.inputfield.example.message")</p>
-          <span style="text-align:left; min-width: 7em">
-          @if(paacForm.data.contains("year2015.definedContribution_2015_p2")) {
-              @defining(paacForm.errors.find(_.key.contains("definedContribution_2015_p2"))){ maybeError =>
-                @if(maybeError.isDefined) {
-                @defining(maybeError.get) { error =>
-                <p style="color:#b10e1e;font-weight: bold;">@Messages(error.message, error.args:_*)</p>
-            }
-          }
-        }
-                  £&nbsp;<input type="number" name="year2015.definedContribution_2015_p2" id="year2015.definedContribution_2015_p2" min="0" class="input--no-spinner" value='@paacForm.data("year2015.definedContribution_2015_p2")' max="5000000.00" size="10" style="width:9em;@if(paacForm.errors.find(_.key == "year2015.definedContribution_2015_p2")) {border: 4px solid #b10e1e;}"/>
-
-              } else {
-
-                  £&nbsp;<input type="number" name="year2015.definedContribution_2015_p2" id="year2015.definedContribution_2015_p2" min="0" class="input--no-spinner" value='' max="5000000.00" size="10" style="width:9em;@if(paacForm.errors.find(_.key == "year2015.definedContribution_2015_p2")) {border: 4px solid #b10e1e;}"/>
-
-              }
-          </span>
-        </label>
-        }
-        @if(isDefinedBenefit){
-        <label class="label--full-length numeric  @if(paacForm.hasErrors) {form-field--error}" for="year2015.definedBenefit_2015_p2" style="width:150%;display: inline-block;">
-        <p style="text-align:left;min-width: 7em">@Messages("paac.common.pension.inputs.db")</p>
-        <span class="form-hint">@Messages("paac.common.inputfield.example.message")</span>
-          <span style="text-align:left;min-width: 7em">
-          @if(paacForm.data.contains("year2015.definedBenefit_2015_p2")) {
-            @defining(paacForm.errors.find(_.key.contains("definedBenefit_2015_p2"))){ maybeError =>
-                @if(maybeError.isDefined) {
-                @defining(maybeError.get) { error =>
-                <p style="color:#b10e1e;font-weight: bold;">@Messages(error.message, error.args:_*)</p>
-                 }
-                }
-            }
-                  £&nbsp;<input type="number" name="year2015.definedBenefit_2015_p2" id="year2015.definedBenefit_2015_p2" min="0" class="input--no-spinner" value='@paacForm.data("year2015.definedBenefit_2015_p2")' max="5000000.00" size="10" style="width:9em;@if(paacForm.errors.find(_.key == "year2015.definedBenefit_2015_p2")) {border: 4px solid #b10e1e;}"/>
-
-              } else {
-
-                  £&nbsp;<input type="number" name="year2015.definedBenefit_2015_p2" id="year2015.definedBenefit_2015_p2" min="0" class="input--no-spinner" value='' max="5000000.00" size="10" style="width:9em;@if(paacForm.errors.find(_.key == "year2015.definedBenefit_2015_p2")) {border: 4px solid #b10e1e;}"/>
-
-              }
-          </span>
-        </label>
-        }
-    </fieldset>
-    </tbody>
-</table>
+    <p style="color:#b10e1e;font-weight: bold;">@Messages(error.message, error.args:_*)</p>
+        } @* End of define error *@
+      } @* End of if *@
+    } @* End of define maybeError *@
+    &pound;&nbsp;<input type="number" name="@id" id="@id" min="0" class="input--no-spinner" value='@if(paacForm.data.contains(id)){@paacForm.data(id)}' max="5000000.00" size="10" style="width:9em;@if(paacForm.errors.find(_.key == id)) {border: 4px solid #b10e1e;}"/>
+    </label>
+  } @* End of for id *@
+</fieldset>
 <br/>
+} @* End of for p *@
 
 <button id="submit" type="submit" class="button" value="Continue">@if(isEdit){@Messages("paac.calculator.button.save")}else{@Messages("paac.calculator.button.continue")}</button>
 } @* End of Form *@

@@ -20,8 +20,7 @@ import service._
 import service.KeystoreService._
 import play.api.mvc._
 import scala.concurrent.Future
-import form.CalculatorForm
-import models.CalculatorFormFields
+import form._
 import play.api.data.Form
 import play.api.mvc.Request
 
@@ -35,53 +34,18 @@ object PensionInputs201516Controller extends PensionInputs201516Controller {
 trait PensionInputs201516Controller extends RedirectController {
 
   val onPageLoad = withReadSession { implicit request =>
-    showPage(CalculatorForm.bind(request.data).discardingErrors,
-             request.data bool s"${DB_FLAG_PREFIX}2015",
-             request.data bool s"${DC_FLAG_PREFIX}2015",
-             request.data bool IS_EDIT_KEY)
+    val isDB = request.data bool s"${DB_FLAG_PREFIX}2015"
+    val isDC = request.data bool s"${DC_FLAG_PREFIX}2015"
+    showPage(Year2015Form.form(isDB, isDC).bind(convert(request.data)).discardingErrors, isDB, isDC, request.data bool IS_EDIT_KEY)
   }
 
   val onSubmit = withWriteSession { implicit request =>
-    val data = request.form
-    val isDB = data bool "isDefinedBenefit"
-    val isDC = data bool "isDefinedContribution"
-    val isEdit = data bool "isEdit"
-
-    val form = CalculatorForm.form.bindFromRequest()
+    val isDB = request.data bool s"${DB_FLAG_PREFIX}2015"
+    val isDC = request.data bool s"${DC_FLAG_PREFIX}2015"
+    val form = Year2015Form.form(isDB, isDC).bindFromRequest()
     form.fold(
-      formWithErrors => {
-        showPage(formWithErrors, isDB, isDC, isEdit)
-      },
-      input => {
-        val isDBErrorP1 = ("year2015.definedBenefit_2015_p1", !input.to1516Period1DefinedBenefit.isDefined && isDB)
-        val isDBErrorP2 = ("year2015.definedBenefit_2015_p2", !input.to1516Period2DefinedBenefit.isDefined && isDB)
-        val isDCErrorP1 = ("year2015.definedContribution_2015_p1", !input.to1516Period1DefinedContribution.isDefined && isDC)
-        val isDCErrorP2 = ("year2015.definedContribution_2015_p2", !input.to1516Period2DefinedContribution.isDefined && isDC)
-        val errors = List(isDBErrorP1, isDBErrorP2, isDCErrorP1, isDCErrorP2)
-        if (errors.exists(_._2)) {
-          val formWithErrors = errors.filter(_._2).foldLeft(form) {
-            (newForm, error) => {
-              var args = if (error._1.contains("p1")) List("1") else List("2")
-              args ::= (if (error._1.contains("definedBenefit")) "benefit" else "contribution")
-              newForm.withError(error._1, "year1516.error.bounds", args: _*)
-            }
-          }
-          showPage(formWithErrors, isDB, isDC, isEdit)
-        } else {
-          val data = List(input.to1516Period1DefinedBenefit,
-                          input.to1516Period1DefinedContribution,
-                          input.to1516Period2DefinedBenefit,
-                          input.to1516Period2DefinedContribution).foldLeft(List[(Long, String)]()) {
-            (lst, entry)=>
-            entry match {
-              case Some(v) => lst ++ List(v)
-              case None => lst
-            }
-          }
-          val sessionData = request.data ++ data.map(_.swap).toMap.mapValues(_.toString)
-          PensionInput() go Forward.using(sessionData)
-        }
-      }
+      formWithErrors => showPage(formWithErrors, isDB, isDC, request.data bool "isEdit"),
+      input => PensionInput() go Forward.using(request.data ++ input.data)
     )
   }
 
@@ -89,7 +53,6 @@ trait PensionInputs201516Controller extends RedirectController {
     PensionInput() go Backward
   }
 
-  protected def showPage(form: Form[CalculatorFormFields] , isDB: Boolean, isDC: Boolean, isEdit: Boolean)(implicit request: Request[_]) = {
+  protected def showPage(form: Form[_ <: Year2015Fields] , isDB: Boolean, isDC: Boolean, isEdit: Boolean)(implicit request: Request[_]) =
     Future.successful(Ok(views.html.pensionInputs_201516(form, isDB, isDC, isEdit)))
-  }
 }
