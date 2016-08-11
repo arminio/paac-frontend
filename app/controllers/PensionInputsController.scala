@@ -33,11 +33,13 @@ object PensionInputsController extends PensionInputsController {
 trait PensionInputsController extends RedirectController {
 
   val onPageLoad = withReadSession { implicit request =>
-    val cy = request.data(CURRENT_INPUT_YEAR_KEY)
-    if (cy.isEmpty || cy.toInt <= 0)
+    val cy = request.data int CURRENT_INPUT_YEAR_KEY
+    val isEdit = request.form bool IS_EDIT_KEY
+    if (cy <= 0) {
       Start() go Edit
-    else
-      showPage(Pre2015Form.form(cy.toInt).bind(convert(request.data)).discardingErrors, cy, request.data bool IS_EDIT_KEY)
+    } else {
+      showPage(Pre2015Form.form(cy).bind(convert(request.data)).discardingErrors, cy.toString, isEdit)
+    }
   }
 
   val onSubmit = withWriteSession { implicit request =>

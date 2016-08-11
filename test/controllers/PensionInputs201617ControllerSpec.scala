@@ -229,7 +229,7 @@ class PensionInputs201617ControllerSpec extends test.BaseSpec {
         // check
         status(result) shouldBe 200
         val htmlPage = contentAsString(await(result))
-        htmlPage should include (s"""<a href="#${DB_PREFIX}2016" style="color:#b10e1e;font-weight: bold;">Enter an amount that contains only numbers</a>""")
+        htmlPage should include (s"""<a href="#${DB_PREFIX}2016" style="color:#b10e1e;font-weight: bold;">Enter an amount that contains only numbers.</a>""")
       }
 
       "with isEdit = false, DB = false and DC = true with empty DC Input should display the same page with errors" in new ControllerWithMockKeystore {
@@ -247,7 +247,7 @@ class PensionInputs201617ControllerSpec extends test.BaseSpec {
         // check
         status(result) shouldBe 200
         val htmlPage = contentAsString(await(result))
-        htmlPage should include (s"""<a href="#${DC_PREFIX}2016" style="color:#b10e1e;font-weight: bold;">Enter an amount that contains only numbers</a>""")
+        htmlPage should include (s"""<a href="#${DC_PREFIX}2016" style="color:#b10e1e;font-weight: bold;">Enter an amount that contains only numbers.</a>""")
       }
     }
   }
