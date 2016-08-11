@@ -24,9 +24,6 @@ import form._
 import play.api.data.Form
 import play.api.mvc.Request
 
-/**
-  * 2015/16 Period-1 : Pre-Alignment Tax Year
-  */
 object PensionInputs201516Controller extends PensionInputs201516Controller {
   def keystore: KeystoreService = KeystoreService
 }
