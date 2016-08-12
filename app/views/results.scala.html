@@ -12,20 +12,19 @@ backLink = Some((controllers.routes.ReviewTotalAmountsController.onPageLoad.url,
 @defining(sortedResults.exists((data) => data.summaryResult.isMPA)){ mpaaPresent =>
 
 @defining(sortedResults.headOption.getOrElse(TaxYearResults()).input.taxPeriodStart.year == 2015){ year1516 =>
+  @defining(sortedResults.take(2).map(_.summaryResult.chargableAmount).foldLeft(0L)(_+_)) { year2015Tax =>
+    @defining(sortedResults.headOption.getOrElse(TaxYearResults()).summaryResult.chargableAmount) { tax =>
+      @if(year1516 && year2015Tax > 0){
+      <p class="govuk-box-highlight lede">@Html(Messages("paac.results.p1", currencyFormatter.format(year2015Tax/100)))</p>
+      } else {
+          @if(!year1516 && tax > 0) {
+             <p class="govuk-box-highlight lede">@Html(Messages("paac.results.p1", currencyFormatter.format(tax/100)))</p>
+          } else {
+             <p class="govuk-box-highlight lede">@Html(Messages("paac.results.p2",
+                currencyFormatter.format(sortedResults.headOption.getOrElse(TaxYearResults()).summaryResult.availableAAWithCCF/100)))</p>
+          }
+      }
 
-    @if(year1516 && sortedResults.take(2).map(_.summaryResult.chargableAmount).foldLeft(0L)(_+_) > 0){
-    <p class="govuk-box-highlight lede">@Html(Messages("paac.results.p1",
-        currencyFormatter.format(sortedResults.take(2).map(_.summaryResult.chargableAmount).foldLeft(0L)(_+_)/100)))</p>
-    } else {
-        @if(!year1516 && sortedResults.headOption.getOrElse(TaxYearResults()).summaryResult.chargableAmount > 0) {
-           <p class="govuk-box-highlight lede">@Html(Messages("paac.results.p1",
-              currencyFormatter.format(sortedResults.headOption.getOrElse(TaxYearResults()).summaryResult.chargableAmount/100)))</p>
-        } else {
-           <p class="govuk-box-highlight lede">@Html(Messages("paac.results.p2",
-              currencyFormatter.format(sortedResults.headOption.getOrElse(TaxYearResults()).summaryResult.unusedAllowance/100)))</p>
-        }
-    }
-}
       <table>
        <thead>
        <tr>
@@ -106,13 +105,14 @@ backLink = Some((controllers.routes.ReviewTotalAmountsController.onPageLoad.url,
     }
        </tbody>
       </table>
+@if(year2015Tax > 0 || tax > 0) {
+  <div class="panel panel-indent"><p>@Html(Messages("paac.results.p3"))</p></div>
+}
+    }
+  }
+}
    } @* End of mpaaPresent *@
   } @* End of sortedResults *@
 } @* End of currencyFormatter *@
-  <div class="panel panel-indent">
-    <p>
-      You can use these figures to complete your Self Assessment tax return online.
-    </p>
-  </div>
   <a class="button" href="new" style="margin-top:50px;">@Messages("paac.results.link.new")</a>
 }
