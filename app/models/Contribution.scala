@@ -156,6 +156,8 @@ case class Contribution(taxPeriodStart: PensionPeriod, taxPeriodEnd: PensionPeri
       inputs <- amounts
       income <- inputs.income
     } yield income) getOrElse 0L
+
+  def taxYear(): Int = taxPeriodStart.taxYear
 }
 
 object PensionPeriod {
