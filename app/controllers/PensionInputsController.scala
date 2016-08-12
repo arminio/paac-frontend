@@ -16,14 +16,12 @@
 
 package controllers
 
-import form.CalculatorForm
 import service._
-import models._
 import service.KeystoreService._
-import play.api.data.Form
-import play.api.data.Forms._
 import play.api.mvc._
 import scala.concurrent.Future
+import form._
+import play.api.data.Form
 import play.api.mvc.Request
 
 object PensionInputsController extends PensionInputsController {
@@ -39,27 +37,17 @@ trait PensionInputsController extends RedirectController {
     if (cy.isEmpty || cy.toInt <= 0)
       Start() go Edit
     else
-      showPage(CalculatorForm.bind(request.data).discardingErrors, cy, request.data bool IS_EDIT_KEY)
+      showPage(Pre2015Form.form(cy.toInt).bind(convert(request.data)).discardingErrors, cy, request.data bool IS_EDIT_KEY)
   }
 
   val onSubmit = withWriteSession { implicit request =>
-    val cy = request.form("year")
+    val cy = request.form("year").toInt
     val isEdit = request.form bool IS_EDIT_KEY
-    val form = CalculatorForm.form.bindFromRequest()
+    val form = Pre2015Form.form(cy).bindFromRequest()
 
     form.fold(
-      formWithErrors =>
-        showPage(formWithErrors, cy, isEdit),
-      fields => {
-        val data = fields.toDefinedBenefit(cy.toInt)
-        data match {
-          case None => showPage(form.withError(s"definedBenefits.amount_${cy}", "pre1516.amount.error.bounds"), cy, isEdit)
-          case Some(value) => {
-            val sessionData = request.data ++ Map(value.swap).mapValues(_.toString)
-            PensionInput() go Forward.using(sessionData)
-          }
-        }
-      }
+      formWithErrors => showPage(formWithErrors, cy.toString, isEdit),
+      input => PensionInput() go Forward.using(request.data ++ input.data(cy))
     )
   }
 
@@ -67,7 +55,7 @@ trait PensionInputsController extends RedirectController {
     PensionInput() go Backward
   }
 
-  protected def showPage(form: Form[CalculatorFormFields], year: String, isEditing: Boolean)(implicit request: Request[Any]) = {
+  protected def showPage(form: Form[_ <: Pre2015Fields], year: String, isEditing: Boolean)(implicit request: Request[Any]) = {
     Future.successful(Ok(views.html.pensionInputs(form, year, isEditing)))
   }
 }
