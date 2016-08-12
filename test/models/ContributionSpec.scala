@@ -701,7 +701,7 @@ class ContributionSpec extends ModelSpec {
         val c3 = c1 + c2
 
         // check
-        c3 shouldBe Contribution(PensionPeriod(2014,4,6),PensionPeriod(2015,4,5),Some(InputAmounts(579L,0L)))
+        c3 shouldBe Contribution(PensionPeriod(2014,4,6),PensionPeriod(2015,4,5),Some(InputAmounts(579L)))
       }
       "not fail if amounts not defined" in {
         // set up
@@ -713,6 +713,66 @@ class ContributionSpec extends ModelSpec {
 
         // check
         c3 shouldBe c1
+      }
+
+
+      "be added to another contribution" in {
+        // set up
+        val c1 = Contribution(PensionPeriod(2008, 2, 11), PensionPeriod(2008, 8, 12), Some(InputAmounts(None, Some(123L))))
+        val c2 = Contribution(PensionPeriod(2008, 2, 11), PensionPeriod(2008, 8, 12), Some(InputAmounts(Some(456L), Some(0L))))
+
+        // test
+        val c3 = c1 + c2
+
+        // check
+        c3 shouldBe Contribution(PensionPeriod(2008, 2, 11), PensionPeriod(2008, 8, 12), Some(InputAmounts(Some(456L), Some(123L))))
+      }
+
+      "be added to another contribution summing defined benefit" in {
+        // set up
+        val c1 = Contribution(PensionPeriod(2008, 2, 11), PensionPeriod(2008, 8, 12), Some(InputAmounts(Some(123L), None)))
+        val c2 = Contribution(PensionPeriod(2008, 2, 11), PensionPeriod(2008, 8, 12), Some(InputAmounts(Some(456L), None)))
+
+        // test
+        val c3 = c1 + c2
+
+        // check
+        c3 shouldBe Contribution(PensionPeriod(2008, 2, 11), PensionPeriod(2008, 8, 12), Some(InputAmounts(579L)))
+      }
+
+      "be added to another contribution summing defined contribution" in {
+        // set up
+        val c1 = Contribution(PensionPeriod(2008, 2, 11), PensionPeriod(2008, 8, 12), Some(InputAmounts(None, Some(123L))))
+        val c2 = Contribution(PensionPeriod(2008, 2, 11), PensionPeriod(2008, 8, 12), Some(InputAmounts(None, Some(456L))))
+
+        // test
+        val c3 = c1 + c2
+
+        // check
+        c3 shouldBe Contribution(PensionPeriod(2008, 2, 11), PensionPeriod(2008, 8, 12), Some(InputAmounts(None, Some(579L))))
+      }
+
+      "is not added to another contribution when amounts is None" in {
+        // set up
+        val c1 = Contribution(PensionPeriod(2008, 2, 11), PensionPeriod(2008, 8, 12), None);
+        val c2 = Contribution(PensionPeriod(2008, 2, 11), PensionPeriod(2008, 8, 12), Some(InputAmounts(None, Some(456L))))
+
+        // test
+        val c3 = c1 + c2
+
+        // check
+        c3 shouldBe c1
+      }
+      "be added to another contribution summing income" in {
+        // set up
+        val c1 = Contribution(PensionPeriod(2008, 2, 11), PensionPeriod(2008, 8, 12), Some(InputAmounts(None, None, Some(123L))))
+        val c2 = Contribution(PensionPeriod(2008, 2, 11), PensionPeriod(2008, 8, 12), Some(InputAmounts(None, None, Some(456L))))
+
+        // test
+        val c3 = c1 + c2
+
+        // check
+        c3 shouldBe Contribution(PensionPeriod(2008, 2, 11), PensionPeriod(2008, 8, 12), Some(InputAmounts(None, None, Some(579L))))
       }
     }
 
@@ -818,54 +878,6 @@ class ContributionSpec extends ModelSpec {
         val contributionOption : Option[Contribution] = json.validate[Contribution].fold(invalid = { _ => None }, valid = { contribution => Some(contribution)})
 
         contributionOption shouldBe Some(Contribution(PensionPeriod(2008, 2, 11), PensionPeriod(2008, 8, 12), Some(InputAmounts(Some(9898080L),None, None))))
-      }
-
-      "be added to another contribution" in {
-        // set up
-        val c1 = Contribution(PensionPeriod(2008, 2, 11), PensionPeriod(2008, 8, 12), Some(InputAmounts(None, Some(123L))))
-        val c2 = Contribution(PensionPeriod(2008, 2, 11), PensionPeriod(2008, 8, 12), Some(InputAmounts(Some(456L), Some(0L))))
-
-        // test
-        val c3 = c1 + c2
-
-        // check
-        c3 shouldBe Contribution(PensionPeriod(2008, 2, 11), PensionPeriod(2008, 8, 12), Some(InputAmounts(Some(456L), Some(123L))))
-      }
-
-      "be added to another contribution summing defined benefit" in {
-        // set up
-        val c1 = Contribution(PensionPeriod(2008, 2, 11), PensionPeriod(2008, 8, 12), Some(InputAmounts(Some(123L), None)))
-        val c2 = Contribution(PensionPeriod(2008, 2, 11), PensionPeriod(2008, 8, 12), Some(InputAmounts(Some(456L), None)))
-
-        // test
-        val c3 = c1 + c2
-
-        // check
-        c3 shouldBe Contribution(PensionPeriod(2008, 2, 11), PensionPeriod(2008, 8, 12), Some(InputAmounts(579L, 0L)))
-      }
-
-      "be added to another contribution summing defined contribution" in {
-        // set up
-        val c1 = Contribution(PensionPeriod(2008, 2, 11), PensionPeriod(2008, 8, 12), Some(InputAmounts(None, Some(123L))))
-        val c2 = Contribution(PensionPeriod(2008, 2, 11), PensionPeriod(2008, 8, 12), Some(InputAmounts(None, Some(456L))))
-
-        // test
-        val c3 = c1 + c2
-
-        // check
-        c3 shouldBe Contribution(PensionPeriod(2008, 2, 11), PensionPeriod(2008, 8, 12), Some(InputAmounts(0L, 579L)))
-      }
-
-      "is not added to another contribution when amounts is None" in {
-        // set up
-        val c1 = Contribution(PensionPeriod(2008, 2, 11), PensionPeriod(2008, 8, 12), None);
-        val c2 = Contribution(PensionPeriod(2008, 2, 11), PensionPeriod(2008, 8, 12), Some(InputAmounts(None, Some(456L))))
-
-        // test
-        val c3 = c1 + c2
-
-        // check
-        c3 shouldBe c1
       }
     }
   }

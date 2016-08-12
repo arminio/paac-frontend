@@ -1,4 +1,4 @@
-@(reviewForm : Form[models.CalculatorFormFields], contribution: models.Contribution, triggerContribution: Option[models.Contribution])(implicit lang: play.api.i18n.Lang)
+@(pageValues : List[models.Contribution], contribution: models.Contribution, triggerContribution: Option[models.Contribution])(implicit lang: play.api.i18n.Lang)
 @import play.api.i18n._
 @import views.html.helper._
 @import uk.gov.hmrc.play.views.html._
@@ -66,8 +66,8 @@
         <tr>
             <td width="50%">@Messages("paac.review-amounts.heading.trigger.date")</td>
             <td width="35%" class="numeric">
-            @defining(reviewForm.get.triggerDate.getOrElse("2000-1-1").split("-")) { dateParts =>
-            @Messages("paac.review-amounts.value."+dateParts(1), dateParts(2).toInt.toString, dateParts(0))
+            @defining(triggerContribution.map(_.taxPeriodStart).getOrElse(PensionPeriod(0,0,0))) { triggerDate =>
+            @Messages("paac.review-amounts.value."+triggerDate.month, triggerDate.day.toString, triggerDate.year.toString)
             }
             </td>
             <td width="15%" class="edit_action">

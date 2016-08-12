@@ -112,6 +112,6 @@ trait RedirectController extends BaseFrontendController with ThisYear {
     }
   }
 
-  protected def toDecimal(v: String):String = (v.toInt/100.00).toString
-  protected def toInt(v: String):String = (v.toInt/100D).floor.toInt.toString
+  protected def toDecimal(v: String):String = f"${(v.toInt / 100.00)}%2.2f".trim
+  protected def toInt(v: String):String = f"${(v.toInt / 100.00)}%2.0f".trim
 }

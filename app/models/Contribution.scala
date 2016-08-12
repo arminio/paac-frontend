@@ -104,9 +104,10 @@ case class Contribution(taxPeriodStart: PensionPeriod, taxPeriodEnd: PensionPeri
     if (amounts.isDefined && that.amounts.isDefined) {
       val thisAmounts = amounts.get
       val thatAmounts = that.amounts.get
-      val db = thisAmounts.definedBenefit.map((v:Long)=>v+thatAmounts.definedBenefit.getOrElse(0L)).getOrElse(thatAmounts.definedBenefit.getOrElse(0L))
-      val dc = thisAmounts.moneyPurchase.map((v:Long)=>v+thatAmounts.moneyPurchase.getOrElse(0L)).getOrElse(thatAmounts.moneyPurchase.getOrElse(0L))
-      this.copy(amounts=Some(InputAmounts(db,dc)))
+      val db = thisAmounts.definedBenefit.map((v:Long)=>v+thatAmounts.definedBenefit.getOrElse(0L)).orElse(thatAmounts.definedBenefit)
+      val dc = thisAmounts.moneyPurchase.map((v:Long)=>v+thatAmounts.moneyPurchase.getOrElse(0L)).orElse(thatAmounts.moneyPurchase)
+      val i = thisAmounts.income.map((v:Long)=>v+thatAmounts.income.getOrElse(0L)).orElse(thatAmounts.income)
+      this.copy(amounts=Some(InputAmounts(db,dc,i,thisAmounts.triggered)))
     } else {
       this
     }
