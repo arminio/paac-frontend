@@ -72,7 +72,7 @@ pre1516.amount.error.bounds= Enter your total amount for this year even if it is
 ## Tax Year Selection
 paac.taxyear.selection.pagetitle = Choose tax years
 paac.taxyear.selection.heading = Choose tax years
-paac.taxyear.selection.p1 = Select which tax years you want to check if you owe any tax on your pension savings or if you can carry over any unused allowance.
+paac.taxyear.selection.p1 = Select which tax years you want to check if you owe any tax on your pension savings or if you can carry over any unused annual allowance.
 paac.taxyear.selection.p2 = You can also check for years when you were member of a registered pension scheme or a qualifying overseas pension scheme but made no contributions.
 paac.taxyear.selection.p3 = A tax year is 6 April to 5 April.
 
@@ -99,7 +99,7 @@ paac.pension.inputs.totalamount = Total amount
 ## MPAA Trigger Event Yes/No Page
 paac.mpaa.te.yesno.pagetitle = Flexible access since 2015
 paac.mpaa.te.yesno.question = Have you flexibly accessed your pension savings since 6 April 2015?
-paac.mpaa.te.yesno.description = Your pension provider will have sent you a flexible access statement confirming this.
+paac.mpaa.te.yesno.description = Your pension provider should have sent you a flexible access statement confirming this.
 
 ## Date Of MPAA Trigger Event
 paac.mpaa.ta.date.page.title = Flexible access date
@@ -152,7 +152,7 @@ paac.results.link.new = Start again
 paac.results.page.heading = Results
 paac.results.page.title = Pension annual allowance calculator results
 paac.results.p1 = Based on your answers, you have exceeded your annual allowance by &pound;{0}. You will have to pay tax on this.
-paac.results.p2 = Based on your answers you have &pound;{0} of unused allowance and no tax to pay.
+paac.results.p2 = Based on your answers you have &pound;{0} of unused annual allowance and no tax to pay.
 paac.results.p3 = You can use these figures to complete your Self Assessment tax return online.
 
 ## Post Trigger Pension Inputs Page
