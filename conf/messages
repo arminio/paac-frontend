@@ -98,7 +98,7 @@ paac.pension.inputs.totalamount = Total amount
 ## MPAA Trigger Event Yes/No Page
 paac.mpaa.te.yesno.pagetitle = Flexible access since 2015
 paac.mpaa.te.yesno.question = Have you flexibly accessed your pension savings since 6 April 2015?
-paac.mpaa.te.yesno.description = Your pension provider will have sent you a flexible access statement confirming this.
+paac.mpaa.te.yesno.description = Your pension provider should have sent you a flexible access statement confirming this.
 
 ## Date Of MPAA Trigger Event
 paac.mpaa.ta.date.page.title = Flexible access date
