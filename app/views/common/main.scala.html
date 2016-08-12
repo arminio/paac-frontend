@@ -42,7 +42,12 @@ serviceInfoContent = None)
 }
 @footerTop = {}
 
-@footerLinks = {}
+@footerLinks = {
+}
+
+@pageBottom = {
+  <script src="@routes.Public.at("scripts/select.js")" type="text/javascript"></script>
+}
 
 @mainContentHeader = {
     @if(contentHeader.isDefined) {
@@ -72,6 +77,7 @@ serviceInfoContent = None)
         ssoUrl = None,
         scriptElem = scriptElement,
         gaCalls = None)
+    @pageBottom
 }
 
 
