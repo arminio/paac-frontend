@@ -62,6 +62,8 @@ case class PensionPeriod(year: Int, month: Int, day: Int) {
     else if (this > PensionPeriod(year, 4, 6) && this < PensionPeriod(year+1, 4, 6)) year
     else year
   }
+
+  def mkString: String = s"${this.year}-${this.month}-${this.day}"
 }
 
 case class Contribution(taxPeriodStart: PensionPeriod, taxPeriodEnd: PensionPeriod, amounts: Option[InputAmounts]) extends CalculationParam {

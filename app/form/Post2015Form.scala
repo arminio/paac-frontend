@@ -36,10 +36,10 @@ trait Post2015FormFactory extends ThisYear {
   def apply(year: Int): Form[_ <: Post2015Fields]
 
   protected def isPoundsAndPence(): Boolean = settings.POUNDS_AND_PENCE
-  protected def poundsDB(year: Int): (String, Mapping[Int])= (DB_PREFIX+year) -> poundsField(true)
-  protected def penceDB(year: Int): (String, Mapping[BigDecimal])= (DB_PREFIX+year) -> poundsAndPenceField(true)
-  protected def poundsDC(year: Int): (String, Mapping[Int])= (DC_PREFIX+year) -> poundsField(true)
-  protected def penceDC(year: Int): (String, Mapping[BigDecimal])= (DC_PREFIX+year) -> poundsAndPenceField(true)
+  protected def poundsDB(year: Int): (String, Mapping[Int])= (DB_PREFIX + year) -> poundsField(true)
+  protected def penceDB(year: Int): (String, Mapping[BigDecimal])= (DB_PREFIX + year) -> poundsAndPenceField(true)
+  protected def poundsDC(year: Int): (String, Mapping[Int])= (DC_PREFIX + year) -> poundsField(true)
+  protected def penceDC(year: Int): (String, Mapping[BigDecimal])= (DC_PREFIX + year) -> poundsAndPenceField(true)
 }
 
 trait Post2015Form {

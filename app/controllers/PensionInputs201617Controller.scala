@@ -16,9 +16,7 @@
 
 package controllers
 
-import form.CalculatorForm
 import service._
-import models.CalculatorFormFields
 import play.api.data.Form
 import service.KeystoreService._
 import play.api.mvc.Request
@@ -34,12 +32,13 @@ trait PensionInputs201617Controller extends RedirectController {
 
   val onPageLoad = withReadSession { implicit request =>
     val year = request.data int CURRENT_INPUT_YEAR_KEY
-    if (year <= 2015 || year == -1)
+    if (year <= 2015 || year == -1) {
       Start() go Edit
-    else {
+    } else {
       val isDB = request.data bool s"${DB_FLAG_PREFIX}${year}"
       val isDC = request.data bool s"${DC_FLAG_PREFIX}${year}"
-      showPage(Post2015Form.form(isDB, isDC, year).bind(convert(request.data)).discardingErrors, isDB, isDC, (request.data bool IS_EDIT_KEY), year)
+      val isEdit = request.data bool IS_EDIT_KEY
+      showPage(Post2015Form.form(isDB, isDC, year).bind(convert(request.data)).discardingErrors, isDB, isDC, isEdit, year)
     }
   }
 
@@ -47,9 +46,10 @@ trait PensionInputs201617Controller extends RedirectController {
     val year = request.data int CURRENT_INPUT_YEAR_KEY
     val isDB = request.data bool s"${DB_FLAG_PREFIX}${year}"
     val isDC = request.data bool s"${DC_FLAG_PREFIX}${year}"
+    val isEdit = request.data bool IS_EDIT_KEY
 
     Post2015Form.form(isDB, isDC, year).bindFromRequest().fold(
-      formWithErrors => { println(formWithErrors); showPage(formWithErrors, isDB, isDC, (request.data bool IS_EDIT_KEY), year) },
+      formWithErrors => showPage(formWithErrors, isDB, isDC, isEdit, year),
       input => PensionInput() go Forward.using(request.data ++ input.data(year))
     )
   }

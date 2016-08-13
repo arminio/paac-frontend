@@ -1,36 +1,35 @@
-@(paacForm : Form[models.CalculatorFormFields], isEdit: Boolean)(implicit request:Request[_])
+@(paacForm : Form[_ <: form.TriggerDCFields], teDate: PensionPeriod, isEdit: Boolean)(implicit request:Request[_])
 
 @import uk.gov.hmrc.play.views.html.helpers._
 @import models._
+@import models.PensionPeriod._
 
-@defining(models.PensionPeriod.toPensionPeriod(paacForm.data.get("triggerDate").getOrElse("2016-01-01")).taxYear()) { taxYear =>
+@defining(teDate.year) { taxYear =>
 @defining(CalculatorFormFields(Amounts(), Amounts(), Amounts(), Year2015Amounts(
   postTriggerDcAmount2015P1=paacForm.data.get("year2015.postTriggerDcAmount2015P1").flatMap((v) =>if (v == "") None else Some(BigDecimal(v.toDouble))),
   postTriggerDcAmount2015P2=paacForm.data.get("year2015.postTriggerDcAmount2015P2").flatMap((v) =>if (v == "") None else Some(BigDecimal(v.toDouble))) ),
   paacForm.data.get("triggerAmount").flatMap((v) => if (v == "") None else Some(v.toInt)),
-  paacForm.data.get("triggerDate"))){ errorModel =>
+  Some(teDate.mkString))){ errorModel =>
 @common.paacMain(
 pageTitle = Messages("paac.post.trigger.value.page.title"),
-heading = if(paacForm.value.getOrElse(errorModel).triggerDatePeriod.get.isPeriod1()) 
+heading = if(teDate.isPeriod1())
             Messages("paac.post.trigger.value.page.question.p1") 
-          else if (paacForm.value.getOrElse(errorModel).triggerDatePeriod.get.isPeriod2()) 
+          else if (teDate.isPeriod2())
             Messages("paac.post.trigger.value.page.question.p2") 
           else 
             Messages("paac.post.trigger.value.page.question", ""+taxYear, ""+(taxYear+1)),
 backLink = Some((controllers.routes.PostTriggerPensionInputsController.onBack.url,Messages("paac.link.text.back")))
 ) {
     <p class="lede text">
-      @defining(paacForm.data("triggerDate").split("-")) { tDate =>
-        @if(paacForm.value.getOrElse(errorModel).triggerDatePeriod.get.isPeriod1()) {
-          @Messages("paac.post.trigger.value.description.p1", Messages("paac.review-amounts.value."+tDate(1), tDate(2).toInt.toString, tDate(0)))
+        @if(teDate.isPeriod1()) {
+          @Messages("paac.post.trigger.value.description.p1", Messages("paac.review-amounts.value."+ teDate.month, teDate.day, teDate.year))
         } else {
-          @if(paacForm.value.getOrElse(errorModel).triggerDatePeriod.get.isPeriod2()) {
-            @Messages("paac.post.trigger.value.description.p2", Messages("paac.review-amounts.value."+tDate(1), tDate(2).toInt.toString, tDate(0)))
+          @if(teDate.isPeriod2()) {
+            @Messages("paac.post.trigger.value.description.p2", Messages("paac.review-amounts.value."+ teDate.month, teDate.day, teDate.year))
           } else {
-            @Messages("paac.post.trigger.value.description.other", Messages("paac.review-amounts.value."+tDate(1), tDate(2).toInt.toString, tDate(0)), ""+(taxYear+1))
+            @Messages("paac.post.trigger.value.description.other", Messages("paac.review-amounts.value."+ teDate.month, teDate.day, teDate.year), ""+(taxYear+1))
           }
         }
-      }
     </p>
     @if(paacForm.hasErrors) {
       <div class="error-summary" role="group" aria-labelledby="error-summary-heading" tabindex="-1" style="border: 5px solid #b10e1e;padding: 20px;padding-top: 0px;margin-bottom: 30px;">
@@ -63,14 +62,14 @@ backLink = Some((controllers.routes.PostTriggerPensionInputsController.onBack.ur
 
 
 @defining(paacForm.value.getOrElse(errorModel)) { model =>
-        <input type="hidden" id="triggerDate" name="triggerDate" value="@(model.triggerDate)"/>
+        <input type="hidden" id="triggerDate" name="triggerDate" value="@(teDate)"/>
         <input type="hidden" id="isEdit" name="isEdit" value="@isEdit"/>
 
 
         <table>
             <fieldset class="form-field-group @if(paacForm.hasErrors) {form-field--error}">
-              @if(model.triggerDatePeriod.get.isPeriod1()) {
-                @defining("year2015.postTriggerDcAmount2015P1") { id =>
+              @if(teDate.isPeriod1()) {
+                @defining("triggerDefinedContribution_2015_p1") { id =>
                 <label class="label--full-length numeric" id="triggerAmountFieldset" for="@id" style="width:150%;display: inline-block;">
                     <p style="text-align:left;min-width: 7em">@Messages("paac.post.trigger.amount.input.label")</p>
                     @if(paacForm.hasErrors) {
@@ -83,8 +82,8 @@ backLink = Some((controllers.routes.PostTriggerPensionInputsController.onBack.ur
                     </ul>
                     }
                     <span class="form-hint">@Messages("paac.common.inputfield.example.message")</span>
-                      @if(model.year2015.postTriggerDcAmount2015P1 != None) {
-                            £&nbsp;<input type="number" name="@id" id="@id" min="0" class="input--no-spinner" value='@(model.year2015.postTriggerDcAmount2015P1.get)' max="5000000" size="7" style="width:9em;@if(paacForm.errors.find(_.key == id)) {border: 4px solid #b10e1e;}"/>
+                      @if(paacForm.data.get("triggerDefinedContribution_2015_p1") != None) {
+                            £&nbsp;<input type="number" name="@id" id="@id" min="0" class="input--no-spinner" value='@paacForm.data.get("triggerDefinedContribution_2015_p1")' max="5000000" size="7" style="width:9em;@if(paacForm.errors.find(_.key == id)) {border: 4px solid #b10e1e;}"/>
                       } else {
                             £&nbsp;<input type="number" name="@id" id="@id" min="0" class="input--no-spinner" value='' max="5000000" size="7" style="width:9em;@if(paacForm.errors.find(_.key == id)) {border: 4px solid #b10e1e;}"/>
                       }
@@ -93,8 +92,8 @@ backLink = Some((controllers.routes.PostTriggerPensionInputsController.onBack.ur
                 }
               }
 
-              @if(model.triggerDatePeriod.get.isPeriod2()) {
-                @defining("year2015.postTriggerDcAmount2015P2") { id =>
+              @if(teDate.isPeriod2()) {
+                @defining("triggerDefinedContribution_2015_p2") { id =>
                 <label class="label--full-length numeric" id="triggerAmountFieldset" for="@id" style="width:150%;display: inline-block;">
                     <p style="text-align:left;min-width: 7em">@Messages("paac.post.trigger.amount.input.label")</p>
                         <span class="form-hint">@Messages("paac.common.inputfield.example.message")</span>
@@ -107,8 +106,8 @@ backLink = Some((controllers.routes.PostTriggerPensionInputsController.onBack.ur
                         }
                     </ul>
                     }
-                        @if(model.year2015.postTriggerDcAmount2015P2 != None) {
-                    £&nbsp;<input type="number" name="@id" id="@id" min="0" class="input--no-spinner" value='@(model.year2015.postTriggerDcAmount2015P2.get)' max="5000000" size="7" style="width:9em;@if(paacForm.errors.find(_.key == id)) {border: 4px solid #b10e1e;}"/>
+                    @if(paacForm.data.get("triggerDefinedContribution_2015_p2") != None) {
+                    £&nbsp;<input type="number" name="@id" id="@id" min="0" class="input--no-spinner" value='@paacForm.data.get("triggerDefinedContribution_2015_p2")' max="5000000" size="7" style="width:9em;@if(paacForm.errors.find(_.key == id)) {border: 4px solid #b10e1e;}"/>
                     } else {
                     £&nbsp;<input type="number" name="@id" id="@id" min="0" class="input--no-spinner" value='' max="5000000" size="7" style="width:9em;@if(paacForm.errors.find(_.key == id)) {border: 4px solid #b10e1e;}"/>
                     }
@@ -116,8 +115,8 @@ backLink = Some((controllers.routes.PostTriggerPensionInputsController.onBack.ur
                 }
               }
 
-              @if(!model.triggerDatePeriod.get.isPeriod1() && !model.triggerDatePeriod.get.isPeriod2()) {
-                @defining("triggerAmount") { id =>
+              @if(!teDate.isPeriod1() && !teDate.isPeriod2()) {
+                @defining("triggerDefinedContribution") { id =>
                 <label class="label--full-length numeric" id="triggerAmountFieldset" for="@id" style="width:150%; display: inline-block;">
                 <p style="text-align:left;min-width: 7em">@Messages("paac.post.trigger.amount.input.label")</p>
                     @if(paacForm.hasErrors) {
@@ -131,8 +130,8 @@ backLink = Some((controllers.routes.PostTriggerPensionInputsController.onBack.ur
                     }
                     <span class="form-hint">@Messages("paac.common.inputfield.example.message")</span>
 
-                      @if(model.triggerAmount != None) {
-                          £&nbsp;<input type="number" name="@id" id="@id" min="0" class="input--no-spinner" value='@(model.triggerAmount.get)' max="5000000" size="7" style="width:9em;@if(paacForm.errors.find(_.key == id)) {border: 4px solid #b10e1e;}"/>
+                      @if(paacForm.data.get("triggerDefinedContribution") != None) {
+                          £&nbsp;<input type="number" name="@id" id="@id" min="0" class="input--no-spinner" value='@paacForm.data.get("triggerDefinedContribution")' max="5000000" size="7" style="width:9em;@if(paacForm.errors.find(_.key == id)) {border: 4px solid #b10e1e;}"/>
                       } else {
                           &pound;&nbsp;<input type="number" name="@id" id="@id" min="0" class="input--no-spinner" value='' max="5000000" size="7" style="width:9em;@if(paacForm.errors.find(_.key == id)) {border: 4px solid #b10e1e;}"/>
                       }

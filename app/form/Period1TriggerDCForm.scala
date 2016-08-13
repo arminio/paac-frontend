@@ -20,14 +20,14 @@ import play.api.data.Form
 import play.api.data.Forms._
 import form.utilities._
 
-case class Period1TriggerDCModel(definedContribution: BigDecimal) extends TriggerDCFields
+case class Period1TriggerDCModel(triggerDefinedContribution_2015_p1: BigDecimal) extends TriggerDCFields
 
 trait Period1TriggerDCForm extends TriggerDCFormFactory {
-  def apply(year: Int): Form[_ <: TriggerDCFields] = {
+  def apply(): Form[_ <: TriggerDCFields] = {
     if (isPoundsAndPence)
-      Form[Period1TriggerDCModel](mapping(pencePeriod1TEDC(year))(Period1TriggerDCModel.apply)(Period1TriggerDCModel.unapply))
+      Form[Period1TriggerDCModel](mapping(pencePeriod1TEDC)(Period1TriggerDCModel.apply)(Period1TriggerDCModel.unapply))
     else
-      Form[Period1TriggerDCModel](mapping(poundsPeriod1TEDC(year))(toModel)(Period1TriggerDCModel.unapply))
+      Form[Period1TriggerDCModel](mapping(poundsPeriod1TEDC)(toModel)(Period1TriggerDCModel.unapply))
   }
 
   protected val toModel: (Int) => Period1TriggerDCModel = (i: Int) =>
