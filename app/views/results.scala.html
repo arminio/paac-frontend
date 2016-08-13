@@ -48,7 +48,7 @@ backLink = Some((controllers.routes.ReviewTotalAmountsController.onPageLoad.url,
             @if(result.summaryResult.isACA) {
               &pound;@(currencyFormatter.format(result.summaryResult.alternativeAA/100))
             } else {
-              &pound;@(currencyFormatter.format(result.summaryResult.availableAllowance/100))
+              &pound;@(currencyFormatter.format(result.summaryResult.availableAAWithCF/100))
             }
           </td>
           @if(mpaaPresent){
@@ -70,7 +70,7 @@ backLink = Some((controllers.routes.ReviewTotalAmountsController.onPageLoad.url,
             @if(result.summaryResult.isACA) {
               &pound;@(currencyFormatter.format(result.summaryResult.alternativeAA/100))
             } else {
-              &pound;@(currencyFormatter.format(result.summaryResult.availableAllowance/100))
+              &pound;@(currencyFormatter.format(result.summaryResult.availableAAWithCF/100))
             }
           </td>
           @if(mpaaPresent){
@@ -90,7 +90,7 @@ backLink = Some((controllers.routes.ReviewTotalAmountsController.onPageLoad.url,
             @if(result.summaryResult.isACA) {
               &pound;@(currencyFormatter.format(result.summaryResult.alternativeAA/100))
             } else {
-              &pound;@(currencyFormatter.format(result.summaryResult.availableAllowance/100))
+              &pound;@(currencyFormatter.format(result.summaryResult.availableAAWithCF/100))
             }
           </td>
           @if(mpaaPresent){
