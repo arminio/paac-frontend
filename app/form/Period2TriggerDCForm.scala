@@ -20,7 +20,7 @@ import play.api.data.Form
 import play.api.data.Forms._
 import form.utilities._
 
-case class Period2TriggerDCModel(triggerDefinedContribution_2015_p1: BigDecimal) extends TriggerDCFields
+case class Period2TriggerDCModel(triggerDefinedContribution_2015_p2: BigDecimal) extends TriggerDCFields
 
 trait Period2TriggerDCForm extends TriggerDCFormFactory {
   def apply(): Form[_ <: TriggerDCFields] = {

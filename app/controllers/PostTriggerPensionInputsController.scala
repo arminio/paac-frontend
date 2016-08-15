@@ -37,7 +37,7 @@ trait PostTriggerPensionInputsController extends RedirectController {
       TriggerDate() go Edit
     } else {
       val triggerDate: PensionPeriod = request.data(TRIGGER_DATE_KEY)
-      showPage(TriggerDCForm.form(triggerDate.isPeriod1, triggerDate.isPeriod2).bind(request.data).discardingErrors, triggerDate, isEdit)
+      showPage(TriggerDCForm.form(triggerDate.isPeriod1, triggerDate.isPeriod2).bind(convert(request.data)).discardingErrors, triggerDate, isEdit)
     }
   }
 

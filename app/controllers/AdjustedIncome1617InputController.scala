@@ -37,7 +37,7 @@ trait AdjustedIncome1617InputController extends RedirectController {
     if (cy <= 2015 || cy == -1 ) {
       CheckYourAnswers() go Edit
     } else {
-      val form = AIForm.form(cy).bind(request.data).discardingErrors
+      val form = AIForm.form(cy).bind(convert(request.data)).discardingErrors
       Future.successful(Ok(views.html.adjusted_income_1617_input(form, cy.toString, isEdit)))
     }
   }

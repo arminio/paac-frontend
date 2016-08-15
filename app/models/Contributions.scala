@@ -26,12 +26,12 @@ trait Contributions {
     data.filterKeys((key)=>keys.exists(key.startsWith(_))).map {
       (entry) =>
       entry match {
-        case (P1_DB_KEY, v) => Contribution(true, v.toLong, 0L)
-        case (P1_DC_KEY, v) => Contribution(true, 0L, v.toLong)
-        case (P2_DB_KEY, v) => Contribution(false, v.toLong, 0L)
-        case (P2_DC_KEY, v) => Contribution(false, 0L, v.toLong)
-        case (k, v) if k.startsWith(DB_PREFIX) => Contribution((k.replace(DB_PREFIX,"")).toInt, v.toLong)
-        case (k, v) if k.startsWith(DC_PREFIX) => Contribution((k.replace(DC_PREFIX,"")).toInt, Some(InputAmounts(moneyPurchase=Some(v.toLong))))
+        case (P1_DB_KEY, v) => Contribution(true, Some(InputAmounts(toLong(v), None)))
+        case (P1_DC_KEY, v) => Contribution(true, Some(InputAmounts(None, toLong(v))))
+        case (P2_DB_KEY, v) => Contribution(false, Some(InputAmounts(toLong(v), None)))
+        case (P2_DC_KEY, v) => Contribution(false, Some(InputAmounts(None, toLong(v))))
+        case (k, v) if k.startsWith(DB_PREFIX) => Contribution((k.replace(DB_PREFIX,"")).toInt, Some(InputAmounts(toLong(v))))
+        case (k, v) if k.startsWith(DC_PREFIX) => Contribution((k.replace(DC_PREFIX,"")).toInt, Some(InputAmounts(moneyPurchase=toLong(v))))
         case _ => Contribution(0,0)
       }
     }.toList.groupBy(_.taxPeriodStart).values.map((l)=>if(l.size>=2) l(0)+l(1) else l(0)).toList
@@ -41,7 +41,7 @@ trait Contributions {
     toContributionsWithoutIncome(data).map {
       (contribution) =>
       val year = contribution.taxPeriodStart.taxYear
-      val maybeIncome = data.get(s"${AI_PREFIX}${year}").flatMap((v)=>if(v.isEmpty) None else Some(v.toLong))
+      val maybeIncome = data.get(s"${AI_PREFIX}${year}").flatMap(toLong(_))
       contribution.copy(amounts=contribution.amounts.map(_.copy(income=maybeIncome)))
     }
   }
@@ -56,10 +56,11 @@ trait Contributions {
         val (before, after) = contributions.splitAt(index)
         val newAfter = after.map((c)=>c.copy(amounts=c.amounts.map((a)=>a.copy(triggered=Some(!isPreTrigger(triggerDate)(c))))))
         val maybeTriggerAmount = triggerDate match {
-          case PensionPeriod(_,_,_) if triggerDate.isPeriod1 => data.get(P1_TRIGGER_DC_KEY).map(_.toLong)
-          case PensionPeriod(_,_,_) if triggerDate.isPeriod2 => data.get(P2_TRIGGER_DC_KEY).map(_.toLong)
-          case PensionPeriod(_,_,_) => data.get(TRIGGER_DC_KEY).map(_.toLong)
+          case PensionPeriod(_,_,_) if triggerDate.isPeriod1 => data.get(P1_TRIGGER_DC_KEY).flatMap(toLong(_))
+          case PensionPeriod(_,_,_) if triggerDate.isPeriod2 => data.get(P2_TRIGGER_DC_KEY).flatMap(toLong(_))
+          case PensionPeriod(_,_,_) => data.get(TRIGGER_DC_KEY).flatMap(toLong(_))
         }
+        println(maybeTriggerAmount)
         if (maybeTriggerAmount.isDefined) {
           val preTriggerContribution = newAfter(newAfter.indexWhere(isPreTrigger(triggerDate)))
           val newPreTriggerContribution = preTriggerContribution.copy(taxPeriodEnd=triggerDate)
@@ -77,6 +78,7 @@ trait Contributions {
 
   protected val isPreTrigger: PensionPeriod => Contribution => Boolean = (triggerDate) => (c)=> triggerDate >= c.taxPeriodStart && triggerDate <= c.taxPeriodEnd
   protected val keys = List(P1_DB_KEY, P1_DC_KEY, P2_DB_KEY, P2_DC_KEY, DB_PREFIX, DC_PREFIX)
+  protected def toLong(longString: String): Option[Long] = if (longString.trim.isEmpty || !longString.matches("\\d+")) None else Some(longString.toLong)
 }
 
 object Contributions extends Contributions

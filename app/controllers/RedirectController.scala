@@ -102,9 +102,12 @@ trait RedirectController extends BaseFrontendController with ThisYear {
   protected def convert(data: Map[String,String]): Map[String,String] = {
     data.map{
       (entry)=>
-      if (List(P1_DB_KEY, P2_DB_KEY, P1_DC_KEY, P2_DC_KEY).contains(entry._1) ||
+      if (List(P1_DB_KEY, P2_DB_KEY, P1_DC_KEY, P2_DC_KEY, P1_TRIGGER_DC_KEY, P2_TRIGGER_DC_KEY, TRIGGER_DC_KEY).contains(entry._1) ||
           entry._1.startsWith(DB_PREFIX) ||
-          entry._1.startsWith(DC_PREFIX)) {
+          entry._1.startsWith(DC_PREFIX) ||
+          entry._1.startsWith(TH_PREFIX) ||
+          entry._1.startsWith(AI_PREFIX) ||
+          entry._1.startsWith(TA_PREFIX)) {
         if (settings.POUNDS_AND_PENCE) (entry._1, toDecimal(entry._2)) else (entry._1, toInt(entry._2))
       } else {
         entry
@@ -112,6 +115,6 @@ trait RedirectController extends BaseFrontendController with ThisYear {
     }
   }
 
-  protected def toDecimal(v: String):String = f"${(v.toInt / 100.00)}%2.2f".trim
-  protected def toInt(v: String):String = f"${(v.toInt / 100.00)}%2.0f".trim
+  protected def toDecimal(v: String):String = if (v.trim.isEmpty || !v.matches("\\d+")) "" else f"${(v.toInt / 100.00)}%2.2f".trim
+  protected def toInt(v: String):String = if (v.trim.isEmpty || !v.matches("\\d+")) "" else f"${(v.toInt / 100.00)}%2.0f".trim
 }

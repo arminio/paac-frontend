@@ -46,9 +46,9 @@ trait TriggerDateModel {
           val v2 = ("0", if (newDate.isPeriod1) P2_TRIGGER_DC_KEY else P1_TRIGGER_DC_KEY)
           List[(String,String)](v1, v2) ++ data
         } else if (!newDate.isPeriod1 && !newDate.isPeriod2 && (oldDate.isPeriod1 || oldDate.isPeriod2)) {
-          List(("0",P1_TRIGGER_DC_KEY),("0",P2_TRIGGER_DC_KEY)) ++ data
+          List(("0",P1_TRIGGER_DC_KEY),("0",P2_TRIGGER_DC_KEY),("0",TRIGGER_DC_KEY)) ++ data
         } else {
-          data
+          List(("0",P1_TRIGGER_DC_KEY),("0",P2_TRIGGER_DC_KEY),("0",TRIGGER_DC_KEY)) ++ data
         }
       } else {
         data

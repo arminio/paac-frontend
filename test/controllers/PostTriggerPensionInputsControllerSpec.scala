@@ -20,6 +20,7 @@ import play.api.mvc.Result
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import service.KeystoreService
+import service.KeystoreService._
 import uk.gov.hmrc.play.http.{HeaderCarrier, SessionKeys}
 
 import scala.concurrent.Future
@@ -68,15 +69,16 @@ class PostTriggerPensionInputsControllerSpec extends test.BaseSpec {
       // check
       status(result) shouldBe 200
       val htmlPage = contentAsString(await(result))
-      htmlPage should include ("""<input type="number" name="year2015.postTriggerDcAmount2015P1" id="year2015.postTriggerDcAmount2015P1" """)
+      htmlPage should include (s"""<input type="number" name="${P1_TRIGGER_DC_KEY}" id="${P1_TRIGGER_DC_KEY}" """)
     }
 
     "display p2 input amount page with previous value if trigger date was period 2" in new ControllerWithMockKeystore {
       // setup
-      val request = FakeRequest(GET,"").withSession{(SessionKeys.sessionId,SESSION_ID)}
+      val sessionData = List((SessionKeys.sessionId,SESSION_ID))
       MockKeystore.map = MockKeystore.map + (KeystoreService.TRIGGER_DATE_KEY -> "2015-11-15")
       MockKeystore.map = MockKeystore.map + (KeystoreService.P1_TRIGGER_DC_KEY -> "1200")
       MockKeystore.map = MockKeystore.map + (KeystoreService.P2_TRIGGER_DC_KEY -> "5600")
+      val request = FakeRequest(GET,"").withSession(sessionData: _*)
 
       // test
       val result : Future[Result] = ControllerWithMockKeystore.onPageLoad()(request)
@@ -84,19 +86,21 @@ class PostTriggerPensionInputsControllerSpec extends test.BaseSpec {
       // check
       status(result) shouldBe 200
       val htmlPage = contentAsString(await(result))
-      htmlPage should include ("""<input type="number" name="year2015.postTriggerDcAmount2015P2" id="year2015.postTriggerDcAmount2015P2" """)
+      htmlPage should include (s"""<input type="number" name="${P2_TRIGGER_DC_KEY}" id="${P2_TRIGGER_DC_KEY}" """)
     }
   }
 
   "onSubmit" should {
     "display errors if amount is negative" in new ControllerWithMockKeystore {
       // set up
-      MockKeystore.map = MockKeystore.map + (KeystoreService.TRIGGER_DATE_KEY -> "2015-11-15")
-      MockKeystore.map = MockKeystore.map + (KeystoreService.P1_TRIGGER_DC_KEY -> "1234")
-      MockKeystore.map = MockKeystore.map + (KeystoreService.P2_TRIGGER_DC_KEY -> "5678")
-      implicit val hc = HeaderCarrier()
-      implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID)).withFormUrlEncodedBody(("year2015.postTriggerDcAmount2015P2" -> "-1"),
-                               ("triggerDate", "2015-11-15"))
+      val sessionData = List((SessionKeys.sessionId,SESSION_ID),
+                             (TRIGGER_DATE_KEY -> "2015-11-15"),
+                             (IS_EDIT_KEY -> "false"),
+                             (P1_TRIGGER_DC_KEY -> "1234"),
+                             (P2_TRIGGER_DC_KEY -> "5678"),
+                             (CURRENT_INPUT_YEAR_KEY, "2015"),
+                             (SELECTED_INPUT_YEARS_KEY, "2015"))
+      implicit val request = FakeRequest(POST, endPointURL).withSession(sessionData: _*).withFormUrlEncodedBody((P2_TRIGGER_DC_KEY -> "-1"))
 
       // test
       val result: Future[Result] = ControllerWithMockKeystore.onSubmit()(request)
@@ -110,14 +114,13 @@ class PostTriggerPensionInputsControllerSpec extends test.BaseSpec {
     "display errors if amount is blank" in new ControllerWithMockKeystore {
       // set up
       val sessionData = List((SessionKeys.sessionId,SESSION_ID),
-                             (KeystoreService.TRIGGER_DATE_KEY -> "2015-11-15"),
-                             ("isEdit" -> "false"),
-                             (KeystoreService.P1_TRIGGER_DC_KEY -> "1234"),
-                             (KeystoreService.P2_TRIGGER_DC_KEY -> "5678"),
-                             (KeystoreService.CURRENT_INPUT_YEAR_KEY, "2015"),
-                             (KeystoreService.SELECTED_INPUT_YEARS_KEY, "2015"))
-      implicit val request = FakeRequest(POST, endPointURL).withSession(sessionData: _*).withFormUrlEncodedBody(("year2015.postTriggerDcAmount2015P2" -> ""),
-                               ("triggerDate", "2015-11-15"))
+                             (TRIGGER_DATE_KEY -> "2015-11-15"),
+                             (IS_EDIT_KEY -> "false"),
+                             (P1_TRIGGER_DC_KEY -> "1234"),
+                             (P2_TRIGGER_DC_KEY -> "5678"),
+                             (CURRENT_INPUT_YEAR_KEY, "2015"),
+                             (SELECTED_INPUT_YEARS_KEY, "2015"))
+      implicit val request = FakeRequest(POST, endPointURL).withSession(sessionData: _*).withFormUrlEncodedBody((P2_TRIGGER_DC_KEY -> ""))
 
       // test
       val result: Future[Result] = ControllerWithMockKeystore.onSubmit()(request)
@@ -125,18 +128,18 @@ class PostTriggerPensionInputsControllerSpec extends test.BaseSpec {
       // check
       status(result) shouldBe 200
       val htmlPage = contentAsString(await(result))
-      htmlPage should include ("""Enter your defined contribution pension savings for rest of 2016 to 2017 even if it is 0.""")
+      htmlPage should include ("paac.post.trigger.value.error.number")
+      //htmlPage should include ("""Enter your defined contribution pension savings for rest of 2016 to 2017 even if it is 0.""")
     }
 
     "display errors if amount is blank when trigger is 2016" in new ControllerWithMockKeystore {
       // set up
       val sessionData = List((SessionKeys.sessionId,SESSION_ID),
-                             (KeystoreService.TRIGGER_DATE_KEY -> "2016-11-15"),
-                             ("isEdit" -> "false"),
-                             (KeystoreService.CURRENT_INPUT_YEAR_KEY, "2016"),
-                             (KeystoreService.SELECTED_INPUT_YEARS_KEY, "2016"))
-      implicit val request = FakeRequest(POST, endPointURL).withSession(sessionData: _*).withFormUrlEncodedBody(("triggerAmount" -> ""),
-                               ("triggerDate", "2016-11-15"))
+                             (TRIGGER_DATE_KEY -> "2016-11-15"),
+                             (IS_EDIT_KEY -> "false"),
+                             (CURRENT_INPUT_YEAR_KEY, "2016"),
+                             (SELECTED_INPUT_YEARS_KEY, "2016"))
+      implicit val request = FakeRequest(POST, endPointURL).withSession(sessionData: _*).withFormUrlEncodedBody((TRIGGER_DC_KEY -> ""))
 
       // test
       val result: Future[Result] = ControllerWithMockKeystore.onSubmit()(request)
@@ -144,18 +147,18 @@ class PostTriggerPensionInputsControllerSpec extends test.BaseSpec {
       // check
       status(result) shouldBe 200
       val htmlPage = contentAsString(await(result))
-      htmlPage should include ("""Enter your defined contribution pension savings for rest of 2016 to 2017 even if it is 0.""")
+      htmlPage should include ("paac.post.trigger.value.error.number")
+      //htmlPage should include ("""Enter your defined contribution pension savings for rest of 2016 to 2017 even if it is 0.""")
     }
 
     "saves p2 amount in keystore if valid form" in new ControllerWithMockKeystore {
       // set up
       val sessionData = List((SessionKeys.sessionId,SESSION_ID),
-                             (KeystoreService.TRIGGER_DATE_KEY -> "2015-11-15"),
-                             ("isEdit" -> "false"),
-                             (KeystoreService.CURRENT_INPUT_YEAR_KEY, "2015"),
-                             (KeystoreService.SELECTED_INPUT_YEARS_KEY, "2015"))
-      implicit val request = FakeRequest(POST, endPointURL).withSession(sessionData: _*).withFormUrlEncodedBody(("year2015.postTriggerDcAmount2015P2" -> "40000"),
-                               ("triggerDate", "2015-11-15"))
+                             (TRIGGER_DATE_KEY -> "2015-11-15"),
+                             (IS_EDIT_KEY -> "false"),
+                             (CURRENT_INPUT_YEAR_KEY, "2015"),
+                             (SELECTED_INPUT_YEARS_KEY, "2015"))
+      implicit val request = FakeRequest(POST, endPointURL).withSession(sessionData: _*).withFormUrlEncodedBody((P2_TRIGGER_DC_KEY -> "40000"))
 
       // test
       val result: Future[Result] = ControllerWithMockKeystore.onSubmit()(request)
@@ -169,12 +172,11 @@ class PostTriggerPensionInputsControllerSpec extends test.BaseSpec {
     "saves p1 amount in keystore if valid form" in new ControllerWithMockKeystore {
       // set up
       val sessionData = List((SessionKeys.sessionId,SESSION_ID),
-                             (KeystoreService.TRIGGER_DATE_KEY -> "2015-4-15"),
-                             ("isEdit" -> "false"),
-                             (KeystoreService.CURRENT_INPUT_YEAR_KEY, "2015"),
-                             (KeystoreService.SELECTED_INPUT_YEARS_KEY, "2015"))
-      implicit val request = FakeRequest(POST, endPointURL).withSession(sessionData: _*).withFormUrlEncodedBody(("year2015.postTriggerDcAmount2015P1" -> "40000"),
-                               ("triggerDate", "2015-4-15"))
+                             (TRIGGER_DATE_KEY -> "2015-4-15"),
+                             (IS_EDIT_KEY -> "false"),
+                             (CURRENT_INPUT_YEAR_KEY, "2015"),
+                             (SELECTED_INPUT_YEARS_KEY, "2015"))
+      implicit val request = FakeRequest(POST, endPointURL).withSession(sessionData: _*).withFormUrlEncodedBody((P1_TRIGGER_DC_KEY -> "40000"))
 
       // test
       val result: Future[Result] = ControllerWithMockKeystore.onSubmit()(request)
