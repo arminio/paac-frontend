@@ -41,7 +41,7 @@ trait Contributions {
     toContributionsWithoutIncome(data).map {
       (contribution) =>
       val year = contribution.taxPeriodStart.taxYear
-      val maybeIncome = data.get(s"${AI_PREFIX}${year}").map(_.toLong)
+      val maybeIncome = data.get(s"${AI_PREFIX}${year}").flatMap((v)=>if(v.isEmpty) None else Some(v.toLong))
       contribution.copy(amounts=contribution.amounts.map(_.copy(income=maybeIncome)))
     }
   }
@@ -55,7 +55,6 @@ trait Contributions {
       if (index > -1) {
         val (before, after) = contributions.splitAt(index)
         val newAfter = after.map((c)=>c.copy(amounts=c.amounts.map((a)=>a.copy(triggered=Some(!isPreTrigger(triggerDate)(c))))))
-
         val maybeTriggerAmount = triggerDate match {
           case PensionPeriod(_,_,_) if triggerDate.isPeriod1 => data.get(P1_TRIGGER_DC_KEY).map(_.toLong)
           case PensionPeriod(_,_,_) if triggerDate.isPeriod2 => data.get(P2_TRIGGER_DC_KEY).map(_.toLong)

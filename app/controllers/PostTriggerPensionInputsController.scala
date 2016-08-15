@@ -33,11 +33,11 @@ trait PostTriggerPensionInputsController extends RedirectController {
 
   val onPageLoad = withReadSession { implicit request =>
     val isEdit = request.data bool IS_EDIT_KEY
-    if (request.data(TRIGGER_DATE_KEY).isEmpty)
+    if (request.data(TRIGGER_DATE_KEY).isEmpty) {
       TriggerDate() go Edit
-    else {
+    } else {
       val triggerDate: PensionPeriod = request.data(TRIGGER_DATE_KEY)
-      showPage(TriggerDCForm.form(true, false).bind(request.data), triggerDate, isEdit)
+      showPage(TriggerDCForm.form(triggerDate.isPeriod1, triggerDate.isPeriod2).bind(request.data).discardingErrors, triggerDate, isEdit)
     }
   }
 
@@ -45,9 +45,9 @@ trait PostTriggerPensionInputsController extends RedirectController {
     val isEdit = request.data bool IS_EDIT_KEY
     val triggerDate: PensionPeriod = request.data(TRIGGER_DATE_KEY)
 
-    TriggerDCForm.form(true, false).bindFromRequest().fold(
+    TriggerDCForm.form(triggerDate.isPeriod1, triggerDate.isPeriod2).bindFromRequest().fold(
       formWithErrors => showPage(formWithErrors, triggerDate, isEdit),
-      input => PensionInput() go Forward.using(request.data ++ input.data)
+      input => TriggerAmount() go Forward.using(request.data ++ input.data)
     )
   }
 
