@@ -16,15 +16,18 @@
 
 package form
 
-import play.api.data.Form
 import play.api.data.Forms._
-import play.api.data.Mapping
+import play.api.data._
+import play.api.data.validation._
+import play.api.data.format._
+import scala.util.matching.Regex
 
 // scalastyle:off magic.number
 package object utilities {
   val DEFAULT_MAX = 5000000
 
   def poundsAndPenceField(isValidating: Boolean = false) = {
+    implicit val binder:Formatter[BigDecimal] = bigDecimalFormatter(Some((10,2)))
     val field = bigDecimal(10,2)
     if (isValidating)
           field.verifying("errorbounds", value=> value.longValue >= 0 && value.longValue <= DEFAULT_MAX)
@@ -33,8 +36,9 @@ package object utilities {
   }
 
   def poundsField(isValidating: Boolean = false) = {
+    implicit val binder:Formatter[Int] = numberFormatter(_.toInt)
     if (isValidating)
-       number(min=0,max=DEFAULT_MAX)
+      number(min=0,max=DEFAULT_MAX)
      else
        number
   }
@@ -71,6 +75,58 @@ package object utilities {
     maybeDecimal.map {
       (v) =>
       (v.intValue)
+    }
+  }
+
+  private def parsing[T](parse: String => T, Pattern: Regex, handleError: (String, Throwable) => Seq[FormError])(key: String, data: Map[String, String]): Either[Seq[FormError], T] = {
+    Formats.stringFormat.bind(key, data).right.flatMap { s =>
+      s match {
+        case "" => {
+          Left(Seq[FormError](FormError(key, "error.required", Nil)))
+        }
+        case Pattern(numberString) => {
+          scala.util.control.Exception.allCatch[T]
+          .either(parse(numberString))
+          .left.map(handleError(key,_))
+        }
+        case _ => {
+          Left(Seq[FormError](FormError(key, "error.number", Nil)))
+        }
+      }
+    }
+  }
+
+  private def numberFormatter[T](convert: String => T): Formatter[T] = {
+    val errorHandler: (String, Throwable) => Seq[FormError] = (key, e) => Seq(FormError(key, "error.number", Nil))
+    new Formatter[T] {
+      override val format = Some("format.numeric" -> Nil)
+      def bind(key: String, data: Map[String, String]) = parsing(convert, "(-*\\d+)".r, errorHandler)(key, data)
+      def unbind(key: String, value: T) = Map(key -> value.toString)
+    }
+  }
+
+  private def bigDecimalFormatter(precision: Option[(Int, Int)]): Formatter[BigDecimal] = {
+    val errorHandler: (String, Throwable) => Seq[FormError] = (key, e) => Seq(
+              precision match {
+                case Some((p, s)) => FormError(key, "error.real.precision", Seq(p, s))
+                case None => FormError(key, "error.real", Nil)
+              }
+            )
+    val convert: String => BigDecimal = s => {
+      val bd = BigDecimal(s)
+      precision.map({
+        case (p, s) =>
+          if (bd.precision - bd.scale > p - s) {
+            throw new java.lang.ArithmeticException("Invalid precision")
+          }
+          bd.setScale(s)
+      }).getOrElse(bd)
+    }
+
+    new Formatter[BigDecimal] {
+      override val format = Some("format.real" -> Nil)
+      def bind(key: String, data: Map[String, String]) = parsing(convert, "(-*\\d+(\\.\\d+)*)".r, errorHandler)(key, data)
+      def unbind(key: String, value: BigDecimal) = Map(key -> precision.map({ p => value.setScale(p._2) }).getOrElse(value).toString)
     }
   }
 }
