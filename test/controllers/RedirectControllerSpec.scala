@@ -31,7 +31,7 @@ class RedirectControllerSpec extends BaseSpec {
 
   trait Fixture extends MockKeystoreFixture {
     val mockKeystore = MockKeystore
-    val controller = new RedirectController() {
+    val controller = new RedirectController() with AppTestSettings {
       def keystore: KeystoreService = mockKeystore
     }
   }

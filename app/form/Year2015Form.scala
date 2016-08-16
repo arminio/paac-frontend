@@ -19,7 +19,8 @@ package form
 import form.utilities._
 import play.api.data.Form
 import play.api.data.Forms._
-import models.ThisYear
+import config.Settings
+import config.AppSettings
 import play.api.data.Mapping
 import service.KeystoreService._
 
@@ -27,8 +28,8 @@ trait Year2015Fields {
   def data(): Map[String,String] = toMap(this).mapValues((v)=>(v.toString.toDouble*100).floor.toInt.toString)
 }
 
-trait Year2015FormFactory extends ThisYear {
-  settings: ThisYear =>
+trait Year2015FormFactory extends Settings {
+  settings: Settings =>
 
   def apply(): Form[_ <: Year2015Fields]
 

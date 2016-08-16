@@ -33,7 +33,7 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
   val DC_FLAG_PREFIX_2015 = s"${DC_FLAG_PREFIX}2015"
 
   trait ControllerWithMockKeystore extends MockKeystoreFixture {
-    object ControllerWithMockKeystore extends DateOfMPAATriggerEventController {
+    object ControllerWithMockKeystore extends DateOfMPAATriggerEventController with AppTestSettings {
       def keystore: KeystoreService = MockKeystore
     }
     MockKeystore.map = MockKeystore.map + (CURRENT_INPUT_YEAR_KEY -> "2015")

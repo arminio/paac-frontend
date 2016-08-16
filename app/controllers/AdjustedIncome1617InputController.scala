@@ -23,9 +23,9 @@ import scala.concurrent.Future
 import form._
 import play.api.data.Form
 import play.api.mvc.Request
+import config.AppSettings
 
-
-object AdjustedIncome1617InputController extends AdjustedIncome1617InputController {
+object AdjustedIncome1617InputController extends AdjustedIncome1617InputController with AppSettings {
   def keystore: KeystoreService = KeystoreService
 }
 

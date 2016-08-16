@@ -34,12 +34,8 @@ class ReviewTotalAmountsControllerSpec extends test.BaseSpec {
   val contribution4 = Contribution(2012, 900000)
   val contribution5 = Contribution(2013, 1000000)
 
-  trait Year2016 extends models.ThisYear {
-    override def THIS_YEAR = 2016
-  }
-
   trait MockCalculatorConnectorFixture {
-    object MockCalculatorConnector extends CalculatorConnector {
+    object MockCalculatorConnector extends CalculatorConnector with AppTestSettings {
       val tyr0 = TaxYearResults(contribution0, SummaryResult(-1,0,5000000,4500000,5000000,4500000,4500000))
       val tyr1 = TaxYearResults(contribution1, SummaryResult(-1,0,5000000,4400000,9500000,8900000,8900000))
       val tyr2 = TaxYearResults(contribution2, SummaryResult(-1,0,5000000,4300000,13900000,13200000,13200000))
@@ -70,14 +66,14 @@ class ReviewTotalAmountsControllerSpec extends test.BaseSpec {
   }
 
   trait MockControllerFixture extends AMockKeystoreFixture with MockCalculatorConnectorFixture {
-    object ControllerWithMocks extends ReviewTotalAmountsController {
+    object ControllerWithMocks extends ReviewTotalAmountsController with AppTestSettings {
       override val connector: CalculatorConnector = MockCalculatorConnector
       def keystore: KeystoreService = MockKeystore
     }
   }
 
   trait Mock2016ControllerFixture extends AMockKeystoreFixture with MockCalculatorConnectorFixture {
-    object ControllerWithMocks extends ReviewTotalAmountsController with Year2016 {
+    object ControllerWithMocks extends ReviewTotalAmountsController with AppTestSettings {
       override val connector: CalculatorConnector = MockCalculatorConnector
       def keystore: KeystoreService = MockKeystore
     }

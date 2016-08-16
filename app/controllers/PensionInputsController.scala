@@ -23,8 +23,9 @@ import scala.concurrent.Future
 import form._
 import play.api.data.Form
 import play.api.mvc.Request
+import config.AppSettings
 
-object PensionInputsController extends PensionInputsController {
+object PensionInputsController extends PensionInputsController with AppSettings {
   // $COVERAGE-OFF$
   def keystore: KeystoreService = KeystoreService
   // $COVERAGE-ON$

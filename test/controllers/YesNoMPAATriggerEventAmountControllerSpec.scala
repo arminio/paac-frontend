@@ -35,7 +35,7 @@ class YesNoMPAATriggerEventAmountControllerSpec extends test.BaseSpec {
   trait ControllerWithMockKeystore extends MockKeystoreFixture {
     MockKeystore.map = MockKeystore.map + (KeystoreService.CURRENT_INPUT_YEAR_KEY -> "2015")
     MockKeystore.map = MockKeystore.map + (KeystoreService.SELECTED_INPUT_YEARS_KEY -> "2015")
-    object MockYesNoMPAATriggerEventAmountControllerWithMockKeystore extends YesNoMPAATriggerEventAmountController {
+    object MockYesNoMPAATriggerEventAmountControllerWithMockKeystore extends YesNoMPAATriggerEventAmountController with AppTestSettings {
       val yesNoKeystoreKey = "yesnoForMPAATriggerEvent"
       val yesNoFormKey = "yesNo"
       def keystore: KeystoreService = MockKeystore

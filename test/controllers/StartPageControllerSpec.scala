@@ -61,7 +61,7 @@ class StartPageControllerSpec extends test.BaseSpec {
       "create a new session" in new MockKeystoreFixture {
         // set up
         val request = FakeRequest(GET, "/paac").withSession {(SessionKeys.sessionId,SESSION_ID)}
-        object MockedStartPageController extends StartPageController {
+        object MockedStartPageController extends StartPageController with AppTestSettings {
           def keystore: KeystoreService = MockKeystore
         }
 
@@ -76,7 +76,7 @@ class StartPageControllerSpec extends test.BaseSpec {
       "render the StartPage" in new MockKeystoreFixture {
         // set up
         val request = FakeRequest(GET, "/paac"). withSession {(SessionKeys.sessionId,SESSION_ID)}
-        object MockedStartPageController extends StartPageController {
+        object MockedStartPageController extends StartPageController with AppTestSettings {
           def keystore: KeystoreService = MockKeystore
         }
 

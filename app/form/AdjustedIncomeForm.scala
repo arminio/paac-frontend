@@ -19,6 +19,7 @@ package form
 import play.api.data.Form
 import play.api.data.Forms._
 import form.utilities._
+import config.AppSettings
 
 case class AdjustedIncomeModel(adjustedIncome: BigDecimal) extends AIFields
 
@@ -34,4 +35,4 @@ trait AdjustedIncomeForm extends AIFormFactory {
     AdjustedIncomeModel(BigDecimal(i))
 }
 
-object AdjustedIncomeForm extends AdjustedIncomeForm
+object AdjustedIncomeForm extends AdjustedIncomeForm with AppSettings

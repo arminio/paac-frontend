@@ -28,7 +28,7 @@ class TaxYearSelectionSpec extends test.BaseSpec {
   val endPointURL = "/paac/taxyearselection"
 
   trait ControllerWithMockKeystore extends MockKeystoreFixture {
-    object ControllerWithMockKeystore extends TaxYearSelectionController {
+    object ControllerWithMockKeystore extends TaxYearSelectionController with AppTestSettings {
       val keystorekey = "TaxYearSelection"
       def keystore: KeystoreService = MockKeystore
     }

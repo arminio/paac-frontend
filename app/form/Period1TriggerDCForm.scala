@@ -19,6 +19,7 @@ package form
 import play.api.data.Form
 import play.api.data.Forms._
 import form.utilities._
+import config.AppSettings
 
 case class Period1TriggerDCModel(triggerDefinedContribution_2015_p1: BigDecimal) extends TriggerDCFields
 
@@ -34,4 +35,4 @@ trait Period1TriggerDCForm extends TriggerDCFormFactory {
     Period1TriggerDCModel(BigDecimal(i))
 }
 
-object Period1TriggerDCForm extends Period1TriggerDCForm
+object Period1TriggerDCForm extends Period1TriggerDCForm with AppSettings

@@ -31,7 +31,7 @@ class PensionInputs201516ControllerSpec extends test.BaseSpec {
   val IS_DC = s"${DC_FLAG_PREFIX}2015"
 
   trait ControllerWithMockKeystore extends MockKeystoreFixture {
-    object ControllerWithMockKeystore extends PensionInputs201516Controller {
+    object ControllerWithMockKeystore extends PensionInputs201516Controller with AppTestSettings {
       val kesystoreKey = "definedBenefit_2015_p1"
       def keystore: KeystoreService = MockKeystore
     }

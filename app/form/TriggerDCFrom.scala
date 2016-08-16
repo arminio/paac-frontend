@@ -19,7 +19,8 @@ package form
 import form.utilities._
 import play.api.data.Form
 import play.api.data.Forms._
-import models.ThisYear
+import config.Settings
+import config.AppSettings
 import play.api.data.Mapping
 import service.KeystoreService._
 
@@ -31,8 +32,8 @@ trait TriggerDCFields {
   }
 }
 
-trait TriggerDCFormFactory extends ThisYear {
-  settings: ThisYear =>
+trait TriggerDCFormFactory extends Settings {
+  settings: Settings =>
 
   def apply: Form[_ <: TriggerDCFields]
 

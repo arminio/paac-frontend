@@ -19,6 +19,7 @@ package form
 import play.api.data.Form
 import play.api.data.Forms._
 import form.utilities._
+import config.AppSettings
 
 case class Pre2015DefinedBenefitModel(definedBenefit: BigDecimal) extends Pre2015Fields
 
@@ -34,4 +35,4 @@ trait Pre2015DefinedBenefitForm extends Pre2015FormFactory {
     Pre2015DefinedBenefitModel(BigDecimal(i))
 }
 
-object Pre2015DefinedBenefitForm extends Pre2015DefinedBenefitForm
+object Pre2015DefinedBenefitForm extends Pre2015DefinedBenefitForm with AppSettings

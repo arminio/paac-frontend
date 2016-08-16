@@ -24,14 +24,16 @@ import service.KeystoreService._
 import uk.gov.hmrc.play.http.HeaderCarrier
 import models._
 import scala.concurrent.Future
+import config.Settings
+import config.AppSettings
 
-object ReviewTotalAmountsController extends ReviewTotalAmountsController {
+object ReviewTotalAmountsController extends ReviewTotalAmountsController with AppSettings {
   def keystore: KeystoreService = KeystoreService
   override val connector: CalculatorConnector = CalculatorConnector
 }
 
-trait ReviewTotalAmountsController extends RedirectController with models.ThisYear {
-  settings: models.ThisYear =>
+trait ReviewTotalAmountsController extends RedirectController with Settings {
+  settings: Settings =>
 
   val EDIT_TRIGGER_AMOUNT = -4
   val EDIT_TRIGGER_DATE = -5

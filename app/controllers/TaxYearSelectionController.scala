@@ -21,8 +21,9 @@ import service._
 import service.KeystoreService._
 import scala.concurrent.Future
 import uk.gov.hmrc.play.http.{HeaderCarrier, SessionKeys}
+import config.AppSettings
 
-object TaxYearSelectionController extends TaxYearSelectionController {
+object TaxYearSelectionController extends TaxYearSelectionController with AppSettings {
   def keystore: KeystoreService = KeystoreService
 }
 

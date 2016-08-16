@@ -23,8 +23,9 @@ import play.api.mvc.Request
 import scala.concurrent.Future
 import play.api.Logger
 import form._
+import config.AppSettings
 
-object PensionInputs201617Controller extends PensionInputs201617Controller {
+object PensionInputs201617Controller extends PensionInputs201617Controller with AppSettings {
   def keystore: KeystoreService = KeystoreService
 }
 
