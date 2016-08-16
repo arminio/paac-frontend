@@ -25,8 +25,9 @@ import models._
 import scala.concurrent.Future
 import form.SelectSchemeForm
 import play.api.mvc.Request
+import config.AppSettings
 
-object SelectSchemeController extends SelectSchemeController {
+object SelectSchemeController extends SelectSchemeController with AppSettings {
   def keystore: KeystoreService = KeystoreService
 }
 

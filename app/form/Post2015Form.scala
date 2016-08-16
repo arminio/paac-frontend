@@ -19,7 +19,7 @@ package form
 import form.utilities._
 import play.api.data.Form
 import play.api.data.Forms._
-import models.ThisYear
+import config.Settings
 import play.api.data.Mapping
 import service.KeystoreService._
 
@@ -30,8 +30,8 @@ trait Post2015Fields {
   }
 }
 
-trait Post2015FormFactory extends ThisYear {
-  settings: ThisYear =>
+trait Post2015FormFactory extends Settings {
+  settings: Settings =>
 
   def apply(year: Int): Form[_ <: Post2015Fields]
 

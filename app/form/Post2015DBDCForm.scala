@@ -19,6 +19,7 @@ package form
 import play.api.data.Form
 import play.api.data.Forms._
 import form.utilities._
+import config.AppSettings
 
 case class Post2015Model(definedBenefit: BigDecimal, definedContribution: BigDecimal) extends Post2015Fields
 
@@ -34,4 +35,4 @@ trait Post2015DBDCForm extends Post2015FormFactory {
     Post2015Model(BigDecimal(i),BigDecimal(j))
 }
 
-object Post2015DBDCForm extends Post2015DBDCForm
+object Post2015DBDCForm extends Post2015DBDCForm with AppSettings

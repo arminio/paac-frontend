@@ -21,8 +21,9 @@ import play.api.mvc._
 import service._
 import service.KeystoreService._
 import scala.concurrent.Future
+import config.AppSettings
 
-object YesNoThresholdIncomeController extends YesNoThresholdIncomeController {
+object YesNoThresholdIncomeController extends YesNoThresholdIncomeController with AppSettings {
   def keystore: KeystoreService = KeystoreService
 }
 

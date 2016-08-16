@@ -32,7 +32,7 @@ class AdjustedIncome1617InputControllerSpec extends test.BaseSpec {
   val AI_KEY = s"${AI_PREFIX}2016"
 
   trait ControllerWithMockKeystore extends MockKeystoreFixture {
-    object ControllerWithMockKeystore extends AdjustedIncome1617InputController {
+    object ControllerWithMockKeystore extends AdjustedIncome1617InputController with AppTestSettings {
       val kesystoreKey = AI_KEY
       def keystore: KeystoreService = MockKeystore
     }

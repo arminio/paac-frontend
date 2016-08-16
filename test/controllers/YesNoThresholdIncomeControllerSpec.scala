@@ -33,7 +33,7 @@ class YesNoThresholdIncomeControllerSpec extends test.BaseSpec {
     MockKeystore.map = MockKeystore.map + (KeystoreService.CURRENT_INPUT_YEAR_KEY -> "2016")
     MockKeystore.map = MockKeystore.map + (KeystoreService.SELECTED_INPUT_YEARS_KEY -> "2016")
     MockKeystore.map = MockKeystore.map + ("isEdit" -> "false")
-    object MockYesNoThresholdIncomeControllerWithMockKeystore extends YesNoThresholdIncomeController {
+    object MockYesNoThresholdIncomeControllerWithMockKeystore extends YesNoThresholdIncomeController with AppTestSettings {
       val yesNoKeystoreKey = "yesnoForThresholdIncome"
       val yesNoFormKey = "yesNo"
       def keystore: KeystoreService = MockKeystore

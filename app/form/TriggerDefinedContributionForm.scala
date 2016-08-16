@@ -19,6 +19,7 @@ package form
 import play.api.data.Form
 import play.api.data.Forms._
 import form.utilities._
+import config.AppSettings
 
 case class TriggerDCModel(triggerDefinedContribution: BigDecimal) extends TriggerDCFields
 
@@ -34,4 +35,4 @@ trait TriggerDefinedContributionForm extends TriggerDCFormFactory {
     TriggerDCModel(BigDecimal(i))
 }
 
-object TriggerDefinedContributionForm extends TriggerDefinedContributionForm
+object TriggerDefinedContributionForm extends TriggerDefinedContributionForm with AppSettings

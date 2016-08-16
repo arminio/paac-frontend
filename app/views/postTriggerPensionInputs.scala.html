@@ -5,18 +5,13 @@
 @import models.PensionPeriod._
 
 @defining(teDate.year) { taxYear =>
-@defining(CalculatorFormFields(Amounts(), Amounts(), Amounts(), Year2015Amounts(
-  postTriggerDcAmount2015P1=paacForm.data.get("year2015.postTriggerDcAmount2015P1").flatMap((v) =>if (v == "") None else Some(BigDecimal(v.toDouble))),
-  postTriggerDcAmount2015P2=paacForm.data.get("year2015.postTriggerDcAmount2015P2").flatMap((v) =>if (v == "") None else Some(BigDecimal(v.toDouble))) ),
-  paacForm.data.get("triggerAmount").flatMap((v) => if (v == "") None else Some(v.toInt)),
-  Some(teDate.mkString))){ errorModel =>
 @common.paacMain(
 pageTitle = Messages("paac.post.trigger.value.page.title"),
 heading = if(teDate.isPeriod1())
-            Messages("paac.post.trigger.value.page.question.p1") 
+            Messages("paac.post.trigger.value.page.question.p1")
           else if (teDate.isPeriod2())
-            Messages("paac.post.trigger.value.page.question.p2") 
-          else 
+            Messages("paac.post.trigger.value.page.question.p2")
+          else
             Messages("paac.post.trigger.value.page.question", ""+taxYear, ""+(taxYear+1)),
 backLink = Some((controllers.routes.PostTriggerPensionInputsController.onBack.url,Messages("paac.link.text.back")))
 ) {
@@ -60,12 +55,6 @@ backLink = Some((controllers.routes.PostTriggerPensionInputsController.onBack.ur
     @form(
         action = controllers.routes.PostTriggerPensionInputsController.onSubmit,
         args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
-
-
-@defining(paacForm.value.getOrElse(errorModel)) { model =>
-        <input type="hidden" id="triggerDate" name="triggerDate" value="@(teDate)"/>
-        <input type="hidden" id="isEdit" name="isEdit" value="@isEdit"/>
-
 
         <table>
             <fieldset class="form-field-group @if(paacForm.hasErrors) {form-field--error}">
@@ -141,9 +130,7 @@ backLink = Some((controllers.routes.PostTriggerPensionInputsController.onBack.ur
               }
                 </fieldset>
           </table>
-          }
         <button id="submit" type="submit" class="button" value="Continue">@if(isEdit){@Messages("paac.calculator.button.save")}else{@Messages("paac.calculator.button.continue")}</button>
     }
   }
-}
 }

@@ -19,9 +19,9 @@ package form
 import form.utilities._
 import play.api.data.Form
 import play.api.data.Forms._
-import models.ThisYear
 import play.api.data.Mapping
 import service.KeystoreService._
+import config.Settings
 
 trait AIFields {
   def data(year: Int): Map[String,String] = toMap(this).map{
@@ -30,8 +30,8 @@ trait AIFields {
   }
 }
 
-trait AIFormFactory extends ThisYear {
-  settings: ThisYear =>
+trait AIFormFactory extends Settings {
+  settings: Settings =>
 
   def apply(year: Int): Form[_ <: AIFields]
 

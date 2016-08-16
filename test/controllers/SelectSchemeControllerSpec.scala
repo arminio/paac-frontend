@@ -31,7 +31,7 @@ class SelectSchemeControllerSpec extends test.BaseSpec {
   val postEndPointURL = "/paac/scheme"
 
   trait ControllerWithMockKeystore extends MockKeystoreFixture {
-    object MockSelectSchemeControllerWithMockKeystore extends SelectSchemeController {
+    object MockSelectSchemeControllerWithMockKeystore extends SelectSchemeController with AppTestSettings {
       def keystore: KeystoreService = MockKeystore
     }
   }

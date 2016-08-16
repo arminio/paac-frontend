@@ -21,8 +21,9 @@ import play.api.mvc._
 import scala.concurrent.Future
 import service._
 import service.KeystoreService._
+import config.AppSettings
 
-object StartPageController extends StartPageController {
+object StartPageController extends StartPageController with AppSettings {
   def keystore: KeystoreService = KeystoreService
 }
 

@@ -24,8 +24,9 @@ import service.KeystoreService._
 import play.api.mvc.Request
 import scala.concurrent.Future
 import models.PensionPeriod._
+import config.AppSettings
 
-object PostTriggerPensionInputsController extends PostTriggerPensionInputsController {
+object PostTriggerPensionInputsController extends PostTriggerPensionInputsController with AppSettings {
   def keystore: KeystoreService = KeystoreService
 }
 

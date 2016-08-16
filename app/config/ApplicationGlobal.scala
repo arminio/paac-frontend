@@ -87,6 +87,10 @@ object PaacConfiguration {
     }
   }
 
+  def numberOfYears(): Int = {
+    config.flatMap[Int](_.getInt("numberOfYears")).getOrElse(3)
+  }
+
   def forYear(year: Int): Map[String,Int] = {
     config.map {
       (m) =>

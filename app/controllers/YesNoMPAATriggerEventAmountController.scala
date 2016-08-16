@@ -21,8 +21,9 @@ import play.api.mvc._
 import service._
 import service.KeystoreService._
 import scala.concurrent.Future
+import config.AppSettings
 
-object YesNoMPAATriggerEventAmountController extends YesNoMPAATriggerEventAmountController {
+object YesNoMPAATriggerEventAmountController extends YesNoMPAATriggerEventAmountController with AppSettings {
   def keystore: KeystoreService = KeystoreService
 }
 

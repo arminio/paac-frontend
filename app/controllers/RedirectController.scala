@@ -23,10 +23,10 @@ import service._
 import service.KeystoreService._
 import play.api.Logger
 import controllers.action._
-import models.ThisYear
+import config.Settings
 
-trait RedirectController extends BaseFrontendController with ThisYear {
-  settings: ThisYear =>
+trait RedirectController extends BaseFrontendController with Settings {
+  settings: Settings =>
   implicit class RichPageLocation(location:PageLocation) {
     def go(e:Event)(implicit request: Request[Any]): Future[Result] = {
       implicit val newSessionData = request.session.data

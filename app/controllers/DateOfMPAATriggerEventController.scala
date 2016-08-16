@@ -23,8 +23,9 @@ import service.KeystoreService._
 import scala.concurrent.Future
 import play.api.data.Form
 import play.api.mvc.Request
+import config.AppSettings
 
-object DateOfMPAATriggerEventController extends DateOfMPAATriggerEventController {
+object DateOfMPAATriggerEventController extends DateOfMPAATriggerEventController with AppSettings {
   def keystore: KeystoreService = KeystoreService
 }
 

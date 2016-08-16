@@ -42,7 +42,7 @@ class PensionInputsControllerSpec extends test.BaseSpec {
                     SELECTED_INPUT_YEARS_KEY -> "2014"
                     )
 
-    object PensionInputsControllerMockedKeystore extends PensionInputsController {
+    object PensionInputsControllerMockedKeystore extends PensionInputsController with AppTestSettings {
       def keystore: KeystoreService = MockKeystore
     }
   }
