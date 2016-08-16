@@ -18,21 +18,20 @@ package form
 
 import play.api.data.Form
 import play.api.data.Forms._
-import play.api.libs.json.Json
+import form.utilities._
 
-case class Pre1516Data(totalAmount: Int)
+case class Period1TriggerDCModel(triggerDefinedContribution_2015_p1: BigDecimal) extends TriggerDCFields
 
-object Pre1516Data {
-  implicit val formats = Json.format[Pre1516Data]
+trait Period1TriggerDCForm extends TriggerDCFormFactory {
+  def apply(): Form[_ <: TriggerDCFields] = {
+    if (isPoundsAndPence)
+      Form[Period1TriggerDCModel](mapping(pencePeriod1TEDC)(Period1TriggerDCModel.apply)(Period1TriggerDCModel.unapply))
+    else
+      Form[Period1TriggerDCModel](mapping(poundsPeriod1TEDC)(toModel)(Period1TriggerDCModel.unapply))
+  }
+
+  protected val toModel: (Int) => Period1TriggerDCModel = (i: Int) =>
+    Period1TriggerDCModel(BigDecimal(i))
 }
 
-object Pre1516DataForm extends Pre1516DataForm
-
-trait Pre1516DataForm {
-
-  val form: Form[Pre1516Data] = Form(
-    mapping(
-      "totalAmount" -> number
-    )(Pre1516Data.apply)(Pre1516Data.unapply)
-  )
-}
+object Period1TriggerDCForm extends Period1TriggerDCForm

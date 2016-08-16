@@ -39,10 +39,7 @@ trait ReviewTotalAmountsController extends RedirectController with models.ThisYe
 
   val onPageLoad = withReadSession { implicit request =>
     val values = Map((TRIGGER_DATE_KEY, request.data.get(TRIGGER_DATE_KEY).getOrElse(""))) ++ request.data
-    CalculatorForm.bind(values).fold(
-      formWithErrors => Future.successful(Ok(views.html.review_amounts(formWithErrors))),
-      form => Future.successful(Ok(views.html.review_amounts(CalculatorForm.bind(values, true))))
-    )
+    Future.successful(Ok(views.html.review_amounts(Contributions(values))))
   }
 
   def onEditAmount(year:Int) = withWriteSession { implicit request =>
@@ -63,16 +60,11 @@ trait ReviewTotalAmountsController extends RedirectController with models.ThisYe
 
   val onSubmit = withReadSession { implicit request =>
     val values = Map((TRIGGER_DATE_KEY, request.data.get(TRIGGER_DATE_KEY).getOrElse(""))) ++ request.data
-    CalculatorForm.bind(values).fold(
-      formWithErrors => Future.successful(Ok(views.html.review_amounts(formWithErrors))),
-      input => {
-        val contributions = input.toContributions()
-        connector.connectToPAACService(contributions).flatMap{
-          response =>
-          Future.successful(Ok(views.html.results(response, values(SELECTED_INPUT_YEARS_KEY).split(",").map(_.toInt))))
-        }
-      }
-    )
+    val contributions = Contributions(values)
+    connector.connectToPAACService(contributions).flatMap{
+      response =>
+      Future.successful(Ok(views.html.results(response, values(SELECTED_INPUT_YEARS_KEY).split(",").map(_.toInt))))
+    }
   }
 
   val onBack = withWriteSession { implicit request =>

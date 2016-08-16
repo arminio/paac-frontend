@@ -56,8 +56,8 @@ class PensionInputs201516ControllerSpec extends test.BaseSpec {
       }
     }
 
-    "onPageLoad with GET request" should {
-      "have keystore with definedContribution flag = true value, should have DC input field"  in new ControllerWithMockKeystore {
+    "onPageLoad" should {
+      "have keystore with definedContribution flag = true value, should have DC input field" in new ControllerWithMockKeystore {
         // setup
         val request = FakeRequest(GET,"").withSession{(SessionKeys.sessionId,SESSION_ID)}
         MockKeystore.map = MockKeystore.map + (IS_DC -> "true")
@@ -69,10 +69,11 @@ class PensionInputs201516ControllerSpec extends test.BaseSpec {
         // check
         status(result) shouldBe 200
         val htmlPage = contentAsString(await(result))
-        htmlPage should include ("""<input type="number" name="year2015.definedContribution_2015_p1" """)
+        htmlPage should include (s"""<input type="number" name="${P1_DC_KEY}" """)
+        htmlPage should include (s"""<input type="number" name="${P2_DC_KEY}" """)
       }
 
-      "have keystore with definedBenefit flag = true value, should have DB input field"  in new ControllerWithMockKeystore {
+      "have keystore with defined benefit flag = true value, should have DB input fields" in new ControllerWithMockKeystore {
         // setup
         val request = FakeRequest(GET,"").withSession{(SessionKeys.sessionId,SESSION_ID)}
         MockKeystore.map = MockKeystore.map + (IS_DC -> "false")
@@ -84,25 +85,29 @@ class PensionInputs201516ControllerSpec extends test.BaseSpec {
         // check
         status(result) shouldBe 200
         val htmlPage = contentAsString(await(result))
-        htmlPage should include ("""<input type="number" name="year2015.definedBenefit_2015_p1" """)
+        htmlPage should include (s"""<input type="number" name="${P1_DB_KEY}" """)
+        htmlPage should include (s"""<input type="number" name="${P2_DB_KEY}" """)
       }
 
-      "have keystore with definedBenefit_2015_p1 value when we revisit the same page"  in new ControllerWithMockKeystore {
+      "have keystore values when we revisit the same page with db is true" in new ControllerWithMockKeystore {
         // setup
         val request = FakeRequest(GET,"").withSession{(SessionKeys.sessionId,SESSION_ID)}
-        MockKeystore.map = MockKeystore.map + ("definedBenefit_2015_p1" -> "40000")
-        MockKeystore.map = MockKeystore.map + (IS_DC -> "true")
+        MockKeystore.map = MockKeystore.map + (IS_DC -> "false")
         MockKeystore.map = MockKeystore.map + (IS_DB -> "true")
+        MockKeystore.map = MockKeystore.map + (P1_DB_KEY -> "100")
+        MockKeystore.map = MockKeystore.map + (P2_DB_KEY -> "200")
 
         // test
         val result : Future[Result] = ControllerWithMockKeystore.onPageLoad()(request)
 
         // check
         status(result) shouldBe 200
-        MockKeystore.map should contain key ("definedBenefit_2015_p1")
-        MockKeystore.map should contain value ("40000")
+        val htmlPage = contentAsString(await(result))
+        htmlPage should include (s"""<input type="number" name="${P1_DB_KEY}" id="${P1_DB_KEY}" min="0" class="input--no-spinner" value='1' """)
+        htmlPage should include (s"""<input type="number" name="${P2_DB_KEY}" id="${P2_DB_KEY}" min="0" class="input--no-spinner" value='2' """)
       }
-      "have keystore with definedContribution flag = true value, should have DC input field for P2" in new ControllerWithMockKeystore {
+
+      "have keystore with definedContribution flag = true value, should have DC input fields" in new ControllerWithMockKeystore {
         // setup
         val request = FakeRequest(GET,"").withSession{(SessionKeys.sessionId,SESSION_ID)}
         MockKeystore.map = MockKeystore.map + (IS_DC -> "true")
@@ -114,14 +119,17 @@ class PensionInputs201516ControllerSpec extends test.BaseSpec {
         // check
         status(result) shouldBe 200
         val htmlPage = contentAsString(await(result))
-        htmlPage should include ("""<input type="number" name="year2015.definedContribution_2015_p2" """)
+        htmlPage should include (s"""<input type="number" name="${P1_DC_KEY}" """)
+        htmlPage should include (s"""<input type="number" name="${P2_DC_KEY}" """)
       }
 
-      "have keystore with definedBenefit flag = true value, should have DB input field for Period 2" in new ControllerWithMockKeystore {
+      "have keystore values when we revisit the same page with dc is true" in new ControllerWithMockKeystore {
         // setup
         val request = FakeRequest(GET,"").withSession{(SessionKeys.sessionId,SESSION_ID)}
-        MockKeystore.map = MockKeystore.map + (IS_DC -> "false")
-        MockKeystore.map = MockKeystore.map + (IS_DB -> "true")
+        MockKeystore.map = MockKeystore.map + (IS_DC -> "true")
+        MockKeystore.map = MockKeystore.map + (IS_DB -> "false")
+        MockKeystore.map = MockKeystore.map + (P1_DC_KEY -> "100")
+        MockKeystore.map = MockKeystore.map + (P2_DC_KEY -> "200")
 
         // test
         val result : Future[Result] = ControllerWithMockKeystore.onPageLoad()(request)
@@ -129,23 +137,8 @@ class PensionInputs201516ControllerSpec extends test.BaseSpec {
         // check
         status(result) shouldBe 200
         val htmlPage = contentAsString(await(result))
-        htmlPage should include ("""<input type="number" name="year2015.definedBenefit_2015_p2" """)
-      }
-
-      "have keystore with definedBenefit_2015_p2 value when we revisit the same page"  in new ControllerWithMockKeystore {
-        // setup
-        val request = FakeRequest(GET,"").withSession{(SessionKeys.sessionId,SESSION_ID)}
-        MockKeystore.map = MockKeystore.map + ("definedBenefit_2015_p2" -> "40000")
-        MockKeystore.map = MockKeystore.map + (IS_DC -> "true")
-        MockKeystore.map = MockKeystore.map + (IS_DB -> "true")
-
-        // test
-        val result : Future[Result] = ControllerWithMockKeystore.onPageLoad()(request)
-
-        // check
-        status(result) shouldBe 200
-        MockKeystore.map should contain key ("definedBenefit_2015_p2")
-        MockKeystore.map should contain value ("40000")
+        htmlPage should include (s"""<input type="number" name="${P1_DC_KEY}" id="${P1_DC_KEY}" min="0" class="input--no-spinner" value='1' """)
+        htmlPage should include (s"""<input type="number" name="${P2_DC_KEY}" id="${P2_DC_KEY}" min="0" class="input--no-spinner" value='2' """)
       }
     }
 
@@ -170,11 +163,8 @@ class PensionInputs201516ControllerSpec extends test.BaseSpec {
                               (CURRENT_INPUT_YEAR_KEY -> "2015"),
                               (SessionKeys.sessionId -> SESSION_ID))
         implicit val request = FakeRequest(POST, endPointURL).withSession(sessionData: _*)
-                                                             .withFormUrlEncodedBody(("year2015.definedBenefit_2015_p1" -> "40000"),
-                                                               ("year2015.definedBenefit_2015_p2" -> "0"),
-                                                               ("isDefinedBenefit","true"),
-                                                               ("isDefinedContribution","false"),
-                                                               ("isEdit","false"))
+                                                             .withFormUrlEncodedBody((P1_DB_KEY -> "40000"),
+                                                                                     (P2_DB_KEY -> "0"))
 
         // test
         val result: Future[Result] = ControllerWithMockKeystore.onSubmit()(request)
@@ -184,51 +174,16 @@ class PensionInputs201516ControllerSpec extends test.BaseSpec {
         redirectLocation(result) shouldBe Some("/paac/pensionInputs")
       }
 
-//      "with valid definedBenefit_2015_p1 and in edit mode should redirect to review" in new ControllerWithMockKeystore {
-//        // set up
-//        MockKeystore.map = MockKeystore.map + ("isEdit" -> "true")
-//        MockKeystore.map = MockKeystore.map + (DB_FLAG -> "true")
-//        MockKeystore.map = MockKeystore.map + (DC_FLAG -> "false")
-//        implicit val hc = HeaderCarrier()
-//        implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID))
-      // .withFormUrlEncodedBody(("year2015.definedBenefit_2015_p1" -> "40000"),("year2015.definedContribution_2015_p1" -> ""))
-//
-//        // test
-//        val result: Future[Result] = ControllerWithMockKeystore.onSubmit()(request)
-//
-//        // check
-//        status(result) shouldBe 303
-//        redirectLocation(result) shouldBe Some("/paac/review")
-//      }
-
-//      "with valid definedBenefit_2015_p1 should save to keystore" in new ControllerWithMockKeystore {
-//        // set up
-//        MockKeystore.map = MockKeystore.map + ("isEdit" -> "false")
-//        MockKeystore.map = MockKeystore.map + (DB_FLAG -> "true")
-//        MockKeystore.map = MockKeystore.map + (DC_FLAG -> "false")
-//        implicit val hc = HeaderCarrier()
-//        implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID))
-      // .withFormUrlEncodedBody(("year2015.definedBenefit_2015_p1" -> "40000"),("year2015.definedContribution_2015_p1" -> ""))
-//
-//        // test
-//        val result: Future[Result] = ControllerWithMockKeystore.onSubmit()(request)
-//
-//        // check
-//        status(result) shouldBe 303
-//        MockKeystore.map should contain key ("definedBenefit_2015_p1")
-//        MockKeystore.map should contain value ("4000000")
-//      }
-
       "with invalid request redisplay page with errors" in new ControllerWithMockKeystore {
-        MockKeystore.map = MockKeystore.map + ("isEdit" -> "false")
-        MockKeystore.map = MockKeystore.map + (IS_DB -> "true")
-        MockKeystore.map = MockKeystore.map + (IS_DC -> "false")
-        implicit val hc = HeaderCarrier()
-        implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID))
-                                                             .withFormUrlEncodedBody(("year2015.definedBenefit_2015_p1" -> "-40000"),
-                                                               ("isDefinedBenefit","true"),
-                                                               ("isDefinedContribution","false"),
-                                                               ("isEdit","false"))
+        val sessionData = List(("isEdit" -> "false"),
+                              (IS_DB -> "true"),
+                              (IS_DC -> "false"),
+                              (SELECTED_INPUT_YEARS_KEY -> "2015,2014"),
+                              (CURRENT_INPUT_YEAR_KEY -> "2015"),
+                              (SessionKeys.sessionId -> SESSION_ID))
+        implicit val request = FakeRequest(POST, endPointURL).withSession(sessionData: _*)
+                                                             .withFormUrlEncodedBody((P1_DB_KEY -> "-40000"),
+                                                                                     (P2_DB_KEY -> "0"))
 
         // test
         val result: Future[Result] = ControllerWithMockKeystore.onSubmit()(request)
@@ -240,15 +195,15 @@ class PensionInputs201516ControllerSpec extends test.BaseSpec {
       }
 
       "with empty db amount redisplay page with errors" in new ControllerWithMockKeystore {
-        MockKeystore.map = MockKeystore.map + ("isEdit" -> "false")
-        MockKeystore.map = MockKeystore.map + (IS_DB -> "true")
-        MockKeystore.map = MockKeystore.map + (IS_DC -> "false")
-        implicit val hc = HeaderCarrier()
-        implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID))
-                                                             .withFormUrlEncodedBody(("year2015.definedBenefit_2015_p1" -> ""),
-                                                               ("isDefinedBenefit","true"),
-                                                               ("isDefinedContribution","false"),
-                                                               ("isEdit","false"))
+        val sessionData = List(("isEdit" -> "false"),
+                              (IS_DB -> "true"),
+                              (IS_DC -> "false"),
+                              (SELECTED_INPUT_YEARS_KEY -> "2015,2014"),
+                              (CURRENT_INPUT_YEAR_KEY -> "2015"),
+                              (SessionKeys.sessionId -> SESSION_ID))
+        implicit val request = FakeRequest(POST, endPointURL).withSession(sessionData: _*)
+                                                             .withFormUrlEncodedBody((P1_DB_KEY -> ""),
+                                                                                     (P2_DB_KEY -> ""))
 
         // test
         val result: Future[Result] = ControllerWithMockKeystore.onSubmit()(request)
@@ -256,19 +211,20 @@ class PensionInputs201516ControllerSpec extends test.BaseSpec {
         // check
         status(result) shouldBe 200
         val htmlPage = contentAsString(await(result))
-        htmlPage should include ("Enter your total defined benefit pension savings for period 1 even if it is 0.")
+        htmlPage should include (s"""<li><a href="#${P1_DB_KEY}" style="color:#b10e1e;font-weight: bold;">Enter an amount that contains only numbers.</a></li>""")
+        htmlPage should include (s"""<li><a href="#${P2_DB_KEY}" style="color:#b10e1e;font-weight: bold;">Enter an amount that contains only numbers.</a></li>""")
       }
 
       "with empty dc amount redisplay page with errors" in new ControllerWithMockKeystore {
-        MockKeystore.map = MockKeystore.map + ("isEdit" -> "false")
-        MockKeystore.map = MockKeystore.map + (IS_DB -> "false")
-        MockKeystore.map = MockKeystore.map + (IS_DC -> "true")
-        implicit val hc = HeaderCarrier()
-        implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID))
-                                                             .withFormUrlEncodedBody(("year2015.definedContribution_2015_p1" -> ""),
-                                                               ("isDefinedBenefit","false"),
-                                                               ("isDefinedContribution","true"),
-                                                               ("isEdit","false"))
+        val sessionData = List(("isEdit" -> "false"),
+                              (IS_DB -> "false"),
+                              (IS_DC -> "true"),
+                              (SELECTED_INPUT_YEARS_KEY -> "2015,2014"),
+                              (CURRENT_INPUT_YEAR_KEY -> "2015"),
+                              (SessionKeys.sessionId -> SESSION_ID))
+        implicit val request = FakeRequest(POST, endPointURL).withSession(sessionData: _*)
+                                                             .withFormUrlEncodedBody((P1_DC_KEY -> ""),
+                                                                                     (P2_DC_KEY -> ""))
 
         // test
         val result: Future[Result] = ControllerWithMockKeystore.onSubmit()(request)
@@ -276,73 +232,59 @@ class PensionInputs201516ControllerSpec extends test.BaseSpec {
         // check
         status(result) shouldBe 200
         val htmlPage = contentAsString(await(result))
-        htmlPage should include ("Enter your total defined contribution pension savings for period 1 even if it is 0.")
+        htmlPage should include (s"""<li><a href="#${P1_DC_KEY}" style="color:#b10e1e;font-weight: bold;">Enter an amount that contains only numbers.</a></li>""")
+        htmlPage should include (s"""<li><a href="#${P2_DC_KEY}" style="color:#b10e1e;font-weight: bold;">Enter an amount that contains only numbers.</a></li>""")
       }
 
-//      "with valid definedBenefit_2015_p1 should save to keystore" in new ControllerWithMockKeystore {
-//        // set up
-//        MockKeystore.map = MockKeystore.map + ("isEdit" -> "false")
-//        MockKeystore.map = MockKeystore.map + (DB_FLAG -> "true")
-//        MockKeystore.map = MockKeystore.map + (DC_FLAG -> "false")
-//        implicit val hc = HeaderCarrier()
-//        implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID))
-      // .withFormUrlEncodedBody(("year2015.definedBenefit_2015_p2" -> "40000"),("year2015.definedContribution_2015_p2" -> ""))
-//
-//        // test
-//        val result: Future[Result] = ControllerWithMockKeystore.onSubmit()(request)
-//
-//        // check
-//        status(result) shouldBe 303
-//        MockKeystore.map should contain key ("definedBenefit_2015_p2")
-//        MockKeystore.map should contain value ("4000000")
-//      }
-//
-//      "with valid amounts should redirect to trigger question page if dc scheme" in new ControllerWithMockKeystore {
-//        // set up
-//        MockKeystore.map = MockKeystore.map + ("isEdit" -> "false")
-//        MockKeystore.map = MockKeystore.map + (DB_FLAG -> "false")
-//        MockKeystore.map = MockKeystore.map + (DC_FLAG -> "true")
-//        implicit val hc = HeaderCarrier()
-//        implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID))
-      // .withFormUrlEncodedBody(("year2015.definedContribution_2015_p2" -> "40000"),("year2015.definedBenefit_2015_p2" -> ""))
-//
-//        // test
-//        val result: Future[Result] = ControllerWithMockKeystore.onSubmit()(request)
-//
-//        // check
-//        status(result) shouldBe 303
-//        redirectLocation(result) shouldBe Some("/paac/yesnompaate")
-//      }
-//
-//      "with valid amounts should redirect to review page if not dc scheme" in new ControllerWithMockKeystore {
-//        // set up
-//        MockKeystore.map = MockKeystore.map + ("isEdit" -> "false")
-//        MockKeystore.map = MockKeystore.map + (DB_FLAG -> "true")
-//        MockKeystore.map = MockKeystore.map + (DC_FLAG -> "false")
-//        MockKeystore.map = MockKeystore.map + (CURRENT_INPUT_YEAR_KEY -> "2015")
-//        MockKeystore.map = MockKeystore.map + (SELECTED_INPUT_YEARS_KEY -> "2015")
-//        implicit val hc = HeaderCarrier()
-//        implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID))
-      // .withFormUrlEncodedBody(("year2015.definedBenefit_2015_p2" -> "40000"),("year2015.definedContribution_2015_p2" -> ""))
-//
-//        // test
-//        val result: Future[Result] = ControllerWithMockKeystore.onSubmit()(request)
-//
-//        // check
-//        status(result) shouldBe 303
-//        redirectLocation(result) shouldBe Some("/paac/review")
-//      }
+     "with valid defined benefit values should save to keystore" in new ControllerWithMockKeystore {
+       // set up
+        val sessionData = List((CURRENT_INPUT_YEAR_KEY -> "2015"),
+                               (SELECTED_INPUT_YEARS_KEY -> "2015"),
+                               (IS_EDIT_KEY -> "false"),
+                               (IS_DB -> "true"),
+                               (IS_DC -> "false"),
+                               (SessionKeys.sessionId,SESSION_ID))
+       implicit val request = FakeRequest(POST, endPointURL).withSession(sessionData: _*)
+      .withFormUrlEncodedBody((P2_DB_KEY -> "1"),(P1_DB_KEY -> "2"))
+
+       // test
+       val result: Future[Result] = ControllerWithMockKeystore.onSubmit()(request)
+
+       // check
+       status(result) shouldBe 303
+       MockKeystore.map(P1_DB_KEY) shouldBe "200"
+       MockKeystore.map(P2_DB_KEY) shouldBe "100"
+     }
+
+     "with valid defined contribution values should save to keystore" in new ControllerWithMockKeystore {
+       // set up
+        val sessionData = List((CURRENT_INPUT_YEAR_KEY -> "2015"),
+                               (SELECTED_INPUT_YEARS_KEY -> "2015"),
+                               (IS_EDIT_KEY -> "false"),
+                               (IS_DB -> "false"),
+                               (IS_DC -> "true"),
+                               (SessionKeys.sessionId,SESSION_ID))
+       implicit val request = FakeRequest(POST, endPointURL).withSession(sessionData: _*)
+      .withFormUrlEncodedBody((P2_DC_KEY -> "1"),(P1_DC_KEY -> "2"))
+
+       // test
+       val result: Future[Result] = ControllerWithMockKeystore.onSubmit()(request)
+
+       // check
+       status(result) shouldBe 303
+       MockKeystore.map(P1_DC_KEY) shouldBe "200"
+       MockKeystore.map(P2_DC_KEY) shouldBe "100"
+     }
 
       "with invalid request redisplay page with errors 2" in new ControllerWithMockKeystore {
-        MockKeystore.map = MockKeystore.map + ("isEdit" -> "false")
-        MockKeystore.map = MockKeystore.map + (IS_DB -> "true")
-        MockKeystore.map = MockKeystore.map + (IS_DC -> "false")
-        implicit val hc = HeaderCarrier()
-        implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID))
-                                                             .withFormUrlEncodedBody(("year2015.definedBenefit_2015_p2" -> "-40000"),
-                                                               ("isDefinedBenefit","true"),
-                                                               ("isDefinedContribution","false"),
-                                                               ("isEdit","false"))
+        val sessionData = List((CURRENT_INPUT_YEAR_KEY -> "2015"),
+                               (SELECTED_INPUT_YEARS_KEY -> "2015"),
+                               (IS_EDIT_KEY -> "false"),
+                               (IS_DB -> "true"),
+                               (IS_DC -> "false"),
+                               (SessionKeys.sessionId,SESSION_ID))
+        implicit val request = FakeRequest(POST, endPointURL).withSession(sessionData: _*)
+                                                             .withFormUrlEncodedBody((P2_DB_KEY -> "-49999"),(P1_DB_KEY -> "1"))
 
         // test
         val result: Future[Result] = ControllerWithMockKeystore.onSubmit()(request)
@@ -350,19 +292,18 @@ class PensionInputs201516ControllerSpec extends test.BaseSpec {
         // check
         status(result) shouldBe 200
         val htmlPage = contentAsString(await(result))
-        htmlPage should include ("Enter an amount that is £5,000,000 or less.")
+        htmlPage should include ("""<a href="#definedBenefit_2015_p2" style="color:#b10e1e;font-weight: bold;">Enter an amount that is £5,000,000 or less.</a>""")
       }
 
       "with empty db amount redisplay page with errors 2" in new ControllerWithMockKeystore {
-        MockKeystore.map = MockKeystore.map + ("isEdit" -> "false")
-        MockKeystore.map = MockKeystore.map + (IS_DB -> "true")
-        MockKeystore.map = MockKeystore.map + (IS_DC -> "false")
-        implicit val hc = HeaderCarrier()
-        implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID))
-                                                             .withFormUrlEncodedBody(("year2015.definedBenefit_2015_p2" -> ""),
-                                                               ("isDefinedBenefit","true"),
-                                                               ("isDefinedContribution","false"),
-                                                               ("isEdit","false"))
+        val sessionData = List((CURRENT_INPUT_YEAR_KEY -> "2015"),
+                               (SELECTED_INPUT_YEARS_KEY -> "2015"),
+                               (IS_EDIT_KEY -> "false"),
+                               (IS_DB -> "true"),
+                               (IS_DC -> "false"),
+                               (SessionKeys.sessionId,SESSION_ID))
+        implicit val request = FakeRequest(POST, endPointURL).withSession(sessionData: _*)
+                                                             .withFormUrlEncodedBody((P2_DB_KEY -> ""),(P1_DB_KEY -> "1"))
 
         // test
         val result: Future[Result] = ControllerWithMockKeystore.onSubmit()(request)
@@ -370,19 +311,18 @@ class PensionInputs201516ControllerSpec extends test.BaseSpec {
         // check
         status(result) shouldBe 200
         val htmlPage = contentAsString(await(result))
-        htmlPage should include ("Enter your total defined benefit pension savings for period 1 even if it is 0.")
+        htmlPage should include ("""<a href="#definedBenefit_2015_p2" style="color:#b10e1e;font-weight: bold;">Enter an amount that contains only numbers.</a>""")
       }
 
       "with empty dc amount redisplay page with errors 2" in new ControllerWithMockKeystore {
-        MockKeystore.map = MockKeystore.map + ("isEdit" -> "false")
-        MockKeystore.map = MockKeystore.map + (IS_DB -> "false")
-        MockKeystore.map = MockKeystore.map + (IS_DC -> "true")
-        implicit val hc = HeaderCarrier()
-        implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID))
-                                                             .withFormUrlEncodedBody(("year2015.definedContribution_2015_p2" -> ""),
-                                                               ("isDefinedBenefit","false"),
-                                                               ("isDefinedContribution","true"),
-                                                               ("isEdit","false"))
+        val sessionData = List((CURRENT_INPUT_YEAR_KEY -> "2015"),
+                               (SELECTED_INPUT_YEARS_KEY -> "2015"),
+                               (IS_EDIT_KEY -> "false"),
+                               (IS_DB -> "false"),
+                               (IS_DC -> "true"),
+                               (SessionKeys.sessionId,SESSION_ID))
+        implicit val request = FakeRequest(POST, endPointURL).withSession(sessionData: _*)
+                                                             .withFormUrlEncodedBody((P2_DC_KEY -> ""),(P1_DC_KEY -> "1"))
 
         // test
         val result: Future[Result] = ControllerWithMockKeystore.onSubmit()(request)
@@ -390,7 +330,7 @@ class PensionInputs201516ControllerSpec extends test.BaseSpec {
         // check
         status(result) shouldBe 200
         val htmlPage = contentAsString(await(result))
-        htmlPage should include ("Enter your total defined contribution pension savings for period 1 even if it is 0.")
+        htmlPage should include ("""<a href="#definedContribution_2015_p2" style="color:#b10e1e;font-weight: bold;">Enter an amount that contains only numbers.</a>""")
       }
     }
   }

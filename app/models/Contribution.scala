@@ -62,6 +62,8 @@ case class PensionPeriod(year: Int, month: Int, day: Int) {
     else if (this > PensionPeriod(year, 4, 6) && this < PensionPeriod(year+1, 4, 6)) year
     else year
   }
+
+  def mkString: String = s"${this.year}-${this.month}-${this.day}"
 }
 
 case class Contribution(taxPeriodStart: PensionPeriod, taxPeriodEnd: PensionPeriod, amounts: Option[InputAmounts]) extends CalculationParam {
@@ -104,9 +106,10 @@ case class Contribution(taxPeriodStart: PensionPeriod, taxPeriodEnd: PensionPeri
     if (amounts.isDefined && that.amounts.isDefined) {
       val thisAmounts = amounts.get
       val thatAmounts = that.amounts.get
-      val db = thisAmounts.definedBenefit.map((v:Long)=>v+thatAmounts.definedBenefit.getOrElse(0L)).getOrElse(thatAmounts.definedBenefit.getOrElse(0L))
-      val dc = thisAmounts.moneyPurchase.map((v:Long)=>v+thatAmounts.moneyPurchase.getOrElse(0L)).getOrElse(thatAmounts.moneyPurchase.getOrElse(0L))
-      this.copy(amounts=Some(InputAmounts(db,dc)))
+      val db = thisAmounts.definedBenefit.map((v:Long)=>v+thatAmounts.definedBenefit.getOrElse(0L)).orElse(thatAmounts.definedBenefit)
+      val dc = thisAmounts.moneyPurchase.map((v:Long)=>v+thatAmounts.moneyPurchase.getOrElse(0L)).orElse(thatAmounts.moneyPurchase)
+      val i = thisAmounts.income.map((v:Long)=>v+thatAmounts.income.getOrElse(0L)).orElse(thatAmounts.income)
+      this.copy(amounts=Some(InputAmounts(db,dc,i,thisAmounts.triggered)))
     } else {
       this
     }
@@ -156,8 +159,6 @@ case class Contribution(taxPeriodStart: PensionPeriod, taxPeriodEnd: PensionPeri
       inputs <- amounts
       income <- inputs.income
     } yield income) getOrElse 0L
-
-  def taxYear(): Int = taxPeriodStart.taxYear
 }
 
 object PensionPeriod {

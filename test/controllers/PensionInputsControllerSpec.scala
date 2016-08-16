@@ -21,11 +21,12 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import service._
 import uk.gov.hmrc.play.http.{HeaderCarrier, SessionKeys}
-
+import service.KeystoreService._
 import scala.concurrent.Future
 
-
 class PensionInputsControllerSpec extends test.BaseSpec {
+
+  val DB_2014_KEY = s"${DB_PREFIX}2014"
 
   trait ControllerWithMockKeystore extends MockKeystoreFixture {
     MockKeystore.map = Map("definedBenefit_2008" -> "700000",
@@ -34,11 +35,11 @@ class PensionInputsControllerSpec extends test.BaseSpec {
                     "definedBenefit_2011" -> "1000000",
                     "definedBenefit_2012" -> "1100000",
                     "definedBenefit_2013" -> "1200000",
-                    "definedBenefit_2014" -> "1300000",
-                    "definedBenefit_2014" -> "1300000",
+                    DB_2014_KEY -> "1300000",
+                    DB_2014_KEY -> "1300000",
                     SessionKeys.sessionId -> SESSION_ID,
-                    KeystoreService.CURRENT_INPUT_YEAR_KEY -> "2014",
-                    KeystoreService.SELECTED_INPUT_YEARS_KEY -> "2014"
+                    CURRENT_INPUT_YEAR_KEY -> "2014",
+                    SELECTED_INPUT_YEARS_KEY -> "2014"
                     )
 
     object PensionInputsControllerMockedKeystore extends PensionInputsController {
@@ -50,7 +51,7 @@ class PensionInputsControllerSpec extends test.BaseSpec {
     "onPageLoad" can {
       "with keystore containing DB flag as true values display DB blank field" in new ControllerWithMockKeystore {
         // setup
-        MockKeystore.map = MockKeystore.map - "definedBenefit_2014"
+        MockKeystore.map = MockKeystore.map - DB_2014_KEY
         MockKeystore.map = MockKeystore.map + ("definedBenefit" -> "true")
         val request = FakeRequest(GET,"").withSession{(SessionKeys.sessionId,SESSION_ID)}
 
@@ -60,12 +61,12 @@ class PensionInputsControllerSpec extends test.BaseSpec {
         // check
         status(result) shouldBe 200
         val htmlPage = contentAsString(await(result))
-        htmlPage should include ("""<input type="number" name="definedBenefits.amount_2014" id="definedBenefits.amount_2014" """)
+        htmlPage should include ("""<input type="number" name="definedBenefit_2014" id="definedBenefit_2014" """)
       }
 
       "with keystore containing DB = true value display only DB blank fields" in new ControllerWithMockKeystore {
         // setup
-        MockKeystore.map = MockKeystore.map - "definedBenefit_2014"
+        MockKeystore.map = MockKeystore.map - DB_2014_KEY
         MockKeystore.map = MockKeystore.map + ("definedBenefit" -> "true")
         val request = FakeRequest(GET,"").withSession{(SessionKeys.sessionId,SESSION_ID)}
 
@@ -75,7 +76,7 @@ class PensionInputsControllerSpec extends test.BaseSpec {
         // check
         status(result) shouldBe 200
         val htmlPage = contentAsString(await(result))
-        htmlPage should include ("""<input type="number" name="definedBenefits.amount_2014" id="definedBenefits.amount_2014" """)
+        htmlPage should include ("""<input type="number" name="definedBenefit_2014" id="definedBenefit_2014" """)
       }
 
       "with keystore containing DB = false value, NOT display DB field, display only submit button" in new ControllerWithMockKeystore {
@@ -95,9 +96,9 @@ class PensionInputsControllerSpec extends test.BaseSpec {
       "with current year = -1 redirect to start" in new ControllerWithMockKeystore {
         // setup
         val request = FakeRequest(GET,"").withSession{(SessionKeys.sessionId,SESSION_ID)}
-        MockKeystore.map = MockKeystore.map - KeystoreService.CURRENT_INPUT_YEAR_KEY - KeystoreService.SELECTED_INPUT_YEARS_KEY
-        MockKeystore.map = MockKeystore.map + (KeystoreService.SELECTED_INPUT_YEARS_KEY -> "2014")
-        MockKeystore.map = MockKeystore.map + (KeystoreService.CURRENT_INPUT_YEAR_KEY -> "-1")
+        MockKeystore.map = MockKeystore.map - CURRENT_INPUT_YEAR_KEY - SELECTED_INPUT_YEARS_KEY
+        MockKeystore.map = MockKeystore.map + (SELECTED_INPUT_YEARS_KEY -> "2014")
+        MockKeystore.map = MockKeystore.map + (CURRENT_INPUT_YEAR_KEY -> "-1")
 
         // test
         val result : Future[Result] = PensionInputsControllerMockedKeystore.onPageLoad()(request)
@@ -112,7 +113,7 @@ class PensionInputsControllerSpec extends test.BaseSpec {
   "onSubmit" can {
     "with blank value returns to page with errors" in new ControllerWithMockKeystore {
         // setup
-        val request = FakeRequest(POST,"").withFormUrlEncodedBody(("definedBenefits.amount_2014"," "),
+        val request = FakeRequest(POST,"").withFormUrlEncodedBody((DB_2014_KEY," "),
                                                                   ("isDefinedBenefit","true"),
                                                                   ("isDefinedContribution","false"),
                                                                   ("year","2014"),
@@ -131,7 +132,7 @@ class PensionInputsControllerSpec extends test.BaseSpec {
 
     "with empty db value returns to page with errors" in new ControllerWithMockKeystore {
         // setup
-        val request = FakeRequest(POST,"").withFormUrlEncodedBody(("definedBenefits.amount_2014",""),
+        val request = FakeRequest(POST,"").withFormUrlEncodedBody((DB_2014_KEY,""),
                                                                   ("isDefinedBenefit","true"),
                                                                   ("isDefinedContribution","false"),
                                                                   ("year","2014"),
@@ -149,11 +150,11 @@ class PensionInputsControllerSpec extends test.BaseSpec {
 
     "with valid input amount should save to keystore" in new ControllerWithMockKeystore {
       // set up
-      val formData = List(("definedBenefits.amount_2014"->"1234"),
-                          ("isDefinedBenefit","true"),
-                          ("isDefinedContribution","false"),
-                          ("year","2014"),
-                          ("isEdit","false"))
+      val formData = List((DB_2014_KEY->"1234"),
+                          ("isDefinedBenefit"->"true"),
+                          ("isDefinedContribution"->"false"),
+                          ("year"->"2014"),
+                          ("isEdit"->"false"))
       val sessionData = List(("Current" -> "2014"),
                              ("SelectedYears" -> "2014"),
                              ("definedBenefit" -> "true"),
@@ -167,8 +168,7 @@ class PensionInputsControllerSpec extends test.BaseSpec {
 
       // check
       status(result) shouldBe 303
-      MockKeystore.map should contain key ("definedBenefit_2014")
-      MockKeystore.map should contain value ("123400") // big decimal converted to pence value
+      MockKeystore.map(DB_2014_KEY) shouldBe ("123400") // big decimal converted to pence value
     }
   }
 

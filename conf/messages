@@ -51,8 +51,9 @@ paac.1516.taxyear.text = 2015/16
 
 ## Total PAAC App Error messages
 paac.calculator.form.error = This field is required
-paac.calculator.error.number= Enter an amount that contains only numbers
-error.number= Enter an amount that contains only numbers
+paac.calculator.error.number= Enter an amount that contains only numbers.
+## Not Duplicate. Required by Play Framework
+error.number= Enter an amount that contains only numbers.
 paac.calculator.error.number.zero= Enter a number greater than 0
 error.number.zero= Enter a number greater than 0
 error.min= Enter an amount that is £5,000,000 or less.
@@ -123,23 +124,23 @@ paac.review-amounts.heading.trigger.savings.p2=What were your defined contributi
 paac.review-amounts.heading.trigger.savings.other=What were your defined contribution savings for the rest of {0}?
 paac.review-amounts.heading.trigger.date=When did you first flexibly access your pension savings?
 paac.review-amounts.action.edit = Edit
-paac.review-amounts.value.01={0} January {1}
-paac.review-amounts.value.02={0} February {1}
-paac.review-amounts.value.03={0} March {1}
-paac.review-amounts.value.04={0} April {1}
-paac.review-amounts.value.05={0} May {1}
-paac.review-amounts.value.06={0} June {1}
-paac.review-amounts.value.07={0} July {1}
-paac.review-amounts.value.08={0} August {1}
-paac.review-amounts.value.09={0} September {1}
+paac.review-amounts.value.1={0} January {1}
+paac.review-amounts.value.2={0} February {1}
+paac.review-amounts.value.3={0} March {1}
+paac.review-amounts.value.4={0} April {1}
+paac.review-amounts.value.5={0} May {1}
+paac.review-amounts.value.6={0} June {1}
+paac.review-amounts.value.7={0} July {1}
+paac.review-amounts.value.8={0} August {1}
+paac.review-amounts.value.9={0} September {1}
 paac.review-amounts.value.10={0} October {1}
 paac.review-amounts.value.11={0} November {1}
 paac.review-amounts.value.12={0} December {1}
 
 ## Results Page
 paac.results.table.col.1 = Year
-paac.results.table.col.2 = Available<br> Annual<br> Allowance<br> <span style="font-size:smaller">(Inc. Carry Forwards)</span>
-paac.results.table.col.3 = Available Money<br> Purchase Annual<br> Allowance
+paac.results.table.col.2 = Available<br> annual<br> allowance<br> <span style="font-size:smaller">(Inc. Carry Forwards)</span>
+paac.results.table.col.3 = Available money<br> purchase annual<br> allowance
 paac.results.table.col.4 = Pension<br> savings
 paac.results.table.col.5 = Amount<br> on which<br> tax is due
 paac.results.table.col.6 = Unused<br> annual<br> allowance
@@ -168,7 +169,6 @@ paac.post.trigger.value.error.real.precision = The amount must not be empty or n
 paac.post.trigger.value.error.min = Enter an amount that is £5,000,000 or less.
 paac.post.trigger.value.error.max = Enter an amount that is £{1} or less.
 paac.post.trigger.value.error.bounds = Enter your defined contribution pension savings for rest of 2016 to 2017 even if it is 0.
-paac.post.trigger.value.error.number = Enter an amount that contains only numbers
 
 db=defined benefit
 dc=defined contribution

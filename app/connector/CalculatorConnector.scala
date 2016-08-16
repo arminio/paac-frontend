@@ -44,7 +44,9 @@ trait CalculatorConnector {
     Logger.info(s"""Making calculation request:\n${contributions.mkString("\n")}\nEarliest year =${earliestYear}""")
     httpPostRequest.POST[JsValue, HttpResponse](s"${serviceUrl}${endpoint}",body).map {
       (response)=>
-      (response.json \ "results").as[List[TaxYearResults]]
+      val received = (response.json \ "results").as[List[TaxYearResults]]
+      Logger.debug(s"""${received.mkString("\n")}""")
+      received
     } andThen {
         case Failure(t) => {
           Logger.error(s"Backend failed to calculate: ${t.getMessage()}")

@@ -25,6 +25,7 @@ import uk.gov.hmrc.play.http.{HeaderCarrier, SessionKeys}
 import scala.util.{Try, Success, Failure, Either}
 import play.api.libs.json._
 import play.api.libs.concurrent.Execution.Implicits._
+import play.api.Logger
 
 trait ReadKeystore extends ActionBuilder[DataRequest] {
   def keystore: KeystoreService
@@ -34,6 +35,7 @@ trait ReadKeystore extends ActionBuilder[DataRequest] {
     implicit val request: Request[T] = r
     keystore.readData().map {
       (data)=>
+      Logger.debug(s"""Reading from keystore: ${data.mkString(", ")}""")
       new DataRequest[T](data, request)
     }
   }

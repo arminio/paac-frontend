@@ -113,21 +113,6 @@ class ReviewTotalAmountsControllerSpec extends test.BaseSpec {
         val htmlSummaryPage = contentAsString(await(result))
         htmlSummaryPage should include ("Results")
       }
-
-      "display errors if errors in keystore" in new Mock2016ControllerFixture {
-        // set up
-        val request = FakeRequest(GET, "/paac/calculate").withSession {(SessionKeys.sessionId,SESSION_ID)}
-        MockKeystore.map = MockKeystore.map - "definedBenefit_2009"
-        MockKeystore.map = MockKeystore.map + ("definedBenefit_2009" -> "-800000")
-
-        // test
-        val result: Future[Result] = ControllerWithMocks.onSubmit()(request)
-
-        // check
-        val htmlSummaryPage = contentAsString(await(result))
-        //info(htmlSummaryPage)
-        htmlSummaryPage should include ("Enter an amount that is £5,000,000 or less.")
-      }
     }
 
     "onPageLoad" can {
@@ -164,7 +149,7 @@ class ReviewTotalAmountsControllerSpec extends test.BaseSpec {
         // check
         val htmlSummaryPage = contentAsString(await(result))
         htmlSummaryPage should include ("&pound;1,234")
-        htmlSummaryPage should include ("paac.review-amounts.value.5")
+        htmlSummaryPage should include ("10 May 2015")
       }
 
       "display p2 trigger amount columns if in keystore" in new MockControllerFixture {
@@ -182,20 +167,6 @@ class ReviewTotalAmountsControllerSpec extends test.BaseSpec {
         val htmlSummaryPage = contentAsString(await(result))
         htmlSummaryPage should include ("&pound;1,234")
         htmlSummaryPage should include ("5 November 2015")
-      }
-
-      "display errors if errors in keystore" in new MockControllerFixture {
-        // set up
-        val request = FakeRequest(GET, "/paac/calculate").withSession {(SessionKeys.sessionId,SESSION_ID)}
-        MockKeystore.map = MockKeystore.map - "definedBenefit_2009"
-        MockKeystore.map = MockKeystore.map + ("definedBenefit_2009" -> "-800000")
-
-        // test
-        val result: Future[Result] = ControllerWithMocks.onPageLoad()(request)
-
-        // check
-        val htmlSummaryPage = contentAsString(await(result))
-        htmlSummaryPage should include ("Enter an amount that is £5,000,000 or less.")
       }
     }
 

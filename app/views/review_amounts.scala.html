@@ -1,4 +1,4 @@
-@(reviewForm : Form[models.CalculatorFormFields])(implicit request:Request[_])
+@(pageValues : List[models.Contribution])(implicit request:Request[_])
 
 @import uk.gov.hmrc.play.views.html.helpers._
 @import java.math.BigDecimal
@@ -11,67 +11,37 @@ articleClasses = Some("full-width"),
 backLink = Some((controllers.routes.ReviewTotalAmountsController.onBack.url,Messages("paac.link.text.back")))
 ) {
 
-@if(reviewForm.hasErrors) {
-<div class="error-summary" role="group" aria-labelledby="error-summary-heading" tabindex="-1"
-     style="border: 5px solid #b10e1e;padding: 20px;padding-top: 0px;margin-bottom: 30px;">
-
-    <h1 class="heading-medium error-summary-heading" id="error-summary-heading">
-        @Messages("paac.error.generic")
-    </h1>
-
-    @if(reviewForm.hasGlobalErrors) {
-    <ul>
-        @for(error <- reviewForm.globalErrors) {
-        <li>@error.message</li>
-        }
-    </ul>
-    }
-
-    <ul class="error-summary-list">
-        @for(error <- reviewForm.errors) {
-        @defining(Seq(error.key)++error.args) { args =>
-        <li><a href="#" style="color:#b10e1e;font-weight: bold;">@Messages(error.message, args:_*)</a></li>
-        }
-        }
-    </ul>
-</div>
-}
-
-@if(reviewForm.hasErrors == false && reviewForm.hasGlobalErrors == false) {
-  @defining(reviewForm.get.toPageValues) { pageValues =>
-    @defining(pageValues.find(_.isTriggered)) { triggerContribution =>
-        @defining((triggerContribution.map((tc)=>pageValues.reverse.filterNot((c1)=>c1==tc||c1.isEmpty)).getOrElse(pageValues.reverse.filterNot(_.isEmpty)))) { contributions =>
-          @for(year <- (PensionPeriod.EARLIEST_YEAR_SUPPORTED to PensionPeriod.LATEST_YEAR_SUPPORTED).reverse) {
-            @if(year == 2015) {
-                @defining(triggerContribution.flatMap((tc)=>pageValues.find((c)=>c.isPeriod1 && c != tc)).orElse(pageValues.find(_.isPeriod1))) { c =>
-                  @if(c.isDefined) {
-                    @defining(c.get) { contribution =>
-                      @if(!contribution.isEmpty) {
-                        @contributionReviewTable.table(reviewForm, contribution, triggerContribution)
-                      }
-                    }
-                  }
-                } @* End of define c *@
-            }
-
-            @if(triggerContribution.isDefined && !contributions.map(_.taxPeriodStart.taxYear).contains(triggerContribution.get.taxPeriodStart.taxYear) && year == triggerContribution.get.taxPeriodStart.taxYear) {
-              @defining(triggerContribution.get) { c =>
-                @contributionReviewTable.table(reviewForm, c, triggerContribution)
-              } @* End of define c *@
-            } @* End of if trigger defined but not display *@
-
-            @defining(contributions.find(_.taxPeriodStart.taxYear == year)) { c =>
+@defining(pageValues.find(_.isTriggered)) { triggerContribution =>
+    @defining((triggerContribution.map((tc)=>pageValues.reverse.filterNot((c1)=>c1==tc||c1.isEmpty)).getOrElse(pageValues.reverse.filterNot(_.isEmpty)))) { contributions =>
+      @for(year <- (PensionPeriod.EARLIEST_YEAR_SUPPORTED to PensionPeriod.LATEST_YEAR_SUPPORTED).reverse) {
+        @if(year == 2015) {
+            @defining(triggerContribution.flatMap((tc)=>pageValues.find((c)=>c.isPeriod1 && c != tc)).orElse(pageValues.find(_.isPeriod1))) { c =>
               @if(c.isDefined) {
                 @defining(c.get) { contribution =>
-                  @contributionReviewTable.table(reviewForm, contribution, triggerContribution)
-                } @* End of define contribution *@
-              } @* End of if contribution found *@
+                  @if(!contribution.isEmpty) {
+                    @contributionReviewTable.table(pageValues, contribution, triggerContribution)
+                  }
+                }
+              }
             } @* End of define c *@
-          } @* End of for *@
-        } @* End of define contributions *@
-    } @* End of define triggerContribution *@
-  } @* End of define pageValues *@
-} @* End of if form has no errors *@
+        }
+
+        @if(triggerContribution.isDefined && !contributions.map(_.taxPeriodStart.taxYear).contains(triggerContribution.get.taxPeriodStart.taxYear) && year == triggerContribution.get.taxPeriodStart.taxYear) {
+          @defining(triggerContribution.get) { c =>
+            @contributionReviewTable.table(pageValues, c, triggerContribution)
+          } @* End of define c *@
+        } @* End of if trigger defined but not display *@
+
+        @defining(contributions.find(_.taxPeriodStart.taxYear == year)) { c =>
+          @if(c.isDefined) {
+            @defining(c.get) { contribution =>
+              @contributionReviewTable.table(pageValues, contribution, triggerContribution)
+            } @* End of define contribution *@
+          } @* End of if contribution found *@
+        } @* End of define c *@
+      } @* End of for *@
+    } @* End of define contributions *@
+} @* End of define triggerContribution *@
 
 @form(action = controllers.routes.ReviewTotalAmountsController.onSubmit, args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
 <button id="submit" type="submit" class="button" value="Continue">@Messages("paac.review-amounts.button.continue")</button>
