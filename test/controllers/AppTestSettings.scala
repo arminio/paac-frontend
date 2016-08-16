@@ -19,4 +19,5 @@ package controllers
 trait AppTestSettings extends config.Settings {
   def THIS_YEAR(): Int = 2016
   def POUNDS_AND_PENCE(): Boolean = false
+  def NUMBER_OF_YEARS(): Int = 3
 }

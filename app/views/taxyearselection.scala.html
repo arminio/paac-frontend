@@ -1,4 +1,4 @@
-@(selectedYears : Array[String], isError: Boolean)(implicit request:Request[_])
+@(selectedYears : Array[String], isError: Boolean, numberOfYears: Int)(implicit request:Request[_])
 
 @import uk.gov.hmrc.play.views.html.helpers._
 
@@ -35,7 +35,7 @@ args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
     </ul>
     }
   @defining(config.PaacConfiguration.year()) { thisYear =>
-    @for(i <- List.range(thisYear-3, thisYear+1).reverse) {
+    @for(i <- List.range(thisYear-numberOfYears, thisYear+1).reverse) {
     <label class="block-label" style="@if(isError) {border: 4px solid #b10e1e;}">@(i) to @(i+1) <input id="TaxYear@(i)" type="checkbox" name="TaxYear@(i)" @if(selectedYears.contains(i.toString())){checked}></label>
     }
   }

@@ -19,9 +19,11 @@ package config
 trait Settings {
   def THIS_YEAR(): Int
   def POUNDS_AND_PENCE(): Boolean
+  def NUMBER_OF_YEARS(): Int
 }
 
 trait AppSettings extends {
   def THIS_YEAR(): Int = config.PaacConfiguration.year()
   def POUNDS_AND_PENCE(): Boolean = config.PaacConfiguration.supportPence()
+  def NUMBER_OF_YEARS(): Int = config.PaacConfiguration.numberOfYears()
 }

@@ -22,24 +22,26 @@ import service.KeystoreService._
 import scala.concurrent.Future
 import uk.gov.hmrc.play.http.{HeaderCarrier, SessionKeys}
 import config.AppSettings
+import config.Settings
 
 object TaxYearSelectionController extends TaxYearSelectionController with AppSettings {
   def keystore: KeystoreService = KeystoreService
 }
 
 trait TaxYearSelectionController extends RedirectController {
+  settings: Settings =>
   def onYearSelected = withWriteSession { implicit request =>
     val kkey = request.form.filterKeys(_.contains("TaxYear")).map { case (k,v) => k.drop(7) }.mkString (",")
     if (kkey.nonEmpty) {
       val data = request.data ++ sessionData(kkey,request.form("previous"))
       TaxYearSelection() go Forward.using(data)
     } else {
-      Future.successful(Ok(views.html.taxyearselection(Array[String](), true)))
+      Future.successful(Ok(views.html.taxyearselection(Array[String](), true, settings.NUMBER_OF_YEARS)))
     }
   }
 
   val onPageLoad = withReadSession { implicit request =>
-    Future.successful(Ok(views.html.taxyearselection(request.data.getOrElse(SELECTED_INPUT_YEARS_KEY, "").split(","), false)))
+    Future.successful(Ok(views.html.taxyearselection(request.data.getOrElse(SELECTED_INPUT_YEARS_KEY, "").split(","), false, settings.NUMBER_OF_YEARS)))
   }
 
   protected def sessionData(kkey: String, previous: String): Map[String,String] = {
