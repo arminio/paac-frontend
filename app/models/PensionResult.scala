@@ -23,29 +23,52 @@ import play.api.libs.json._
 case class TaxYearResults(input: Contribution = Contribution(2008,0L),
                           summaryResult: Summary = SummaryResult())
 
+/**
+  Base trait for all summary result row objects. All amounts are in pence,
+  therefore divide by 100 to get pounds and pence.
+*/
 trait Summary {
+  /** Tax due */
   def chargableAmount: Long
+  /** Amount exceeding annual allowance. Not always equal to chargable amount. */
   def exceedingAAAmount: Long
+  /** Annual allowance available */
   def availableAllowance: Long
+  /** Annual allowance that wasn't used and so available for carry forwards. */
   def unusedAllowance: Long
-  def availableAAWithCF: Long    // total available allowance for current year should be renamed to totalAA
-  def availableAAWithCCF: Long   // available allowance carried forward to following year
+  /** total available allowance for current year should be renamed to totalAA */
+  def availableAAWithCF: Long
+  /** total alternative available allowance for current year should be renamed to totalAA */
+  def availableAAAWithCF: Long
+  /** available allowance carried forward to following year */
+  def availableAAWithCCF: Long
+  /** available alternative allowance carried forward to following year */
+  def availableAAAWithCCF: Long
+  /** Alternative annual allowance that wasn't used. Only applicable from 2015 onwards. */
   def unusedAAA: Long
+  /** Money purchase annual allowance amount not used. Only applicable when flexi-access event has occured. */
   def unusedMPAA: Long
+  /** Amount exceeding MPA */
   def exceedingMPAA: Long
+  /** Amount exceeding AAA */
   def exceedingAAA: Long
+  /** True if mpa was applied */
   def isMPA: Boolean
+  /** Money purchase annual allowance. */
   def moneyPurchaseAA: Long
+  /** Alternative annual allowance */
   def alternativeAA: Long
+  /** True if ACA is applicable */
   def isACA: Boolean
 }
 
+/** Simple summary result implementation. Used by calculators for years up to but not including 2015. */
 case class SummaryResult(chargableAmount: Long = 0,
                          exceedingAAAmount: Long = 0,
                          availableAllowance: Long = 0,
                          unusedAllowance: Long = 0,
-                         availableAAWithCF: Long = 0,    // total available allowance for current year should be renamed to totalAA
-                         availableAAWithCCF: Long = 0,   // available allowance carried forward to following year
+                         availableAAWithCF: Long = 0,
+                         availableAAWithCCF: Long = 0,
                          unusedAAA: Long = 0,
                          unusedMPAA: Long = 0,
                          exceedingMPAA: Long = 0,
@@ -53,14 +76,17 @@ case class SummaryResult(chargableAmount: Long = 0,
                          isMPA: Boolean = false,
                          moneyPurchaseAA: Long = 0,
                          alternativeAA: Long = 0,
-                         isACA: Boolean = false) extends Summary
+                         isACA: Boolean = false,
+                         availableAAAWithCF: Long = 0,
+                         availableAAAWithCCF: Long = 0) extends Summary
 
+/** Extends summary result implementation. Used by calculators for years from 2015 onwards. */
 case class ExtendedSummaryFields(chargableAmount: Long = 0,
                                  exceedingAAAmount: Long = 0,
                                  availableAllowance: Long = 0,
                                  unusedAllowance: Long = 0,
-                                 availableAAWithCF: Long = 0,    // total available allowance for current year should be renamed to totalAA
-                                 availableAAWithCCF: Long = 0,   // available allowance carried forward to following year
+                                 availableAAWithCF: Long = 0,
+                                 availableAAWithCCF: Long = 0,
                                  unusedAAA: Long = 0,
                                  unusedMPAA: Long = 0,
                                  moneyPurchaseAA: Long = 0,
@@ -78,8 +104,14 @@ case class ExtendedSummaryFields(chargableAmount: Long = 0,
                                  isMPA: Boolean = false,
                                  acaCF: Long = 0,
                                  dcaCF: Long = 0,
-                                 isACA: Boolean = false) extends Summary
+                                 isACA: Boolean = false,
+                                 availableAAAWithCF: Long = 0,
+                                 availableAAAWithCCF: Long = 0) extends Summary
 
+/**
+ Summary object providing read/write for JSON values. JSON is marshalled/unmarshalled from generic interface
+ not the case class.
+ */
 object Summary {
   implicit val summaryResultWrites: Writes[Summary] = (
     (JsPath \ "chargableAmount").write[Long] and
@@ -95,8 +127,10 @@ object Summary {
     (JsPath \ "isMPA").write[Boolean] and
     (JsPath \ "moneyPurchaseAA").write[Long] and
     (JsPath \ "alternativeAA").write[Long] and
-    (JsPath \ "isACA").write[Boolean]
-  )(Summary.toTuple _ )
+    (JsPath \ "isACA").write[Boolean] and
+    (JsPath \ "availableAAAWithCF").write[Long] and
+    (JsPath \ "availableAAAWithCCF").write[Long]
+  )(Summary.unapply _ )
 
   implicit val summaryResultReads: Reads[Summary] = (
     (JsPath \ "chargableAmount").read[Long] and
@@ -112,11 +146,68 @@ object Summary {
     (JsPath \ "isMPA").read[Boolean] and
     (JsPath \ "moneyPurchaseAA").read[Long] and
     (JsPath \ "alternativeAA").read[Long] and
-    (JsPath \ "isACA").read[Boolean]
-  )(Summary.toSummary _)
+    (JsPath \ "isACA").read[Boolean] and
+    (JsPath \ "availableAAAWithCF").read[Long] and
+    (JsPath \ "availableAAAWithCCF").read[Long]
+  )(Summary.apply _)
 
-  def toTuple(summary: Summary): (Long, Long, Long, Long, Long, Long, Long, Long, Long, Long, Boolean, Long, Long, Boolean) = {
-    (summary.chargableAmount, summary.exceedingAAAmount, summary.availableAllowance, summary.unusedAllowance, summary.availableAAWithCF, summary.availableAAWithCCF, summary.unusedAAA, summary.unusedMPAA, summary.exceedingMPAA, summary.exceedingAAA, summary.isMPA, summary.moneyPurchaseAA, summary.alternativeAA, summary.isACA)
+  def unapply(summary: Summary): (Long, Long, Long, Long, Long, Long, Long, Long, Long, Long, Boolean, Long, Long, Boolean, Long, Long) =
+    // scalastyle:off
+    (summary.chargableAmount,
+      summary.exceedingAAAmount,
+      summary.availableAllowance,
+      summary.unusedAllowance,
+      summary.availableAAWithCF,
+      summary.availableAAWithCCF,
+      summary.unusedAAA,
+      summary.unusedMPAA,
+      summary.exceedingMPAA,
+      summary.exceedingAAA,
+      summary.isMPA,
+      summary.moneyPurchaseAA,
+      summary.alternativeAA,
+      summary.isACA,
+      summary.availableAAAWithCF,
+      summary.availableAAAWithCCF)
+    // scalastyle:on
+
+  // scalastyle:off
+  def apply(chargableAmount: Long = 0,
+            exceedingAAAmount: Long = 0,
+            availableAllowance: Long = 0,
+            unusedAllowance: Long = 0,
+            availableAAWithCF: Long = 0,    // total available allowance for current year should be renamed to totalAA
+            availableAAWithCCF: Long = 0,   // available allowance carried forward to following year
+            unusedAAA: Long = 0,
+            unusedMPAA: Long = 0,
+            exceedingMPAA: Long = 0,
+            exceedingAAA: Long = 0,
+            isMPA: Boolean = false,
+            moneyPurchaseAA: Long = 0,
+            alternativeAA: Long = 0,
+            isACA: Boolean = false,
+            availableAAAWithCF: Long = 0,
+            availableAAAWithCCF: Long = 0): Summary =
+    SummaryResult(chargableAmount,
+                  exceedingAAAmount,
+                  availableAllowance,
+                  unusedAllowance,
+                  availableAAWithCF,
+                  availableAAWithCCF,
+                  unusedAAA,
+                  unusedMPAA,
+                  exceedingMPAA,
+                  exceedingAAA,
+                  isMPA,
+                  moneyPurchaseAA,
+                  alternativeAA,
+                  isACA,
+                  availableAAAWithCF,
+                  availableAAAWithCCF)
+  // scalastyle:on
+
+  def toTuple(summary: Summary): (Long, Long, Long, Long, Long, Long, Long, Long, Long, Long, Boolean, Long, Long, Boolean, Long, Long) = {
+    (summary.chargableAmount, summary.exceedingAAAmount, summary.availableAllowance, summary.unusedAllowance, summary.availableAAWithCF, summary.availableAAWithCCF, summary.unusedAAA, summary.unusedMPAA, summary.exceedingMPAA, summary.exceedingAAA, summary.isMPA, summary.moneyPurchaseAA, summary.alternativeAA, summary.isACA, summary.availableAAAWithCF, summary.availableAAAWithCCF)
   }
 
   def toSummary(chargableAmount: Long = 0,
@@ -132,7 +223,9 @@ object Summary {
                 isMPA: Boolean = false,
                 moneyPurchaseAA: Long = 0,
                 alternativeAA: Long = 0,
-                isACA: Boolean = false): Summary = {
+                isACA: Boolean = false,
+                availableAAAWithCF: Long = 0,
+                availableAAAWithCCF: Long = 0): Summary = {
     SummaryResult(chargableAmount,
                   exceedingAAAmount,
                   availableAllowance,
@@ -146,7 +239,9 @@ object Summary {
                   isMPA,
                   moneyPurchaseAA,
                   alternativeAA,
-                  isACA)
+                  isACA,
+                  availableAAAWithCF,
+                  availableAAAWithCCF)
   }
 }
 

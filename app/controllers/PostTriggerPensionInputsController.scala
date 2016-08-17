@@ -52,7 +52,7 @@ trait PostTriggerPensionInputsController extends RedirectController {
     )
   }
 
-  val onBack = withSession { implicit request =>
+  val onBack = withWriteSession { implicit request =>
     TriggerAmount() go Backward
   }
 

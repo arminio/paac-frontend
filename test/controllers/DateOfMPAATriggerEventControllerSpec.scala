@@ -213,7 +213,7 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
         htmlPage should include ("You must specify a valid date")
       }
 
-      "with bad date show invalid error (no dc flag)" in new ControllerWithMockKeystore {
+/*      "with bad date show invalid error (no dc flag)" in new ControllerWithMockKeystore {
         // set up
         val sessionData = List((SessionKeys.sessionId,SESSION_ID),
                                (IS_EDIT_KEY -> "false"),
@@ -236,7 +236,7 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
         status(result) shouldBe 200
         val htmlPage = contentAsString(await(result))
         htmlPage should include ("Enter a date between 6 4 2015 and 5 4 2016 inclusive")
-      }
+      }*/
 
       "with valid date redirect to next trigger amount page if edit flag not set" in new ControllerWithMockKeystore {
         // set up
@@ -402,7 +402,7 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
         // check
         status(result) shouldBe 200
         val htmlPage = contentAsString(await(result))
-        htmlPage should include ("Enter a date between 6 4 2015 and 5 4 2016 inclusive")
+        htmlPage should include ("Enter a date between 6 4 2016 and 5 4 2017 inclusive")
       }
 
       "with Selected TaxYear= 2015, should accept any date in 2015/16 Tax year" in new ControllerWithMockKeystore {
@@ -573,7 +573,7 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
         // check
         status(result) shouldBe 200
         val htmlPage = contentAsString(await(result))
-        htmlPage should include ("Enter a date between 6 4 2015 and 5 4 2016 inclusive")
+        htmlPage should include ("Enter a date between 6 4 2015 and 5 4 2017 inclusive")
       }
     }
 

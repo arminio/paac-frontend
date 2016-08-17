@@ -60,16 +60,16 @@ trait Contributions {
           case PensionPeriod(_,_,_) if triggerDate.isPeriod2 => data.get(P2_TRIGGER_DC_KEY).flatMap(toLong(_))
           case PensionPeriod(_,_,_) => data.get(TRIGGER_DC_KEY).flatMap(toLong(_))
         }
-        println(maybeTriggerAmount)
-        if (maybeTriggerAmount.isDefined) {
+        maybeTriggerAmount.map {
+          (triggerAmount) =>
           val preTriggerContribution = newAfter(newAfter.indexWhere(isPreTrigger(triggerDate)))
-          val newPreTriggerContribution = preTriggerContribution.copy(taxPeriodEnd=triggerDate)
+          val totalMoneyPurchase = preTriggerContribution.moneyPurchase
+          val preTriggerMoneyPurchase = totalMoneyPurchase - triggerAmount
+          val newPreTriggerContribution = Contribution(preTriggerContribution.taxPeriodStart, triggerDate, Some(InputAmounts(preTriggerContribution.amounts.flatMap(_.definedBenefit), Some(preTriggerMoneyPurchase), preTriggerContribution.amounts.flatMap(_.income), Some(false))))
           val triggerContribution = Contribution(triggerDate, preTriggerContribution.taxPeriodEnd, Some(InputAmounts(definedBenefit=Some(0L),moneyPurchase=maybeTriggerAmount,triggered=Some(true))))
 
           (before ++ newAfter.drop(1) ++ List(newPreTriggerContribution,triggerContribution)).sortWith(Contribution.sortByYearAndPeriod)
-        } else {
-          contributions
-        }
+        }.getOrElse(contributions)
       } else {
         contributions
       }

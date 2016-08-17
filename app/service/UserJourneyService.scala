@@ -215,8 +215,8 @@ case class CheckYourAnswers(state: PageState=PageState(year=PageLocation.END)) e
 
 case class PensionInput(state: PageState=PageState()) extends PageLocation {
   def action(): Call = if (state.year == 2015) controllers.routes.PensionInputs201516Controller.onPageLoad()
-                       else if (state.year > 2015) controllers.routes.PensionInputs201617Controller.onPageLoad()
-                       else controllers.routes.PensionInputsController.onPageLoad()
+                       else if (state.year > 2015) controllers.routes.PensionInputs201617Controller.onPageLoad(state.year)
+                       else controllers.routes.PensionInputsController.onPageLoad(state.year)
   override protected def forward(): PageLocation = if (state.year >= 2016) super.forward
                                                    else if (YesNoTrigger(state).isSupported) YesNoTrigger(state)
                                                    else nextSubJourney
@@ -230,7 +230,7 @@ case class YesNoTrigger(state: PageState=PageState()) extends PageLocation {
 }
 
 case class YesNoIncome(state: PageState=PageState()) extends PageLocation {
-  def action(): Call = controllers.routes.YesNoThresholdIncomeController.onPageLoad()
+  def action(): Call = controllers.routes.YesNoThresholdIncomeController.onPageLoad(state.year)
   override protected def forward(): PageLocation = if (state.isTI) super.forward
                                                    else if (YesNoTrigger(state).isSupported()) YesNoTrigger(state)
                                                    else nextSubJourney
@@ -238,6 +238,6 @@ case class YesNoIncome(state: PageState=PageState()) extends PageLocation {
 
 case class AdjustedIncome(state: PageState=PageState()) extends PageLocation {
   override def isSupported(): Boolean = state.isTI
-  def action(): Call = controllers.routes.AdjustedIncome1617InputController.onPageLoad()
+  def action(): Call = controllers.routes.AdjustedIncome1617InputController.onPageLoad(state.year)
   override protected def forward(): PageLocation = if (YesNoTrigger(state).isSupported()) YesNoTrigger(state) else nextSubJourney
 }

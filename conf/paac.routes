@@ -9,14 +9,14 @@ GET         /                                           controllers.StartPageCon
 GET         /new                                        controllers.StartPageController.newSession
 
 ## 2016/17 Threshold Income Yes/No Page
-GET         /yesnothresholdincome                       controllers.YesNoThresholdIncomeController.onPageLoad
+GET         /yesnothresholdincome/:year                 controllers.YesNoThresholdIncomeController.onPageLoad(year:Int)
 POST        /yesnothresholdincome                       controllers.YesNoThresholdIncomeController.onSubmit
-GET         /yesnothresholdincome/back                  controllers.YesNoThresholdIncomeController.onBack
+GET         /yesnothresholdincome/:year/back            controllers.YesNoThresholdIncomeController.onBack(year:Int)
 
 ## Pension Input Page
-GET         /adjustedincome                             controllers.AdjustedIncome1617InputController.onPageLoad
+GET         /adjustedincome/:year                       controllers.AdjustedIncome1617InputController.onPageLoad(year:Int)
 POST        /adjustedincome                             controllers.AdjustedIncome1617InputController.onSubmit
-GET         /adjustedincome/back                        controllers.AdjustedIncome1617InputController.onBack
+GET         /adjustedincome/:year/back                  controllers.AdjustedIncome1617InputController.onBack(year:Int)
 
 ## Scheme Selection Page
 GET         /scheme/:year                               controllers.SelectSchemeController.onPageLoad(year:Int)
@@ -49,13 +49,13 @@ POST        /dateofmpaate                               controllers.DateOfMPAATr
 GET         /dateofmpaate/back                          controllers.DateOfMPAATriggerEventController.onBack
 
 ## Pension Input Page
-GET         /pensionInputs                              controllers.PensionInputsController.onPageLoad
-GET         /pensionInputs/back                         controllers.PensionInputsController.onBack
+GET         /pensionInputs/:year                        controllers.PensionInputsController.onPageLoad(year:Int)
+GET         /pensionInputs/:year/back                   controllers.PensionInputsController.onBack(year:Int)
 POST        /pensionInputs                              controllers.PensionInputsController.onSubmit
 
 ## 2016/17 Pension Input Amounts Page
-GET         /pensionInputsPost2015                      controllers.PensionInputs201617Controller.onPageLoad
-GET         /pensionInputsPost2015/back                 controllers.PensionInputs201617Controller.onBack
+GET         /pensionInputsPost2015/:year                controllers.PensionInputs201617Controller.onPageLoad(year:Int)
+GET         /pensionInputsPost2015/:year/back           controllers.PensionInputs201617Controller.onBack(year:Int)
 POST        /pensionInputsPost2015                      controllers.PensionInputs201617Controller.onSubmit
 
 ## Review Pension Input Amounts

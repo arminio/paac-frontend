@@ -28,13 +28,12 @@ object YesNoThresholdIncomeController extends YesNoThresholdIncomeController wit
 }
 
 trait YesNoThresholdIncomeController extends RedirectController {
-  val onPageLoad = withReadSession { implicit request =>
-    val year = request.data(CURRENT_INPUT_YEAR_KEY)
+  def onPageLoad(year:Int) = withReadSession { implicit request =>
     val value = request.data.get(s"${TI_YES_NO_KEY_PREFIX}${year}") match {
       case Some(value) => value
       case None => "Yes"
     }
-    Future.successful(Ok(views.html.yesno_for_threshold_income(YesNoMPAATriggerEventForm.form.fill(value), year.toInt)))
+    Future.successful(Ok(views.html.yesno_for_threshold_income(YesNoMPAATriggerEventForm.form.fill(value), year)))
   }
 
   val onSubmit = withWriteSession { implicit request =>
@@ -51,7 +50,7 @@ trait YesNoThresholdIncomeController extends RedirectController {
     )
   }
 
-  val onBack = withSession { implicit request =>
+  def onBack(year:Int) = withWriteSession { implicit request =>
     YesNoIncome() go Backward
   }
 }

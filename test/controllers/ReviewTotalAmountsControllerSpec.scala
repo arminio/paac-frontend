@@ -178,7 +178,7 @@ class ReviewTotalAmountsControllerSpec extends test.BaseSpec {
 
         // check
         status(result) shouldBe 303
-        redirectLocation(result) shouldBe Some("/paac/pensionInputs")
+        redirectLocation(result) shouldBe Some("/paac/pensionInputs/2014")
       }
 
       "redirect to pension inputs 1516 controller on page load when year is 2015 " in new MockControllerFixture {
@@ -236,7 +236,7 @@ class ReviewTotalAmountsControllerSpec extends test.BaseSpec {
 
         // check
         status(result) shouldBe 303
-        redirectLocation(result) shouldBe Some("/paac/adjustedincome")
+        redirectLocation(result) shouldBe Some("/paac/adjustedincome/2016")
         MockKeystore.map.get(KeystoreService.CURRENT_INPUT_YEAR_KEY) shouldBe Some("2016")
       }
     }
@@ -252,7 +252,7 @@ class ReviewTotalAmountsControllerSpec extends test.BaseSpec {
 
         // check
         status(result) shouldBe 303
-        redirectLocation(result) shouldBe Some("/paac/pensionInputs")
+        redirectLocation(result) shouldBe Some("/paac/pensionInputs/2014")
       }
     }
   }

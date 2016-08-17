@@ -196,7 +196,7 @@ class YesNoMPAATriggerEventAmountControllerSpec extends test.BaseSpec {
 
         // check
         status(result) shouldBe 303
-        redirectLocation(result) shouldBe Some("/paac/yesnothresholdincome")
+        redirectLocation(result) shouldBe Some("/paac/yesnothresholdincome/2016")
       }
     }
   }

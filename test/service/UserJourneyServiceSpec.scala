@@ -69,7 +69,7 @@ class UserJourneyServiceSpec extends test.BaseSpec with Results {
 
     "when on simple pre-2015 journey" should {
       "when TaxYearSelection on forward goes to first year inputs" in {
-        forwardNoDC("-2", "2012", TaxYearSelection) shouldBe Some("/paac/pensionInputs")
+        forwardNoDC("-2", "2012", TaxYearSelection) shouldBe Some("/paac/pensionInputs/2012")
       }
 
       "when on one year on forward goes to end" in {
@@ -101,7 +101,7 @@ class UserJourneyServiceSpec extends test.BaseSpec with Results {
       }
       "on 4th step next year if te is false" in {
         fullforward("2015", "2015", YesNoTrigger, true, false, false) shouldBe Some("/paac/review")
-        fullforward("2015", "2015,2014", YesNoTrigger, true, false, false) shouldBe Some("/paac/pensionInputs")
+        fullforward("2015", "2015,2014", YesNoTrigger, true, false, false) shouldBe Some("/paac/pensionInputs/2014")
       }
       "on 5th step goto trigger amount if dc is true" in {
         fullforward("2015", "2015", TriggerDate, true, false, true) shouldBe Some("/paac/moneyPurchasePostTriggerValue")
@@ -110,7 +110,7 @@ class UserJourneyServiceSpec extends test.BaseSpec with Results {
         fullforward("2015", "2015", TriggerAmount, true, false,true) shouldBe Some("/paac/review")
       }
       "on 6th step goto review if dc is true if more than one year selected" in {
-        fullforward("2015", "2015,2014", TriggerAmount, true, false,true) shouldBe Some("/paac/pensionInputs")
+        fullforward("2015", "2015,2014", TriggerAmount, true, false,true) shouldBe Some("/paac/pensionInputs/2014")
       }
     }
 
@@ -120,15 +120,15 @@ class UserJourneyServiceSpec extends test.BaseSpec with Results {
         forward("-2", "2016", TaxYearSelection, true, false) shouldBe Some("/paac/scheme/2016")
       }
       "on 2nd step goto post 2015 inputs" in {
-        forward("2016", "2016", SelectScheme, false, false) shouldBe Some("/paac/pensionInputsPost2015")
-        forward("2016", "2016", SelectScheme, true, false) shouldBe Some("/paac/pensionInputsPost2015")
+        forward("2016", "2016", SelectScheme, false, false) shouldBe Some("/paac/pensionInputsPost2015/2016")
+        forward("2016", "2016", SelectScheme, true, false) shouldBe Some("/paac/pensionInputsPost2015/2016")
       }
       "on 3rd step goto post 2015 inputs" in {
-        forward("2016", "2016", PensionInput, false, false) shouldBe Some("/paac/yesnothresholdincome")
-        forward("2016", "2016", PensionInput, true, false) shouldBe Some("/paac/yesnothresholdincome")
+        forward("2016", "2016", PensionInput, false, false) shouldBe Some("/paac/yesnothresholdincome/2016")
+        forward("2016", "2016", PensionInput, true, false) shouldBe Some("/paac/yesnothresholdincome/2016")
       }
       "on 4th step goto threshold income if ti is true" in {
-        forward("2016", "2016", YesNoIncome, false, true) shouldBe Some("/paac/adjustedincome")
+        forward("2016", "2016", YesNoIncome, false, true) shouldBe Some("/paac/adjustedincome/2016")
       }
       "on 4th step goto trigger yes/no if dc is true, ti is false, and 2015 not selected" in {
         fullforward("2016", "2016", YesNoIncome, true, false, false, false, 2016) shouldBe Some("/paac/yesnompaate")
@@ -136,13 +136,13 @@ class UserJourneyServiceSpec extends test.BaseSpec with Results {
       }
       "on 4th step goto next year if ti is false and only one year" in {
         forward("2016", "2016,2015", YesNoIncome, false, false) shouldBe Some("/paac/scheme/2015")
-        forward("2016", "2016,2014", YesNoIncome, false, false) shouldBe Some("/paac/pensionInputs")
+        forward("2016", "2016,2014", YesNoIncome, false, false) shouldBe Some("/paac/pensionInputs/2014")
       }
       "on 5th step goto trigger yes/no if dc and te is true (only when 2015 not selected)" in {
         fullforward("2016", "2016", AdjustedIncome, true, false, true, false, 2016) shouldBe Some("/paac/yesnompaate")
       }
       "on 5th step goto next year if dc is false" in {
-        forward("2016", "2016,2014", AdjustedIncome, false, true) shouldBe Some("/paac/pensionInputs")
+        forward("2016", "2016,2014", AdjustedIncome, false, true) shouldBe Some("/paac/pensionInputs/2014")
       }
       "on 5th step goto next year if dc is false and 2015 selected" in {
         forward("2016", "2016,2015", AdjustedIncome, false, true) shouldBe Some("/paac/scheme/2015")
@@ -155,7 +155,7 @@ class UserJourneyServiceSpec extends test.BaseSpec with Results {
       }
       "on 8th step goto next year" in {
         fullforward("2016", "2016,2015", TriggerAmount, true, true,true) shouldBe Some("/paac/scheme/2015")
-        fullforward("2016", "2016,2014", TriggerAmount, true, true,true) shouldBe Some("/paac/pensionInputs")
+        fullforward("2016", "2016,2014", TriggerAmount, true, true,true) shouldBe Some("/paac/pensionInputs/2014")
       }
       "on 8th step goto end if only one year" in {
         fullforward("2016", "2016", TriggerAmount, true, true,true) shouldBe Some("/paac/review")
@@ -173,10 +173,10 @@ class UserJourneyServiceSpec extends test.BaseSpec with Results {
 
     "when on simple pre-2015 journey" should {
       "when showing review page on backwards goes to last year inputs" in {
-        backwards(END, "2014,2013,2012", CheckYourAnswers) shouldBe Some("/paac/pensionInputs")
+        backwards(END, "2014,2013,2012", CheckYourAnswers) shouldBe Some("/paac/pensionInputs/2012")
       }
       "when showing pension input page on backwards goes to pension inputs" in {
-        backwards(2012, "2014,2013,2012", PensionInput) shouldBe Some("/paac/pensionInputs")
+        backwards(2012, "2014,2013,2012", PensionInput) shouldBe Some("/paac/pensionInputs/2013")
       }
       "when showing first pension input page on backwards goes to taxyearselection" in {
         backwards(2014, "2014,2013,2012", PensionInput) shouldBe Some("/paac/taxyearselection")
@@ -233,12 +233,12 @@ class UserJourneyServiceSpec extends test.BaseSpec with Results {
         "when dc is false" should {
           "when te is false" should {
             "when showing pension savings page backwards goes to threshold income yes/no" in {
-              backwards(2014, "2016,2014", PensionInput, false, false, false) shouldBe Some("/paac/yesnothresholdincome")
-              backwards(2015, "2016,2015", SelectScheme, false, false, false) shouldBe Some("/paac/yesnothresholdincome")
+              backwards(2014, "2016,2014", PensionInput, false, false, false) shouldBe Some("/paac/yesnothresholdincome/2016")
+              backwards(2015, "2016,2015", SelectScheme, false, false, false) shouldBe Some("/paac/yesnothresholdincome/2016")
             }
             "when showing pension savings page backwards goes to threshold input when ti is true" in {
-              backwards(2014, "2016,2014", PensionInput, false, true, false) shouldBe Some("/paac/adjustedincome")
-              backwards(2015, "2016,2015", SelectScheme, false, true, false) shouldBe Some("/paac/adjustedincome")
+              backwards(2014, "2016,2014", PensionInput, false, true, false) shouldBe Some("/paac/adjustedincome/2016")
+              backwards(2015, "2016,2015", SelectScheme, false, true, false) shouldBe Some("/paac/adjustedincome/2016")
             }
           }
           "when te is true" should {
@@ -248,7 +248,7 @@ class UserJourneyServiceSpec extends test.BaseSpec with Results {
             }
             "when showing pension savings page backwards goes to trigger amount when ti is true (only when 2015 not selected)" in {
               backwards(2014, "2016,2014", PensionInput, false, true, true, false, 2016) shouldBe Some("/paac/moneyPurchasePostTriggerValue")
-              backwards(2015, "2016,2015", SelectScheme, false, true, true, false, 2016) shouldBe Some("/paac/adjustedincome")
+              backwards(2015, "2016,2015", SelectScheme, false, true, true, false, 2016) shouldBe Some("/paac/adjustedincome/2016")
             }
           }
         }
@@ -259,8 +259,8 @@ class UserJourneyServiceSpec extends test.BaseSpec with Results {
               backwards(2014, "2016,2014", PensionInput, true, true, false, false, 2016) shouldBe Some("/paac/yesnompaate")
             }
             "when showing pension savings page backwards when 2015 selected" in {
-              backwards(2015, "2016,2015", SelectScheme, true, false, false, false, 2016) shouldBe Some("/paac/yesnothresholdincome")
-              backwards(2015, "2016,2015", SelectScheme, true, true, false,false,  2016) shouldBe Some("/paac/adjustedincome")
+              backwards(2015, "2016,2015", SelectScheme, true, false, false, false, 2016) shouldBe Some("/paac/yesnothresholdincome/2016")
+              backwards(2015, "2016,2015", SelectScheme, true, true, false,false,  2016) shouldBe Some("/paac/adjustedincome/2016")
             }
           }
           "when te is true" should {

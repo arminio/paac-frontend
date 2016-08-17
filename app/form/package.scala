@@ -28,7 +28,7 @@ package object utilities {
 
   def poundsAndPenceField(isValidating: Boolean = false) = {
     implicit val binder:Formatter[BigDecimal] = bigDecimalFormatter(Some((10,2)))
-    val field = bigDecimal(10,2)
+    val field = Forms.of[BigDecimal] as binder
     if (isValidating)
           field.verifying("errorbounds", value=> value.longValue >= 0 && value.longValue <= DEFAULT_MAX)
     else
@@ -38,9 +38,9 @@ package object utilities {
   def poundsField(isValidating: Boolean = false) = {
     implicit val binder:Formatter[Int] = numberFormatter(_.toInt)
     if (isValidating)
-      number(min=0,max=DEFAULT_MAX)
+      Forms.of[Int] verifying (Constraints.min(0, false), Constraints.max(DEFAULT_MAX, false))
      else
-       number
+      Forms.of[Int]
   }
 
   def toMap(caseClassInstance: AnyRef) =
@@ -125,7 +125,7 @@ package object utilities {
 
     new Formatter[BigDecimal] {
       override val format = Some("format.real" -> Nil)
-      def bind(key: String, data: Map[String, String]) = parsing(convert, "(-*\\d+(\\.\\d+)*)".r, errorHandler)(key, data)
+      def bind(key: String, data: Map[String, String]) = parsing(convert, "(-*[\\d.]+)".r, errorHandler)(key, data)
       def unbind(key: String, value: BigDecimal) = Map(key -> precision.map({ p => value.setScale(p._2) }).getOrElse(value).toString)
     }
   }

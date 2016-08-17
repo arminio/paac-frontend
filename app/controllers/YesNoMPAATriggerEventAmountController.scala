@@ -52,7 +52,7 @@ trait YesNoMPAATriggerEventAmountController extends RedirectController {
     )
   }
 
-  val onBack = withSession { implicit request =>
+  val onBack = withWriteSession { implicit request =>
     YesNoTrigger() go Backward
   }
 }

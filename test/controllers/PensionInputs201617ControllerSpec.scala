@@ -40,18 +40,18 @@ class PensionInputs201617ControllerSpec extends test.BaseSpec {
   "PensionInputs201617Controller" when {
     "GET with routes" should {
       "not return result NOT_FOUND" in {
-        val result: Option[Future[Result]] = route(FakeRequest(GET, endPointURL))
+        val result: Option[Future[Result]] = route(FakeRequest(GET, endPointURL+"/2016"))
         result.isDefined shouldBe true
         status(result.get) should not be NOT_FOUND
       }
 
       "return 303 for valid GET request" in {
-        val result: Option[Future[Result]] = route(FakeRequest(GET, endPointURL))
+        val result: Option[Future[Result]] = route(FakeRequest(GET, endPointURL+"/2016"))
         status(result.get) shouldBe 303
       }
 
       "not return 200 for valid GET request" in {
-        val result: Option[Future[Result]] = route(FakeRequest(GET, endPointURL))
+        val result: Option[Future[Result]] = route(FakeRequest(GET, endPointURL+"/2016"))
         status(result.get) should not be 200
       }
     }
@@ -65,7 +65,7 @@ class PensionInputs201617ControllerSpec extends test.BaseSpec {
         MockKeystore.map = MockKeystore.map + (CURRENT_INPUT_YEAR_KEY -> "2016")
 
         // test
-        val result : Future[Result] = ControllerWithMockKeystore.onPageLoad()(request)
+        val result : Future[Result] = ControllerWithMockKeystore.onPageLoad(2016)(request)
 
         // check
         status(result) shouldBe 200
@@ -81,7 +81,7 @@ class PensionInputs201617ControllerSpec extends test.BaseSpec {
         MockKeystore.map = MockKeystore.map + (CURRENT_INPUT_YEAR_KEY -> "2016")
 
         // test
-        val result : Future[Result] = ControllerWithMockKeystore.onPageLoad()(request)
+        val result : Future[Result] = ControllerWithMockKeystore.onPageLoad(2016)(request)
 
         // check
         status(result) shouldBe 200
@@ -99,29 +99,13 @@ class PensionInputs201617ControllerSpec extends test.BaseSpec {
         MockKeystore.map = MockKeystore.map + (CURRENT_INPUT_YEAR_KEY -> "2016")
 
         // test
-        val result : Future[Result] = ControllerWithMockKeystore.onPageLoad()(request)
+        val result : Future[Result] = ControllerWithMockKeystore.onPageLoad(2016)(request)
 
         // check
         status(result) shouldBe 200
         val htmlPage = contentAsString(await(result))
         htmlPage should include (s"""<input type="number" name="${DB_PREFIX}2016" id="${DB_PREFIX}2016" min="0" class="input--no-spinner" value='400' """)
         htmlPage should include (s"""<input type="number" name="${DC_PREFIX}2016" id="${DC_PREFIX}2016" min="0" class="input--no-spinner" value='600' """)
-      }
-
-      "have keystore with definedBenefit_2016 value and year empty when we revisit the same page" in new ControllerWithMockKeystore {
-        // setup
-        val request = FakeRequest(GET,"").withSession{(SessionKeys.sessionId,SESSION_ID)}
-        MockKeystore.map = MockKeystore.map + ("definedBenefit_2016" -> "40000")
-        MockKeystore.map = MockKeystore.map + (IS_DC -> "true")
-        MockKeystore.map = MockKeystore.map + (IS_DB -> "true")
-        MockKeystore.map = MockKeystore.map + (CURRENT_INPUT_YEAR_KEY -> "-1")
-
-        // test
-        val result : Future[Result] = ControllerWithMockKeystore.onPageLoad()(request)
-
-        // check
-        status(result) shouldBe 303
-        redirectLocation(result) shouldBe Some("/paac")
       }
     }
 
@@ -153,7 +137,7 @@ class PensionInputs201617ControllerSpec extends test.BaseSpec {
 
         // check
         status(result) shouldBe 303
-        redirectLocation(result) shouldBe Some("/paac/yesnothresholdincome")
+        redirectLocation(result) shouldBe Some("/paac/yesnothresholdincome/2016")
         MockKeystore.map(DB_PREFIX+"2016") shouldBe "400"
         MockKeystore.map(DC_PREFIX+"2016") shouldBe "600"
       }
@@ -173,7 +157,7 @@ class PensionInputs201617ControllerSpec extends test.BaseSpec {
 
         // check
         status(result) shouldBe 303
-        redirectLocation(result) shouldBe Some("/paac/yesnothresholdincome")
+        redirectLocation(result) shouldBe Some("/paac/yesnothresholdincome/2016")
         MockKeystore.map(DB_PREFIX+"2016") shouldBe "400"
       }
 
@@ -192,7 +176,7 @@ class PensionInputs201617ControllerSpec extends test.BaseSpec {
 
         // check
         status(result) shouldBe 303
-        redirectLocation(result) shouldBe Some("/paac/yesnothresholdincome")
+        redirectLocation(result) shouldBe Some("/paac/yesnothresholdincome/2016")
         MockKeystore.map(DC_PREFIX+"2016") shouldBe "600"
       }
 
@@ -229,7 +213,7 @@ class PensionInputs201617ControllerSpec extends test.BaseSpec {
         // check
         status(result) shouldBe 200
         val htmlPage = contentAsString(await(result))
-        htmlPage should include (s"""<a href="#${DB_PREFIX}2016" style="color:#b10e1e;font-weight: bold;">Enter an amount that contains only numbers.</a>""")
+        htmlPage should include (s"""<a href="#${DB_PREFIX}2016" style="color:#b10e1e;font-weight: bold;">This field is required</a>""")
       }
 
       "with isEdit = false, DB = false and DC = true with empty DC Input should display the same page with errors" in new ControllerWithMockKeystore {
@@ -247,7 +231,7 @@ class PensionInputs201617ControllerSpec extends test.BaseSpec {
         // check
         status(result) shouldBe 200
         val htmlPage = contentAsString(await(result))
-        htmlPage should include (s"""<a href="#${DC_PREFIX}2016" style="color:#b10e1e;font-weight: bold;">Enter an amount that contains only numbers.</a>""")
+        htmlPage should include (s"""<a href="#${DC_PREFIX}2016" style="color:#b10e1e;font-weight: bold;">This field is required</a>""")
       }
     }
   }
@@ -260,7 +244,7 @@ class PensionInputs201617ControllerSpec extends test.BaseSpec {
                                                                        (SELECTED_INPUT_YEARS_KEY -> "2016"))
 
       // test
-      val result : Future[Result] = ControllerWithMockKeystore.onBack()(request)
+      val result : Future[Result] = ControllerWithMockKeystore.onBack(2016)(request)
 
       // check
       status(result) shouldBe 303
