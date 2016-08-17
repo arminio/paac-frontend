@@ -171,7 +171,7 @@ class PensionInputs201516ControllerSpec extends test.BaseSpec {
 
         // check
         status(result) shouldBe 303
-        redirectLocation(result) shouldBe Some("/paac/pensionInputs")
+        redirectLocation(result) shouldBe Some("/paac/pensionInputs/2014")
       }
 
       "with invalid request redisplay page with errors" in new ControllerWithMockKeystore {

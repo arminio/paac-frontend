@@ -137,7 +137,7 @@ class PensionInputs201617ControllerSpec extends test.BaseSpec {
 
         // check
         status(result) shouldBe 303
-        redirectLocation(result) shouldBe Some("/paac/yesnothresholdincome")
+        redirectLocation(result) shouldBe Some("/paac/yesnothresholdincome/2016")
         MockKeystore.map(DB_PREFIX+"2016") shouldBe "400"
         MockKeystore.map(DC_PREFIX+"2016") shouldBe "600"
       }
@@ -157,7 +157,7 @@ class PensionInputs201617ControllerSpec extends test.BaseSpec {
 
         // check
         status(result) shouldBe 303
-        redirectLocation(result) shouldBe Some("/paac/yesnothresholdincome")
+        redirectLocation(result) shouldBe Some("/paac/yesnothresholdincome/2016")
         MockKeystore.map(DB_PREFIX+"2016") shouldBe "400"
       }
 
@@ -176,7 +176,7 @@ class PensionInputs201617ControllerSpec extends test.BaseSpec {
 
         // check
         status(result) shouldBe 303
-        redirectLocation(result) shouldBe Some("/paac/yesnothresholdincome")
+        redirectLocation(result) shouldBe Some("/paac/yesnothresholdincome/2016")
         MockKeystore.map(DC_PREFIX+"2016") shouldBe "600"
       }
 

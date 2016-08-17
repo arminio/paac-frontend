@@ -56,7 +56,7 @@ class PensionInputsControllerSpec extends test.BaseSpec {
         val request = FakeRequest(GET,"").withSession{(SessionKeys.sessionId,SESSION_ID)}
 
         // test
-        val result : Future[Result] = PensionInputsControllerMockedKeystore.onPageLoad()(request)
+        val result : Future[Result] = PensionInputsControllerMockedKeystore.onPageLoad(2014)(request)
 
         // check
         status(result) shouldBe 200
@@ -71,7 +71,7 @@ class PensionInputsControllerSpec extends test.BaseSpec {
         val request = FakeRequest(GET,"").withSession{(SessionKeys.sessionId,SESSION_ID)}
 
         // test
-        val result : Future[Result] = PensionInputsControllerMockedKeystore.onPageLoad()(request)
+        val result : Future[Result] = PensionInputsControllerMockedKeystore.onPageLoad(2014)(request)
 
         // check
         status(result) shouldBe 200
@@ -85,7 +85,7 @@ class PensionInputsControllerSpec extends test.BaseSpec {
         val request = FakeRequest(GET,"").withSession{(SessionKeys.sessionId,SESSION_ID)}
 
         // test
-        val result : Future[Result] = PensionInputsControllerMockedKeystore.onPageLoad()(request)
+        val result : Future[Result] = PensionInputsControllerMockedKeystore.onPageLoad(2014)(request)
 
         // check
         status(result) shouldBe 200
@@ -101,7 +101,7 @@ class PensionInputsControllerSpec extends test.BaseSpec {
         MockKeystore.map = MockKeystore.map + (CURRENT_INPUT_YEAR_KEY -> "-1")
 
         // test
-        val result : Future[Result] = PensionInputsControllerMockedKeystore.onPageLoad()(request)
+        val result : Future[Result] = PensionInputsControllerMockedKeystore.onPageLoad(-1)(request)
 
         // check
         status(result) shouldBe 303
@@ -183,7 +183,7 @@ class PensionInputsControllerSpec extends test.BaseSpec {
       implicit val request = FakeRequest(GET,"/paac/backpensionInputs").withSession(sessionData: _*)
 
       // test
-      val result : Future[Result] = PensionInputsControllerMockedKeystore.onBack()(request)
+      val result : Future[Result] = PensionInputsControllerMockedKeystore.onBack(2016)(request)
 
       // check
       status(result) shouldBe 303

@@ -43,18 +43,18 @@ class YesNoThresholdIncomeControllerSpec extends test.BaseSpec {
   "YesNoThresholdIncomeController" when {
     "GET with routes" should {
       "not return result NOT_FOUND" in {
-        val result: Option[Future[Result]] = route(FakeRequest(GET, endPointURL))
+        val result: Option[Future[Result]] = route(FakeRequest(GET, endPointURL+"/2016"))
         result.isDefined shouldBe true
         status(result.get) should not be NOT_FOUND
       }
 
       "return 303 for valid GET request" in {
-        val result: Option[Future[Result]] = route(FakeRequest(GET, endPointURL))
+        val result: Option[Future[Result]] = route(FakeRequest(GET, endPointURL+"/2016"))
         status(result.get) shouldBe 303
       }
 
       "not return 200 for valid GET request" in {
-        val result: Option[Future[Result]] = route(FakeRequest(GET, endPointURL))
+        val result: Option[Future[Result]] = route(FakeRequest(GET, endPointURL+"/2016"))
         status(result.get) should not be 200
       }
     }
@@ -65,7 +65,7 @@ class YesNoThresholdIncomeControllerSpec extends test.BaseSpec {
         val request = FakeRequest(GET,"").withSession{(SessionKeys.sessionId,SESSION_ID)}
 
         // test
-        val result : Future[Result] = MockYesNoThresholdIncomeControllerWithMockKeystore.onPageLoad()(request)
+        val result : Future[Result] = MockYesNoThresholdIncomeControllerWithMockKeystore.onPageLoad(2016)(request)
 
         // check
         status(result) shouldBe 200
@@ -78,7 +78,7 @@ class YesNoThresholdIncomeControllerSpec extends test.BaseSpec {
         MockKeystore.map = MockKeystore.map + ("yesnoForThresholdIncome" -> "yes")
 
         // test
-        val result : Future[Result] = MockYesNoThresholdIncomeControllerWithMockKeystore.onPageLoad()(request)
+        val result : Future[Result] = MockYesNoThresholdIncomeControllerWithMockKeystore.onPageLoad(2016)(request)
 
         // check
         status(result) shouldBe 200
@@ -133,7 +133,7 @@ class YesNoThresholdIncomeControllerSpec extends test.BaseSpec {
        status(result) shouldBe 303
        MockKeystore.map should contain key ("yesnoForThresholdIncome_2016")
        MockKeystore.map should contain value ("Yes")
-       redirectLocation(result) shouldBe Some("/paac/adjustedincome")
+       redirectLocation(result) shouldBe Some("/paac/adjustedincome/2016")
      }
 
      "with yesNo = No should forward to review page when 2015 not selected" in new ControllerWithMockKeystore{
@@ -194,7 +194,7 @@ class YesNoThresholdIncomeControllerSpec extends test.BaseSpec {
                                                                          (SELECTED_INPUT_YEARS_KEY -> "2016"))
 
         // test
-        val result : Future[Result] = MockYesNoThresholdIncomeControllerWithMockKeystore.onBack()(request)
+        val result : Future[Result] = MockYesNoThresholdIncomeControllerWithMockKeystore.onBack(2016)(request)
 
         // check
         status(result) shouldBe 303

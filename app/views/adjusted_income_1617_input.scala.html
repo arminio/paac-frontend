@@ -6,7 +6,7 @@
 pageTitle = Messages("paac.1617.adjusted.income.input.pagetitle"),
 heading = Messages("paac.1617.adjusted.income.input.question"),
 articleClasses=Some("full-width"),
-backLink = Some((controllers.routes.AdjustedIncome1617InputController.onBack.url,Messages("paac.link.text.back")))
+backLink = Some((controllers.routes.AdjustedIncome1617InputController.onBack(currentYear.toInt).url,Messages("paac.link.text.back")))
 ) {
 
     @if(paacForm.hasErrors) {

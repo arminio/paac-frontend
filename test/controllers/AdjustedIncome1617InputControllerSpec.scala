@@ -42,18 +42,18 @@ class AdjustedIncome1617InputControllerSpec extends test.BaseSpec {
   "AdjustedIncome1617InputController" when {
     "GET with routes" should {
       "not return result NOT_FOUND" in {
-        val result: Option[Future[Result]] = route(FakeRequest(GET, endPointURL))
+        val result: Option[Future[Result]] = route(FakeRequest(GET, endPointURL+"/2016"))
         result.isDefined shouldBe true
         status(result.get) should not be NOT_FOUND
       }
 
       "return 303 for valid GET request" in {
-        val result: Option[Future[Result]] = route(FakeRequest(GET, endPointURL))
+        val result: Option[Future[Result]] = route(FakeRequest(GET, endPointURL+"/2016"))
         status(result.get) shouldBe 303
       }
 
       "not return 200 for valid GET request" in {
-        val result: Option[Future[Result]] = route(FakeRequest(GET, endPointURL))
+        val result: Option[Future[Result]] = route(FakeRequest(GET, endPointURL+"/2016"))
         status(result.get) should not be 200
       }
     }
@@ -68,31 +68,12 @@ class AdjustedIncome1617InputControllerSpec extends test.BaseSpec {
         MockKeystore.map = MockKeystore.map + (YES_NO_TI_KEY -> "Yes")
 
         // test
-        val result: Future[Result] = ControllerWithMockKeystore.onPageLoad()(request)
+        val result: Future[Result] = ControllerWithMockKeystore.onPageLoad(2016)(request)
 
         // check
         status(result) shouldBe 200
         val htmlPage = contentAsString(await(result))
         htmlPage should include("""<input type="number" name="adjustedIncome_2016" id="adjustedIncome_2016" """)
-      }
-
-      "have keystore with Current Year flag have empty string value, should NOT have AI input field" in new ControllerWithMockKeystore {
-        // setup
-        val request = FakeRequest(GET, "").withSession(
-          (SessionKeys.sessionId, SESSION_ID),
-          (SELECTED_INPUT_YEARS_KEY -> "")
-        )
-        MockKeystore.map = MockKeystore.map + (CURRENT_INPUT_YEAR_KEY -> "")
-        MockKeystore.map = MockKeystore.map + (YES_NO_TI_KEY -> "Yes")
-
-        // test
-        val result: Future[Result] = ControllerWithMockKeystore.onPageLoad()(request)
-
-        // check
-        status(result) shouldBe 303
-        val htmlPage = contentAsString(await(result))
-        htmlPage should include("")
-        htmlPage should not include("""<input type="number" name="adjustedIncome_2016" id="adjustedIncome_2016" """)
       }
 
       "have keystore with Current Year flag = 2015 value, should NOT have AI input field" in new ControllerWithMockKeystore {
@@ -101,11 +82,10 @@ class AdjustedIncome1617InputControllerSpec extends test.BaseSpec {
           (SessionKeys.sessionId, SESSION_ID),
           (SELECTED_INPUT_YEARS_KEY -> "2015")
         )
-        MockKeystore.map = MockKeystore.map + (CURRENT_INPUT_YEAR_KEY -> "2015")
         MockKeystore.map = MockKeystore.map + (YES_NO_TI_KEY -> "Yes")
 
         // test
-        val result: Future[Result] = ControllerWithMockKeystore.onPageLoad()(request)
+        val result: Future[Result] = ControllerWithMockKeystore.onPageLoad(2015)(request)
 
         // check
         status(result) shouldBe 303
@@ -123,7 +103,7 @@ class AdjustedIncome1617InputControllerSpec extends test.BaseSpec {
         MockKeystore.map = MockKeystore.map + (YES_NO_TI_KEY -> "Yes")
 
         // test
-        val result : Future[Result] = ControllerWithMockKeystore.onPageLoad()(request)
+        val result : Future[Result] = ControllerWithMockKeystore.onPageLoad(2016)(request)
 
         // check
         status(result) shouldBe 200
@@ -237,11 +217,11 @@ class AdjustedIncome1617InputControllerSpec extends test.BaseSpec {
         implicit val request = FakeRequest(GET,"/paac/back").withSession(sessionData: _*)
 
         // test
-        val result : Future[Result] = ControllerWithMockKeystore.onBack()(request)
+        val result : Future[Result] = ControllerWithMockKeystore.onBack(2016)(request)
 
         // check
         status(result) shouldBe 303
-        redirectLocation(result) shouldBe Some("/paac/yesnothresholdincome")
+        redirectLocation(result) shouldBe Some("/paac/yesnothresholdincome/2016")
       }
     }
   }
