@@ -48,10 +48,12 @@ trait DateOfMPAATriggerEventController extends RedirectController {
         input.dateOfMPAATriggerEvent.map {
           (date)=>
             // Get all selected tax years >= 2015 whose DC flag is true
-            val selectedTaxYears:Seq[Int] = reqData.get(SELECTED_INPUT_YEARS_KEY).getOrElse("2014").split(",").map(_.toInt).filter(_ >= 2015)
-                                                      .filter( year => reqData.getOrElse(DC_FLAG_PREFIX+year,"false").toBoolean)
-            if (!isValidDate(date,selectedTaxYears)) {
-              val newForm = form.withError("dateOfMPAATriggerEvent", "paac.mpaa.ta.date.page.invalid.date")
+            val selectedDCTaxYears:Seq[Int] = reqData.get(SELECTED_INPUT_YEARS_KEY).getOrElse("2014").split(",").map(_.toInt).filter(_ >= 2015)
+                                                      .filter( year => reqData.getOrElse(DC_FLAG_PREFIX + year,"false").toBoolean).sorted
+
+            val args = List(selectedDCTaxYears.head.toString, (selectedDCTaxYears.last + 1).toString)
+            if (!isValidDate(date,selectedDCTaxYears)) {
+              val newForm = form.withError("dateOfMPAATriggerEvent", "paac.mpaa.ta.date.page.invalid.date", args:_*)
               showPage(newForm, input)
             } else {
               val sessionData = reqData ++ input.toSessionData.map(_.swap).toMap
