@@ -31,14 +31,13 @@ object AdjustedIncome1617InputController extends AdjustedIncome1617InputControll
 
 trait AdjustedIncome1617InputController extends RedirectController {
 
-  val onPageLoad = withReadSession { implicit request =>
-    val cy = request.data int CURRENT_INPUT_YEAR_KEY
+  def onPageLoad(year:Int) = withReadSession { implicit request =>
     val isEdit = request.form bool IS_EDIT_KEY
-    if (cy <= 2015 || cy == -1 ) {
+    if (year <= 2015 || year == -1 ) {
       CheckYourAnswers() go Edit
     } else {
-      val form = AIForm.form(cy).bind(convert(request.data)).discardingErrors
-      Future.successful(Ok(views.html.adjusted_income_1617_input(form, cy.toString, isEdit)))
+      val form = AIForm.form(year).bind(convert(request.data)).discardingErrors
+      Future.successful(Ok(views.html.adjusted_income_1617_input(form, year.toString, isEdit)))
     }
   }
 
@@ -54,7 +53,7 @@ trait AdjustedIncome1617InputController extends RedirectController {
     )
   }
 
-  val onBack = withSession { implicit request =>
+  def onBack(year:Int) = withWriteSession { implicit request =>
     AdjustedIncome() go Backward
   }
 

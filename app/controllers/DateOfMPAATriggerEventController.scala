@@ -67,7 +67,7 @@ trait DateOfMPAATriggerEventController extends RedirectController {
     )
   }
 
-  val onBack = withSession { implicit request =>
+  val onBack = withWriteSession { implicit request =>
     TriggerDate() go Backward
   }
 

@@ -5,7 +5,7 @@
 @common.paacMain(
 pageTitle = Messages("paac.1617.threshold.income.pagetitle"),
 heading = Messages("paac.1617.threshold.income.question", config.PaacConfiguration.forYear(year)("threshold")),
-backLink = Some((controllers.routes.YesNoThresholdIncomeController.onBack.url,Messages("paac.link.text.back")))
+backLink = Some((controllers.routes.YesNoThresholdIncomeController.onBack(year).url,Messages("paac.link.text.back")))
 ) {
 
     @form(

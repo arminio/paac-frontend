@@ -31,8 +31,7 @@ object PensionInputs201617Controller extends PensionInputs201617Controller with 
 
 trait PensionInputs201617Controller extends RedirectController {
 
-  val onPageLoad = withReadSession { implicit request =>
-    val year = request.data int CURRENT_INPUT_YEAR_KEY
+  def onPageLoad(year: Int) = withReadSession { implicit request =>
     if (year <= 2015 || year == -1) {
       Start() go Edit
     } else {
@@ -55,7 +54,7 @@ trait PensionInputs201617Controller extends RedirectController {
     )
   }
 
-  val onBack = withSession { implicit request =>
+  def onBack(year: Int) = withWriteSession { implicit request =>
     PensionInput() go Backward
   }
 

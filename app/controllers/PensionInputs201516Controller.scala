@@ -47,7 +47,7 @@ trait PensionInputs201516Controller extends RedirectController {
     )
   }
 
-  val onBack = withSession { implicit request =>
+  val onBack = withWriteSession { implicit request =>
     PensionInput() go Backward
   }
 

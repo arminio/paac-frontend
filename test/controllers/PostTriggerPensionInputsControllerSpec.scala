@@ -128,7 +128,7 @@ class PostTriggerPensionInputsControllerSpec extends test.BaseSpec {
       // check
       status(result) shouldBe 200
       val htmlPage = contentAsString(await(result))
-      htmlPage should include ("paac.post.trigger.value.error.number")
+      htmlPage should include ("paac.post.trigger.value.error.required")
       //htmlPage should include ("""Enter your defined contribution pension savings for rest of 2016 to 2017 even if it is 0.""")
     }
 
@@ -147,7 +147,7 @@ class PostTriggerPensionInputsControllerSpec extends test.BaseSpec {
       // check
       status(result) shouldBe 200
       val htmlPage = contentAsString(await(result))
-      htmlPage should include ("paac.post.trigger.value.error.number")
+      htmlPage should include ("paac.post.trigger.value.error.required")
       //htmlPage should include ("""Enter your defined contribution pension savings for rest of 2016 to 2017 even if it is 0.""")
     }
 
