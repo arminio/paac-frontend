@@ -143,7 +143,7 @@ paac.results.table.col.2 = Available<br> annual<br> allowance<br> <span style="f
 paac.results.table.col.3 = Available money<br> purchase annual<br> allowance
 paac.results.table.col.4 = Pension<br> savings
 paac.results.table.col.5 = Amount<br> on which<br> tax is due
-paac.results.table.col.6 = Unused<br> annual<br> allowance
+paac.results.table.col.6 = Unused<br> annual<br> allowance<br> <span style="font-size:smaller">(Inc. Carry Forwards)</span>
 paac.results.taxyearlabel = {0} to {1}
 paac.results.taxyearlabel.p1 = 2015 to 2016 period 1
 paac.results.taxyearlabel.p2 = 2015 to 2016 period 2
