@@ -54,7 +54,7 @@ class ContributionsSpec extends test.BaseSpec {
 
       // check
       contributions.length shouldBe 4
-      contributions(0).moneyPurchase shouldBe 44400
+      contributions(0).moneyPurchase shouldBe -44400
       contributions(0).isTriggered shouldBe false
       contributions(1).moneyPurchase shouldBe 88800
       contributions(1).isTriggered shouldBe true
@@ -84,7 +84,7 @@ class ContributionsSpec extends test.BaseSpec {
       contributions.length shouldBe 4
       contributions(0).moneyPurchase shouldBe 44400
       contributions(0).isTriggered shouldBe false
-      contributions(1).moneyPurchase shouldBe 55500
+      contributions(1).moneyPurchase shouldBe -33300
       contributions(1).isTriggered shouldBe false
       contributions(2).moneyPurchase shouldBe 88800
       contributions(2).isTriggered shouldBe true
@@ -149,7 +149,7 @@ class ContributionsSpec extends test.BaseSpec {
       contributions(2).income shouldBe 78900
       contributions(2).isTriggered shouldBe false
       contributions(3).definedBenefit shouldBe 11100
-      contributions(3).moneyPurchase shouldBe 22200
+      contributions(3).moneyPurchase shouldBe -66600
       contributions(3).income shouldBe 33300
       contributions(3).isTriggered shouldBe false
       contributions(4).definedBenefit shouldBe 0
@@ -214,7 +214,7 @@ class ContributionsSpec extends test.BaseSpec {
 
       // check
       triggered shouldBe Contribution(PensionPeriod(2015,8,9),PensionPeriod(2016,4,5),Some(InputAmounts(Some(0),Some(88800),None,Some(true))))
-      result shouldBe Some(Contribution(PensionPeriod(2015,7,9),PensionPeriod(2015,8,9),Some(InputAmounts(Some(55500),Some(77700),None,Some(false)))))
+      result shouldBe Some(Contribution(PensionPeriod(2015,7,9),PensionPeriod(2015,8,9),Some(InputAmounts(Some(55500),Some(-11100),None,Some(false)))))
     }
   }
 }
