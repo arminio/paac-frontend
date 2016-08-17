@@ -54,8 +54,8 @@ GET         /pensionInputs/back                         controllers.PensionInput
 POST        /pensionInputs                              controllers.PensionInputsController.onSubmit
 
 ## 2016/17 Pension Input Amounts Page
-GET         /pensionInputsPost2015                      controllers.PensionInputs201617Controller.onPageLoad
-GET         /pensionInputsPost2015/back                 controllers.PensionInputs201617Controller.onBack
+GET         /pensionInputsPost2015/:year                controllers.PensionInputs201617Controller.onPageLoad(year:Int)
+GET         /pensionInputsPost2015/:year/back           controllers.PensionInputs201617Controller.onBack(year:Int)
 POST        /pensionInputsPost2015                      controllers.PensionInputs201617Controller.onSubmit
 
 ## Review Pension Input Amounts

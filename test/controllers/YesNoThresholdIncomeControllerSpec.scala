@@ -198,7 +198,7 @@ class YesNoThresholdIncomeControllerSpec extends test.BaseSpec {
 
         // check
         status(result) shouldBe 303
-        redirectLocation(result) shouldBe Some("/paac/pensionInputsPost2015")
+        redirectLocation(result) shouldBe Some("/paac/pensionInputsPost2015/2016")
       }
     }
   }

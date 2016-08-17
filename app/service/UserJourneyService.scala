@@ -215,7 +215,7 @@ case class CheckYourAnswers(state: PageState=PageState(year=PageLocation.END)) e
 
 case class PensionInput(state: PageState=PageState()) extends PageLocation {
   def action(): Call = if (state.year == 2015) controllers.routes.PensionInputs201516Controller.onPageLoad()
-                       else if (state.year > 2015) controllers.routes.PensionInputs201617Controller.onPageLoad()
+                       else if (state.year > 2015) controllers.routes.PensionInputs201617Controller.onPageLoad(state.year)
                        else controllers.routes.PensionInputsController.onPageLoad()
   override protected def forward(): PageLocation = if (state.year >= 2016) super.forward
                                                    else if (YesNoTrigger(state).isSupported) YesNoTrigger(state)

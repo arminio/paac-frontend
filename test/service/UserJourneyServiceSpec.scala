@@ -120,8 +120,8 @@ class UserJourneyServiceSpec extends test.BaseSpec with Results {
         forward("-2", "2016", TaxYearSelection, true, false) shouldBe Some("/paac/scheme/2016")
       }
       "on 2nd step goto post 2015 inputs" in {
-        forward("2016", "2016", SelectScheme, false, false) shouldBe Some("/paac/pensionInputsPost2015")
-        forward("2016", "2016", SelectScheme, true, false) shouldBe Some("/paac/pensionInputsPost2015")
+        forward("2016", "2016", SelectScheme, false, false) shouldBe Some("/paac/pensionInputsPost2015/2016")
+        forward("2016", "2016", SelectScheme, true, false) shouldBe Some("/paac/pensionInputsPost2015/2016")
       }
       "on 3rd step goto post 2015 inputs" in {
         forward("2016", "2016", PensionInput, false, false) shouldBe Some("/paac/yesnothresholdincome")

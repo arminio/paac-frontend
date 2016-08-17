@@ -11,7 +11,7 @@
 pageTitle = Messages("paac.201617.pension.inputs.pagetitle"),
 heading = Messages("paac.201617.pension.inputs.heading", (if(isDefinedBenefit && isDefinedContribution) "pension" else if(isDefinedBenefit) "defined benefit" else if (isDefinedContribution) "defined contribution"  else "")),
 articleClasses=Some("full-width"),
-backLink = Some((controllers.routes.PensionInputs201617Controller.onBack.url,Messages("paac.link.text.back")))
+backLink = Some((controllers.routes.PensionInputs201617Controller.onBack(year).url,Messages("paac.link.text.back")))
 ) {
 
 <p class="lede text">@Messages("paac.201617.pension.inputs.description")</p>
