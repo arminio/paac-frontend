@@ -1,2 +1,2 @@
 @(id: String, value: String, isError: Boolean)(implicit lang: play.api.i18n.Lang, request:Request[_])
-&pound;&nbsp;<input type="number" name="@id" id="@id" min="0" class="input--no-spinner" value='@value' max="5000000.00" size="10" style="width:9em;@if(isError){border: 4px solid #b10e1e;}"/>
+&pound;&nbsp;<input type="text" name="@id" id="@id" min="0" class="input--no-spinner" value='@value' max="5000000.00" size="10" style="width:9em;@if(isError){border: 4px solid #b10e1e;}"/>
