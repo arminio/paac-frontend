@@ -161,7 +161,7 @@ class AdjustedIncome1617InputControllerSpec extends test.BaseSpec {
         status(result) shouldBe 200
         redirectLocation(result) shouldBe None
         val htmlPage = contentAsString(await(result))
-        htmlPage should include ("Enter an amount that contains only numbers.")
+        htmlPage should include ("This field is required")
         // TODO: Fix it by uncommenting the below line
         //htmlPage should include ("Enter your Adjusted Income for this year even if it is 0.")
       }
