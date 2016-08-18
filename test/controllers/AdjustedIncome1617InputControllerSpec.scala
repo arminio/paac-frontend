@@ -42,18 +42,18 @@ class AdjustedIncome1617InputControllerSpec extends test.BaseSpec {
   "AdjustedIncome1617InputController" when {
     "GET with routes" should {
       "not return result NOT_FOUND" in {
-        val result: Option[Future[Result]] = route(FakeRequest(GET, endPointURL+"/2016"))
+        val result: Option[Future[Result]] = route(FakeRequest(GET, endPointURL + "/2016"))
         result.isDefined shouldBe true
         status(result.get) should not be NOT_FOUND
       }
 
       "return 303 for valid GET request" in {
-        val result: Option[Future[Result]] = route(FakeRequest(GET, endPointURL+"/2016"))
+        val result: Option[Future[Result]] = route(FakeRequest(GET, endPointURL + "/2016"))
         status(result.get) shouldBe 303
       }
 
       "not return 200 for valid GET request" in {
-        val result: Option[Future[Result]] = route(FakeRequest(GET, endPointURL+"/2016"))
+        val result: Option[Future[Result]] = route(FakeRequest(GET, endPointURL + "/2016"))
         status(result.get) should not be 200
       }
     }

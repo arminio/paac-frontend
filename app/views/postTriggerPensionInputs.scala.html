@@ -44,7 +44,7 @@ backLink = Some((controllers.routes.PostTriggerPensionInputsController.onBack.ur
 
         <ul class="error-summary-list">
           @for(error <- paacForm.errors) {
-            @defining(if(error.key.contains("p1")){"period 1"}else{if(error.key.contains("p2")){"period 2"} else{ teDate.year.toString } }) { args =>
+            @defining(if(error.key.contains("p1")){ Messages("paac.error.p1label") }else{if(error.key.contains("p2")){ Messages("paac.error.p2label") } else{ Messages("paac.error.taxyearlabel",teDate.year.toString,(teDate.year+1).toString) } }) { args =>
                 @if(error.message == "error.required"){
                     <li><a href="#triggerAmountFieldset" style="color:#b10e1e;font-weight: bold;">@Messages("te.amount.error.required", args)</a></li>
                 } else {
@@ -69,9 +69,9 @@ backLink = Some((controllers.routes.PostTriggerPensionInputsController.onBack.ur
                     @if(paacForm.hasErrors) {
                     <ul class="error-summary-list">
                         @for(error <- paacForm.errors) {
-                        @defining(Seq(taxYear.toString)++error.args) { args =>
-                          @if(error.message == "error.required"){
-                            <p style="color:#b10e1e;font-weight: bold;">@Messages("te.amount.error.required")</p>
+                        @defining(if(error.key.contains("p1")){ Messages("paac.error.p1label") }else{if(error.key.contains("p2")){ Messages("paac.error.p2label") } else{ Messages("paac.error.taxyearlabel",teDate.year.toString,(teDate.year+1).toString) } }) { args =>
+                        @if(error.message == "error.required"){
+                            <p style="color:#b10e1e;font-weight: bold;">@Messages("te.amount.error.required",args)</p>
                           } else {
                             <p style="color:#b10e1e;font-weight: bold;">@Messages(error.message)</p>
                           }
@@ -97,9 +97,9 @@ backLink = Some((controllers.routes.PostTriggerPensionInputsController.onBack.ur
                     @if(paacForm.hasErrors) {
                     <ul class="error-summary-list">
                         @for(error <- paacForm.errors) {
-                        @defining(Seq(taxYear.toString)++error.args) { args =>
-                          @if(error.message == "error.required"){
-                             <p style="color:#b10e1e;font-weight: bold;">@Messages("te.amount.error.required")</p>
+                        @defining(if(error.key.contains("p1")){ Messages("paac.error.p1label") }else{if(error.key.contains("p2")){ Messages("paac.error.p2label") } else{ Messages("paac.error.taxyearlabel",teDate.year.toString,(teDate.year+1).toString) } }) { args =>
+                        @if(error.message == "error.required"){
+                             <p style="color:#b10e1e;font-weight: bold;">@Messages("te.amount.error.required",args)</p>
                           } else {
                              <p style="color:#b10e1e;font-weight: bold;">@Messages(error.message)</p>
                           }
@@ -123,9 +123,9 @@ backLink = Some((controllers.routes.PostTriggerPensionInputsController.onBack.ur
                     @if(paacForm.hasErrors) {
                     <ul class="error-summary-list">
                         @for(error <- paacForm.errors) {
-                        @defining(Seq(taxYear.toString)++error.args) { args =>
-                          @if(error.message == "error.required"){
-                             <p style="color:#b10e1e;font-weight: bold;">@Messages("te.amount.error.required")</p>
+                        @defining(if(error.key.contains("p1")){ Messages("paac.error.p1label") }else{if(error.key.contains("p2")){ Messages("paac.error.p2label") } else{ Messages("paac.error.taxyearlabel",teDate.year.toString,(teDate.year+1).toString) } }) { args =>
+                        @if(error.message == "error.required"){
+                             <p style="color:#b10e1e;font-weight: bold;">@Messages("te.amount.error.required",args)</p>
                           } else {
                              <p style="color:#b10e1e;font-weight: bold;">@Messages(error.message)</p>
                           }

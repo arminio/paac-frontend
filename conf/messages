@@ -70,6 +70,11 @@ year2015.error.required= Enter your total defined {0} pension savings for period
 pre2015.amount.error.required= Enter your total amount for this year even if it is 0.
 ai.error.required= Enter your Adjusted Income for this year even if it is 0.
 te.amount.error.required = Enter your defined contribution pension savings for rest of {0} even if it is 0.
+## POST Trigger Event Amount Page
+paac.error.taxyearlabel = {0} to {1}
+paac.error.p1label = period 1
+paac.error.p2label = period 2
+
 
 ## Tax Year Selection
 paac.taxyear.selection.pagetitle = Choose tax years
