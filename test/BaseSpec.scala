@@ -31,6 +31,8 @@ import uk.gov.hmrc.play.http.{HeaderCarrier, HttpPost, HttpResponse}
 import uk.gov.hmrc.play.http.SessionKeys
 import uk.gov.hmrc.play.test.UnitSpec
 import scala.concurrent.Future
+import java.io._
+import java.nio.file._
 
 class SimpleBaseSpec extends UnitSpec {
   val SESSION_ID = s"session-${UUID.randomUUID}"
@@ -63,6 +65,7 @@ class SimpleBaseSpec extends UnitSpec {
 }
 
 class BaseSpec extends SimpleBaseSpec with BeforeAndAfterAll {
+  val HTML_DIR = "./target/html"
   val app = FakeApplication()
 
   override def beforeAll() {
@@ -74,5 +77,15 @@ class BaseSpec extends SimpleBaseSpec with BeforeAndAfterAll {
     try {
       super.afterAll()
     } finally Play.stop()
+  }
+
+  protected def dumpHtml(name:String, html: String): Unit = {
+    if (!Files.exists(Paths.get(HTML_DIR))) {
+      Files.createDirectory(Paths.get(HTML_DIR))
+    }
+    val file = new File(s"${HTML_DIR}/${name}.html")
+    val bw = new BufferedWriter(new FileWriter(file))
+    bw.write(html)
+    bw.close()
   }
 }

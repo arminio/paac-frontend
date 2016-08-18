@@ -20,7 +20,8 @@ object FrontendBuild extends Build with MicroService {
     // Add the views to the dist
     unmanagedResourceDirectories in Assets += baseDirectory.value / "app" / "assets",
     // Dont include the source assets in the dist package (public folder)
-    excludeFilter in Assets := "js*" || "sass*" || "img*"
+    excludeFilter in Assets := "js*" || "sass*" || "img*",
+    test in Test <<= (validateHTML in Test) dependsOn (test in Test)
   )
 }
 
@@ -28,8 +29,8 @@ private object AppDependencies {
   import play.PlayImport._
   import play.core.PlayVersion
 
-  private val playHealthVersion = "1.1.0"    
-  private val playJsonLoggerVersion = "2.1.1"      
+  private val playHealthVersion = "1.1.0"
+  private val playJsonLoggerVersion = "2.1.1"
   private val frontendBootstrapVersion = "6.4.0"
   private val govukTemplateVersion = "4.0.0"
   private val playUiVersion = "4.9.0"
@@ -44,7 +45,7 @@ private object AppDependencies {
   private val hmrcTestVersion = "1.4.0"
   private val pegDownVersion = "1.4.2"
   private val playWhitelistFilterVersion = "1.1.0"
-  
+
   val compile = Seq(
     ws,
     "uk.gov.hmrc" %% "frontend-bootstrap" % frontendBootstrapVersion,
@@ -79,7 +80,7 @@ private object AppDependencies {
     }.test
   }
 
-  def apply() = compile ++ Test()
+  def apply() = { compile ++ Test() }
 }
 
 

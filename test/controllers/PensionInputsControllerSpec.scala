@@ -25,7 +25,6 @@ import service.KeystoreService._
 import scala.concurrent.Future
 
 class PensionInputsControllerSpec extends test.BaseSpec {
-
   val DB_2014_KEY = s"${DB_PREFIX}2014"
 
   trait ControllerWithMockKeystore extends MockKeystoreFixture {
@@ -62,6 +61,7 @@ class PensionInputsControllerSpec extends test.BaseSpec {
         status(result) shouldBe 200
         val htmlPage = contentAsString(await(result))
         htmlPage should include ("""<input type="number" name="definedBenefit_2014" id="definedBenefit_2014" """)
+        dumpHtml("empty_pensionInputs", htmlPage)
       }
 
       "with keystore containing DB = true value display only DB blank fields" in new ControllerWithMockKeystore {
@@ -128,6 +128,7 @@ class PensionInputsControllerSpec extends test.BaseSpec {
         status(result) shouldBe 200
         val htmlPage = contentAsString(await(result))
         htmlPage should include ("""There is a problem""")
+        dumpHtml("error_pensionInputs", htmlPage)
     }
 
     "with empty db value returns to page with errors" in new ControllerWithMockKeystore {

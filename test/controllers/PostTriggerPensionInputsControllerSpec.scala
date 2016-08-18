@@ -70,6 +70,7 @@ class PostTriggerPensionInputsControllerSpec extends test.BaseSpec {
       status(result) shouldBe 200
       val htmlPage = contentAsString(await(result))
       htmlPage should include (s"""<input type="number" name="${P1_TRIGGER_DC_KEY}" id="${P1_TRIGGER_DC_KEY}" """)
+      dumpHtml("empty_moneyPurchasePostTriggerValue", htmlPage)
     }
 
     "display p2 input amount page with previous value if trigger date was period 2" in new ControllerWithMockKeystore {
@@ -130,6 +131,7 @@ class PostTriggerPensionInputsControllerSpec extends test.BaseSpec {
       val htmlPage = contentAsString(await(result))
       htmlPage should include ("paac.post.trigger.value.error.required")
       //htmlPage should include ("""Enter your defined contribution pension savings for rest of 2016 to 2017 even if it is 0.""")
+      dumpHtml("error_moneyPurchasePostTriggerValue", htmlPage)
     }
 
     "display errors if amount is blank when trigger is 2016" in new ControllerWithMockKeystore {

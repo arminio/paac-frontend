@@ -68,6 +68,7 @@ class SelectSchemeControllerSpec extends test.BaseSpec {
         val htmlPage = contentAsString(await(result))
         htmlPage should include (""" <input type="checkbox" id="definedBenefit"""")
         htmlPage should include (""" <input type="checkbox" id="definedContribution"""")
+        dumpHtml("scheme", htmlPage)
       }
 
       "have keystore with DB and DC schemeType flag value when we revisit the same page" in new ControllerWithMockKeystore {
@@ -135,6 +136,7 @@ class SelectSchemeControllerSpec extends test.BaseSpec {
         status(result) shouldBe 200
         val htmlPage = contentAsString(await(result))
         htmlPage should include ("There is a problem")
+        dumpHtml("error_scheme", htmlPage)
       }
 
       "with false DB and DC schemeType flag value should show errors" in new ControllerWithMockKeystore{

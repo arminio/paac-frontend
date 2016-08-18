@@ -70,6 +70,7 @@ class YesNoThresholdIncomeControllerSpec extends test.BaseSpec {
         // check
         status(result) shouldBe 200
         val htmlPage = contentAsString(await(result))
+        dumpHtml("empty_yesnothresholdincome", htmlPage)
       }
 
       "have keystore with Yes/NO option for Threshold Income  when we revisit the same page" in new ControllerWithMockKeystore {
@@ -84,6 +85,8 @@ class YesNoThresholdIncomeControllerSpec extends test.BaseSpec {
         status(result) shouldBe 200
         MockKeystore.map should contain key ("yesnoForThresholdIncome")
         MockKeystore.map should contain value ("yes")
+        val htmlPage = contentAsString(await(result))
+        dumpHtml("yesnothresholdincome", htmlPage)
       }
 
     }
@@ -167,6 +170,8 @@ class YesNoThresholdIncomeControllerSpec extends test.BaseSpec {
 
       // check
       status(result) shouldBe 200
+      val htmlPage = contentAsString(await(result))
+      dumpHtml("error_yesnothresholdincome", htmlPage)
     }
 
     "with yesNo = No should set AdjustedIncome value to empty string" in new ControllerWithMockKeystore {

@@ -62,6 +62,7 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
         status(result) shouldBe 200
         val htmlPage = contentAsString(await(result))
         htmlPage should include ("""""""")
+        dumpHtml("empty_dateofmpaate", htmlPage)
       }
 
       "display form page with date if keystore value exists" in new ControllerWithMockKeystore {
