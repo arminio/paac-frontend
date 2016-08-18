@@ -24,7 +24,17 @@ backLink = Some((controllers.routes.PensionInputs201516Controller.onBack.url,Mes
 
     <ul class="error-summary-list">
       @for(error <- paacForm.errors) {
-      <li><a href="#@error.key" style="color:#b10e1e;font-weight: bold;">@Messages(error.message, error.args:_*)</a></li>
+        @defining(if(error.key.contains("p1")){ "1" } else { "2" }){ periods =>
+        @defining(if(error.key.contains("definedBenefit")){ "benefit"} else {"contribution"}){ pensionSchemesTypes =>
+        @defining(List(pensionSchemesTypes, periods)){ args =>
+            @if(error.message == "error.required"){
+                <li><a href="#@error.key" style="color:#b10e1e;font-weight: bold;">@Messages("year2015.error.required", args:_*)</a></li>
+            } else {
+                <li><a href="#@error.key" style="color:#b10e1e;font-weight: bold;">@Messages(error.message)</a></li>
+            }
+        } @* End of periods *@
+        } @* End of pensionSchemesTypes *@
+        } @* End of args *@
       } @* End of for *@
     </ul>
 </div>
@@ -50,7 +60,17 @@ args = 'class -> "form",
     @defining(paacForm.errors.find(_.key.contains(id))){ maybeError =>
       @if(maybeError.isDefined) {
         @defining(maybeError.get) { error =>
-      <p style="color:#b10e1e;font-weight: bold;">@Messages(error.message, error.args:_*)</p>
+            @defining(if(error.key.contains("p1")){ "1" } else { "2" }){ periods =>
+            @defining(if(error.key.contains("definedBenefit")){ "benefit"} else {"contribution"}){ pensionSchemesTypes =>
+            @defining(List(pensionSchemesTypes, periods)){ args =>
+                @if(error.message == "error.required"){
+                    <p style="color:#b10e1e;font-weight: bold;">@Messages("year2015.error.required", args:_*)</p>
+                } else {
+                    <p style="color:#b10e1e;font-weight: bold;">@Messages(error.message)</p>
+                }
+            } @* End of periods *@
+            } @* End of pensionSchemesTypes *@
+            } @* End of args *@
         } @* End of define error *@
       } @* End of if *@
     } @* End of define maybeError *@

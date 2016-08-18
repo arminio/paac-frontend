@@ -69,7 +69,7 @@ class PostTriggerPensionInputsControllerSpec extends test.BaseSpec {
       // check
       status(result) shouldBe 200
       val htmlPage = contentAsString(await(result))
-      htmlPage should include (s"""<input type="number" name="${P1_TRIGGER_DC_KEY}" id="${P1_TRIGGER_DC_KEY}" """)
+      htmlPage should include (s"""<input type="text" name="${P1_TRIGGER_DC_KEY}" id="${P1_TRIGGER_DC_KEY}" """)
     }
 
     "display p2 input amount page with previous value if trigger date was period 2" in new ControllerWithMockKeystore {
@@ -86,7 +86,7 @@ class PostTriggerPensionInputsControllerSpec extends test.BaseSpec {
       // check
       status(result) shouldBe 200
       val htmlPage = contentAsString(await(result))
-      htmlPage should include (s"""<input type="number" name="${P2_TRIGGER_DC_KEY}" id="${P2_TRIGGER_DC_KEY}" """)
+      htmlPage should include (s"""<input type="text" name="${P2_TRIGGER_DC_KEY}" id="${P2_TRIGGER_DC_KEY}" """)
     }
   }
 
@@ -108,10 +108,10 @@ class PostTriggerPensionInputsControllerSpec extends test.BaseSpec {
       // check
       status(result) shouldBe 200
       val htmlPage = contentAsString(await(result))
-      htmlPage should include ("""Enter an amount that is £5,000,000 or less.""")
+      htmlPage should include ("Enter an amount that is £5,000,000 or less.")
     }
 
-    "display errors if amount is blank" in new ControllerWithMockKeystore {
+    "display errors if Period-2 DC amount is blank" in new ControllerWithMockKeystore {
       // set up
       val sessionData = List((SessionKeys.sessionId,SESSION_ID),
                              (TRIGGER_DATE_KEY -> "2015-11-15"),
@@ -128,8 +128,27 @@ class PostTriggerPensionInputsControllerSpec extends test.BaseSpec {
       // check
       status(result) shouldBe 200
       val htmlPage = contentAsString(await(result))
-      htmlPage should include ("paac.post.trigger.value.error.required")
-      //htmlPage should include ("""Enter your defined contribution pension savings for rest of 2016 to 2017 even if it is 0.""")
+      htmlPage should include ("Enter your defined contribution pension savings for rest of period 2 even if it is 0.")
+    }
+
+    "display errors if Period-1 DC amount is blank" in new ControllerWithMockKeystore {
+      // set up
+      val sessionData = List((SessionKeys.sessionId,SESSION_ID),
+                             (TRIGGER_DATE_KEY -> "2015-4-15"),
+                             (IS_EDIT_KEY -> "false"),
+                             (P1_TRIGGER_DC_KEY -> "1234"),
+                             (P2_TRIGGER_DC_KEY -> "5678"),
+                             (CURRENT_INPUT_YEAR_KEY, "2015"),
+                             (SELECTED_INPUT_YEARS_KEY, "2015"))
+      implicit val request = FakeRequest(POST, endPointURL).withSession(sessionData: _*).withFormUrlEncodedBody((P1_TRIGGER_DC_KEY -> ""))
+
+      // test
+      val result: Future[Result] = ControllerWithMockKeystore.onSubmit()(request)
+
+      // check
+      status(result) shouldBe 200
+      val htmlPage = contentAsString(await(result))
+      htmlPage should include ("Enter your defined contribution pension savings for rest of period 1 even if it is 0.")
     }
 
     "display errors if amount is blank when trigger is 2016" in new ControllerWithMockKeystore {
@@ -147,8 +166,7 @@ class PostTriggerPensionInputsControllerSpec extends test.BaseSpec {
       // check
       status(result) shouldBe 200
       val htmlPage = contentAsString(await(result))
-      htmlPage should include ("paac.post.trigger.value.error.required")
-      //htmlPage should include ("""Enter your defined contribution pension savings for rest of 2016 to 2017 even if it is 0.""")
+      htmlPage should include ("Enter your defined contribution pension savings for rest of 2016 to 2017 even if it is 0.")
     }
 
     "saves p2 amount in keystore if valid form" in new ControllerWithMockKeystore {
