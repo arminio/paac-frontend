@@ -73,7 +73,7 @@ class AdjustedIncome1617InputControllerSpec extends test.BaseSpec {
         // check
         status(result) shouldBe 200
         val htmlPage = contentAsString(await(result))
-        htmlPage should include("""<input type="number" name="adjustedIncome_2016" id="adjustedIncome_2016" """)
+        htmlPage should include("""<input type="text" name="adjustedIncome_2016" id="adjustedIncome_2016" """)
       }
 
       "have keystore with Current Year flag = 2015 value, should NOT have AI input field" in new ControllerWithMockKeystore {
@@ -91,7 +91,7 @@ class AdjustedIncome1617InputControllerSpec extends test.BaseSpec {
         status(result) shouldBe 303
         val htmlPage = contentAsString(await(result))
         htmlPage should include("")
-        htmlPage should not include("""<input type="number" name="adjustedIncome_2016" id="adjustedIncome_2016" """)
+        htmlPage should not include("""<input type="text" name="adjustedIncome_2016" id="adjustedIncome_2016" """)
       }
 
 
@@ -148,6 +148,7 @@ class AdjustedIncome1617InputControllerSpec extends test.BaseSpec {
         var sessionData = List(("isEdit" -> "false"),
                               (SELECTED_INPUT_YEARS_KEY -> "2016,2015"),
                               (CURRENT_INPUT_YEAR_KEY -> "2016"),
+                              (TI_YES_NO_KEY_PREFIX -> "true"),
                               (SessionKeys.sessionId,SESSION_ID))
         implicit val request = FakeRequest(POST, endPointURL).withSession(sessionData: _*)
                                                              .withFormUrlEncodedBody(AI_KEY -> "",
@@ -161,9 +162,7 @@ class AdjustedIncome1617InputControllerSpec extends test.BaseSpec {
         status(result) shouldBe 200
         redirectLocation(result) shouldBe None
         val htmlPage = contentAsString(await(result))
-        htmlPage should include ("This field is required")
-        // TODO: Fix it by uncommenting the below line
-        //htmlPage should include ("Enter your Adjusted Income for this year even if it is 0.")
+        htmlPage should include ("Enter your Adjusted Income for this year even if it is 0.")
       }
 
       "with Current Year flag = 2016 and AI field have invalid value should go to same page with some error message" in new ControllerWithMockKeystore {

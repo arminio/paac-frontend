@@ -35,9 +35,9 @@ backLink = Some((controllers.routes.PensionInputs201617Controller.onBack(year).u
         <ul class="error-summary-list">
           @for(error <- paacForm.errors) {
           @defining(error.args) { args =>
-            @defining(if(error.key.contains("definedBenefit")){ "benefit"} else {"contribution"}){ args =>
+            @defining(if(error.key.contains("definedBenefit")) "benefit" else "contribution"){ args =>
                 @if(error.message == "error.required"){
-                   <li><a href="#@error.key" style="color:#b10e1e;font-weight: bold;">@Messages("year2015.error.required", args:_*)</a></li>
+                   <li><a href="#@error.key" style="color:#b10e1e;font-weight: bold;">@Messages("post2015.error.required", args)</a></li>
                 } else {
                    <li><a href="#@error.key" style="color:#b10e1e;font-weight: bold;">@Messages(error.message)</a></li>
                 }
@@ -59,9 +59,9 @@ args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
         @defining(paacForm.errors.find(_.key.contains(id))){ maybeError =>
           @if(maybeError.isDefined) {
             @defining(maybeError.get) { error =>
-              @defining(if(error.key.contains("definedBenefit")){ "benefit"} else {"contribution"}){ args =>
+              @defining(if(error.key.contains("definedBenefit")) "benefit" else "contribution"){ args =>
                 @if(error.message == "error.required"){
-                    <p style="color:#b10e1e;font-weight: bold; ">@Messages("year2015.error.required", args:_*)</p>
+                    <p style="color:#b10e1e;font-weight: bold; ">@Messages("post2015.error.required", args)</p>
                 } else {
                     <p style="color:#b10e1e;font-weight: bold; ">@Messages(error.message)</p>
                 }

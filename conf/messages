@@ -59,16 +59,17 @@ error.number.zero= Enter a number greater than 0
 error.min= Enter an amount that is £5,000,000 or less.
 error.max= Enter an amount that is £5,000,000 or less.
 error.bounds= Enter an amount that is £5,000,000 or less.
-ai.error.bounds= Enter your Adjusted Income for this year even if it is 0.
 error.real.precision={0} amount must not be empty. (Amount must have no more than {1} numbers, including {2} decimal places, and should be £0 or larger and under £5,000,000.)
 paac.error.generic = There is a problem
 paac.scheme.selection.error = Choose at least 1 type of pension scheme.
 paac.taxyear.selection.error = Choose at least 1 tax year.
-## DB & DC, Total Amount Intput Field Error messages.
-post1516.error.bounds= Enter your total defined {0} pension savings for this year even if it is 0.
-year1516.error.bounds= Enter your total defined {0} pension savings for period {1} even if it is 0.
-pre1516.amount.error.bounds= Enter your total amount for this year even if it is 0.
 paac.mpaa.ta.date.page.invalid.date = Enter a date between 6 4 {0} and 5 4 {1} inclusive
+## DB & DC, Total Amount Intput Field Error messages.
+post2015.error.required= Enter your total defined {0} pension savings for this year even if it is 0.
+year2015.error.required= Enter your total defined {0} pension savings for period {1} even if it is 0.
+pre2015.amount.error.required= Enter your total amount for this year even if it is 0.
+ai.error.required= Enter your Adjusted Income for this year even if it is 0.
+te.amount.error.required = Enter your defined contribution pension savings for rest of {0} even if it is 0.
 
 ## Tax Year Selection
 paac.taxyear.selection.pagetitle = Choose tax years

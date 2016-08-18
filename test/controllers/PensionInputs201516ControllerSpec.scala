@@ -69,8 +69,8 @@ class PensionInputs201516ControllerSpec extends test.BaseSpec {
         // check
         status(result) shouldBe 200
         val htmlPage = contentAsString(await(result))
-        htmlPage should include (s"""<input type="number" name="${P1_DC_KEY}" """)
-        htmlPage should include (s"""<input type="number" name="${P2_DC_KEY}" """)
+        htmlPage should include (s"""<input type="text" name="${P1_DC_KEY}" """)
+        htmlPage should include (s"""<input type="text" name="${P2_DC_KEY}" """)
       }
 
       "have keystore with defined benefit flag = true value, should have DB input fields" in new ControllerWithMockKeystore {
@@ -85,8 +85,8 @@ class PensionInputs201516ControllerSpec extends test.BaseSpec {
         // check
         status(result) shouldBe 200
         val htmlPage = contentAsString(await(result))
-        htmlPage should include (s"""<input type="number" name="${P1_DB_KEY}" """)
-        htmlPage should include (s"""<input type="number" name="${P2_DB_KEY}" """)
+        htmlPage should include (s"""<input type="text" name="${P1_DB_KEY}" """)
+        htmlPage should include (s"""<input type="text" name="${P2_DB_KEY}" """)
       }
 
       "have keystore values when we revisit the same page with db is true" in new ControllerWithMockKeystore {
@@ -103,8 +103,8 @@ class PensionInputs201516ControllerSpec extends test.BaseSpec {
         // check
         status(result) shouldBe 200
         val htmlPage = contentAsString(await(result))
-        htmlPage should include (s"""<input type="number" name="${P1_DB_KEY}" id="${P1_DB_KEY}" min="0" class="input--no-spinner" value='1' """)
-        htmlPage should include (s"""<input type="number" name="${P2_DB_KEY}" id="${P2_DB_KEY}" min="0" class="input--no-spinner" value='2' """)
+        htmlPage should include (s"""<input type="text" name="${P1_DB_KEY}" id="${P1_DB_KEY}" min="0" class="input--no-spinner" value='1' """)
+        htmlPage should include (s"""<input type="text" name="${P2_DB_KEY}" id="${P2_DB_KEY}" min="0" class="input--no-spinner" value='2' """)
       }
 
       "have keystore with definedContribution flag = true value, should have DC input fields" in new ControllerWithMockKeystore {
@@ -119,8 +119,8 @@ class PensionInputs201516ControllerSpec extends test.BaseSpec {
         // check
         status(result) shouldBe 200
         val htmlPage = contentAsString(await(result))
-        htmlPage should include (s"""<input type="number" name="${P1_DC_KEY}" """)
-        htmlPage should include (s"""<input type="number" name="${P2_DC_KEY}" """)
+        htmlPage should include (s"""<input type="text" name="${P1_DC_KEY}" """)
+        htmlPage should include (s"""<input type="text" name="${P2_DC_KEY}" """)
       }
 
       "have keystore values when we revisit the same page with dc is true" in new ControllerWithMockKeystore {
@@ -137,8 +137,8 @@ class PensionInputs201516ControllerSpec extends test.BaseSpec {
         // check
         status(result) shouldBe 200
         val htmlPage = contentAsString(await(result))
-        htmlPage should include (s"""<input type="number" name="${P1_DC_KEY}" id="${P1_DC_KEY}" min="0" class="input--no-spinner" value='1' """)
-        htmlPage should include (s"""<input type="number" name="${P2_DC_KEY}" id="${P2_DC_KEY}" min="0" class="input--no-spinner" value='2' """)
+        htmlPage should include (s"""<input type="text" name="${P1_DC_KEY}" id="${P1_DC_KEY}" min="0" class="input--no-spinner" value='1' """)
+        htmlPage should include (s"""<input type="text" name="${P2_DC_KEY}" id="${P2_DC_KEY}" min="0" class="input--no-spinner" value='2' """)
       }
     }
 
@@ -211,8 +211,8 @@ class PensionInputs201516ControllerSpec extends test.BaseSpec {
         // check
         status(result) shouldBe 200
         val htmlPage = contentAsString(await(result))
-        htmlPage should include (s"""<li><a href="#${P1_DB_KEY}" style="color:#b10e1e;font-weight: bold;">This field is required</a></li>""")
-        htmlPage should include (s"""<li><a href="#${P2_DB_KEY}" style="color:#b10e1e;font-weight: bold;">This field is required</a></li>""")
+        htmlPage should include ("Enter your total defined benefit pension savings for period 2 even if it is 0.")
+        htmlPage should include ("Enter your total defined benefit pension savings for period 2 even if it is 0.")
       }
 
       "with empty dc amount redisplay page with errors" in new ControllerWithMockKeystore {
@@ -232,8 +232,8 @@ class PensionInputs201516ControllerSpec extends test.BaseSpec {
         // check
         status(result) shouldBe 200
         val htmlPage = contentAsString(await(result))
-        htmlPage should include (s"""<li><a href="#${P1_DC_KEY}" style="color:#b10e1e;font-weight: bold;">This field is required</a></li>""")
-        htmlPage should include (s"""<li><a href="#${P2_DC_KEY}" style="color:#b10e1e;font-weight: bold;">This field is required</a></li>""")
+        htmlPage should include ("Enter your total defined contribution pension savings for period 1 even if it is 0.")
+        htmlPage should include ("Enter your total defined contribution pension savings for period 2 even if it is 0.")
       }
 
      "with valid defined benefit values should save to keystore" in new ControllerWithMockKeystore {
@@ -292,7 +292,7 @@ class PensionInputs201516ControllerSpec extends test.BaseSpec {
         // check
         status(result) shouldBe 200
         val htmlPage = contentAsString(await(result))
-        htmlPage should include ("""<a href="#definedBenefit_2015_p2" style="color:#b10e1e;font-weight: bold;">Enter an amount that is £5,000,000 or less.</a>""")
+        htmlPage should include ("Enter an amount that is £5,000,000 or less.")
       }
 
       "with empty db amount redisplay page with errors 2" in new ControllerWithMockKeystore {
@@ -311,7 +311,7 @@ class PensionInputs201516ControllerSpec extends test.BaseSpec {
         // check
         status(result) shouldBe 200
         val htmlPage = contentAsString(await(result))
-        htmlPage should include ("""<a href="#definedBenefit_2015_p2" style="color:#b10e1e;font-weight: bold;">This field is required</a>""")
+        htmlPage should include ("Enter your total defined benefit pension savings for period 2 even if it is 0.")
       }
 
       "with empty dc amount redisplay page with errors 2" in new ControllerWithMockKeystore {
@@ -330,7 +330,7 @@ class PensionInputs201516ControllerSpec extends test.BaseSpec {
         // check
         status(result) shouldBe 200
         val htmlPage = contentAsString(await(result))
-        htmlPage should include ("""<a href="#definedContribution_2015_p2" style="color:#b10e1e;font-weight: bold;">This field is required</a>""")
+        htmlPage should include ("Enter your total defined contribution pension savings for period 2 even if it is 0.")
       }
     }
   }
