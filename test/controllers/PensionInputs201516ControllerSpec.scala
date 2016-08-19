@@ -103,8 +103,8 @@ class PensionInputs201516ControllerSpec extends test.BaseSpec {
         // check
         status(result) shouldBe 200
         val htmlPage = contentAsString(await(result))
-        htmlPage should include (s"""<input type="text" name="${P1_DB_KEY}" id="${P1_DB_KEY}" min="0" class="input--no-spinner" value='1' """)
-        htmlPage should include (s"""<input type="text" name="${P2_DB_KEY}" id="${P2_DB_KEY}" min="0" class="input--no-spinner" value='2' """)
+        htmlPage should include (s"""<input type="text" name="${P1_DB_KEY}" id="${P1_DB_KEY}" class="input--no-spinner" value='1' """)
+        htmlPage should include (s"""<input type="text" name="${P2_DB_KEY}" id="${P2_DB_KEY}" class="input--no-spinner" value='2' """)
       }
 
       "have keystore with definedContribution flag = true value, should have DC input fields" in new ControllerWithMockKeystore {
@@ -137,8 +137,8 @@ class PensionInputs201516ControllerSpec extends test.BaseSpec {
         // check
         status(result) shouldBe 200
         val htmlPage = contentAsString(await(result))
-        htmlPage should include (s"""<input type="text" name="${P1_DC_KEY}" id="${P1_DC_KEY}" min="0" class="input--no-spinner" value='1' """)
-        htmlPage should include (s"""<input type="text" name="${P2_DC_KEY}" id="${P2_DC_KEY}" min="0" class="input--no-spinner" value='2' """)
+        htmlPage should include (s"""<input type="text" name="${P1_DC_KEY}" id="${P1_DC_KEY}" class="input--no-spinner" value='1' """)
+        htmlPage should include (s"""<input type="text" name="${P2_DC_KEY}" id="${P2_DC_KEY}" class="input--no-spinner" value='2' """)
       }
     }
 

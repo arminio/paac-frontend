@@ -27,6 +27,7 @@ import scala.concurrent.Future
 
 class PostTriggerPensionInputsControllerSpec extends test.BaseSpec {
   val endPointURL = "/paac/moneyPurchasePostTriggerValue"
+  val DC_2016_FLAG = s"${DC_FLAG_PREFIX}2016"
 
   trait ControllerWithMockKeystore extends MockKeystoreFixture {
     MockKeystore.map = MockKeystore.map + (KeystoreService.CURRENT_INPUT_YEAR_KEY -> "2015")
@@ -156,6 +157,7 @@ class PostTriggerPensionInputsControllerSpec extends test.BaseSpec {
       val sessionData = List((SessionKeys.sessionId,SESSION_ID),
                              (TRIGGER_DATE_KEY -> "2016-11-15"),
                              (IS_EDIT_KEY -> "false"),
+                             (DC_2016_FLAG -> "true"),
                              (CURRENT_INPUT_YEAR_KEY, "2016"),
                              (SELECTED_INPUT_YEARS_KEY, "2016"))
       implicit val request = FakeRequest(POST, endPointURL).withSession(sessionData: _*).withFormUrlEncodedBody((TRIGGER_DC_KEY -> ""))

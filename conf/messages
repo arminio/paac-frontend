@@ -67,7 +67,7 @@ paac.mpaa.ta.date.page.invalid.date = Enter a date between 6 4 {0} and 5 4 {1} i
 ## DB & DC, Total Amount Intput Field Error messages.
 post2015.error.required= Enter your total defined {0} pension savings for this year even if it is 0.
 year2015.error.required= Enter your total defined {0} pension savings for period {1} even if it is 0.
-pre2015.amount.error.required= Enter your total amount for this year even if it is 0.
+pre2015.error.required= Enter your total amount for this year even if it is 0.
 ai.error.required= Enter your Adjusted Income for this year even if it is 0.
 te.amount.error.required = Enter your defined contribution pension savings for rest of {0} even if it is 0.
 ## POST Trigger Event Amount Page
