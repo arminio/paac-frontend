@@ -32,7 +32,11 @@ backLink = Some((controllers.routes.PensionInputsController.onBack(currentYear.t
         <ul class="error-summary-list">
           @for(error <- paacForm.errors) {
             @defining(currentYear) { year =>
-                <li><a href="#input_@year" style="color:#b10e1e;font-weight: bold;">@Messages(error.message)</a></li>
+                @if(error.message == "error.required"){
+                    <li><a href="#input_@year" style="color:#b10e1e;font-weight: bold;">@Messages("pre2015.error.required")</a></li>
+                } else {
+                    <li><a href="#input_@year" style="color:#b10e1e;font-weight: bold;">@Messages(error.message)</a></li>
+                }
             }
           }
         </ul>
@@ -54,15 +58,19 @@ backLink = Some((controllers.routes.PensionInputsController.onBack(currentYear.t
                 <ul class="error-summary-list">
                     @for(error <- paacForm.errors) {
                     @defining(currentYear) { year =>
-                    <li style="color:#b10e1e;font-weight: bold;">@Messages(error.message)</li>
+                        @if(error.message == "error.required"){
+                            <li style="color:#b10e1e;font-weight: bold;">@Messages("pre2015.error.required")</li>
+                        } else {
+                            <li style="color:#b10e1e;font-weight: bold;">@Messages(error.message)</li>
+                        }
                     }
                     }
                 </ul>
                 }
                   @if(paacForm.data.contains("definedBenefit_"+currentYear)) {
-                     £&nbsp;<input type="number" name="definedBenefit_@currentYear" id="definedBenefit_@currentYear" min="0" value='@paacForm.data("definedBenefit_"+currentYear)' max="5000000.00" size="10" class="input--no-spinner" style="width:9em;@if(paacForm.errors.find(_.key == "definedBenefit_"+currentYear)) {border: 4px solid #b10e1e;}"/>
+                     £&nbsp;<input type="text" name="definedBenefit_@currentYear" id="definedBenefit_@currentYear" value='@paacForm.data("definedBenefit_"+currentYear)' size="10" class="input--no-spinner" style="width:9em;@if(paacForm.errors.find(_.key == "definedBenefit_"+currentYear)) {border: 4px solid #b10e1e;}"/>
                   } else {
-                     £&nbsp;<input type="number" name="definedBenefit_@currentYear" id="definedBenefit_@currentYear" min="0" value='' max="5000000.00" size="10" class="input--no-spinner" style="width:9em;@if(paacForm.errors.find(_.key == "definedBenefit_"+currentYear)) {border: 4px solid #b10e1e;}"/>
+                     £&nbsp;<input type="text" name="definedBenefit_@currentYear" id="definedBenefit_@currentYear" value='' size="10" class="input--no-spinner" style="width:9em;@if(paacForm.errors.find(_.key == "definedBenefit_"+currentYear)) {border: 4px solid #b10e1e;}"/>
                   }
                 </label>
             </fieldset>

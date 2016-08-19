@@ -60,7 +60,7 @@ class PensionInputsControllerSpec extends test.BaseSpec {
         // check
         status(result) shouldBe 200
         val htmlPage = contentAsString(await(result))
-        htmlPage should include ("""<input type="number" name="definedBenefit_2014" id="definedBenefit_2014" """)
+        htmlPage should include ("""<input type="text" name="definedBenefit_2014" id="definedBenefit_2014" """)
         dumpHtml("empty_pensionInputs", htmlPage)
       }
 
@@ -76,7 +76,7 @@ class PensionInputsControllerSpec extends test.BaseSpec {
         // check
         status(result) shouldBe 200
         val htmlPage = contentAsString(await(result))
-        htmlPage should include ("""<input type="number" name="definedBenefit_2014" id="definedBenefit_2014" """)
+        htmlPage should include ("""<input type="text" name="definedBenefit_2014" id="definedBenefit_2014" """)
       }
 
       "with keystore containing DB = false value, NOT display DB field, display only submit button" in new ControllerWithMockKeystore {

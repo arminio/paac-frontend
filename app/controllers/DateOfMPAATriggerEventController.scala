@@ -48,7 +48,7 @@ trait DateOfMPAATriggerEventController extends RedirectController {
         input.dateOfMPAATriggerEvent.map {
           (date)=>
             // Get all selected tax years >= 2015 whose DC flag is true
-            val selectedDCTaxYears:Seq[Int] = reqData.get(SELECTED_INPUT_YEARS_KEY).getOrElse("2014").split(",").map(_.toInt).filter(_ >= 2015)
+            val selectedDCTaxYears:Seq[Int] = reqData.getOrElse(SELECTED_INPUT_YEARS_KEY,"2014").split(",").map(_.toInt).filter(_ >= 2015)
                                                       .filter( year => reqData.getOrElse(DC_FLAG_PREFIX + year,"false").toBoolean).sorted
 
             val args = List(selectedDCTaxYears.head.toString, (selectedDCTaxYears.last + 1).toString)
@@ -76,8 +76,7 @@ trait DateOfMPAATriggerEventController extends RedirectController {
   }
 
   private def isValidDate(date: LocalDate, selectedTaxYears: Seq[Int]): Boolean  = {
-    selectedTaxYears.map((year) => (new LocalDate(year, 4, 5), new LocalDate(year + 1, 4, 6)))
-      .exists { pair => date.isAfter(pair._1) && date.isBefore(pair._2) }
+    selectedTaxYears.exists((year) => date.isAfter(new LocalDate(year, 4, 5)) &&  date.isBefore(new LocalDate(year + 1, 4, 6)))
   }
 
 }

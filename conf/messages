@@ -59,15 +59,22 @@ error.number.zero= Enter a number greater than 0
 error.min= Enter an amount that is £5,000,000 or less.
 error.max= Enter an amount that is £5,000,000 or less.
 error.bounds= Enter an amount that is £5,000,000 or less.
-ai.error.bounds= Enter your Adjusted Income for this year even if it is 0.
 error.real.precision={0} amount must not be empty. (Amount must have no more than {1} numbers, including {2} decimal places, and should be £0 or larger and under £5,000,000.)
 paac.error.generic = There is a problem
 paac.scheme.selection.error = Choose at least 1 type of pension scheme.
 paac.taxyear.selection.error = Choose at least 1 tax year.
+paac.mpaa.ta.date.page.invalid.date = Enter a date between 6 4 {0} and 5 4 {1} inclusive
 ## DB & DC, Total Amount Intput Field Error messages.
-post1516.error.bounds= Enter your total defined {0} pension savings for this year even if it is 0.
-year1516.error.bounds= Enter your total defined {0} pension savings for period {1} even if it is 0.
-pre1516.amount.error.bounds= Enter your total amount for this year even if it is 0.
+post2015.error.required= Enter your total defined {0} pension savings for this year even if it is 0.
+year2015.error.required= Enter your total defined {0} pension savings for period {1} even if it is 0.
+pre2015.error.required= Enter your total amount for this year even if it is 0.
+ai.error.required= Enter your Adjusted Income for this year even if it is 0.
+te.amount.error.required = Enter your defined contribution pension savings for rest of {0} even if it is 0.
+## POST Trigger Event Amount Page
+paac.error.taxyearlabel = {0} to {1}
+paac.error.p1label = period 1
+paac.error.p2label = period 2
+
 
 ## Tax Year Selection
 paac.taxyear.selection.pagetitle = Choose tax years
@@ -86,9 +93,9 @@ paac.201516.pension.inputs.pagetitle = Pension savings 2015 to 2016
 paac.201516.pension.inputs.description = The tax year 2015 to 2016 was split into two to align pension input periods (PIPs) with tax years.
 paac.201516.pension.inputs.description2 = Include pension savings for the PIPs that ended in this tax year. Use only numbers and round to the nearest pound.
 paac.201516.pension.inputs.period1 = Period 1
-paac.201516.pension.inputs.period1.description = Include all pension savings made in the PIPs ending between 6 April 2015 to 8 July 2015.
+paac.201516.pension.inputs.period1.description = Include all pension savings made in the PIPs ending between 6 April 2015 to 8 July 2015 inclusive.
 paac.201516.pension.inputs.period2 = Period 2
-paac.201516.pension.inputs.period2.description = Include all pension savings made between 9 July 2015 to 5 April 2016.
+paac.201516.pension.inputs.period2.description = Include all pension savings made between 9 July 2015 to 5 April 2016 inclusive.
 
 ## Pension Inputs Page
 paac.pension.inputs.pagetitle = Pension savings {0} to {1}
@@ -107,7 +114,6 @@ paac.mpaa.ta.date.page.heading = When did you first flexibly access your pension
 paac.mpaa.ta.date.page.description = This will also be on your flexible access statement.
 paac.mpaa.ta.date.page.datehint = For example, 21 6 2015
 paac.mpaa.ta.date.page.datevalidation = Check all date of MPAA Trigger Event fields are complete and only contain numbers
-paac.mpaa.ta.date.page.invalid.date = Enter a date between 6 4 {0} and 5 4 {1} inclusive
 
 ## Review Amounts Page
 paac.review-amounts.page.heading = Check your answers

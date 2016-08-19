@@ -25,6 +25,7 @@ import play.api.mvc.Request
 import scala.concurrent.Future
 import models.PensionPeriod._
 import config.AppSettings
+import org.joda.time.LocalDate
 
 object PostTriggerPensionInputsController extends PostTriggerPensionInputsController with AppSettings {
   def keystore: KeystoreService = KeystoreService
@@ -33,21 +34,31 @@ object PostTriggerPensionInputsController extends PostTriggerPensionInputsContro
 trait PostTriggerPensionInputsController extends RedirectController {
 
   val onPageLoad = withReadSession { implicit request =>
-    val isEdit = request.data bool IS_EDIT_KEY
     if (request.data(TRIGGER_DATE_KEY).isEmpty) {
       TriggerDate() go Edit
     } else {
+      val isEdit = request.data bool IS_EDIT_KEY
       val triggerDate: PensionPeriod = request.data(TRIGGER_DATE_KEY)
-      showPage(TriggerDCForm.form(triggerDate.isPeriod1, triggerDate.isPeriod2).bind(convert(request.data)).discardingErrors, triggerDate, isEdit)
+      // Get all selected tax years >= 2015 whose DC flag is true
+      val selectedDCTaxYears:Seq[Int] = request.data.getOrElse(SELECTED_INPUT_YEARS_KEY,"2014").split(",").map(_.toInt).filter(_ >= 2015)
+        .filter( year => request.data.getOrElse(DC_FLAG_PREFIX + year,"false").toBoolean).sorted
+      val triggeredTaxYear = getTriggeredTaxYear(triggerDate,selectedDCTaxYears)
+
+      showPage(TriggerDCForm.form(triggerDate.isPeriod1, triggerDate.isPeriod2)
+              .bind(convert(request.data)).discardingErrors, triggerDate, triggeredTaxYear, isEdit)
     }
   }
 
   val onSubmit = withWriteSession { implicit request =>
     val isEdit = request.data bool IS_EDIT_KEY
     val triggerDate: PensionPeriod = request.data(TRIGGER_DATE_KEY)
+      // Get all selected tax years >= 2015 whose DC flag is true
+    val selectedDCTaxYears:Seq[Int] = request.data.getOrElse(SELECTED_INPUT_YEARS_KEY,"2014").split(",").map(_.toInt).filter(_ >= 2015)
+                                             .filter( year => request.data.getOrElse(DC_FLAG_PREFIX + year,"false").toBoolean).sorted
+    val triggeredTaxYear = getTriggeredTaxYear(triggerDate,selectedDCTaxYears)
 
     TriggerDCForm.form(triggerDate.isPeriod1, triggerDate.isPeriod2).bindFromRequest().fold(
-      formWithErrors => showPage(formWithErrors, triggerDate, isEdit),
+      formWithErrors => showPage(formWithErrors, triggerDate, triggeredTaxYear, isEdit),
       input => TriggerAmount() go Forward.using(request.data ++ input.data)
     )
   }
@@ -56,7 +67,13 @@ trait PostTriggerPensionInputsController extends RedirectController {
     TriggerAmount() go Backward
   }
 
-  protected def showPage(form: Form[_ <: TriggerDCFields], triggerDate: PensionPeriod, isEdit: Boolean)(implicit request: Request[_]) = {
-    Future.successful(Ok(views.html.postTriggerPensionInputs(form, triggerDate, isEdit)))
+  protected def showPage(form: Form[_ <: TriggerDCFields], triggerDate: PensionPeriod, triggeredTaxYear:Int, isEdit: Boolean)(implicit request: Request[_]) = {
+    Future.successful(Ok(views.html.postTriggerPensionInputs(form, triggerDate, triggeredTaxYear, isEdit)))
   }
+
+  private def getTriggeredTaxYear(triggeredDate: PensionPeriod, selectedTaxYears: Seq[Int]):Int = {
+    val date:LocalDate = new LocalDate(triggeredDate.year,triggeredDate.month,triggeredDate.day)
+    selectedTaxYears.find((year) => date.isAfter(new LocalDate(year, 4, 5)) && date.isBefore(new LocalDate(year + 1, 4, 6))).getOrElse(-1)
+  }
+
 }
