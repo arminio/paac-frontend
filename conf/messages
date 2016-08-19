@@ -93,9 +93,9 @@ paac.201516.pension.inputs.pagetitle = Pension savings 2015 to 2016
 paac.201516.pension.inputs.description = The tax year 2015 to 2016 was split into two to align pension input periods (PIPs) with tax years.
 paac.201516.pension.inputs.description2 = Include pension savings for the PIPs that ended in this tax year. Use only numbers and round to the nearest pound.
 paac.201516.pension.inputs.period1 = Period 1
-paac.201516.pension.inputs.period1.description = Include all pension savings made in the PIPs ending between 6 April 2015 to 8 July 2015.
+paac.201516.pension.inputs.period1.description = Include all pension savings made in the PIPs ending between 6 April 2015 to 8 July 2015 inclusive.
 paac.201516.pension.inputs.period2 = Period 2
-paac.201516.pension.inputs.period2.description = Include all pension savings made between 9 July 2015 to 5 April 2016.
+paac.201516.pension.inputs.period2.description = Include all pension savings made between 9 July 2015 to 5 April 2016 inclusive.
 
 ## Pension Inputs Page
 paac.pension.inputs.pagetitle = Pension savings {0} to {1}
