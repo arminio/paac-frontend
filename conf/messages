@@ -153,7 +153,6 @@ paac.results.table.col.6 = Unused<br> annual<br> allowance<br> <span style="font
 paac.results.taxyearlabel = {0} to {1}
 paac.results.taxyearlabel.p1 = 2015 to 2016 period 1
 paac.results.taxyearlabel.p2 = 2015 to 2016 period 2
-paac.results.link.new.href = new
 paac.results.link.new = Start again
 paac.results.page.heading = Results
 paac.results.page.title = Pension annual allowance calculator results
