@@ -1,9 +1,15 @@
 .error_color {
-  color:#b10e1e;  
+  color:#b10e1e;
 }
 
 .error_border {
 
+}
+
+label.label--full-length span {
+  line-height: 1.31579;
+  margin: 0.75em 0;
+  display: block;
 }
 
 table {

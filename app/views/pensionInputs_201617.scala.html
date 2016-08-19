@@ -48,18 +48,18 @@ args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
 
 <fieldset id="input_2016" style="margin: 0" class="form-field-group">
   @for(id <- if (isDefinedBenefit && isDefinedContribution) List(DB_PREFIX+year, DC_PREFIX+year) else if (isDefinedBenefit) List(DB_PREFIX+year) else List(DC_PREFIX+year)) {
-    <label class="label--full-length numeric @if(paacForm.errors.find(_.key == id)) {form-field--error}" for="@id" style="width:150%;display: inline-block;@if(paacForm.errors.find(_.key == id)) {color:#b10e1e;}">
-        <span style="text-align:left;min-width: 7em">@if(id.contains("Benefit")){@Messages("paac.common.pension.inputs.db")}else{@Messages("paac.common.pension.inputs.dc")}</span>
+    <label class="label--full-length numeric @if(paacForm.errors.find(_.key == id)) {form-field--error}" for="@id" style="@if(paacForm.errors.find(_.key == id)) {color:#b10e1e;}">
+        <span>@if(id.contains("Benefit")){@Messages("paac.common.pension.inputs.db")}else{@Messages("paac.common.pension.inputs.dc")}</span>
     @defining(paacForm.errors.find(_.key.contains(id))){ maybeError =>
       @if(maybeError.isDefined) {
         @defining(maybeError.get) { error =>
-        <p style="color:#b10e1e;font-weight: bold; ">@Messages(error.message, error.args:_*)</p>
+        <p style="color:#b10e1e;font-weight: bold;">@Messages(error.message, error.args:_*)</p>
         } @* End of define error *@
       } @* End of if *@
     } @* End of define maybeError *@
-        <p style="text-align:left;min-width: 7em {border: 4px solid #b10e1e;}">
+        <span>
             @helpers.valueField(id, paacForm.data.getOrElse(id,""), paacForm.errors.find(_.key == id))
-        </p>
+        </span>
     </label>
   } @* End of for id *@
 </fieldset>
