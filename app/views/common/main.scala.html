@@ -58,6 +58,7 @@ serviceInfoContent = None)
     }
 }
 
+@getHelpForm = @{uiHelpers.reportAProblemLink(ApplicationConfig.reportAProblemPartialUrl, ApplicationConfig.reportAProblemNonJSUrl)}
 
 @content = {
     @layouts.main_content(
@@ -66,6 +67,7 @@ serviceInfoContent = None)
         mainDataAttributes = mainDataAttributes,
         mainContentHeader = mainContentHeader,
         serviceInfo = serviceInfo,
+        getHelpForm = getHelpForm,
         sidebar = sidebar)
 }
 
