@@ -209,3 +209,26 @@ table td.numeric {
     font-size: large !important;
     font-weight: bold !important;
 }
+
+table.review td.col1 {
+  min-width: 50%;
+  max-width: 50%;
+  width: 50%;
+}
+table.review td.col2 {
+  min-width: 35%;
+  max-width: 35%;
+  width: 35%;
+}
+table.review td.col3 {
+  min-width: 15%;
+  max-width: 15%;
+  width: 15%;
+}
+table.review th.fullwidth {
+  min-width: 100%;
+}
+
+fieldset {
+  margin-bottom: 0.75em !important;
+}

@@ -31,7 +31,7 @@ args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
   <input name="previous" type="hidden" value="@(selectedYears.mkString(","))">
     @if(isError) {
     <ul class="error-summary-list">
-        <li style="color:#b10e1e;font-weight: bold;">@Messages("paac.taxyear.selection.error")</a></li>
+        <li style="color:#b10e1e;font-weight: bold;">@Messages("paac.taxyear.selection.error")</li>
     </ul>
     }
   @defining(config.PaacConfiguration.year()) { thisYear =>

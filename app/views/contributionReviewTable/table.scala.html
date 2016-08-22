@@ -7,10 +7,10 @@
 @import models._
 
 @defining(java.text.NumberFormat.getNumberInstance(java.util.Locale.UK)) { currencyFormatter =>
-<table id="@if(contribution.isPeriod1){period1}else{@if(contribution.isPeriod2){period2}else{@(contribution.taxPeriodStart.year)}}">
+<table id="@if(contribution.isPeriod1){period1}else{@if(contribution.isPeriod2){period2}else{@(contribution.taxPeriodStart.year)}}" class="review">
     <thead>
     <tr>
-        <th width="100%" colspan="3">
+        <th colspan="3" class="fullwidth">
         @if(contribution.isPeriod1) {@Messages("paac.review-amounts.heading.period",contribution.taxPeriodStart.year.toString(), (contribution.taxPeriodStart.year+1).toString(), 1)}
         @if(contribution.isPeriod2) {@Messages("paac.review-amounts.heading.period",contribution.taxPeriodStart.year.toString(), (contribution.taxPeriodStart.year+1).toString(), 2)}
         @if(!contribution.isPeriod1 && !contribution.isPeriod2) {@Messages("paac.review-amounts.heading",contribution.taxPeriodStart.year.toString(), (contribution.taxPeriodStart.year+1).toString())}
@@ -21,37 +21,37 @@
         @defining(contribution.amounts.get) { amounts =>
         @if(amounts.moneyPurchase.isDefined && contribution.taxPeriodStart.year >= 2015){
         <tr>
-            <td width="50%">@Messages("paac.review-amounts.heading.mp")</td>
-            <td width="35%" class="numeric">&pound;@(currencyFormatter.format(amounts.moneyPurchase.get/100D))</td>
-            <td width="15%" class="edit_action">
+            <td class="col1">@Messages("paac.review-amounts.heading.mp")</td>
+            <td class="col2 numeric">&pound;@(currencyFormatter.format(amounts.moneyPurchase.get/100D))</td>
+            <td class="col3 edit_action">
                 @if(contribution.taxPeriodStart.year < 2015 || contribution.taxPeriodStart.year > 2015) {<a href="edit/@contribution.taxPeriodStart.year">}
                 @if(contribution.isPeriod1()) {<a href="edit/2015">}
                 @if(contribution.isPeriod2()) {<a href="edit/2015">}
                  @Messages("paac.review-amounts.action.edit") <span class="visuallyhidden">@(contribution.taxYearLabel())</span>
-                </a></a></a>
+                </a>
             </td>
         </tr>
         } @* End of defined contribution row *@
 
         @if(amounts.definedBenefit.isDefined){
         <tr>
-            <td width="50%">@if(contribution.taxPeriodStart.year < 2015) { @Messages("paac.review-amounts.heading.total") } else { @Messages("paac.review-amounts.heading.db") }</td>
-            <td width="35%" class="numeric">&pound;@(currencyFormatter.format(amounts.definedBenefit.get/100D))</td>
-            <td width="15%" class="edit_action">
+            <td class="col1">@if(contribution.taxPeriodStart.year < 2015) { @Messages("paac.review-amounts.heading.total") } else { @Messages("paac.review-amounts.heading.db") }</td>
+            <td class="col2 numeric">&pound;@(currencyFormatter.format(amounts.definedBenefit.get/100D))</td>
+            <td class="col3 edit_action">
                 @if(contribution.taxPeriodStart.year < 2015 || contribution.taxPeriodStart.year > 2015) {<a href="edit/@contribution.taxPeriodStart.year">}
                 @if(contribution.isPeriod1()) {<a href="edit/2015">}
                 @if(contribution.isPeriod2()) {<a href="edit/2015">}
                  @Messages("paac.review-amounts.action.edit") <span class="visuallyhidden">@(contribution.taxYearLabel())</span>
-                </a></a></a>
+                </a>
             </td>
         </tr>
         }@* End of defined benefit row *@
 
         @if(amounts.income.isDefined){
         <tr>
-            <td width="50%">@Messages("paac.review-amounts.heading.income")</td>
-            <td width="35%" class="numeric">&pound;@(currencyFormatter.format(amounts.income.get/100D))</td>
-            <td width="15%" class="edit_action">
+            <td class="col1">@Messages("paac.review-amounts.heading.income")</td>
+            <td class="col2 numeric">&pound;@(currencyFormatter.format(amounts.income.get/100D))</td>
+            <td class="col3 edit_action">
                 <a href="edit/income/@contribution.taxPeriodStart.year">
                  @Messages("paac.review-amounts.action.edit") <span class="visuallyhidden">@(contribution.taxYearLabel())</span>
                 </a>
@@ -64,22 +64,22 @@
             triggerContribution.get.isPeriod2 && contribution.isPeriod2 ||
             triggerContribution.get.taxPeriodStart == contribution.taxPeriodEnd) {
         <tr>
-            <td width="50%">@Messages("paac.review-amounts.heading.trigger.date")</td>
-            <td width="35%" class="numeric">
+            <td class="col1">@Messages("paac.review-amounts.heading.trigger.date")</td>
+            <td class="col2 numeric">
             @defining(triggerContribution.map(_.taxPeriodStart).getOrElse(PensionPeriod(0,0,0))) { triggerDate =>
             @Messages("paac.review-amounts.value."+triggerDate.month, triggerDate.day.toString, triggerDate.year.toString)
             }
             </td>
-            <td width="15%" class="edit_action">
+            <td class="col3 edit_action">
                 <a href="edit/@(controllers.ReviewTotalAmountsController.EDIT_TRIGGER_DATE)">
                  @Messages("paac.review-amounts.action.edit") <span class="visuallyhidden">@(contribution.taxYearLabel())</span>
                 </a>
             </td>
         </tr>
         <tr>
-            <td width="50%">@if(triggerContribution.get.isPeriod1){@Messages("paac.review-amounts.heading.trigger.savings.p1","")}else{@if(triggerContribution.get.isPeriod2){@Messages("paac.review-amounts.heading.trigger.savings.p2","")}else{@Messages("paac.review-amounts.heading.trigger.savings.other",""+triggerContribution.get.taxPeriodStart.taxYear)}}</td>
-            <td width="35%" class="numeric">&pound;@(currencyFormatter.format(triggerContribution.get.amounts.getOrElse(InputAmounts()).moneyPurchase.get/100D))</td>
-            <td width="15%" class="edit_action">
+            <td class="col1">@if(triggerContribution.get.isPeriod1){@Messages("paac.review-amounts.heading.trigger.savings.p1","")}else{@if(triggerContribution.get.isPeriod2){@Messages("paac.review-amounts.heading.trigger.savings.p2","")}else{@Messages("paac.review-amounts.heading.trigger.savings.other",""+triggerContribution.get.taxPeriodStart.taxYear)}}</td>
+            <td class="col2 numeric">&pound;@(currencyFormatter.format(triggerContribution.get.amounts.getOrElse(InputAmounts()).moneyPurchase.get/100D))</td>
+            <td class="col3 edit_action">
                 <a href="edit/@(controllers.ReviewTotalAmountsController.EDIT_TRIGGER_AMOUNT)">
                  @Messages("paac.review-amounts.action.edit") <span class="visuallyhidden">@(contribution.taxYearLabel())</span>
                 </a>
