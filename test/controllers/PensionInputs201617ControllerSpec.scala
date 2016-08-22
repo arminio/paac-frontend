@@ -70,7 +70,7 @@ class PensionInputs201617ControllerSpec extends test.BaseSpec {
         // check
         status(result) shouldBe 200
         val htmlPage = contentAsString(await(result))
-        htmlPage should include (s"""<input type="text" name="${DC_PREFIX}2016" id="${DC_PREFIX}2016" min="0" class="input--no-spinner" value='' """)
+        htmlPage should include (s"""<input type="text" name="${DC_PREFIX}2016" id="${DC_PREFIX}2016" class="input--no-spinner" value='' """)
         dumpHtml("empty_pensionInputsPost2015", htmlPage)
       }
 
