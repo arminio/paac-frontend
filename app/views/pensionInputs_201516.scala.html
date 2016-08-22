@@ -48,7 +48,7 @@ args = 'class -> "form",
 
 @for(p <- List("p1","p2")) {
   @defining(if (p == "p1") "paac.201516.pension.inputs.period1" else "paac.201516.pension.inputs.period2") { msg =>
-<p class="lede text"><b>@Messages(msg)</b></p>
+<h2 class="lede text"><b>@Messages(msg)</b></h2>
 <p class="text" style="margin: 0"><b>@Messages(msg+".description")</b></p>
   }
 
