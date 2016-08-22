@@ -57,9 +57,22 @@ trait PostTriggerPensionInputsController extends RedirectController {
                                              .filter( year => request.data.getOrElse(DC_FLAG_PREFIX + year,"false").toBoolean).sorted
     val triggeredTaxYear = getTriggeredTaxYear(triggerDate,selectedDCTaxYears)
 
-    TriggerDCForm.form(triggerDate.isPeriod1, triggerDate.isPeriod2).bindFromRequest().fold(
+    val form = TriggerDCForm.form(triggerDate.isPeriod1, triggerDate.isPeriod2).bindFromRequest()
+    form.fold(
       formWithErrors => showPage(formWithErrors, triggerDate, triggeredTaxYear, isEdit),
-      input => TriggerAmount() go Forward.using(request.data ++ input.data)
+      input => {
+        val value = input.data.toList(0)._2
+        val amount = triggerDate match {
+          case _ if triggerDate.isPeriod1 => request.data.get("definedContribution_2015_p1").map(_.toLong).getOrElse(0L)
+          case _ if triggerDate.isPeriod2 => request.data.get("definedContribution_2015_p2").map(_.toLong).getOrElse(0L)
+          case _ => request.data.get(s"definedContribution_${triggeredTaxYear}").map(_.toLong).getOrElse(0L)
+        }
+        if (value.toLong > amount) {
+          showPage(form.withError(input.data.toList(0)._1, play.api.i18n.Messages("paac.post.trigger.value.error", (amount/100))), triggerDate, triggeredTaxYear, isEdit)
+        }
+        else
+          TriggerAmount() go Forward.using(request.data ++ input.data)
+      }
     )
   }
 
