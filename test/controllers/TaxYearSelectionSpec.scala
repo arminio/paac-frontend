@@ -62,6 +62,7 @@ class TaxYearSelectionSpec extends test.BaseSpec {
         // check
         status(result) shouldBe 200
         val htmlPage = contentAsString(await(result))
+        dumpHtml("empty_taxyearselection", htmlPage)
       }
 
       "have keystore with TaxYearSelection value when page is revisited" in new ControllerWithMockKeystore {
@@ -76,6 +77,8 @@ class TaxYearSelectionSpec extends test.BaseSpec {
         status(result) shouldBe 200
         MockKeystore.map should contain key ("TaxYearSelection")
         MockKeystore.map should contain value ("2015")
+        val htmlPage = contentAsString(await(result))
+        dumpHtml("taxyearselection", htmlPage)
       }
 
       "if TaxYearSelection value in keystore displays checked checkboxes" in new ControllerWithMockKeystore {
@@ -110,6 +113,7 @@ class TaxYearSelectionSpec extends test.BaseSpec {
       status(result) shouldBe 200
       val htmlPage = contentAsString(await(result))
       htmlPage should include ("""Choose at least 1 tax year.""")
+      dumpHtml("error_taxyearselection", htmlPage)
     }
 
     "not return result NOT_FOUND" in {

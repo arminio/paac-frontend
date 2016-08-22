@@ -59,25 +59,21 @@ backLink = Some((controllers.routes.PostTriggerPensionInputsController.onBack.ur
     @form(
         action = controllers.routes.PostTriggerPensionInputsController.onSubmit,
         args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
-
-        <table>
             <fieldset class="form-field-group @if(paacForm.hasErrors) {form-field--error}">
               @if(teDate.isPeriod1()) {
                 @defining("triggerDefinedContribution_2015_p1") { id =>
                 <label class="label--full-length numeric" id="triggerAmountFieldset" for="@id" style="width:150%;display: inline-block;">
-                    <p style="text-align:left;min-width: 7em">@Messages("paac.post.trigger.amount.input.label")</p>
+                    <span>@Messages("paac.post.trigger.amount.input.label")</span>
                     @if(paacForm.hasErrors) {
-                    <ul class="error-summary-list">
                         @for(error <- paacForm.errors) {
                         @defining(if(error.key.contains("p1")){ Messages("paac.error.p1label") }else{if(error.key.contains("p2")){ Messages("paac.error.p2label") } else{ Messages("paac.error.taxyearlabel",triggeredTaxYear.toString,(triggeredTaxYear+1).toString) } }) { args =>
                         @if(error.message == "error.required"){
-                            <p style="color:#b10e1e;font-weight: bold;">@Messages("te.amount.error.required",args)</p>
+                            <span style="color:#b10e1e;font-weight: bold;">@Messages("te.amount.error.required",args)</span>
                           } else {
-                            <p style="color:#b10e1e;font-weight: bold;">@Messages(error.message)</p>
+                            <span style="color:#b10e1e;font-weight: bold;">@Messages(error.message)</span>
                           }
                         }
                         }
-                    </ul>
                     }
                     <span class="form-hint">@Messages("paac.common.inputfield.example.message")</span>
                       @if(paacForm.data.get("triggerDefinedContribution_2015_p1") != None) {
@@ -92,20 +88,18 @@ backLink = Some((controllers.routes.PostTriggerPensionInputsController.onBack.ur
               @if(teDate.isPeriod2()) {
                 @defining("triggerDefinedContribution_2015_p2") { id =>
                 <label class="label--full-length numeric" id="triggerAmountFieldset" for="@id" style="width:150%;display: inline-block;">
-                    <p style="text-align:left;min-width: 7em">@Messages("paac.post.trigger.amount.input.label")</p>
+                    <span>@Messages("paac.post.trigger.amount.input.label")</span>
                         <span class="form-hint">@Messages("paac.common.inputfield.example.message")</span>
                     @if(paacForm.hasErrors) {
-                    <ul class="error-summary-list">
                         @for(error <- paacForm.errors) {
                         @defining(if(error.key.contains("p1")){ Messages("paac.error.p1label") }else{if(error.key.contains("p2")){ Messages("paac.error.p2label") } else{ Messages("paac.error.taxyearlabel",triggeredTaxYear.toString,(triggeredTaxYear+1).toString) } }) { args =>
                         @if(error.message == "error.required"){
-                             <p style="color:#b10e1e;font-weight: bold;">@Messages("te.amount.error.required",args)</p>
+                             <span style="color:#b10e1e;font-weight: bold;">@Messages("te.amount.error.required",args)</span>
                           } else {
-                             <p style="color:#b10e1e;font-weight: bold;">@Messages(error.message)</p>
+                             <span style="color:#b10e1e;font-weight: bold;">@Messages(error.message)</span>
                           }
                         }
                         }
-                    </ul>
                     }
                     @if(paacForm.data.get("triggerDefinedContribution_2015_p2") != None) {
                     £&nbsp;<input type="text" name="@id" id="@id" class="input--no-spinner" value='@paacForm.data.get("triggerDefinedContribution_2015_p2")' size="7" style="width:9em;@if(paacForm.errors.find(_.key == id)) {border: 4px solid #b10e1e;}"/>
@@ -144,7 +138,6 @@ backLink = Some((controllers.routes.PostTriggerPensionInputsController.onBack.ur
                 }
               }
                 </fieldset>
-          </table>
         <button id="submit" type="submit" class="button" value="Continue">@if(isEdit){@Messages("paac.calculator.button.save")}else{@Messages("paac.calculator.button.continue")}</button>
     }
   }

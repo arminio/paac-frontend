@@ -52,10 +52,10 @@ args = 'class -> "form",
 <p class="text" style="margin: 0"><b>@Messages(msg+".description")</b></p>
   }
 
-<fieldset id="input_2015_p1" class="form-field-group">
+<fieldset id="input_2015_@(p)" class="form-field-group">
   @for(id <- if (isDefinedBenefit && isDefinedContribution) List("definedBenefit_2015_"+p, "definedContribution_2015_"+p) else if (isDefinedBenefit) List("definedBenefit_2015_"+p) else List("definedContribution_2015_"+p)) {
-    <label class="label--full-length numeric @if(paacForm.errors.find(_.key == id)) {form-field--error}" for="@id" style="width:150%;display: inline-block;">
-      <p style="text-align:left; min-width: 7em;">@Messages(if (id.contains("Benefit")) "paac.common.pension.inputs.db" else "paac.common.pension.inputs.dc")</p>
+    <label class="label--full-length numeric @if(paacForm.errors.find(_.key == id)) {form-field--error}" for="@id">
+      <span>@Messages(if (id.contains("Benefit")) "paac.common.pension.inputs.db" else "paac.common.pension.inputs.dc")</span>
       <span class="form-hint">@Messages("paac.common.inputfield.example.message")</span>
     @defining(paacForm.errors.find(_.key.contains(id))){ maybeError =>
       @if(maybeError.isDefined) {
@@ -64,9 +64,9 @@ args = 'class -> "form",
             @defining(if(error.key.contains("definedBenefit")){ "benefit"} else {"contribution"}){ pensionSchemesTypes =>
             @defining(List(pensionSchemesTypes, periods)){ args =>
                 @if(error.message == "error.required"){
-                    <p style="color:#b10e1e;font-weight: bold;">@Messages("year2015.error.required", args:_*)</p>
+                    <span style="color:#b10e1e;font-weight: bold;">@Messages("year2015.error.required", args:_*)</span>
                 } else {
-                    <p style="color:#b10e1e;font-weight: bold;">@Messages(error.message)</p>
+                    <span style="color:#b10e1e;font-weight: bold;">@Messages(error.message)</span>
                 }
             } @* End of periods *@
             } @* End of pensionSchemesTypes *@

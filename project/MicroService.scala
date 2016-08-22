@@ -14,6 +14,17 @@ trait MicroService {
 
   val appName: String
 
+  val validateHTML = taskKey[Unit]("Runs W3C NU html validator")
+  val validateHTMLTask = validateHTML := {
+    val log = ConsoleLogger(ConsoleOut.systemOut, true, true, ConsoleLogger.noSuppressedMessage)
+    val logger = new ProcessLogger() {
+      def buffer[T](f: => T): T = { f }
+      def error(s: => String): Unit = { log.error(s) }
+      def info(s: => String): Unit = {  }
+    }
+    val userDir = new File(System.getProperty("user.dir"))
+    HTMLValidation.validationProcess(userDir) ! logger
+  }
   lazy val appDependencies : Seq[ModuleID] = ???
   lazy val plugins : Seq[Plugins] = Seq(play.PlayScala)
   lazy val playSettings : Seq[Setting[_]] = Seq.empty
@@ -42,7 +53,9 @@ trait MicroService {
       libraryDependencies ++= appDependencies,
       parallelExecution in Test := false,
       fork in Test := false,
-      retrieveManaged := true
+      retrieveManaged := true,
+      commands <++= (baseDirectory in Test) { base => Seq(HTMLValidation.command(base))},
+      validateHTMLTask
     )
     .configs(IntegrationTest)
     .settings(inConfig(IntegrationTest)(Defaults.itSettings): _*)
@@ -57,7 +70,6 @@ trait MicroService {
 }
 
 private object TestPhases {
-
   def oneForkedJvmPerTest(tests: Seq[TestDefinition]) =
     tests map {
       test => new Group(test.name, Seq(test), SubProcess(ForkOptions(runJVMOptions = Seq("-Dtest.name=" + test.name))))

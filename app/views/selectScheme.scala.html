@@ -49,7 +49,7 @@ backLink = Some((controllers.routes.SelectSchemeController.onBack(year).url,Mess
             }
         </ul>
         }
-        <span class="inline"  >
+        <span class="inline">
             @checkbox.singleCheckbox(
                 paacForm("definedContribution"),
                 '_label -> Html(Messages("paac.scheme.selection.dc.label")),

@@ -36,8 +36,8 @@ paac.startpage.beforeInfo.p4 = Find out more about <a href="https://www.gov.uk/t
 paac.scheme.selection.pagetitle = Pension schemes in {0} to {1}
 paac.scheme.selection.heading = What types of pension schemes did you have in the tax year {0} to {1}?
 paac.scheme.selection.p1 = Select all that apply.
-paac.scheme.selection.dc.label = <B>Defined contribution</B><P>A pension based on how much is paid in to it. These are usually personal or stakeholder pensions.</P>
-paac.scheme.selection.db.label = <B>Defined benefit</B><P>A pension based on your salary and how long you have worked for your employer. These are always workplace pensions.</P>
+paac.scheme.selection.dc.label = <b>Defined contribution</b><br>A pension based on how much is paid in to it. These are usually personal or stakeholder pensions.
+paac.scheme.selection.db.label = <b>Defined benefit</b><br>A pension based on your salary and how long you have worked for your employer. These are always workplace pensions.
 
 ## PAAC TaxYear Text
 paac.0809.taxyear.text = 2008/09

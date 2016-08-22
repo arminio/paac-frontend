@@ -138,12 +138,16 @@ class ReviewTotalAmountsControllerSpec extends test.BaseSpec {
         MockKeystore.map = MockKeystore.map + (KeystoreService.P1_DB_KEY -> "9000")
         MockKeystore.map = MockKeystore.map + (KeystoreService.P1_DC_KEY -> "10000")
         MockKeystore.map = MockKeystore.map + (KeystoreService.TRIGGER_DATE_KEY -> "2015-5-10")
+        MockKeystore.map = MockKeystore.map + (KeystoreService.P2_TRIGGER_DC_KEY -> "345600")
+        MockKeystore.map = MockKeystore.map + (KeystoreService.P2_DB_KEY -> "9000")
+        MockKeystore.map = MockKeystore.map + (KeystoreService.P2_DC_KEY -> "10000")
 
         // test
         val result: Future[Result] = ControllerWithMocks.onPageLoad()(request)
 
         // check
         val htmlSummaryPage = contentAsString(await(result))
+        dumpHtml("review", htmlSummaryPage)
         htmlSummaryPage should include ("&pound;1,234")
         htmlSummaryPage should include ("10 May 2015")
       }

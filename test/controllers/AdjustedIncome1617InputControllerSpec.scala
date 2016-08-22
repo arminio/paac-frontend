@@ -74,6 +74,7 @@ class AdjustedIncome1617InputControllerSpec extends test.BaseSpec {
         status(result) shouldBe 200
         val htmlPage = contentAsString(await(result))
         htmlPage should include("""<input type="text" name="adjustedIncome_2016" id="adjustedIncome_2016" """)
+        dumpHtml("empty_adjustedincome", htmlPage)
       }
 
       "have keystore with Current Year flag = 2015 value, should NOT have AI input field" in new ControllerWithMockKeystore {
@@ -109,6 +110,8 @@ class AdjustedIncome1617InputControllerSpec extends test.BaseSpec {
         status(result) shouldBe 200
         MockKeystore.map should contain key ("adjustedIncome_2016")
         MockKeystore.map should contain value ("1000")
+        val htmlPage = contentAsString(await(result))
+        dumpHtml("adjustedincome", htmlPage)
       }
     }
 

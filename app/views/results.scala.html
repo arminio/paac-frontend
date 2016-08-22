@@ -60,7 +60,8 @@ backLink = Some((controllers.routes.ReviewTotalAmountsController.onPageLoad.url,
           }
           <td class="numeric">&pound;@(currencyFormatter.format((result.input.amounts.get.definedBenefit.getOrElse(0L) + result.input.amounts.get.moneyPurchase.getOrElse(0L))/100))</td>
           <td class="numeric">&pound;@(currencyFormatter.format(result.summaryResult.chargableAmount/100))</td>
-          <td class="numeric">&pound;@if(result.summaryResult.isACA) {@(currencyFormatter.format(result.summaryResult.availableAAAWithCCF/100))}else{@(currencyFormatter.format(result.summaryResult.availableAAWithCCF/100))}</td>
+          <td class="numeric">&pound;@if(result.summaryResult.isACA) {@(currencyFormatter.format(result.summaryResult.availableAAAWithCCF/100))}else{@(currencyFormatter.format(result.summaryResult.availableAAWithCCF/100))}
+          </td>
        </tr>
       }
       @if(result.input.amounts.isDefined && result.input.isPeriod1) {
@@ -80,7 +81,8 @@ backLink = Some((controllers.routes.ReviewTotalAmountsController.onPageLoad.url,
                                                                 result.input.amounts.get.moneyPurchase.getOrElse(0L))
                                                                 /100))</td>
           <td class="numeric">&pound;@(currencyFormatter.format((result.summaryResult.chargableAmount)/100))</td>
-          <td class="numeric">&pound;@if(result.summaryResult.isACA) {@(currencyFormatter.format(result.summaryResult.availableAAAWithCCF/100))}else{@(currencyFormatter.format(result.summaryResult.availableAAWithCCF/100))}</td>
+          <td class="numeric">&pound;@if(result.summaryResult.isACA) {@(currencyFormatter.format(result.summaryResult.availableAAAWithCCF/100))}else{@(currencyFormatter.format(result.summaryResult.availableAAWithCCF/100))}
+          </td>
        </tr>
       }
       @if(result.input.amounts.isDefined && result.input.isPeriod2) {
@@ -99,7 +101,8 @@ backLink = Some((controllers.routes.ReviewTotalAmountsController.onPageLoad.url,
           <td class="numeric">&pound;@(currencyFormatter.format((result.input.amounts.get.definedBenefit.getOrElse(0L) +
                                                                 result.input.amounts.get.moneyPurchase.getOrElse(0L))/100))</td>
           <td class="numeric">&pound;@(currencyFormatter.format((result.summaryResult.chargableAmount)/100))</td>
-          <td class="numeric">&pound;@if(result.summaryResult.isACA) {@(currencyFormatter.format(result.summaryResult.availableAAAWithCCF/100))}else{@(currencyFormatter.format(result.summaryResult.availableAAWithCCF/100))}</td>
+          <td class="numeric">&pound;@if(result.summaryResult.isACA) {@(currencyFormatter.format(result.summaryResult.availableAAAWithCCF/100))}else{@(currencyFormatter.format(result.summaryResult.availableAAWithCCF/100))}
+          </td>
        </tr>
       }
     }

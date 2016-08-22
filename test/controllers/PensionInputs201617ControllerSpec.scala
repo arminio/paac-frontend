@@ -70,7 +70,8 @@ class PensionInputs201617ControllerSpec extends test.BaseSpec {
         // check
         status(result) shouldBe 200
         val htmlPage = contentAsString(await(result))
-        htmlPage should include (s"""<input type="text" name="${DC_PREFIX}2016" id="${DC_PREFIX}2016" """)
+        htmlPage should include (s"""<input type="text" name="${DC_PREFIX}2016" id="${DC_PREFIX}2016" class="input--no-spinner" value='' """)
+        dumpHtml("empty_pensionInputsPost2015", htmlPage)
       }
 
       "have keystore with DC flag = false and DB flag = true values, should have DB input field" in new ControllerWithMockKeystore {
@@ -106,6 +107,7 @@ class PensionInputs201617ControllerSpec extends test.BaseSpec {
         val htmlPage = contentAsString(await(result))
         htmlPage should include (s"""<input type="text" name="${DB_PREFIX}2016" id="${DB_PREFIX}2016" """)
         htmlPage should include (s"""<input type="text" name="${DC_PREFIX}2016" id="${DC_PREFIX}2016" """)
+        dumpHtml("pensionInputsPost2015", htmlPage)
       }
     }
 
@@ -196,6 +198,7 @@ class PensionInputs201617ControllerSpec extends test.BaseSpec {
         status(result) shouldBe 200
         val htmlPage = contentAsString(await(result))
         htmlPage should include ("Enter an amount that is £5,000,000 or less.")
+        dumpHtml("error_pensionInputsPost2015", htmlPage)
       }
 
       "with isEdit = false, DB = true and DC = false with empty DB Input should display the same page with errors" in new ControllerWithMockKeystore {

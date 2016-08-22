@@ -72,6 +72,7 @@ class YesNoMPAATriggerEventAmountControllerSpec extends test.BaseSpec {
         // check
         status(result) shouldBe 200
         val htmlPage = contentAsString(await(result))
+        dumpHtml("empty_yesnompaate", htmlPage)
       }
 
       "have keystore with Yes/NO option for MPAA Trigger Event Amount value when we revisit the same page" in new ControllerWithMockKeystore {
@@ -86,6 +87,8 @@ class YesNoMPAATriggerEventAmountControllerSpec extends test.BaseSpec {
         status(result) shouldBe 200
         MockKeystore.map should contain key ("yesnoForMPAATriggerEvent")
         MockKeystore.map should contain value ("yes")
+        val htmlPage = contentAsString(await(result))
+        dumpHtml("yesnompaate", htmlPage)
       }
 
     }
@@ -115,6 +118,8 @@ class YesNoMPAATriggerEventAmountControllerSpec extends test.BaseSpec {
 
         // check
         status(result) shouldBe 200
+        val htmlPage = contentAsString(await(result))
+        dumpHtml("error_yesnompaate", htmlPage)
       }
 
       "with valid yesNo key and value should save yesnoMPAAATriggerEventAmount key to keystore" in new ControllerWithMockKeystore{
