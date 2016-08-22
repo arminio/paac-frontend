@@ -180,6 +180,7 @@ class PostTriggerPensionInputsControllerSpec extends test.BaseSpec {
                              (TRIGGER_DATE_KEY -> "2015-11-15"),
                              (IS_EDIT_KEY -> "false"),
                              (CURRENT_INPUT_YEAR_KEY, "2015"),
+                             (P2_DC_KEY, "4000100"),
                              (SELECTED_INPUT_YEARS_KEY, "2015"))
       implicit val request = FakeRequest(POST, endPointURL).withSession(sessionData: _*).withFormUrlEncodedBody((P2_TRIGGER_DC_KEY -> "40000"))
 
@@ -197,6 +198,7 @@ class PostTriggerPensionInputsControllerSpec extends test.BaseSpec {
       val sessionData = List((SessionKeys.sessionId,SESSION_ID),
                              (TRIGGER_DATE_KEY -> "2015-4-15"),
                              (IS_EDIT_KEY -> "false"),
+                             (P1_DC_KEY, "4000100"),
                              (CURRENT_INPUT_YEAR_KEY, "2015"),
                              (SELECTED_INPUT_YEARS_KEY, "2015"))
       implicit val request = FakeRequest(POST, endPointURL).withSession(sessionData: _*).withFormUrlEncodedBody((P1_TRIGGER_DC_KEY -> "40000"))
@@ -208,6 +210,25 @@ class PostTriggerPensionInputsControllerSpec extends test.BaseSpec {
       status(result) shouldBe 303
       MockKeystore.map should contain key (KeystoreService.P1_TRIGGER_DC_KEY)
       MockKeystore.map should contain value ("4000000")
+    }
+
+    "displays error if amount is greater than total savings for the pension input period" in new ControllerWithMockKeystore {
+      // set up
+      val sessionData = List((SessionKeys.sessionId,SESSION_ID),
+                             (TRIGGER_DATE_KEY -> "2015-4-15"),
+                             (IS_EDIT_KEY -> "false"),
+                             (P1_DC_KEY, "3999900"),
+                             (CURRENT_INPUT_YEAR_KEY, "2015"),
+                             (SELECTED_INPUT_YEARS_KEY, "2015"))
+      implicit val request = FakeRequest(POST, endPointURL).withSession(sessionData: _*).withFormUrlEncodedBody((P1_TRIGGER_DC_KEY -> "40000"))
+
+      // test
+      val result: Future[Result] = ControllerWithMockKeystore.onSubmit()(request)
+
+      // check
+      status(result) shouldBe 200
+      val htmlPage = contentAsString(await(result))
+      htmlPage should include ("The amount entered is larger than the total contribution savings of 39,999 for this input period.")
     }
   }
 

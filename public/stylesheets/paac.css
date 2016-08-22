@@ -210,6 +210,14 @@ table td.numeric {
     font-weight: bold !important;
 }
 
+table.review tr.form-field--error {
+    border-left: 3px solid #df3034;
+}
+
+table.review tr.form-field--error td.col1 {
+  padding-left: 0.75em;
+}
+
 table.review td.col1 {
   min-width: 50%;
   max-width: 50%;
