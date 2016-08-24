@@ -35,7 +35,7 @@ class ReviewTotalAmountsControllerSpec extends test.BaseSpec {
   val contribution5 = Contribution(2013, 1000000)
 
   trait MockCalculatorConnectorFixture {
-    object MockCalculatorConnector extends CalculatorConnector with AppTestSettings {
+    object MockCalculatorConnector extends CalculatorConnector with AppTestSettings with test.NullMetrics {
       val tyr0 = TaxYearResults(contribution0, SummaryResult(-1,0,5000000,4500000,5000000,4500000,4500000))
       val tyr1 = TaxYearResults(contribution1, SummaryResult(-1,0,5000000,4400000,9500000,8900000,8900000))
       val tyr2 = TaxYearResults(contribution2, SummaryResult(-1,0,5000000,4300000,13900000,13200000,13200000))

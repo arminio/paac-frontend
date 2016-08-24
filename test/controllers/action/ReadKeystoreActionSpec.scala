@@ -35,7 +35,7 @@ class ReadKeystoreActionSpec extends test.BaseSpec {
       // set up
       val request = FakeRequest("GET", "/abc")
       MockKeystore.map = Map[String,String]("msg"->"hello worlds")
-      val readKeystore = new ReadKeystore {
+      val readKeystore = new ReadKeystore with test.NullMetrics {
         def keystore: KeystoreService = MockKeystore
         def test[T](r: Request[T]): Future[DataRequest[T]] = super.convert(r)
         def invokeBlock[A](r: Request[A], block: DataRequest[A] => Future[Result]): Future[Result] = Future.successful(Ok("hi"))
@@ -53,7 +53,7 @@ class ReadKeystoreActionSpec extends test.BaseSpec {
         // set up
         implicit val request = FakeRequest("GET", "/abc").withSession("msg"->"abc")
         val dataRequest = new DataRequest(Map[String,String]("msg"->"hello worlds"),request)
-        val readKeystore = new ReadKeystore {
+        val readKeystore = new ReadKeystore with test.NullMetrics {
           def keystore: KeystoreService = MockKeystore
           def test[T](): Future[Result] = super.updateSession(dataRequest, Future.successful(Ok("hi")))
           def invokeBlock[A](r: Request[A], block: DataRequest[A] => Future[Result]): Future[Result] = Future.successful(Ok("hi"))
@@ -69,7 +69,7 @@ class ReadKeystoreActionSpec extends test.BaseSpec {
         // set up
         implicit val request = FakeRequest("GET", "/abc").withSession("msg"->"abc")
         val dataRequest = new DataRequest(Map[String,String](),request)
-        val readKeystore = new ReadKeystore {
+        val readKeystore = new ReadKeystore with test.NullMetrics {
           def keystore: KeystoreService = MockKeystore
           def test[T](): Future[Result] = super.updateSession(dataRequest, Future.successful(Ok("hi")))
           def invokeBlock[A](r: Request[A], block: DataRequest[A] => Future[Result]): Future[Result] = Future.successful(Ok("hi"))
