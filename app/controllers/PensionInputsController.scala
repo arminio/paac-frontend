@@ -34,7 +34,7 @@ object PensionInputsController extends PensionInputsController with AppSettings 
 trait PensionInputsController extends RedirectController {
 
   def onPageLoad(year:Int) = withReadSession { implicit request =>
-    val isEdit = request.form bool IS_EDIT_KEY
+    val isEdit = request.data bool IS_EDIT_KEY
     if (year <= 0) {
       Start() go Edit
     } else {
@@ -43,8 +43,8 @@ trait PensionInputsController extends RedirectController {
   }
 
   val onSubmit = withWriteSession { implicit request =>
-    val cy = request.form("year").toInt
-    val isEdit = request.form bool IS_EDIT_KEY
+    val cy = request.data int CURRENT_INPUT_YEAR_KEY
+    val isEdit = request.data bool IS_EDIT_KEY
     val form = Pre2015Form.form(cy).bindFromRequest()
 
     form.fold(
