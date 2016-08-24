@@ -45,6 +45,8 @@ private object AppDependencies {
   private val hmrcTestVersion = "1.4.0"
   private val pegDownVersion = "1.4.2"
   private val playWhitelistFilterVersion = "1.1.0"
+  private val playMetrics = "2.3.0_0.2.1"
+  private val metricsGraphite = "3.0.2"
 
   val compile = Seq(
     ws,
@@ -58,7 +60,9 @@ private object AppDependencies {
     "uk.gov.hmrc" %% "play-ui" % playUiVersion,
     "uk.gov.hmrc" %% "http-caching-client" % httpCachingClientVersion,
     "uk.gov.hmrc" %% "secure" % "7.0.0",
-    "uk.gov.hmrc" %% "play-whitelist-filter" % playWhitelistFilterVersion
+    "uk.gov.hmrc" %% "play-whitelist-filter" % playWhitelistFilterVersion,
+    "com.kenshoo" %% "metrics-play" % playMetrics,
+    "com.codahale.metrics" % "metrics-graphite" % metricsGraphite
   )
 
   trait TestDependencies {
