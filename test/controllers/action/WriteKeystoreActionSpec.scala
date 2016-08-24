@@ -35,7 +35,7 @@ class WriteKeystoreActionSpec extends test.BaseSpec {
       "wrap request with extracted session data" in new MockKeystoreFixture {
         // set up
         val request = FakeRequest("GET","/").withSession("msg"->"some banal message")
-        val writeKeystore = new WriteKeystore() {
+        val writeKeystore = new WriteKeystore() with test.NullMetrics {
           def keystore: KeystoreService = MockKeystore
           def invokeBlock[A](r: Request[A], block: DataRequest[A] => Future[Result]): Future[Result] = Future.successful(Ok("hi"))
           def test[T](request:Request[T]): DataRequest[T] = super.convert(request)
@@ -52,7 +52,7 @@ class WriteKeystoreActionSpec extends test.BaseSpec {
       "save session data to keystore" in new MockKeystoreFixture {
         // set up
         val request = new DataRequest(Map(), FakeRequest("GET","/").withSession("msg"->"some banal message"))
-        val writeKeystore = new WriteKeystore() {
+        val writeKeystore = new WriteKeystore() with test.NullMetrics {
           def keystore: KeystoreService = MockKeystore
           def invokeBlock[A](r: Request[A], block: DataRequest[A] => Future[Result]): Future[Result] = Future.successful(Ok("hi"))
           def test[T](): Future[Result] = super.updateKeystore(request, Future.successful(Ok("hi")))

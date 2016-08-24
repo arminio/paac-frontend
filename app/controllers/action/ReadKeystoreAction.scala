@@ -26,8 +26,10 @@ import scala.util.{Try, Success, Failure, Either}
 import play.api.libs.json._
 import play.api.libs.concurrent.Execution.Implicits._
 import play.api.Logger
+import metrics._
+import uk.gov.hmrc.play.http._
 
-trait ReadKeystore extends ActionBuilder[DataRequest] {
+trait ReadKeystore extends ActionBuilder[DataRequest] with Metrics {
   def keystore: KeystoreService
 
   protected def convert[T](r: Request[T]): Future[DataRequest[T]] = {
@@ -37,6 +39,12 @@ trait ReadKeystore extends ActionBuilder[DataRequest] {
       (data)=>
       Logger.debug(s"""Reading from keystore: ${data.mkString(", ")}""")
       new DataRequest[T](data, request)
+    }.andThen {
+      case Failure(t) => {
+        log(t)
+        throw t
+      }
+      case Success(results) => results
     }
   }
 
@@ -51,9 +59,27 @@ trait ReadKeystore extends ActionBuilder[DataRequest] {
       updatedResponse
     }
   }
+
+  protected def log(t: Throwable): Unit = {
+    Logger.error(s"Keystore error: ${t.getMessage()}")
+    t match {
+      case _: BadRequestException => keystoreStatusCode(400)
+      case _: NotFoundException => keystoreStatusCode(404)
+      case u: Upstream4xxResponse => keystoreStatusCode(u.reportAs)
+      case u: Upstream5xxResponse => keystoreStatusCode(u.reportAs)
+      case _: GatewayTimeoutException => keystoreStatusCode(504)
+      case _: BadGatewayException => keystoreStatusCode(502)
+      case _ => {
+        val msg = t.getMessage
+        if (msg.contains(" failed with status ")) {
+          keystoreStatusCode(msg.split("\\.")(0).split(" ").reverse(0).toInt)
+        }
+      }
+    }
+  }
 }
 
-case class ReadKeystoreAction(keystore: KeystoreService) extends ReadKeystore {
+case class ReadKeystoreAction(keystore: KeystoreService) extends ReadKeystore with metrics.GraphiteMetrics {
   def invokeBlock[A](r: Request[A], block: DataRequest[A] => Future[Result]): Future[Result] = {
     convert(r).flatMap((kr)=>updateSession(kr,block(kr)))
   }
