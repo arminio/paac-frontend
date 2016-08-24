@@ -51,7 +51,7 @@ class KeystoreServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfter
     val sessionId = "session-test-id"
     val mockSessionCache = mock[SessionCache]
     implicit val hc: HeaderCarrier = HeaderCarrier()
-    object MockedKeystoreService extends KeystoreService {
+    object MockedKeystoreService extends KeystoreService with test.NullMetrics {
       override val sessionCache: SessionCache = mockSessionCache
     }
   }
