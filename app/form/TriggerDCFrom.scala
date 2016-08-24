@@ -35,7 +35,7 @@ trait TriggerDCFields {
 trait TriggerDCFormFactory extends Settings {
   settings: Settings =>
 
-  def apply: Form[_ <: TriggerDCFields]
+  def apply(): Form[_ <: TriggerDCFields]
 
   protected def isPoundsAndPence(): Boolean = settings.POUNDS_AND_PENCE
   protected def poundsPeriod1TEDC: (String, Mapping[Int])= (P1_TRIGGER_DC_KEY) -> poundsField(true)
