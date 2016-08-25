@@ -12,7 +12,9 @@
     title: "@Messages("paac.201617.pension.inputs.pagetitle")",
     language: 'en-gb',
   });
-  ga('send', 'event', 'paac', 'page view', 'Defined @if(isDefinedBenefit){Benefit} @if(isDefinedBenefit && isDefinedContribution){and} @if(isDefinedContribution){Contribution} @(year) @Messages("paac.201617.pension.inputs.pagetitle")', 0);
+  ga('send', 'event', 'paac', 'page view', 'Defined @if(isDefinedBenefit){Benefit} @if(isDefinedBenefit && isDefinedContribution){and} @if(isDefinedContribution){Contribution} @(year) @Messages("paac.201617.pension.inputs.pagetitle")', {
+    nonInteraction: true
+  });
 }
 
 @common.paacMain(
