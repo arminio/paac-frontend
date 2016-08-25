@@ -7,13 +7,14 @@
   });
   @results.map { result =>
     @if(result.summaryResult.chargableAmount > 0) {
-      ga('send', 'event', 'Tax', 'Calculated Result', '@result.input.taxYearLabel', @((result.summaryResult.chargableAmount/100D).toInt));
+    ga('send', 'event', 'Tax', 'Calculated Result', '@result.input.taxYearLabel', @((result.summaryResult.chargableAmount/100D).toInt));
     }
-    @if(result.summaryResult.availableAAWithCCF > 0) {
-      ga('send', 'event', 'Unused AA', 'Calculated Result', '@result.input.taxYearLabel', @((result.summaryResult.availableAAWithCCF/100D).toInt));
-    }
-    @if(result.summaryResult.availableAAAWithCCF > 0) {
+    @if(result.summaryResult.isACA) {
+      ga('send', 'event', 'Available AAA', 'Calculated Result', '@result.input.taxYearLabel', @((result.summaryResult.availableAAAWithCF/100D).toInt));
       ga('send', 'event', 'Unused AAA', 'Calculated Result', '@result.input.taxYearLabel', @((result.summaryResult.availableAAAWithCCF/100D).toInt));
+    } else {
+      ga('send', 'event', 'Available AA', 'Calculated Result', '@result.input.taxYearLabel', @((result.summaryResult.availableAAWithCF/100D).toInt));
+      ga('send', 'event', 'Unused AA', 'Calculated Result', '@result.input.taxYearLabel', @((result.summaryResult.availableAAWithCCF/100D).toInt));
     }
   }
   ga('send', 'event', 'paac', 'page view', '@Messages("paac.results.page.title")', 0);
