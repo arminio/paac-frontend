@@ -3,11 +3,22 @@
 @import uk.gov.hmrc.play.views.html.helpers._
 @import uk.gov.hmrc.play.views.html._
 
+@analyticsAdditionalJs = {
+  ga('set', {
+    title: "@Messages("paac.pension.inputs.pagetitle")",
+    language: 'en-gb',
+  });
+  ga('send', 'event', 'paac', 'page view', '@Messages("paac.pension.inputs.pagetitle", currentYear, "" +(currentYear.toInt+1))', {
+    nonInteraction: true
+  });
+}
+
 @common.paacMain(
 pageTitle = Messages("paac.pension.inputs.pagetitle", currentYear, "" +(currentYear.toInt+1)),
 heading = Messages("paac.pension.inputs.heading", ("defined benefit"), currentYear, ""+(currentYear.toInt+1)),
 articleClasses=Some("full-width"),
-backLink = Some((controllers.routes.PensionInputsController.onBack(currentYear.toInt).url,Messages("paac.link.text.back")))
+backLink = Some((controllers.routes.PensionInputsController.onBack(currentYear.toInt).url,Messages("paac.link.text.back"))),
+analyticsAdditionalJs = Some(analyticsAdditionalJs)
 ) {
 
     @defining(currentYear.toInt) { year =>
