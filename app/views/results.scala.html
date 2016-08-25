@@ -1,11 +1,31 @@
 @(results: List[models.TaxYearResults], selectedYears: Array[Int])(implicit request:Request[_])
 
+@analyticsAdditionalJs = {
+  ga('set', {
+    title: "@Messages("paac.results.page.title")",
+    language: 'en-gb',
+  });
+  @results.map { result =>
+    @if(result.summaryResult.chargableAmount > 0) {
+      ga('send', 'event', 'Tax', 'Calculated Result', '@result.input.taxYearLabel', @((result.summaryResult.chargableAmount/100D).toInt));
+    }
+    @if(result.summaryResult.availableAAWithCCF > 0) {
+      ga('send', 'event', 'Unused AA', 'Calculated Result', '@result.input.taxYearLabel', @((result.summaryResult.availableAAWithCCF/100D).toInt));
+    }
+    @if(result.summaryResult.availableAAAWithCCF > 0) {
+      ga('send', 'event', 'Unused AAA', 'Calculated Result', '@result.input.taxYearLabel', @((result.summaryResult.availableAAAWithCCF/100D).toInt));
+    }
+  }
+  ga('send', 'event', 'paac', 'page view', '@Messages("paac.results.page.title")', 0);
+}
+
 @common.paacMain(
 pageTitle = Messages("paac.results.page.title"),
 heading = Messages("paac.results.page.heading"),
 mainClass = "main",
 articleClasses=Some("full-width"),
-backLink = Some((controllers.routes.ReviewTotalAmountsController.onPageLoad.url,Messages("paac.link.text.back")))
+backLink = Some((controllers.routes.ReviewTotalAmountsController.onPageLoad.url,Messages("paac.link.text.back"))),
+analyticsAdditionalJs = Some(analyticsAdditionalJs)
 ) {
 @defining(java.text.NumberFormat.getNumberInstance(java.util.Locale.UK)) { currencyFormatter =>
 @defining(results.sortWith(_.input.taxPeriodStart.year < _.input.taxPeriodStart.year).dropWhile((v)=>v.input.isEmpty).reverse.filter((c)=>selectedYears.contains(c.input.taxPeriodStart.year))) { sortedResults =>
@@ -117,5 +137,5 @@ backLink = Some((controllers.routes.ReviewTotalAmountsController.onPageLoad.url,
    } @* End of mpaaPresent *@
   } @* End of sortedResults *@
 } @* End of currencyFormatter *@
-  <a class="button" href="start" style="margin-top:50px;">@Messages("paac.results.link.new")</a>
+  <a class="button" href="start" style="margin-top:50px;" data-journey-click="paac:click:start_again">@Messages("paac.results.link.new")</a>
 }

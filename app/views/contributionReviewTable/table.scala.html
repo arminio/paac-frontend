@@ -29,9 +29,9 @@
             <td class="col2 numeric">&pound;@(currencyFormatter.format(amounts.moneyPurchase.get/100D))</td>
             }
             <td class="col3 edit_action">
-                @if(contribution.taxPeriodStart.year < 2015 || contribution.taxPeriodStart.year > 2015) {<a href="edit/@contribution.taxPeriodStart.year">}
-                @if(contribution.isPeriod1()) {<a href="edit/2015">}
-                @if(contribution.isPeriod2()) {<a href="edit/2015">}
+                @if(contribution.taxPeriodStart.year < 2015 || contribution.taxPeriodStart.year > 2015) {<a href="edit/@contribution.taxPeriodStart.year" data-journey-click="paac:click:edit_money_purchase_@contribution.taxPeriodStart.year">}
+                @if(contribution.isPeriod1()) {<a href="edit/2015" data-journey-click="paac:click:edit_money_purchase_2015_p1">}
+                @if(contribution.isPeriod2()) {<a href="edit/2015" data-journey-click="paac:click:edit_money_purchase_2015_p2">}
                  @Messages("paac.review-amounts.action.edit") <span class="visuallyhidden">@(contribution.taxYearLabel())</span>
                 </a>
             </td>
@@ -43,9 +43,9 @@
             <td class="col1">@if(contribution.taxPeriodStart.year < 2015) { @Messages("paac.review-amounts.heading.total") } else { @Messages("paac.review-amounts.heading.db") }</td>
             <td class="col2 numeric">&pound;@(currencyFormatter.format(amounts.definedBenefit.get/100D))</td>
             <td class="col3 edit_action">
-                @if(contribution.taxPeriodStart.year < 2015 || contribution.taxPeriodStart.year > 2015) {<a href="edit/@contribution.taxPeriodStart.year">}
-                @if(contribution.isPeriod1()) {<a href="edit/2015">}
-                @if(contribution.isPeriod2()) {<a href="edit/2015">}
+                @if(contribution.taxPeriodStart.year < 2015 || contribution.taxPeriodStart.year > 2015) {<a href="edit/@contribution.taxPeriodStart.year" data-journey-click="paac:click:edit_defined_benefit_@contribution.taxPeriodStart.year">}
+                @if(contribution.isPeriod1()) {<a href="edit/2015" data-journey-click="paac:click:edit_defined_benefit_2015_p1">}
+                @if(contribution.isPeriod2()) {<a href="edit/2015" data-journey-click="paac:click:edit_defined_benefit_2015_p2">}
                  @Messages("paac.review-amounts.action.edit") <span class="visuallyhidden">@(contribution.taxYearLabel())</span>
                 </a>
             </td>
@@ -57,7 +57,7 @@
             <td class="col1">@Messages("paac.review-amounts.heading.income")</td>
             <td class="col2 numeric">&pound;@(currencyFormatter.format(amounts.income.get/100D))</td>
             <td class="col3 edit_action">
-                <a href="edit/income/@contribution.taxPeriodStart.year">
+                <a href="edit/income/@contribution.taxPeriodStart.year" data-journey-click="paac:click:edit_income_@contribution.taxPeriodStart.year">
                  @Messages("paac.review-amounts.action.edit") <span class="visuallyhidden">@(contribution.taxYearLabel())</span>
                 </a>
             </td>
@@ -76,7 +76,7 @@
             }
             </td>
             <td class="col3 edit_action">
-                <a href="edit/@(controllers.ReviewTotalAmountsController.EDIT_TRIGGER_DATE)">
+                <a href="edit/@(controllers.ReviewTotalAmountsController.EDIT_TRIGGER_DATE)" data-journey-click="paac:click:edit_trigger_date">
                  @Messages("paac.review-amounts.action.edit") <span class="visuallyhidden">@(contribution.taxYearLabel())</span>
                 </a>
             </td>
@@ -85,7 +85,7 @@
             <td class="col1 @if(contribution.moneyPurchase < 0) {error_color}">@if(triggerContribution.get.isPeriod1){@Messages("paac.review-amounts.heading.trigger.savings.p1","")}else{@if(triggerContribution.get.isPeriod2){@Messages("paac.review-amounts.heading.trigger.savings.p2","")}else{@Messages("paac.review-amounts.heading.trigger.savings.other",""+triggerContribution.get.taxPeriodStart.taxYear)}}</td>
             <td class="col2 numeric @if(contribution.moneyPurchase < 0) {error_color}">&pound;@(currencyFormatter.format(triggerContribution.get.amounts.getOrElse(InputAmounts()).moneyPurchase.get/100D))</td>
             <td class="col3 edit_action">
-                <a href="edit/@(controllers.ReviewTotalAmountsController.EDIT_TRIGGER_AMOUNT)">
+                <a href="edit/@(controllers.ReviewTotalAmountsController.EDIT_TRIGGER_AMOUNT)" data-journey-click="paac:click:edit_trigger_amount">
                  @Messages("paac.review-amounts.action.edit") <span class="visuallyhidden">@(contribution.taxYearLabel())</span>
                 </a>
             </td>
