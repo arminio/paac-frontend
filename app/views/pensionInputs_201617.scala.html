@@ -7,11 +7,20 @@
 @import uk.gov.hmrc.play.views.html.helpers._
 @import service.KeystoreService._
 
+@analyticsAdditionalJs = {
+  ga('set', {
+    title: "@Messages("paac.201617.pension.inputs.pagetitle")",
+    language: 'en-gb',
+  });
+  ga('send', 'event', 'paac', 'page view', 'Defined @if(isDefinedBenefit){Benefit} @if(isDefinedBenefit && isDefinedContribution){and} @if(isDefinedContribution){Contribution} @(year) @Messages("paac.201617.pension.inputs.pagetitle")', 0);
+}
+
 @common.paacMain(
 pageTitle = Messages("paac.201617.pension.inputs.pagetitle"),
 heading = Messages("paac.201617.pension.inputs.heading", (if(isDefinedBenefit && isDefinedContribution) "pension" else if(isDefinedBenefit) "defined benefit" else if (isDefinedContribution) "defined contribution"  else "")),
 articleClasses=Some("full-width"),
-backLink = Some((controllers.routes.PensionInputs201617Controller.onBack(year).url,Messages("paac.link.text.back")))
+backLink = Some((controllers.routes.PensionInputs201617Controller.onBack(year).url,Messages("paac.link.text.back"))),
+analyticsAdditionalJs = Some(analyticsAdditionalJs)
 ) {
 
 <p class="lede text">@Messages("paac.201617.pension.inputs.description")</p>
