@@ -37,8 +37,8 @@ backLink = Some((controllers.routes.SelectSchemeController.onBack(year).url,Mess
     @form(
         action = controllers.routes.SelectSchemeController.onSubmit,
         args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
-    <input type="hidden" name="year" value="@(year)"/>
-    <input type="hidden" name="firstDCYear" value="@(paacForm.data("firstDCYear"))"/>
+    <input type="hidden" name="year" value='@(year)'/>
+    <input type="hidden" name="firstDCYear" value='@(paacForm.data("firstDCYear"))'/>
     <div class="form-field-group @if(paacForm.hasErrors) {form-field--error}">
         @if(paacForm.hasErrors) {
         <ul class="error-summary-list">
