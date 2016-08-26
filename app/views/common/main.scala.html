@@ -66,9 +66,7 @@ serviceInfoContent = None)
     title: "@(title.trim)",
     language: 'en-gb',
   });
-  ga('send', 'event', 'paac', 'page view', '@(title.trim)', {
-    nonInteraction: true
-  });
+  @helpers.gaEvent("page view", title.trim)
 }
 
 @content = {
