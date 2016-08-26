@@ -7,9 +7,7 @@
     title: "@Messages("paac.201516.pension.inputs.pagetitle")",
     language: 'en-gb',
   });
-  ga('send', 'event', 'paac', 'page view', 'Defined @if(isDefinedBenefit){Benefit} @if(isDefinedBenefit && isDefinedContribution){and} @if(isDefinedContribution){Contribution} @Messages("paac.201516.pension.inputs.pagetitle")', {
-    nonInteraction: true
-  });
+  @helpers.gaEvent("page view", "Defined " + (if(isDefinedBenefit) "Benefit" else "") + (if(isDefinedBenefit && isDefinedContribution) " and " else "") + (if(isDefinedContribution)" Contribution" else "") + " " + Messages("paac.201516.pension.inputs.pagetitle"))
 }
 
 @common.paacMain(

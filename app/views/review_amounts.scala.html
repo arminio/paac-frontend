@@ -3,12 +3,48 @@
 @import uk.gov.hmrc.play.views.html.helpers._
 @import java.math.BigDecimal
 
+@analyticsAdditionalJs = {
+  ga('set', {
+    title: "@Messages("paac.review-amounts.page.heading")",
+    language: 'en-gb',
+  });
+  @pageValues.reverse.map { input =>
+    @if(input.amounts.isDefined){
+      @defining(input.amounts.get) { a =>
+
+        @if(a.definedBenefit.isDefined && !input.isTriggered) {
+          @helpers.gaEvent("DB", input.taxYearLabel, a.definedBenefitBucket)
+        }
+
+        @if(a.moneyPurchase.isDefined && !input.isTriggered) {
+          @helpers.gaEvent("DC", input.taxYearLabel, a.moneyPurchaseBucket)
+        }
+
+        @if(a.moneyPurchase.isDefined && input.isTriggered) {
+          @helpers.gaEvent("Flexi DC", input.taxYearLabel, a.moneyPurchaseBucket)
+        }
+
+        @if(a.income.isDefined && !input.isTriggered) {
+          @helpers.gaEvent("AI", input.taxYearLabel, a.incomeBucket)
+        }
+      }
+    }
+
+    @if(input.taxPeriodStart.taxYear >= 2015) {
+      @helpers.gaEvent(if(input.isTriggered){"Flexi Access"}else{"No Flexi Access"}, input.taxYearLabel)
+    }
+  }
+  @helpers.gaEvent("page view", Messages("paac.review-amounts.page.heading"))
+}
+
+
 @common.paacMain(
 pageTitle = Messages("paac.review-amounts.page.heading"),
 heading = Messages("paac.review-amounts.page.title"),
 mainClass = "main",
 articleClasses = Some("full-width"),
-backLink = Some((controllers.routes.ReviewTotalAmountsController.onBack.url,Messages("paac.link.text.back")))
+backLink = Some((controllers.routes.ReviewTotalAmountsController.onBack.url,Messages("paac.link.text.back"))),
+analyticsAdditionalJs = Some(analyticsAdditionalJs)
 ) {
 
 @if(pageValues.find(_.moneyPurchase < 0).isDefined) {
