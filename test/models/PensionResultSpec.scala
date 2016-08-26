@@ -178,6 +178,62 @@ class PensionResultSpec extends ModelSpec {
 
       summaryResultOption shouldBe Some(SummaryResult(12345, 67890, isMPA=true, moneyPurchaseAA=12, alternativeAA=15, isACA=true, availableAAAWithCF=1, availableAAAWithCCF=2))
     }
+
+    "round" must {
+      trait TestResult {
+        object Test {
+          def roundInt(value: Int): Int = SummaryResult(value*100).taxBucket
+        }
+      }
+
+      "round to nearest hundred when value < 1000" in new TestResult {
+        // set up
+        val values = Map(323 -> 300, 126 -> 100, 21 -> 0, 51 -> 100, 89 -> 100, 49 -> 0, 678 -> 700)
+
+        // test
+        values.foreach {
+          (pair) =>
+          val (v, expected) = pair
+          withClue(s"Expected ${v} to be ${expected}, ") { Test.roundInt(v) shouldBe expected }
+        }
+      }
+
+      "round to nearest thousand when value < 10000 and > 1000" in new TestResult {
+        // set up
+        val values = Map(3534 -> 4000, 1266 -> 1000, 2143 -> 2000, 5064 -> 5000, 8946 -> 9000, 4412 -> 4000, 4678 -> 5000)
+
+        // test
+        values.foreach {
+          (pair) =>
+          val (v, expected) = pair
+          withClue(s"Expected ${v} to be ${expected}, ") { Test.roundInt(v) shouldBe expected }
+        }
+      }
+
+      "round to nearest ten thousand when value < 100000 and > 10000" in new TestResult {
+        // set up
+        val values = Map(24334 -> 20000, 64126 -> 60000, 12214 -> 10000, 75063 -> 80000, 89462 -> 90000, 4412 -> 4000, 4678 -> 5000)
+
+        // test
+        values.foreach {
+          (pair) =>
+          val (v, expected) = pair
+          withClue(s"Expected ${v} to be ${expected}, ") { Test.roundInt(v) shouldBe expected }
+        }
+      }
+
+      "round to nearest 50 thousand when value < 1000000 and > 100000" in new TestResult {
+        // set up
+        val values = Map(243343 -> 250000, 641261 -> 650000, 122147 -> 100000, 7506357 -> 7500000, 8946245 -> 8950000, 424412 -> 400000, 465378 -> 450000)
+
+        // test
+        values.foreach {
+          (pair) =>
+          val (v, expected) = pair
+          withClue(s"Expected ${v} to be ${expected}, ") { Test.roundInt(v) shouldBe expected }
+        }
+      }
+    }
   }
 
   "TaxYearResults" can {
