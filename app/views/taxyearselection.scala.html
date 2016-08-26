@@ -28,7 +28,7 @@ backLink = None
 args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
 
 <fieldset id="yearSelectGroup" class="form-field-group @if(isError) {form-field--error}">
-  <input name="previous" type="hidden" value="@(selectedYears.mkString(","))">
+  <input name="previous" type="hidden" value='@(selectedYears.mkString(","))'>
     @if(isError) {
     <ul class="error-summary-list">
         <li style="color:#b10e1e;font-weight: bold;">@Messages("paac.taxyear.selection.error")</li>
