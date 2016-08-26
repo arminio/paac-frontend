@@ -6,6 +6,7 @@
 @import config.ApplicationConfig._
 @import layouts.{govuk_template => hmrcGovUkTemplate}
 @import uk.gov.hmrc.play.views.html.{layouts => uiLayouts}
+@import config._
 
 @contentHeader = {
     <h1>@heading</h1>
@@ -38,14 +39,24 @@
     mainContentHeader = contentHeader)
 }
 
+@defaultGA = {
+    ga('send', 'event', 'paac', 'page view', 'error' , '@(pageTitle.split(" ").reverse(0))', {'nonInteraction': true,'anonymizeIp': true});
+  ga('set', {
+    title: "@(pageTitle.trim)",
+    language: 'en-gb',
+  });
+}
+
 @bodyEnd = {
 @uiLayouts.footer(
-    analyticsToken = Play.configuration.getString(s"govuk-tax.google-analytics.token"),
-    analyticsHost = Play.configuration.getString(s"govuk-tax.google-analytics.host").getOrElse("service.gov.uk"),
+    analyticsToken = ApplicationConfig.analyticsToken,
+    analyticsHost = ApplicationConfig.analyticsHost,
     assetsPrefix = assetsUrl,
     ssoUrl = None,
     scriptElem = None,
-    gaCalls = None)
+    gaCalls = None,
+    analyticsAdditionalJs = Some(defaultGA)
+)
 }
 
 @footerTop = {}

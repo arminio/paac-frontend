@@ -8,9 +8,7 @@
     title: "@Messages("paac.pension.inputs.pagetitle")",
     language: 'en-gb',
   });
-  ga('send', 'event', 'paac', 'page view', '@Messages("paac.pension.inputs.pagetitle", currentYear, "" +(currentYear.toInt+1))', {
-    nonInteraction: true
-  });
+  ga('send', 'event', 'paac', 'page view', '@Messages("paac.pension.inputs.pagetitle", currentYear, "" +(currentYear.toInt+1))', {'nonInteraction': true,'anonymizeIp': true});
 }
 
 @common.paacMain(

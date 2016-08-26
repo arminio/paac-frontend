@@ -5,49 +5,25 @@
     title: "@Messages("paac.results.page.title")",
     language: 'en-gb',
   });
-  @results.map { result =>
+  @results.reverse.map { result =>
     @if(result.summaryResult.chargableAmount > 0) {
-ga('send', 'event', 'Calculation', 'Tax', '@result.input.taxYearLabel', @(result.summaryResult.taxBucket),{nonInteraction: true});
+ga('send', 'event', 'paac', 'Tax', '@result.input.taxYearLabel', @(result.summaryResult.taxBucket),{'nonInteraction': true,'anonymizeIp': true});
     }
     @if(result.summaryResult.isACA) {
-ga('send', 'event', 'Calculation', 'ACA', '@result.input.taxYearLabel', 1, {nonInteraction: true});
-ga('send', 'event', 'Calculation', 'AAA', '@result.input.taxYearLabel', @(result.summaryResult.aaaBucket),{nonInteraction: true});
+ga('send', 'event', 'paac', 'ACA', '@result.input.taxYearLabel', 1, {'nonInteraction': true,'anonymizeIp': true});
+ga('send', 'event', 'paac', 'AAA', '@result.input.taxYearLabel', @(result.summaryResult.aaaBucket),{'nonInteraction': true,'anonymizeIp': true});
       @if(result.summaryResult.unusedAAABucket> 0) {
-ga('send', 'event', 'Calculation', 'AAA Unused', '@result.input.taxYearLabel', @(result.summaryResult.unusedAAABucket),{nonInteraction: true});
+ga('send', 'event', 'paac', 'AAA Unused', '@result.input.taxYearLabel', @(result.summaryResult.unusedAAABucket),{'nonInteraction': true,'anonymizeIp': true});
       }
     } else {
-ga('send', 'event', 'Calculation', 'DCA', '@result.input.taxYearLabel', 1, {nonInteraction: true});
-ga('send', 'event', 'Calculation', 'AA', '@result.input.taxYearLabel', @(result.summaryResult.aaBucket),{nonInteraction: true});
-ga('send', 'event', 'Calculation', 'AA Unused', '@result.input.taxYearLabel', @(result.summaryResult.unusedAABucket),{nonInteraction: true});
+ga('send', 'event', 'paac', 'DCA', '@result.input.taxYearLabel', 1, {'nonInteraction': true,'anonymizeIp': true});
+ga('send', 'event', 'paac', 'AA', '@result.input.taxYearLabel', @(result.summaryResult.aaBucket),{'nonInteraction': true,'anonymizeIp': true});
+ga('send', 'event', 'paac', 'AA Unused', '@result.input.taxYearLabel', @(result.summaryResult.unusedAABucket),{'nonInteraction': true,'anonymizeIp': true});
     }
-
-    @if(result.input.amounts.isDefined){
-      @defining(result.input.amounts.get) { a =>
-
-        @if(a.definedBenefit.isDefined && !result.input.isTriggered) {
-ga('send', 'event', 'Savings', 'DB', '@result.input.taxYearLabel', @(a.definedBenefitBucket),{nonInteraction: true});
-        }
-
-        @if(a.moneyPurchase.isDefined && !result.input.isTriggered) {
-ga('send', 'event', 'Savings', 'DC', '@result.input.taxYearLabel', @(a.moneyPurchaseBucket),{nonInteraction: true});
-        }
-
-        @if(a.moneyPurchase.isDefined && result.input.isTriggered) {
-ga('send', 'event', 'Savings', 'Flexi DC', '@result.input.taxYearLabel', @(a.moneyPurchaseBucket),{nonInteraction: true});
-        }
-
-        @if(a.income.isDefined && !result.input.isTriggered) {
-ga('send', 'event', 'Savings', 'AI', '@result.input.taxYearLabel', @(a.incomeBucket),{nonInteraction: true});
-        }
-      }
-    }
-
-  @if(result.input.taxPeriodStart.taxYear >= 2015) {
-ga('send', 'event', 'Savings', @if(result.input.isTriggered){Yes Flexi Access}else{No Flexi Access}, '@result.input.taxYearLabel',{nonInteraction: true});
   }
-  }
-ga('send', 'event', 'paac', 'page view', '@Messages("paac.results.page.title")',{nonInteraction: true});
+ga('send', 'event', 'paac', 'page view', '@Messages("paac.results.page.title")',{'nonInteraction': true,'anonymizeIp': true});
 }
+
 
 @common.paacMain(
 pageTitle = Messages("paac.results.page.title"),
