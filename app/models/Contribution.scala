@@ -22,7 +22,22 @@ import play.api.libs.json._
 import org.joda.time.LocalDate
 
 sealed trait CalculationParam
-sealed trait PensionCalculatorValue {
+
+trait Round {
+  protected def round(value:Int): Int = value match {
+    case v if (v < 999) => toHundreds(v)
+    case v if (v < 9999) => toThousands(v)
+    case v if (v < 99999) => toTenThousands(v)
+    case v => toFiftyThousands(v)
+  }
+  protected def roundTo(to: Int)(value: Int): Int = ((value+((to-1)/2))/to) * to
+  protected def toHundreds(value: Int): Int = roundTo(100)(value)
+  protected def toThousands(value: Int): Int = roundTo(1000)(value)
+  protected def toTenThousands(value: Int): Int = roundTo(10000)(value)
+  protected def toFiftyThousands(value: Int): Int = roundTo(50000)(value)
+}
+
+sealed trait PensionCalculatorValue extends Round {
   def isEmpty(): Boolean
   def definedBenefit():  Option[Long]
   def moneyPurchase():  Option[Long]
@@ -31,17 +46,6 @@ sealed trait PensionCalculatorValue {
   def definedBenefitBucket(): Int = definedBenefit.map((v)=>round((v/100D).toInt)).getOrElse(0)
   def moneyPurchaseBucket(): Int = moneyPurchase.map((v)=>round((v/100D).toInt)).getOrElse(0)
   def incomeBucket(): Int = income.map((v)=>round((v/100D).toInt)).getOrElse(0)
-
-  protected def round(value:Int): Int = value match {
-    case v if (v < 999) => toHundreds(v)
-    case v if (v < 9999) => toThousands(v)
-    case v if (v < 99999) => toTenThousands(v)
-    case v => toFiftyThousands(v)
-  }
-  protected def toHundreds(value: Int): Int = ((value+99)/100) * 100
-  protected def toThousands(value: Int): Int = ((value+999)/1000) * 1000
-  protected def toTenThousands(value: Int): Int = ((value+9999)/10000) * 10000
-  protected def toFiftyThousands(value: Int): Int = ((value+49999)/50000.00).floor.toInt * 50000
 }
 
 case class InputAmounts(definedBenefit: Option[Long] = None,

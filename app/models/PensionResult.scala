@@ -27,7 +27,7 @@ case class TaxYearResults(input: Contribution = Contribution(2008,0L),
   Base trait for all summary result row objects. All amounts are in pence,
   therefore divide by 100 to get pounds and pence.
 */
-trait Summary {
+trait Summary extends Round {
   /** Tax due */
   def chargableAmount: Long
   /** Amount exceeding annual allowance. Not always equal to chargable amount. */
@@ -66,17 +66,6 @@ trait Summary {
   def aaBucket(): Int = round((availableAAWithCF/100D).toInt)
   def unusedAAABucket(): Int = round((availableAAAWithCCF/100D).toInt)
   def unusedAABucket(): Int = round((availableAAWithCCF/100D).toInt)
-
-  protected def round(value:Int): Int = value match {
-    case v if (v < 999) => toHundreds(v)
-    case v if (v < 9999) => toThousands(v)
-    case v if (v < 99999) => toTenThousands(v)
-    case v => toFiftyThousands(v)
-  }
-  protected def toHundreds(value: Int): Int = ((value+99)/100) * 100
-  protected def toThousands(value: Int): Int = ((value+999)/1000) * 1000
-  protected def toTenThousands(value: Int): Int = ((value+9999)/10000) * 10000
-  protected def toFiftyThousands(value: Int): Int = ((value+49999)/50000.00).floor.toInt * 50000
 }
 
 /** Simple summary result implementation. Used by calculators for years up to but not including 2015. */
