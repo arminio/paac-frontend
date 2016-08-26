@@ -1,14 +1,13 @@
 @(paacForm : Form[_ <: form.Pre2015Fields], currentYear: String, isEdit: Boolean)(implicit request:Request[_])
 
 @import uk.gov.hmrc.play.views.html.helpers._
-@import uk.gov.hmrc.play.views.html._
 
 @analyticsAdditionalJs = {
   ga('set', {
     title: "@Messages("paac.pension.inputs.pagetitle")",
     language: 'en-gb',
   });
-  ga('send', 'event', 'paac', 'page view', '@Messages("paac.pension.inputs.pagetitle", currentYear, "" +(currentYear.toInt+1))', {'nonInteraction': true,'anonymizeIp': true});
+  @helpers.gaEvent("page view", Messages("paac.pension.inputs.pagetitle", currentYear, "" +(currentYear.toInt+1)))
 }
 
 @common.paacMain(

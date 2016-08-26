@@ -13,28 +13,28 @@
       @defining(input.amounts.get) { a =>
 
         @if(a.definedBenefit.isDefined && !input.isTriggered) {
-ga('send', 'event', 'paac', 'DB', '@input.taxYearLabel', @(a.definedBenefitBucket),{'nonInteraction': true,'anonymizeIp': true});
+          @helpers.gaEvent("DB", input.taxYearLabel, a.definedBenefitBucket)
         }
 
         @if(a.moneyPurchase.isDefined && !input.isTriggered) {
-ga('send', 'event', 'paac', 'DC', '@input.taxYearLabel', @(a.moneyPurchaseBucket),{'nonInteraction': true,'anonymizeIp': true});
+          @helpers.gaEvent("DC", input.taxYearLabel, a.moneyPurchaseBucket)
         }
 
         @if(a.moneyPurchase.isDefined && input.isTriggered) {
-ga('send', 'event', 'paac', 'Flexi DC', '@input.taxYearLabel', @(a.moneyPurchaseBucket),{'nonInteraction': true,'anonymizeIp': true});
+          @helpers.gaEvent("Flexi DC", input.taxYearLabel, a.moneyPurchaseBucket)
         }
 
         @if(a.income.isDefined && !input.isTriggered) {
-ga('send', 'event', 'paac', 'AI', '@input.taxYearLabel', @(a.incomeBucket),{'nonInteraction': true,'anonymizeIp': true});
+          @helpers.gaEvent("AI", input.taxYearLabel, a.incomeBucket)
         }
       }
     }
 
-  @if(input.taxPeriodStart.taxYear >= 2015) {
-ga('send', 'event', 'paac', @if(input.isTriggered){'Flexi Access'}else{'No Flexi Access'}, '@input.taxYearLabel',{'nonInteraction': true,'anonymizeIp': true});
+    @if(input.taxPeriodStart.taxYear >= 2015) {
+      @helpers.gaEvent(if(input.isTriggered){"Flexi Access"}else{"No Flexi Access"}, input.taxYearLabel)
+    }
   }
-  }
-ga('send', 'event', 'paac', 'page view', '@Messages("paac.review-amounts.page.heading")',{'nonInteraction': true,'anonymizeIp': true});
+  @helpers.gaEvent("page view", Messages("paac.review-amounts.page.heading"))
 }
 
 

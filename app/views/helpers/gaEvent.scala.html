@@ -1,0 +1,2 @@
+@(action: String ,label: String, value: Int = 0)(implicit request:Request[_])
+ga('send', 'event', 'paac', '@action', '@label', @value, {'nonInteraction': true,'anonymizeIp': true});

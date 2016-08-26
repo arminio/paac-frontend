@@ -7,21 +7,21 @@
   });
   @results.reverse.map { result =>
     @if(result.summaryResult.chargableAmount > 0) {
-ga('send', 'event', 'paac', 'Tax', '@result.input.taxYearLabel', @(result.summaryResult.taxBucket),{'nonInteraction': true,'anonymizeIp': true});
+      @helpers.gaEvent("Tax", result.input.taxYearLabel, result.summaryResult.taxBucket)
     }
     @if(result.summaryResult.isACA) {
-ga('send', 'event', 'paac', 'ACA', '@result.input.taxYearLabel', 1, {'nonInteraction': true,'anonymizeIp': true});
-ga('send', 'event', 'paac', 'AAA', '@result.input.taxYearLabel', @(result.summaryResult.aaaBucket),{'nonInteraction': true,'anonymizeIp': true});
+      @helpers.gaEvent("ACA", result.input.taxYearLabel, 1)
+      @helpers.gaEvent("AAA", result.input.taxYearLabel, result.summaryResult.aaaBucket)
       @if(result.summaryResult.unusedAAABucket> 0) {
-ga('send', 'event', 'paac', 'AAA Unused', '@result.input.taxYearLabel', @(result.summaryResult.unusedAAABucket),{'nonInteraction': true,'anonymizeIp': true});
+        @helpers.gaEvent("AAA Unused", result.input.taxYearLabel, result.summaryResult.unusedAAABucket)
       }
     } else {
-ga('send', 'event', 'paac', 'DCA', '@result.input.taxYearLabel', 1, {'nonInteraction': true,'anonymizeIp': true});
-ga('send', 'event', 'paac', 'AA', '@result.input.taxYearLabel', @(result.summaryResult.aaBucket),{'nonInteraction': true,'anonymizeIp': true});
-ga('send', 'event', 'paac', 'AA Unused', '@result.input.taxYearLabel', @(result.summaryResult.unusedAABucket),{'nonInteraction': true,'anonymizeIp': true});
+      @helpers.gaEvent("DCA", result.input.taxYearLabel, 1)
+      @helpers.gaEvent("AA", result.input.taxYearLabel, result.summaryResult.aaBucket)
+      @helpers.gaEvent("AA Unused", result.input.taxYearLabel, result.summaryResult.unusedAABucket)
     }
   }
-ga('send', 'event', 'paac', 'page view', '@Messages("paac.results.page.title")',{'nonInteraction': true,'anonymizeIp': true});
+  @helpers.gaEvent("page view", Messages("paac.results.page.title"))
 }
 
 
