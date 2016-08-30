@@ -43,6 +43,14 @@ package object utilities {
       Forms.of[Int]
   }
 
+  def poundsLongField(isValidating: Boolean = false) = {
+    implicit val binder:Formatter[Long] = numberFormatter(_.toLong)
+    if (isValidating)
+      Forms.of[Long].verifying(x => x > 0 && x <= DEFAULT_MAX)
+     else
+      Forms.of[Long]
+  }
+
   def toMap(caseClassInstance: AnyRef) =
     (Map[String,Any]() /: caseClassInstance.getClass.getDeclaredFields) {
       (a,f) =>
@@ -75,6 +83,13 @@ package object utilities {
     maybeDecimal.map {
       (v) =>
       (v.intValue)
+    }
+  }
+
+  implicit def bigDecimalToLong(maybeDecimal: Option[BigDecimal]): Option[Long] = {
+    maybeDecimal.map {
+      (v) =>
+      (v.longValue)
     }
   }
 
