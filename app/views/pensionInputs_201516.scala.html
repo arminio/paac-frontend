@@ -62,7 +62,7 @@ args = 'class -> "form",
   }
 
 <fieldset id="input_2015_@(p)" class="form-field-group">
-  @for(id <- if (isDefinedBenefit && isDefinedContribution) List("definedBenefit_2015_"+p, "definedContribution_2015_"+p) else if (isDefinedBenefit) List("definedBenefit_2015_"+p) else List("definedContribution_2015_"+p)) {
+  @for(id <- if (isDefinedBenefit && isDefinedContribution) List("definedContribution_2015_"+p, "definedBenefit_2015_"+p) else if (isDefinedBenefit) List("definedBenefit_2015_"+p) else List("definedContribution_2015_"+p)) {
     <label class="label--full-length numeric @if(paacForm.errors.find(_.key == id)) {form-field--error}" for="@id">
       <span>@Messages(if (id.contains("Benefit")) "paac.common.pension.inputs.db" else "paac.common.pension.inputs.dc")</span>
       <span class="form-hint">@Messages("paac.common.inputfield.example.message")</span>
