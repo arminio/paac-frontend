@@ -35,7 +35,7 @@ analyticsAdditionalJs = Some(analyticsAdditionalJs)
 ) {
 @defining(java.text.NumberFormat.getNumberInstance(java.util.Locale.UK)) { currencyFormatter =>
 @defining(results.sortWith(_.input.taxPeriodStart.year < _.input.taxPeriodStart.year).dropWhile((v)=>v.input.isEmpty).reverse.filter((c)=>selectedYears.contains(c.input.taxPeriodStart.year))) { sortedResults =>
-@defining(sortedResults.exists((data) => data.summaryResult.isMPA)){ mpaaPresent =>
+@defining(sortedResults.exists((data) => data.summaryResult.isACA)){ mpaaPresent =>
 
 @defining(sortedResults.headOption.getOrElse(TaxYearResults()).input.taxPeriodStart.year == 2015){ year1516 =>
   @defining(sortedResults.take(2).map(_.summaryResult.chargableAmount).foldLeft(0L)(_+_)) { year2015Tax =>
@@ -79,7 +79,7 @@ analyticsAdditionalJs = Some(analyticsAdditionalJs)
           </td>
           @if(mpaaPresent){
             <td class="numeric">
-                @if(result.input.taxPeriodStart.year >= 2015){
+                @if(result.input.taxPeriodStart.year >= 2015 && result.input.isTriggered){
                   &pound;@(currencyFormatter.format(result.summaryResult.moneyPurchaseAA/100))
                 } else { N/A }
             </td>
@@ -101,7 +101,11 @@ analyticsAdditionalJs = Some(analyticsAdditionalJs)
             }
           </td>
           @if(mpaaPresent){
-            <td class="numeric">&pound;@(currencyFormatter.format(result.summaryResult.moneyPurchaseAA/100))</td>
+            <td class="numeric">
+            @if(result.input.isTriggered){
+              &pound;@(currencyFormatter.format(result.summaryResult.moneyPurchaseAA/100))
+            } else { N/A }
+            </td>
           }
           <td class="numeric">&pound;@(currencyFormatter.format((result.input.amounts.get.definedBenefit.getOrElse(0L) +
                                                                 result.input.amounts.get.moneyPurchase.getOrElse(0L))
@@ -122,7 +126,11 @@ analyticsAdditionalJs = Some(analyticsAdditionalJs)
             }
           </td>
           @if(mpaaPresent){
-            <td class="numeric">&pound;@(currencyFormatter.format(result.summaryResult.moneyPurchaseAA/100))</td>
+            <td class="numeric">
+            @if(result.input.isTriggered){
+              &pound;@(currencyFormatter.format(result.summaryResult.moneyPurchaseAA/100))
+            } else { N/A }
+            </td>
           }
           <td class="numeric">&pound;@(currencyFormatter.format((result.input.amounts.get.definedBenefit.getOrElse(0L) +
                                                                 result.input.amounts.get.moneyPurchase.getOrElse(0L))/100))</td>
