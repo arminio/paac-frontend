@@ -695,7 +695,7 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
         // check
         result(0) shouldBe (("0","triggerDefinedContribution_2015_p1"))
         result(1) shouldBe (("0","triggerDefinedContribution_2015_p2"))
-        result(2) shouldBe (("0","triggerDefinedContribution"))
+        result(2) shouldBe (("100","triggerDefinedContribution"))
         result(3) shouldBe (("2016-07-11","dateOfMPAATriggerEvent"))
       }
       "in edit mode return trigger date when new and old date is in 2016" in {
@@ -705,17 +705,14 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
           def originalDate: String = "2016-04-12"
           def p1dctrigger: String = "0"
           def p2dctrigger: String = "0"
-          def dctrigger: String = "0"
+          def dctrigger: String = "200"
         }
 
         // test
         val result = model.toSessionData(true)
 
         // check
-        result(0) shouldBe (("0","triggerDefinedContribution_2015_p1"))
-        result(1) shouldBe (("0","triggerDefinedContribution_2015_p2"))
-        result(2) shouldBe (("0","triggerDefinedContribution"))
-        result(3) shouldBe (("2016-07-11","dateOfMPAATriggerEvent"))
+        result(0) shouldBe (("2016-07-11","dateOfMPAATriggerEvent"))
       }
       "not editing return trigger date" in {
         // set up

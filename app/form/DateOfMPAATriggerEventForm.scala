@@ -46,9 +46,17 @@ trait TriggerDateModel {
           val v2 = ("0", if (newDate.isPeriod1) P2_TRIGGER_DC_KEY else P1_TRIGGER_DC_KEY)
           List[(String,String)](v1, v2) ++ data
         } else if (!newDate.isPeriod1 && !newDate.isPeriod2 && (oldDate.isPeriod1 || oldDate.isPeriod2)) {
-          List(("0",P1_TRIGGER_DC_KEY),("0",P2_TRIGGER_DC_KEY),("0",TRIGGER_DC_KEY)) ++ data
+          if (oldDate.isPeriod1)
+            List(("0",P1_TRIGGER_DC_KEY),("0",P2_TRIGGER_DC_KEY),(p1dctrigger,TRIGGER_DC_KEY)) ++ data
+          else
+            List(("0",P1_TRIGGER_DC_KEY),("0",P2_TRIGGER_DC_KEY),(p2dctrigger,TRIGGER_DC_KEY)) ++ data
+        } else if (newDate.isPeriod1 || newDate.isPeriod2 && (!oldDate.isPeriod1 && !oldDate.isPeriod2)) {
+          if (newDate.isPeriod1)
+            List((dctrigger,P1_TRIGGER_DC_KEY),("0",P2_TRIGGER_DC_KEY),("0",TRIGGER_DC_KEY)) ++ data
+          else
+            List(("0",P1_TRIGGER_DC_KEY),(dctrigger,P2_TRIGGER_DC_KEY),("0",TRIGGER_DC_KEY)) ++ data
         } else {
-          List(("0",P1_TRIGGER_DC_KEY),("0",P2_TRIGGER_DC_KEY),("0",TRIGGER_DC_KEY)) ++ data
+          data
         }
       } else {
         data
@@ -71,13 +79,19 @@ object DateOfMPAATriggerEventPageModel {
     val dateAsStr = data.get(TRIGGER_DATE_KEY).getOrElse("")
     val p1dc = data.get(P1_TRIGGER_DC_KEY).getOrElse("")
     val p2dc = data.get(P2_TRIGGER_DC_KEY).getOrElse("")
-    if (dateAsStr.isEmpty) {
-      DateOfMPAATriggerEventPageModel(None, "", p1dc, p2dc, "")
+    val dc = data.get(TRIGGER_DC_KEY).getOrElse("")
+    println(p1dc)
+    println(p2dc)
+    println(dc)
+    val model = if (dateAsStr.isEmpty) {
+      DateOfMPAATriggerEventPageModel(None, "", p1dc, p2dc, dc)
     } else {
       val parts = dateAsStr.split("-").map(_.toInt)
       val date = Some(new LocalDate(parts(0),parts(1),parts(2)))
-      DateOfMPAATriggerEventPageModel(date, dateAsStr, p1dc, p2dc, "")
+      DateOfMPAATriggerEventPageModel(date, dateAsStr, p1dc, p2dc, dc)
     }
+    println(model)
+    model
   }
 }
 
