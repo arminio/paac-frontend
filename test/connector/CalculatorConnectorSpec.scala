@@ -58,7 +58,7 @@ class CalculatorConnectorSpec extends UnitSpec with MockitoSugar with BeforeAndA
       // set up
       implicit val hc = uk.gov.hmrc.play.http.HeaderCarrier()
       val mockHttpPost = mock[HttpPost]
-      object MockCalculatorConnector extends CalculatorConnector {
+      object MockCalculatorConnector extends CalculatorConnector with test.NullMetrics {
         override def httpPostRequest: HttpPost = mockHttpPost
         override def serviceUrl: String = ""
       }
@@ -75,7 +75,7 @@ class CalculatorConnectorSpec extends UnitSpec with MockitoSugar with BeforeAndA
       // set up
       implicit val hc = uk.gov.hmrc.play.http.HeaderCarrier()
       val mockHttpPost = mock[HttpPost]
-      object MockCalculatorConnector extends CalculatorConnector {
+      object MockCalculatorConnector extends CalculatorConnector with test.NullMetrics {
         override def httpPostRequest: HttpPost = mockHttpPost
         override def serviceUrl: String = ""
       }

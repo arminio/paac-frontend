@@ -1,13 +1,21 @@
 @(paacForm : Form[_ <: form.Pre2015Fields], currentYear: String, isEdit: Boolean)(implicit request:Request[_])
 
 @import uk.gov.hmrc.play.views.html.helpers._
-@import uk.gov.hmrc.play.views.html._
+
+@analyticsAdditionalJs = {
+  ga('set', {
+    title: "@Messages("paac.pension.inputs.pagetitle")",
+    language: 'en-gb',
+  });
+  @helpers.gaEvent("page view", Messages("paac.pension.inputs.pagetitle", currentYear, "" +(currentYear.toInt+1)))
+}
 
 @common.paacMain(
 pageTitle = Messages("paac.pension.inputs.pagetitle", currentYear, "" +(currentYear.toInt+1)),
 heading = Messages("paac.pension.inputs.heading", ("defined benefit"), currentYear, ""+(currentYear.toInt+1)),
 articleClasses=Some("full-width"),
-backLink = Some((controllers.routes.PensionInputsController.onBack(currentYear.toInt).url,Messages("paac.link.text.back")))
+backLink = Some((controllers.routes.PensionInputsController.onBack(currentYear.toInt).url,Messages("paac.link.text.back"))),
+analyticsAdditionalJs = Some(analyticsAdditionalJs)
 ) {
 
     @defining(currentYear.toInt) { year =>
@@ -46,10 +54,10 @@ backLink = Some((controllers.routes.PensionInputsController.onBack(currentYear.t
     @form(
         action = controllers.routes.PensionInputsController.onSubmit,
         args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
-        <input type="hidden" name="year" value="@currentYear"/>
-        <input type="hidden" name="isEdit" value="@isEdit"/>
+        <input type="hidden" name="year" value="@(currentYear)"/>
+        <input type="hidden" name="isEdit" value="@(isEdit)"/>
         <fieldset id="input_@currentYear" style="margin:0" class="form-field-group @if(paacForm.hasErrors) {form-field--error}">
-            <label class="label--full-length numeric" for="definedBenefit_@currentYear" style="@if(paacForm.errors.find(_.key == "definedBenefit_"+currentYear)) {color:#b10e1e;}">
+            <label class="label--full-length numeric" for="definedBenefit_@currentYear" style="width:150%;display: inline-block;">
             <span>@Messages("paac.pension.inputs.totalamount")</span>
             <span class="form-hint">@Messages("paac.common.inputfield.example.message")</span>
             @if(paacForm.hasErrors) {
@@ -64,9 +72,9 @@ backLink = Some((controllers.routes.PensionInputsController.onBack(currentYear.t
                 }
             }
               @if(paacForm.data.contains("definedBenefit_"+currentYear)) {
-                 £&nbsp;<input type="text" name="definedBenefit_@currentYear" id="definedBenefit_@currentYear" value='@paacForm.data("definedBenefit_"+currentYear)' size="10" class="input--no-spinner" style="width:9em;@if(paacForm.errors.find(_.key == "definedBenefit_"+currentYear)) {border: 4px solid #b10e1e;}"/>
+                 £&nbsp;<input type="text" name="definedBenefit_@currentYear" id="definedBenefit_@currentYear" value='@paacForm.data("definedBenefit_"+currentYear)' size="10" class="input--no-spinner" style='width:9em;@if(paacForm.errors.find(_.key == "definedBenefit_"+currentYear)) {border: 4px solid #b10e1e;}'/>
               } else {
-                 £&nbsp;<input type="text" name="definedBenefit_@currentYear" id="definedBenefit_@currentYear" value='' size="10" class="input--no-spinner" style="width:9em;@if(paacForm.errors.find(_.key == "definedBenefit_"+currentYear)) {border: 4px solid #b10e1e;}"/>
+                 £&nbsp;<input type="text" name="definedBenefit_@currentYear" id="definedBenefit_@currentYear" value='' size="10" class="input--no-spinner" style='width:9em;@if(paacForm.errors.find(_.key == "definedBenefit_"+currentYear)) {border: 4px solid #b10e1e;}'/>
               }
             </label>
         </fieldset>

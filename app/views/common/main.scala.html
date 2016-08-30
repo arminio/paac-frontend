@@ -8,6 +8,7 @@
   serviceInfoContent: Html = HtmlFormat.empty,
   linkElement: Option[Html] = None,
   scriptElement: Option[Html] = None,
+  analyticsAdditionalJs: Option[Html] = None,
   backLink: Option[(String,String)] = None)(implicit request: Request[_])
 
 @import uk.gov.hmrc.play.views.html.layouts
@@ -52,13 +53,21 @@ serviceInfoContent = None)
 @mainContentHeader = {
     @if(contentHeader.isDefined) {
         @if(backLink.isDefined) {
-            <a href="@(backLink.get._1)" class="link-back">@(backLink.get._2)</a>
+            <a href="@(backLink.get._1)" class="link-back" data-journey-click="paac:click:back">@(backLink.get._2)</a>
         }
         @layouts.main_content_header(contentHeader = contentHeader.get)
     }
 }
 
 @getHelpForm = @{uiHelpers.reportAProblemLink(ApplicationConfig.reportAProblemPartialUrl, ApplicationConfig.reportAProblemNonJSUrl)}
+
+@defaultGA = {
+  ga('set', {
+    title: "@(title.trim)",
+    language: 'en-gb',
+  });
+  @helpers.gaEvent("page view", title.trim)
+}
 
 @content = {
     @layouts.main_content(
@@ -78,7 +87,8 @@ serviceInfoContent = None)
         assetsPrefix = ApplicationConfig.assetsPrefix,
         ssoUrl = None,
         scriptElem = scriptElement,
-        gaCalls = None)
+        gaCalls = None,
+        analyticsAdditionalJs = if (!analyticsAdditionalJs.isDefined) Some(defaultGA) else analyticsAdditionalJs)
     @pageBottom
 }
 

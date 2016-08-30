@@ -3,13 +3,69 @@
 @import uk.gov.hmrc.play.views.html.helpers._
 @import java.math.BigDecimal
 
+@analyticsAdditionalJs = {
+  ga('set', {
+    title: "@Messages("paac.review-amounts.page.heading")",
+    language: 'en-gb',
+  });
+  @pageValues.reverse.map { input =>
+    @if(input.amounts.isDefined){
+      @defining(input.amounts.get) { a =>
+
+        @if(a.definedBenefit.isDefined && !input.isTriggered) {
+          @helpers.gaEvent("DB", input.taxYearLabel, a.definedBenefitBucket)
+        }
+
+        @if(a.moneyPurchase.isDefined && !input.isTriggered) {
+          @helpers.gaEvent("DC", input.taxYearLabel, a.moneyPurchaseBucket)
+        }
+
+        @if(a.moneyPurchase.isDefined && input.isTriggered) {
+          @helpers.gaEvent("Flexi DC", input.taxYearLabel, a.moneyPurchaseBucket)
+        }
+
+        @if(a.income.isDefined && !input.isTriggered) {
+          @helpers.gaEvent("AI", input.taxYearLabel, a.incomeBucket)
+        }
+      }
+    }
+
+    @if(input.taxPeriodStart.taxYear >= 2015) {
+      @helpers.gaEvent(if(input.isTriggered){"Flexi Access"}else{"No Flexi Access"}, input.taxYearLabel)
+    }
+  }
+  @helpers.gaEvent("page view", Messages("paac.review-amounts.page.heading"))
+}
+
+
 @common.paacMain(
 pageTitle = Messages("paac.review-amounts.page.heading"),
 heading = Messages("paac.review-amounts.page.title"),
 mainClass = "main",
 articleClasses = Some("full-width"),
-backLink = Some((controllers.routes.ReviewTotalAmountsController.onBack.url,Messages("paac.link.text.back")))
+backLink = Some((controllers.routes.ReviewTotalAmountsController.onBack.url,Messages("paac.link.text.back"))),
+analyticsAdditionalJs = Some(analyticsAdditionalJs)
 ) {
+
+@if(pageValues.find(_.moneyPurchase < 0).isDefined) {
+  @defining(pageValues.find(_.moneyPurchase < 0).get) { contribution =>
+  <div class="error-summary" role="group" aria-labelledby="error-summary-heading" tabindex="-1" style="border: 5px solid #b10e1e;padding: 20px;padding-top: 0px;margin-bottom: 30px;">
+
+    <h1 class="heading-medium error-summary-heading" id="error-summary-heading">@Html(Messages("paac.error.generic"))</h1>
+    <ul>
+    @if(contribution.isPeriod1) {
+    <li>@Html(Messages("paac.review-amounts.error.negative-trigger", Messages("paac.results.taxyearlabel.p1")))</li>
+    } else {
+      @if(contribution.isPeriod2) {
+        <li>@Html(Messages("paac.review-amounts.error.negative-trigger", Messages("paac.results.taxyearlabel.p2")))</li>
+      } else {
+        <li>@Html(Messages("paac.review-amounts.error.negative-trigger", contribution.taxPeriodStart.taxYear))</li>
+      }
+    }
+    </ul>
+  </div>
+  }
+}
 
 @defining(pageValues.find(_.isTriggered)) { triggerContribution =>
     @defining((triggerContribution.map((tc)=>pageValues.reverse.filterNot((c1)=>c1==tc||c1.isEmpty)).getOrElse(pageValues.reverse.filterNot(_.isEmpty)))) { contributions =>

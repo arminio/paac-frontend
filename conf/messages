@@ -142,6 +142,7 @@ paac.review-amounts.value.9={0} September {1}
 paac.review-amounts.value.10={0} October {1}
 paac.review-amounts.value.11={0} November {1}
 paac.review-amounts.value.12={0} December {1}
+paac.review-amounts.error.negative-trigger=The flexible access amount provided now exceeds the defined contribution savings for the {0} pension input period. Please edit <span style="font-weight:bolder">either</span> the defined contributions savings or the flexible access savings as appropriate for your circumstances.
 
 ## Results Page
 paac.results.table.col.1 = Year
@@ -168,6 +169,7 @@ paac.post.trigger.value.page.title = Input since flexible access date
 paac.post.trigger.value.description.p1 = Include all pension savings after you first flexibly accessed your defined contribution scheme on {0} to the end of the period on 8 July 2015. Use only numbers and round to the nearest pound.
 paac.post.trigger.value.description.p2 = Include all pension savings after you first flexibly accessed your defined contribution scheme on {0} to the end of the period on 5 April 2016. Use only numbers and round to the nearest pound.
 paac.post.trigger.value.description.other = Include all pension savings after you first flexibly accessed your defined contribution scheme on {0} to 5 April {1}. Use only numbers and round to the nearest pound.
+paac.post.trigger.value.error = The amount entered is larger than the total contribution savings of {0} for this input period.
 
 paac.post.trigger.amount.input.label = Total amount
 paac.post.trigger.value.error.real.precision = The amount must not be empty or negative. (Amount must have no more than {1} numbers, including {2} decimal places, and should be £0 or larger and smaller than £5,000,000.)

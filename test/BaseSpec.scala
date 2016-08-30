@@ -34,13 +34,23 @@ import scala.concurrent.Future
 import java.io._
 import java.nio.file._
 
+trait NullMetrics extends metrics.Metrics {
+  override def calculationTime(delta: Long,timeUnit: java.util.concurrent.TimeUnit): Unit = {}
+  override def calculatorStatusCode(code: Int): Unit = {}
+  override def failedCalculation(): Unit = {}
+  override def keystoreStatusCode(code: Int): Unit = {}
+  override def successfulCalculation(): Unit = {}
+  override def taxCalculated(taxYear: String,taxAmount: Long): Unit = {}
+  override def unusedAllowanceCalculated(taxYear: String,taxAmount: Long): Unit = {}
+}
+
 class SimpleBaseSpec extends UnitSpec {
   val SESSION_ID = s"session-${UUID.randomUUID}"
 
   implicit val request = FakeRequest()
 
   trait MockKeystoreFixture {
-    object MockKeystore extends KeystoreService {
+    object MockKeystore extends KeystoreService with NullMetrics {
       var map = Map(SessionKeys.sessionId -> SESSION_ID)
 
       override def saveData(data: Map[String,String])

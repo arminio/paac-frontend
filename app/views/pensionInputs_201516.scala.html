@@ -2,11 +2,20 @@
 
 @import uk.gov.hmrc.play.views.html.helpers._
 
+@analyticsAdditionalJs = {
+  ga('set', {
+    title: "@Messages("paac.201516.pension.inputs.pagetitle")",
+    language: 'en-gb',
+  });
+  @helpers.gaEvent("page view", "Defined " + (if(isDefinedBenefit) "Benefit" else "") + (if(isDefinedBenefit && isDefinedContribution) " and " else "") + (if(isDefinedContribution)" Contribution" else "") + " " + Messages("paac.201516.pension.inputs.pagetitle"))
+}
+
 @common.paacMain(
 pageTitle = Messages("paac.201516.pension.inputs.pagetitle"),
 heading = Messages("paac.1516.pension.inputs.pages.heading", (if(isDefinedBenefit && isDefinedContribution) "pension" else if(isDefinedBenefit) "defined benefit" else if (isDefinedContribution) "defined contribution"  else "")),
 articleClasses=Some("full-width"),
-backLink = Some((controllers.routes.PensionInputs201516Controller.onBack.url,Messages("paac.link.text.back")))
+backLink = Some((controllers.routes.PensionInputs201516Controller.onBack.url,Messages("paac.link.text.back"))),
+analyticsAdditionalJs = Some(analyticsAdditionalJs)
 ) {
 <p class="lede text">@Messages("paac.201516.pension.inputs.description")</p>
 <p class="text">@Messages("paac.201516.pension.inputs.description2")</p>
@@ -53,7 +62,7 @@ args = 'class -> "form",
   }
 
 <fieldset id="input_2015_@(p)" class="form-field-group">
-  @for(id <- if (isDefinedBenefit && isDefinedContribution) List("definedBenefit_2015_"+p, "definedContribution_2015_"+p) else if (isDefinedBenefit) List("definedBenefit_2015_"+p) else List("definedContribution_2015_"+p)) {
+  @for(id <- if (isDefinedBenefit && isDefinedContribution) List("definedContribution_2015_"+p, "definedBenefit_2015_"+p) else if (isDefinedBenefit) List("definedBenefit_2015_"+p) else List("definedContribution_2015_"+p)) {
     <label class="label--full-length numeric @if(paacForm.errors.find(_.key == id)) {form-field--error}" for="@id">
       <span>@Messages(if (id.contains("Benefit")) "paac.common.pension.inputs.db" else "paac.common.pension.inputs.dc")</span>
       <span class="form-hint">@Messages("paac.common.inputfield.example.message")</span>

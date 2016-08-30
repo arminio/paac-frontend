@@ -24,8 +24,10 @@ import uk.gov.hmrc.play.http.{HeaderCarrier, SessionKeys}
 import scala.util.{Try, Success, Failure, Either}
 import play.api.libs.json._
 import play.api.libs.concurrent.Execution.Implicits._
+import metrics._
+import uk.gov.hmrc.play.http._
 
-trait WriteKeystore extends ActionBuilder[DataRequest] {
+trait WriteKeystore extends ActionBuilder[DataRequest] with Metrics {
   def keystore: KeystoreService
 
   protected def convert[T](request: Request[T]): DataRequest[T] = {
@@ -41,12 +43,36 @@ trait WriteKeystore extends ActionBuilder[DataRequest] {
       keystore.saveData(r.session.data).map {
         (_)=>
         r
+      }.andThen {
+        case Failure(t) => {
+          log(t)
+          throw t
+        }
+        case Success(results) => results
+      }
+    }
+  }
+
+  protected def log(t: Throwable): Unit = {
+    Logger.error(s"Keystore error: ${t.getMessage()}")
+    t match {
+      case _: BadRequestException => keystoreStatusCode(400)
+      case _: NotFoundException => keystoreStatusCode(404)
+      case u: Upstream4xxResponse => keystoreStatusCode(u.reportAs)
+      case u: Upstream5xxResponse => keystoreStatusCode(u.reportAs)
+      case _: GatewayTimeoutException => keystoreStatusCode(504)
+      case _: BadGatewayException => keystoreStatusCode(502)
+      case _ => {
+        val msg = t.getMessage
+        if (msg.contains(" failed with status ")) {
+          keystoreStatusCode(msg.split("\\.")(0).split(" ").reverse(0).toInt)
+        }
       }
     }
   }
 }
 
-case class WriteKeystoreAction(keystore: KeystoreService) extends WriteKeystore {
+case class WriteKeystoreAction(keystore: KeystoreService) extends WriteKeystore with metrics.GraphiteMetrics {
   def invokeBlock[A](r: Request[A], block: DataRequest[A] => Future[Result]): Future[Result] = {
     val request = convert(r)
     updateKeystore(request,block(request))
