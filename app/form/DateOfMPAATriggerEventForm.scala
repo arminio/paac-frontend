@@ -30,9 +30,9 @@ trait TriggerDateModel {
   def originalDate: String
   def p1dctrigger: String
   def p2dctrigger: String
-  def isEdit: Boolean
+  def dctrigger: String
 
-  def toSessionData(): List[(String,String)] = {
+  def toSessionData(isEdit: Boolean): List[(String,String)] = {
     val maybeData = dateOfMPAATriggerEvent.map {
       (date)=>
       val data = List[(String,String)]((date.toString, TRIGGER_DATE_KEY))
@@ -58,7 +58,11 @@ trait TriggerDateModel {
   }
 }
 
-case class DateOfMPAATriggerEventPageModel(dateOfMPAATriggerEvent: Option[LocalDate], originalDate: String, p1dctrigger: String, p2dctrigger: String, isEdit: Boolean) extends TriggerDateModel
+case class DateOfMPAATriggerEventPageModel(dateOfMPAATriggerEvent: Option[LocalDate],
+                                           originalDate: String,
+                                           p1dctrigger: String,
+                                           p2dctrigger: String,
+                                           dctrigger: String) extends TriggerDateModel
 
 object DateOfMPAATriggerEventPageModel {
   implicit val formats = Json.format[DateOfMPAATriggerEventPageModel]
@@ -67,13 +71,12 @@ object DateOfMPAATriggerEventPageModel {
     val dateAsStr = data.get(TRIGGER_DATE_KEY).getOrElse("")
     val p1dc = data.get(P1_TRIGGER_DC_KEY).getOrElse("")
     val p2dc = data.get(P2_TRIGGER_DC_KEY).getOrElse("")
-    val isEdit = data.get(IS_EDIT_KEY).map(_.toBoolean).getOrElse(false)
     if (dateAsStr.isEmpty) {
-      DateOfMPAATriggerEventPageModel(None, "", p1dc, p2dc, isEdit)
+      DateOfMPAATriggerEventPageModel(None, "", p1dc, p2dc, "")
     } else {
       val parts = dateAsStr.split("-").map(_.toInt)
       val date = Some(new LocalDate(parts(0),parts(1),parts(2)))
-      DateOfMPAATriggerEventPageModel(date, dateAsStr, p1dc, p2dc, isEdit)
+      DateOfMPAATriggerEventPageModel(date, dateAsStr, p1dc, p2dc, "")
     }
   }
 }
@@ -89,7 +92,7 @@ trait DateOfMPAATriggerEventForm extends DateOfMPAATriggerEvent {
       "originalDate" -> text,
       P1_TRIGGER_DC_KEY -> text,
       P2_TRIGGER_DC_KEY -> text,
-      IS_EDIT_KEY -> boolean
+      TRIGGER_DC_KEY -> text
     )(DateOfMPAATriggerEventPageModel.apply)(DateOfMPAATriggerEventPageModel.unapply)
   )
 }
