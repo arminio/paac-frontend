@@ -46,7 +46,7 @@ package object utilities {
   def poundsLongField(isValidating: Boolean = false) = {
     implicit val binder:Formatter[Long] = numberFormatter(_.toLong)
     if (isValidating)
-      Forms.of[Long].verifying(x => x > 0 && x <= DEFAULT_MAX)
+      Forms.of[Long].verifying(x => x >= 0 && x <= DEFAULT_MAX)
      else
       Forms.of[Long]
   }
@@ -72,10 +72,24 @@ package object utilities {
     }
   }
 
+  implicit def bigDecimalTuple4ToLong(maybeTuple: Option[(BigDecimal,BigDecimal,BigDecimal,BigDecimal)]): Option[(Long,Long,Long,Long)] = {
+    maybeTuple.map {
+      (t) =>
+      (t._1.longValue,t._2.longValue,t._3.longValue,t._4.longValue)
+    }
+  }
+
   implicit def bigDecimalTuple2ToInt(maybeTuple: Option[(BigDecimal,BigDecimal)]): Option[(Int,Int)] = {
     maybeTuple.map {
       (t) =>
       (t._1.intValue,t._2.intValue)
+    }
+  }
+
+  implicit def bigDecimalTuple2ToLong(maybeTuple: Option[(BigDecimal,BigDecimal)]): Option[(Long,Long)] = {
+    maybeTuple.map {
+      (t) =>
+      (t._1.longValue,t._2.longValue)
     }
   }
 

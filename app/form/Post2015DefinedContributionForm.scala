@@ -31,7 +31,7 @@ trait Post2015DefinedContributionForm extends Post2015FormFactory {
       Form[Post2015DefinedContributionModel](mapping(poundsDC(year))(toModel)(Post2015DefinedContributionModel.unapply))
   }
 
-  protected val toModel: (Int) => Post2015DefinedContributionModel = (i: Int) =>
+  protected val toModel: (Long) => Post2015DefinedContributionModel = (i: Long) =>
     Post2015DefinedContributionModel(BigDecimal(i))
 }
 

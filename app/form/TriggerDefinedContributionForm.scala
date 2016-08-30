@@ -31,7 +31,7 @@ trait TriggerDefinedContributionForm extends TriggerDCFormFactory {
       Form[TriggerDCModel](mapping(poundsTEDC)(toModel)(TriggerDCModel.unapply))
   }
 
-  protected val toModel: (Int) => TriggerDCModel = (i: Int) =>
+  protected val toModel: (Long) => TriggerDCModel = (i: Long) =>
     TriggerDCModel(BigDecimal(i))
 }
 

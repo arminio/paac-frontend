@@ -24,7 +24,7 @@ import config.AppSettings
 case class Pre2015DefinedBenefitModel(definedBenefit: BigDecimal) extends Pre2015Fields
 
 trait Pre2015DefinedBenefitForm extends Pre2015FormFactory {
-  def apply(year: Long): Form[_ <: Pre2015Fields] = {
+  def apply(year: Int): Form[_ <: Pre2015Fields] = {
     if (isPoundsAndPence)
       Form[Pre2015DefinedBenefitModel](mapping(penceDB(year))(Pre2015DefinedBenefitModel.apply)(Pre2015DefinedBenefitModel.unapply))
     else

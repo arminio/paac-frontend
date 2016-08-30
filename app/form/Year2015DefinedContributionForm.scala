@@ -32,7 +32,7 @@ trait Year2015DefinedContributionForm extends Year2015FormFactory {
       Form[Year2015DefinedContributionModel](mapping(poundsP1DC, poundsP2DC)(toModel)(Year2015DefinedContributionModel.unapply))
   }
 
-  protected val toModel: (Int, Int) => Year2015DefinedContributionModel = (i: Int, j: Int) =>
+  protected val toModel: (Long, Long) => Year2015DefinedContributionModel = (i: Long, j: Long) =>
     Year2015DefinedContributionModel(BigDecimal(i),BigDecimal(j))
 }
 

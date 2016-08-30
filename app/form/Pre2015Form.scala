@@ -25,7 +25,7 @@ import play.api.data.Mapping
 import service.KeystoreService._
 
 trait Pre2015Fields {
-  def data(year: Long): Map[String,String] = toMap(this).map{
+  def data(year: Int): Map[String,String] = toMap(this).map{
     (entry)=>
     (s"${entry._1}_${year}", (entry._2.toString.toDouble*100).floor.toLong.toString)
   }
@@ -34,7 +34,7 @@ trait Pre2015Fields {
 trait Pre2015FormFactory extends Settings {
   settings: Settings =>
 
-  def apply(year: Long): Form[_ <: Pre2015Fields]
+  def apply(year: Int): Form[_ <: Pre2015Fields]
 
   protected def isPoundsAndPence(): Boolean = settings.POUNDS_AND_PENCE
   protected def poundsDB(year: Long): (String, Mapping[Long])= (DB_PREFIX+year) -> poundsLongField(true)
@@ -42,7 +42,7 @@ trait Pre2015FormFactory extends Settings {
 }
 
 trait Pre2015Form {
-  def form(year: Long): Form[_ <: Pre2015Fields] = Pre2015DefinedBenefitForm(year)
+  def form(year: Int): Form[_ <: Pre2015Fields] = Pre2015DefinedBenefitForm(year)
 }
 
 object Pre2015Form extends Pre2015Form

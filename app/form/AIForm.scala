@@ -36,8 +36,8 @@ trait AIFormFactory extends Settings {
   def apply(year: Int): Form[_ <: AIFields]
 
   protected def isPoundsAndPence(): Boolean = settings.POUNDS_AND_PENCE
-  protected def poundsDB(year: Int): (String, Mapping[Int])= (AI_PREFIX+year) -> poundsField(true)
-  protected def penceDB(year: Int): (String, Mapping[BigDecimal])= (AI_PREFIX+year) -> poundsAndPenceField(true)
+  protected def poundsDB(year: Long): (String, Mapping[Long])= (AI_PREFIX+year) -> poundsLongField(true)
+  protected def penceDB(year: Long): (String, Mapping[BigDecimal])= (AI_PREFIX+year) -> poundsAndPenceField(true)
 }
 
 trait AIForm {
