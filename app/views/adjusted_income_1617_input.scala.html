@@ -40,8 +40,8 @@ backLink = Some((controllers.routes.AdjustedIncome1617InputController.onBack(cur
     @form(
         action = controllers.routes.AdjustedIncome1617InputController.onSubmit,
         args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
-        <input type="hidden" name="isEdit" value="@isEdit"/>
-        <input type="hidden" name="year" value="@currentYear"/>
+        <input type="hidden" name="isEdit" value="@(isEdit)"/>
+        <input type="hidden" name="year" value="@(currentYear)"/>
         <p class="lede text">@Messages("paac.1617.adjusted.income.description1")</p>
         <p class="text" >@Messages("paac.1617.adjusted.income.description2", config.PaacConfiguration.forYear(currentYear.toInt)("adjustedIncome"))</p>
           <fieldset id="adjusted_income_@currentYear" class="form-field-group @if(paacForm.hasErrors) {form-field--error}">
@@ -63,7 +63,7 @@ backLink = Some((controllers.routes.AdjustedIncome1617InputController.onBack(cur
             @if(paacForm.data.contains(s"adjustedIncome_${currentYear}")) {
                 &pound;&nbsp;<input type="text" name="adjustedIncome_@currentYear" id="adjustedIncome_@currentYear" class="input--no-spinner" value='@paacForm.data(s"adjustedIncome_${currentYear}")' size="10" style="@if(paacForm.errors.find(_.key == s"adjustedIncome_${currentYear}")) {border: 4px solid #b10e1e;}"/>
             } else {
-                &pound;&nbsp;<input type="text" name="adjustedIncome_@currentYear" id="adjustedIncome_@currentYear" class="input--no-spinner" value='' size="10" style="@if(paacForm.errors.find(_.key == "adjustedIncome_@currentYear")) {border: 4px solid #b10e1e;}"/>
+                &pound;&nbsp;<input type="text" name="adjustedIncome_@currentYear" id="adjustedIncome_@currentYear" class="input--no-spinner" value='' size="10" style='@if(paacForm.errors.find(_.key == "adjustedIncome_@currentYear")) {border: 4px solid #b10e1e;}'/>
             }
                 </label>
               </span>
