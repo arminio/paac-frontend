@@ -158,7 +158,7 @@ class PensionInputs201516ControllerSpec extends test.BaseSpec {
 
       "with dc flag false should not go to trigger question page" in new ControllerWithMockKeystore {
         // set up
-        val sessionData = List(("isEdit" -> "false"),
+        val sessionData = List((IS_EDIT_KEY -> "false"),
                               (IS_DB -> "true"),
                               (IS_DC -> "false"),
                               (SELECTED_INPUT_YEARS_KEY -> "2015,2014"),
@@ -177,7 +177,7 @@ class PensionInputs201516ControllerSpec extends test.BaseSpec {
       }
 
       "with invalid Period-1 amount request redisplay page with errors" in new ControllerWithMockKeystore {
-        val sessionData = List(("isEdit" -> "false"),
+        val sessionData = List((IS_EDIT_KEY -> "false"),
                               (IS_DB -> "true"),
                               (IS_DC -> "false"),
                               (SELECTED_INPUT_YEARS_KEY -> "2015,2014"),
@@ -197,7 +197,7 @@ class PensionInputs201516ControllerSpec extends test.BaseSpec {
       }
 
       "with empty db amount redisplay page with errors" in new ControllerWithMockKeystore {
-        val sessionData = List(("isEdit" -> "false"),
+        val sessionData = List((IS_EDIT_KEY -> "false"),
                               (IS_DB -> "true"),
                               (IS_DC -> "false"),
                               (SELECTED_INPUT_YEARS_KEY -> "2015,2014"),
@@ -219,7 +219,7 @@ class PensionInputs201516ControllerSpec extends test.BaseSpec {
       }
 
       "with empty dc amount redisplay page with errors" in new ControllerWithMockKeystore {
-        val sessionData = List(("isEdit" -> "false"),
+        val sessionData = List((IS_EDIT_KEY -> "false"),
                               (IS_DB -> "false"),
                               (IS_DC -> "true"),
                               (SELECTED_INPUT_YEARS_KEY -> "2015,2014"),
@@ -379,7 +379,7 @@ class PensionInputs201516ControllerSpec extends test.BaseSpec {
   "onBack" should {
     "redirect to scheme selection page" in new ControllerWithMockKeystore {
       // set up
-      val sessionData = List(("isEdit" -> "false"),
+      val sessionData = List((IS_EDIT_KEY -> "false"),
                       (SELECTED_INPUT_YEARS_KEY -> "2015,2014"),
                       (CURRENT_INPUT_YEAR_KEY -> "2015"),
                       (SessionKeys.sessionId -> SESSION_ID))

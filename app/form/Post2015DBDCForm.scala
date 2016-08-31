@@ -31,7 +31,7 @@ trait Post2015DBDCForm extends Post2015FormFactory {
       Form[Post2015Model](mapping(poundsDB(year), poundsDC(year))(toModel)(Post2015Model.unapply))
   }
 
-  protected val toModel: (Int, Int) => Post2015Model = (i: Int, j: Int) =>
+  protected val toModel: (Long, Long) => Post2015Model = (i: Long, j: Long) =>
     Post2015Model(BigDecimal(i),BigDecimal(j))
 }
 

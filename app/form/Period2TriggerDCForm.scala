@@ -31,7 +31,7 @@ trait Period2TriggerDCForm extends TriggerDCFormFactory {
       Form[Period2TriggerDCModel](mapping(poundsPeriod2TEDC)(toModel)(Period2TriggerDCModel.unapply))
   }
 
-  protected val toModel: (Int) => Period2TriggerDCModel = (i: Int) =>
+  protected val toModel: (Long) => Period2TriggerDCModel = (i: Long) =>
     Period2TriggerDCModel(BigDecimal(i))
 }
 

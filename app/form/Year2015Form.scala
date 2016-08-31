@@ -25,7 +25,7 @@ import play.api.data.Mapping
 import service.KeystoreService._
 
 trait Year2015Fields {
-  def data(): Map[String,String] = toMap(this).mapValues((v)=>(v.toString.toDouble*100).floor.toInt.toString)
+  def data(): Map[String,String] = toMap(this).mapValues((v)=>(v.toString.toDouble*100).floor.toLong.toString)
 }
 
 trait Year2015FormFactory extends Settings {
@@ -35,13 +35,13 @@ trait Year2015FormFactory extends Settings {
 
   protected def isPoundsAndPence(): Boolean = settings.POUNDS_AND_PENCE
   protected def penceP1DB(): (String, Mapping[BigDecimal])= P1_DB_KEY -> poundsAndPenceField(true)
-  protected def poundsP1DB(): (String, Mapping[Int])= P1_DB_KEY -> poundsField(true)
+  protected def poundsP1DB(): (String, Mapping[Long])= P1_DB_KEY -> poundsLongField(true)
   protected def penceP2DB(): (String, Mapping[BigDecimal])= P2_DB_KEY -> poundsAndPenceField(true)
-  protected def poundsP2DB(): (String, Mapping[Int])= P2_DB_KEY -> poundsField(true)
+  protected def poundsP2DB(): (String, Mapping[Long])= P2_DB_KEY -> poundsLongField(true)
   protected def penceP1DC(): (String, Mapping[BigDecimal])= P1_DC_KEY -> poundsAndPenceField(true)
-  protected def poundsP1DC(): (String, Mapping[Int])= P1_DC_KEY -> poundsField(true)
+  protected def poundsP1DC(): (String, Mapping[Long])= P1_DC_KEY -> poundsLongField(true)
   protected def penceP2DC(): (String, Mapping[BigDecimal])= P2_DC_KEY -> poundsAndPenceField(true)
-  protected def poundsP2DC(): (String, Mapping[Int])= P2_DC_KEY -> poundsField(true)
+  protected def poundsP2DC(): (String, Mapping[Long])= P2_DC_KEY -> poundsLongField(true)
 }
 
 trait Year2015Form {

@@ -59,6 +59,7 @@ error.number.zero= Enter a number greater than 0
 error.min= Enter an amount that is £5,000,000 or less.
 error.max= Enter an amount that is £5,000,000 or less.
 error.bounds= Enter an amount that is £5,000,000 or less.
+error.unknown=Enter an amount that is £5,000,000 or less.
 error.real.precision={0} amount must not be empty. (Amount must have no more than {1} numbers, including {2} decimal places, and should be £0 or larger and under £5,000,000.)
 paac.error.generic = There is a problem
 paac.scheme.selection.error = Choose at least 1 type of pension scheme.
@@ -74,7 +75,6 @@ te.amount.error.required = Enter your defined contribution pension savings for r
 paac.error.taxyearlabel = {0} to {1}
 paac.error.p1label = period 1
 paac.error.p2label = period 2
-
 
 ## Tax Year Selection
 paac.taxyear.selection.pagetitle = Choose tax years

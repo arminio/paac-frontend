@@ -43,6 +43,14 @@ package object utilities {
       Forms.of[Int]
   }
 
+  def poundsLongField(isValidating: Boolean = false) = {
+    implicit val binder:Formatter[Long] = numberFormatter(_.toLong)
+    if (isValidating)
+      Forms.of[Long].verifying(x => x >= 0 && x <= DEFAULT_MAX)
+     else
+      Forms.of[Long]
+  }
+
   def toMap(caseClassInstance: AnyRef) =
     (Map[String,Any]() /: caseClassInstance.getClass.getDeclaredFields) {
       (a,f) =>
@@ -64,6 +72,13 @@ package object utilities {
     }
   }
 
+  implicit def bigDecimalTuple4ToLong(maybeTuple: Option[(BigDecimal,BigDecimal,BigDecimal,BigDecimal)]): Option[(Long,Long,Long,Long)] = {
+    maybeTuple.map {
+      (t) =>
+      (t._1.longValue,t._2.longValue,t._3.longValue,t._4.longValue)
+    }
+  }
+
   implicit def bigDecimalTuple2ToInt(maybeTuple: Option[(BigDecimal,BigDecimal)]): Option[(Int,Int)] = {
     maybeTuple.map {
       (t) =>
@@ -71,10 +86,24 @@ package object utilities {
     }
   }
 
+  implicit def bigDecimalTuple2ToLong(maybeTuple: Option[(BigDecimal,BigDecimal)]): Option[(Long,Long)] = {
+    maybeTuple.map {
+      (t) =>
+      (t._1.longValue,t._2.longValue)
+    }
+  }
+
   implicit def bigDecimalToInt(maybeDecimal: Option[BigDecimal]): Option[Int] = {
     maybeDecimal.map {
       (v) =>
       (v.intValue)
+    }
+  }
+
+  implicit def bigDecimalToLong(maybeDecimal: Option[BigDecimal]): Option[Long] = {
+    maybeDecimal.map {
+      (v) =>
+      (v.longValue)
     }
   }
 
