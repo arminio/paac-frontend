@@ -62,7 +62,9 @@ trait ReviewTotalAmountsController extends RedirectController with Settings {
 
   val onSubmit = withReadSession { implicit request =>
     val values = Map((TRIGGER_DATE_KEY, request.data.get(TRIGGER_DATE_KEY).getOrElse(""))) ++ request.data
-    val triggerAmount = request.data.getOrElse(P1_TRIGGER_DC_KEY, request.data.getOrElse(P2_TRIGGER_DC_KEY, request.data.getOrElse(TRIGGER_DC_KEY, "0"))).toLong
+    val triggerAmountStr = request.data.getOrElse(P1_TRIGGER_DC_KEY, request.data.getOrElse(P2_TRIGGER_DC_KEY, request.data.getOrElse(TRIGGER_DC_KEY, "0")))
+    val triggerAmount = (if (triggerAmountStr.isEmpty) "0" else triggerAmountStr).toLong
+
     val contributions = Contributions(values)
     connector.connectToPAACService(contributions).flatMap{
       response =>
