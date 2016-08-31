@@ -31,7 +31,7 @@ trait AdjustedIncomeForm extends AIFormFactory {
       Form[AdjustedIncomeModel](mapping(poundsDB(year))(toModel)(AdjustedIncomeModel.unapply))
   }
 
-  protected val toModel: (Int) => AdjustedIncomeModel = (i: Int) =>
+  protected val toModel: (Long) => AdjustedIncomeModel = (i: Long) =>
     AdjustedIncomeModel(BigDecimal(i))
 }
 

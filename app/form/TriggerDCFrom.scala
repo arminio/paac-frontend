@@ -38,11 +38,11 @@ trait TriggerDCFormFactory extends Settings {
   def apply(): Form[_ <: TriggerDCFields]
 
   protected def isPoundsAndPence(): Boolean = settings.POUNDS_AND_PENCE
-  protected def poundsPeriod1TEDC: (String, Mapping[Int])= (P1_TRIGGER_DC_KEY) -> poundsField(true)
+  protected def poundsPeriod1TEDC: (String, Mapping[Long])= (P1_TRIGGER_DC_KEY) -> poundsLongField(true)
   protected def pencePeriod1TEDC: (String, Mapping[BigDecimal])= (P1_TRIGGER_DC_KEY) -> poundsAndPenceField(true)
-  protected def poundsPeriod2TEDC: (String, Mapping[Int])= (P2_TRIGGER_DC_KEY) -> poundsField(true)
+  protected def poundsPeriod2TEDC: (String, Mapping[Long])= (P2_TRIGGER_DC_KEY) -> poundsLongField(true)
   protected def pencePeriod2TEDC: (String, Mapping[BigDecimal])= (P2_TRIGGER_DC_KEY) -> poundsAndPenceField(true)
-  protected def poundsTEDC: (String, Mapping[Int])= (TRIGGER_DC_KEY) -> poundsField(true)
+  protected def poundsTEDC: (String, Mapping[Long])= (TRIGGER_DC_KEY) -> poundsLongField(true)
   protected def penceTEDC: (String, Mapping[BigDecimal])= (TRIGGER_DC_KEY) -> poundsAndPenceField(true)
 }
 
