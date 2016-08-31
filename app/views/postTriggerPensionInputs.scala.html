@@ -46,9 +46,9 @@ backLink = Some((controllers.routes.PostTriggerPensionInputsController.onBack.ur
           @for(error <- paacForm.errors) {
             @defining(if(error.key.contains("p1")){ Messages("paac.error.p1label") }else{if(error.key.contains("p2")){ Messages("paac.error.p2label") } else{ Messages("paac.error.taxyearlabel",triggeredTaxYear.toString,(triggeredTaxYear+1).toString) } }) { args =>
                 @if(error.message == "error.required"){
-                    <li><a href="#triggerAmountFieldset" style="color:#b10e1e;font-weight: bold;">@Html(Messages("te.amount.error.required", args))</a></li>
+                    <li><a href="#triggerAmountFieldset" data-focuses="triggerAmountFieldset" style="color:#b10e1e;font-weight: bold;">@Html(Messages("te.amount.error.required", args))</a></li>
                 } else {
-                    <li><a href="#triggerAmountFieldset" style="color:#b10e1e;font-weight: bold;">@Html(Messages(error.message))</a></li>
+                    <li><a href="#triggerAmountFieldset" data-focuses="triggerAmountFieldset" style="color:#b10e1e;font-weight: bold;">@Html(Messages(error.message))</a></li>
                 }
             }
           }
