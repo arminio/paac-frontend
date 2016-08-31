@@ -64,6 +64,7 @@ case class PensionPeriod(year: Int, month: Int, day: Int) {
                                     year > that.year || (year == that.year && month > that.month) || (year == that.year && month == that.month && day > that.day)
   def <=(that: PensionPeriod): Boolean = if (year == that.year && month == that.month && day == that.day) true else this < that
   def >=(that: PensionPeriod): Boolean = if (year == that.year && month == that.month && day == that.day) true else this > that
+  def ==(that: PensionPeriod): Boolean = if (year == that.year && month == that.month && day == that.day) true else false
   def isPeriod(s:PensionPeriod, e:PensionPeriod):Boolean = {
     (this >= s) && (this <= e)
   }
