@@ -66,7 +66,7 @@ trait ReviewTotalAmountsController extends RedirectController with Settings {
     val contributions = Contributions(values)
     connector.connectToPAACService(contributions).flatMap{
       response =>
-      Future.successful(Ok(views.html.results(response, values(SELECTED_INPUT_YEARS_KEY).split(",").map(_.toInt), triggerAmount)))
+      Future.successful(Ok(views.html.results(response, values(SELECTED_INPUT_YEARS_KEY).split(",").map(_.toInt), request.data.get(TRIGGER_DATE_KEY).map(PensionPeriod.toPensionPeriod(_)), triggerAmount)))
     }
   }
 
