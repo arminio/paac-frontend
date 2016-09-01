@@ -15,24 +15,20 @@ backLink = Some((controllers.routes.YesNoThresholdIncomeController.onBack(year).
     <input type="hidden" name="year" value="@year"/>
     <p class="lede text">@Messages("paac.1617.threshold.income.description")</p>
     <div class='form-group'>
-        <div class='form-group'>
-            <fieldset class="inline">
-                @inputRadioGroup(
-                    paacForm("yesNo"), Seq(
-                        ("Yes", Messages("paac.yesno.yes")),
-                        ("No", Messages("paac.yesno.no"))
-                        ),
-                        '_legend -> Messages("paac.1617.threshold.income.question", config.PaacConfiguration.forYear(year)("threshold")),
-                        '_legendClass -> "hidden",
-                        '_labelAfter -> true,
-                        '_labelClass -> "block-label",
-                        '_groupClass -> "inline-block"
-                )
-            </fieldset>
-        </div>
-
+        <fieldset class="inline">
+            @inputRadioGroup(
+                paacForm("yesNo"), Seq(
+                    ("Yes", Messages("paac.yesno.yes")),
+                    ("No", Messages("paac.yesno.no"))
+                    ),
+                    '_legend -> Messages("paac.1617.threshold.income.question", config.PaacConfiguration.forYear(year)("threshold")),
+                    '_legendClass -> "hidden",
+                    '_labelAfter -> true,
+                    '_labelClass -> "block-label",
+                    '_groupClass -> "inline-block"
+            )
+        </fieldset>
     </div>
-    <br/>
     <button id="submit" type="submit" class="button" value="Continue">@Messages("paac.calculator.button.continue")</button>
     }
 }

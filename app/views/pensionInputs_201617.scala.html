@@ -23,9 +23,6 @@ backLink = Some((controllers.routes.PensionInputs201617Controller.onBack(year).u
 analyticsAdditionalJs = Some(analyticsAdditionalJs)
 ) {
 
-<p class="lede text">@Messages("paac.201617.pension.inputs.description")</p>
-<p class="lede text">@Messages("paac.201617.pension.inputs.description2")</p>
-
     @if(paacForm.hasErrors) {
     <div class="error-summary" role="group" aria-labelledby="error-summary-heading" tabindex="-1" style="border: 5px solid #b10e1e;padding: 20px;padding-top: 0px;margin-bottom: 30px;">
 
@@ -46,9 +43,13 @@ analyticsAdditionalJs = Some(analyticsAdditionalJs)
           @defining(error.args) { args =>
             @defining(if(error.key.contains("definedBenefit")) Messages("paac.benefit") else Messages("paac.contribution")){ args =>
                 @if(error.message == "error.required"){
-                   <li><a href="#@error.key" data-focuses="@error.key" style="color:#b10e1e;font-weight: bold;">@Messages("post2015.error.required", args)</a></li>
+                   <li><a href="#@error.key" data-focuses="@error.key" style="color:#b10e1e;font-weight: bold;">
+                       @Messages("post2015.error.required", args)
+                   </a></li>
                 } else {
-                   <li><a href="#@error.key" data-focuses="@error.key" style="color:#b10e1e;font-weight: bold;">@Messages(error.message)</a></li>
+                   <li><a href="#@error.key" data-focuses="@error.key" style="color:#b10e1e;font-weight: bold;">
+                       @Messages(error.message)
+                   </a></li>
                 }
             }
           }
@@ -56,6 +57,9 @@ analyticsAdditionalJs = Some(analyticsAdditionalJs)
         </ul>
     </div>
     }
+
+<p class="lede text">@Messages("paac.201617.pension.inputs.description")</p>
+<p class="lede text">@Messages("paac.201617.pension.inputs.description2")</p>
 
 @form(
 action = controllers.routes.PensionInputs201617Controller.onSubmit,
@@ -83,8 +87,6 @@ args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
     </label>
   } @* End of for id *@
 </fieldset>
-
-<br/>
 
 <button id="submit" type="submit" class="button" value="Continue">@if(isEdit){@Messages("paac.calculator.button.save")}else{@Messages("paac.calculator.button.continue")}</button>
 } @* End of Form *@

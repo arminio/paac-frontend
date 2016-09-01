@@ -18,8 +18,6 @@ backLink = Some((controllers.routes.PensionInputsController.onBack(currentYear.t
 analyticsAdditionalJs = Some(analyticsAdditionalJs)
 ) {
 
-    <p class="lede text">@Messages("paac.pension.inputs.description", currentYear, (currentYear.toInt + 1).toString)</p>
-
     @if(paacForm.hasErrors) {
       <div class="error-summary" role="group" aria-labelledby="error-summary-heading" tabindex="-1" style="border: 5px solid #b10e1e;padding: 20px;padding-top: 0px;margin-bottom: 30px;">
 
@@ -39,15 +37,21 @@ analyticsAdditionalJs = Some(analyticsAdditionalJs)
           @for(error <- paacForm.errors) {
             @defining(currentYear) { year =>
                 @if(error.message == "error.required"){
-                    <li><a href="#input_@year" data-focuses="input_@year" style="color:#b10e1e;font-weight: bold;">@Messages("pre2015.error.required")</a></li>
+                    <li><a href="#input_@year" data-focuses="input_@year" style="color:#b10e1e;font-weight: bold;">
+                        @Messages("pre2015.error.required")
+                    </a></li>
                 } else {
-                    <li><a href="#input_@year" data-focuses="input_@year" style="color:#b10e1e;font-weight: bold;">@Messages(error.message)</a></li>
+                    <li><a href="#input_@year" data-focuses="input_@year" style="color:#b10e1e;font-weight: bold;">
+                        @Messages(error.message)
+                    </a></li>
                 }
             }
           }
         </ul>
       </div>
     }
+
+    <p class="lede text">@Messages("paac.pension.inputs.description", currentYear, (currentYear.toInt + 1).toString)</p>
 
     @form(
         action = controllers.routes.PensionInputsController.onSubmit,
