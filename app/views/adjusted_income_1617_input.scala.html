@@ -28,9 +28,9 @@ backLink = Some((controllers.routes.AdjustedIncome1617InputController.onBack(cur
           @for(error <- paacForm.errors) {
             @defining(Seq(currentYear)++error.args) { args =>
                 @if(error.message == "error.required"){
-                  <li><a href="#adjusted_income_@currentYear" style="color:#b10e1e;font-weight: bold;">@Messages("ai.error.required")</a></li>
+                  <li><a href="#adjusted_income_@currentYear" data-focuses="adjusted_income_@currentYear" style="color:#b10e1e;font-weight: bold;">@Messages("ai.error.required")</a></li>
                 } else {
-                  <li><a href="#adjusted_income_@currentYear" style="color:#b10e1e;font-weight: bold;">@Messages(error.message)</a></li>
+                  <li><a href="#adjusted_income_@currentYear" data-focuses="adjusted_income_@currentYear" style="color:#b10e1e;font-weight: bold;">@Messages(error.message)</a></li>
                 }
             }
           }

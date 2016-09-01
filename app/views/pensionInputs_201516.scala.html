@@ -12,7 +12,7 @@
 
 @common.paacMain(
 pageTitle = Messages("paac.201516.pension.inputs.pagetitle"),
-heading = Messages("paac.1516.pension.inputs.pages.heading", (if(isDefinedBenefit && isDefinedContribution) "pension" else if(isDefinedBenefit) "defined benefit" else if (isDefinedContribution) "defined contribution"  else "")),
+heading = Messages("paac.1516.pension.inputs.pages.heading"),
 articleClasses=Some("full-width"),
 backLink = Some((controllers.routes.PensionInputs201516Controller.onBack.url,Messages("paac.link.text.back"))),
 analyticsAdditionalJs = Some(analyticsAdditionalJs)
@@ -34,12 +34,12 @@ analyticsAdditionalJs = Some(analyticsAdditionalJs)
     <ul class="error-summary-list">
       @for(error <- paacForm.errors) {
         @defining(if(error.key.contains("p1")){ "1" } else { "2" }){ periods =>
-        @defining(if(error.key.contains("definedBenefit")){ "benefit"} else {"contribution"}){ pensionSchemesTypes =>
+        @defining(if(error.key.contains("definedBenefit")) Messages("paac.benefit") else Messages("paac.contribution")){ pensionSchemesTypes =>
         @defining(List(pensionSchemesTypes, periods)){ args =>
             @if(error.message == "error.required"){
-                <li><a href="#@error.key" style="color:#b10e1e;font-weight: bold;">@Messages("year2015.error.required", args:_*)</a></li>
+                <li><a href="#@error.key" data-focuses="@error.key" style="color:#b10e1e;font-weight: bold;">@Messages("year2015.error.required", args:_*)</a></li>
             } else {
-                <li><a href="#@error.key" style="color:#b10e1e;font-weight: bold;">@Messages(error.message)</a></li>
+                <li><a href="#@error.key" data-focuses="@error.key" style="color:#b10e1e;font-weight: bold;">@Messages(error.message)</a></li>
             }
         } @* End of periods *@
         } @* End of pensionSchemesTypes *@
@@ -70,7 +70,7 @@ args = 'class -> "form",
       @if(maybeError.isDefined) {
         @defining(maybeError.get) { error =>
             @defining(if(error.key.contains("p1")){ "1" } else { "2" }){ periods =>
-            @defining(if(error.key.contains("definedBenefit")){ "benefit"} else {"contribution"}){ pensionSchemesTypes =>
+            @defining(if(error.key.contains("definedBenefit")) Messages("paac.benefit") else Messages("paac.contribution")){ pensionSchemesTypes =>
             @defining(List(pensionSchemesTypes, periods)){ args =>
                 @if(error.message == "error.required"){
                     <span style="color:#b10e1e;font-weight: bold;">@Messages("year2015.error.required", args:_*)</span>
