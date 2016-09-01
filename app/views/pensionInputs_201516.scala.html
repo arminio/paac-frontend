@@ -17,8 +17,6 @@ articleClasses=Some("full-width"),
 backLink = Some((controllers.routes.PensionInputs201516Controller.onBack.url,Messages("paac.link.text.back"))),
 analyticsAdditionalJs = Some(analyticsAdditionalJs)
 ) {
-<p class="lede text">@Messages("paac.201516.pension.inputs.description")</p>
-<p class="text">@Messages("paac.201516.pension.inputs.description2")</p>
 
 @if(paacForm.hasErrors) {
 <div class="error-summary" role="group" aria-labelledby="error-summary-heading" tabindex="-1" style="border: 5px solid #b10e1e;padding: 20px;padding-top: 0px;margin-bottom: 30px;">
@@ -37,9 +35,13 @@ analyticsAdditionalJs = Some(analyticsAdditionalJs)
         @defining(if(error.key.contains("definedBenefit")) Messages("paac.benefit") else Messages("paac.contribution")){ pensionSchemesTypes =>
         @defining(List(pensionSchemesTypes, periods)){ args =>
             @if(error.message == "error.required"){
-                <li><a href="#@error.key" data-focuses="@error.key" style="color:#b10e1e;font-weight: bold;">@Messages("year2015.error.required", args:_*)</a></li>
+                <li><a href="#@error.key" data-focuses="@error.key" style="color:#b10e1e;font-weight: bold;">
+                    @Messages("year2015.error.required", args:_*)
+                </a></li>
             } else {
-                <li><a href="#@error.key" data-focuses="@error.key" style="color:#b10e1e;font-weight: bold;">@Messages(error.message)</a></li>
+                <li><a href="#@error.key" data-focuses="@error.key" style="color:#b10e1e;font-weight: bold;">
+                    @Messages(error.message)
+                </a></li>
             }
         } @* End of periods *@
         } @* End of pensionSchemesTypes *@
@@ -48,6 +50,9 @@ analyticsAdditionalJs = Some(analyticsAdditionalJs)
     </ul>
 </div>
 }
+
+<p class="lede text">@Messages("paac.201516.pension.inputs.description")</p>
+<p class="text">@Messages("paac.201516.pension.inputs.description2")</p>
 
 @form(
 action = controllers.routes.PensionInputs201516Controller.onSubmit,
