@@ -26,6 +26,7 @@ trait AppConfig {
   val assetsPrefix: String
   val analyticsToken: Option[String]
   val analyticsHost: String
+  val contactFrontendPartialBaseUrl: String
   val reportAProblemPartialUrl: String
   val reportAProblemNonJSUrl: String
   val assetsUrl: String
@@ -40,14 +41,16 @@ object ApplicationConfig extends AppConfig with ServicesConfig {
 
   override lazy val assetsUrl = stringConfig(s"assets.url") + stringConfig(s"assets.version")
 
-  private val contactHost = configuration.getString(s"contact-frontend.host").getOrElse("")
+  private val contactHost = configuration.getString("microservice.contact-frontend.host").getOrElse("")
+  private val contactFrontendService = baseUrl("contact-frontend")
   private val contactFormServiceIdentifier = "PAAC"
+  override lazy val contactFrontendPartialBaseUrl = s"$contactFrontendService"
+  override lazy val reportAProblemPartialUrl = s"$contactHost/contact/problem_reports_ajax?service=$contactFormServiceIdentifier"
+  override lazy val reportAProblemNonJSUrl = s"$contactHost/contact/problem_reports_nonjs?service=$contactFormServiceIdentifier"
 
   override lazy val assetsPrefix = loadConfig(s"assets.url") + loadConfig(s"assets.version")
   override lazy val analyticsToken: Option[String] = configuration.getString("google-analytics.token")
   override lazy val analyticsHost = loadConfig(s"google-analytics.host")
-  override lazy val reportAProblemPartialUrl = s"$contactHost/contact/problem_reports_ajax?service=$contactFormServiceIdentifier"
-  override lazy val reportAProblemNonJSUrl = s"$contactHost/contact/problem_reports_nonjs?service=$contactFormServiceIdentifier"
 
   // Whitelist Configuration
   private def whitelistConfig(key: String):Seq[String] = Some(new String(Base64.getDecoder().decode(Play.configuration.getString(key).getOrElse("")), "UTF-8"))
