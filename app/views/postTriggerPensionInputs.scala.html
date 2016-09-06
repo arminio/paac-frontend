@@ -1,4 +1,5 @@
-@(paacForm : Form[_ <: form.TriggerDCFields], teDate: PensionPeriod, triggeredTaxYear:Int, isEdit: Boolean)(implicit request:Request[_])
+@(paacForm : Form[_ <: form.TriggerDCFields], teDate: PensionPeriod,
+           triggeredTaxYear:Int, isEdit: Boolean)(implicit request:Request[_], context: config.PaacContext)
 
 @import uk.gov.hmrc.play.views.html.helpers._
 @import models._

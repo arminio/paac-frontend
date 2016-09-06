@@ -3,7 +3,7 @@
   mainClass : String = "main",
   articleClasses: Option[String] = None,
   analyticsAdditionalJs: Option[Html] = None,
-  backLink: Option[(String,String)] = None)(mainContent: Html)(implicit request:Request[_])
+  backLink: Option[(String,String)] = None)(mainContent: Html)(implicit request:Request[_], context: config.PaacContext)
 
 @import uk.gov.hmrc.play.views.html.layouts
 
