@@ -17,9 +17,7 @@
 package config
 
 import java.util.Base64
-
-import play.api.Play
-import play.api.Play.{configuration, current}
+import play.api.Play._
 import uk.gov.hmrc.play.config.ServicesConfig
 
 trait AppConfig {
@@ -34,7 +32,7 @@ trait AppConfig {
 
 object ApplicationConfig extends AppConfig with ServicesConfig {
 
-  private def stringConfig(key: String) = Play.configuration.getString(key).getOrElse(throw new RuntimeException(s"Missing key: $key"))
+  private def stringConfig(key: String) = configuration.getString(key).getOrElse(throw new RuntimeException(s"Missing key: $key"))
 
   private def loadConfig(key: String) = configuration.getString(key).getOrElse(throw new Exception(s"Missing configuration key: $key"))
   private def loadInteger(key : String) = configuration.getInt(key).getOrElse(throw new Exception(s"Missing key: $key"))
@@ -53,7 +51,7 @@ object ApplicationConfig extends AppConfig with ServicesConfig {
   override lazy val analyticsHost = loadConfig(s"google-analytics.host")
 
   // Whitelist Configuration
-  private def whitelistConfig(key: String):Seq[String] = Some(new String(Base64.getDecoder().decode(Play.configuration.getString(key).getOrElse("")), "UTF-8"))
+  private def whitelistConfig(key: String):Seq[String] = Some(new String(Base64.getDecoder().decode(configuration.getString(key).getOrElse("")), "UTF-8"))
                                                                             .map(_.split(",")).getOrElse(Array.empty).toSeq
 
   lazy val whitelist = whitelistConfig("whitelist")

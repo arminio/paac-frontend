@@ -30,23 +30,23 @@ private object AppDependencies {
   import play.core.PlayVersion
 
   private val playHealthVersion = "1.1.0"
-  private val playJsonLoggerVersion = "2.1.1"
   private val frontendBootstrapVersion = "6.7.0"
   private val govukTemplateVersion = "4.0.0"
-  private val playUiVersion = "4.9.0"
-  private val playPartialsVersion = "4.5.0"
+  private val playUiVersion = "4.16.0"
   private val playAuthorisedFrontendVersion = "5.5.0"
-  private val playConfigVersion = "2.0.1"
+  private val playConfigVersion = "2.1.0"
+  private val metricsPlayVersion = "0.2.1"
+  private val metricsGraphiteVersion = "3.0.2"
+  private val playJsonLoggerVersion = "2.1.1"
+  private val playPartialsVersion = "4.5.0"
   private val httpCachingClientVersion ="5.6.0"
-  private val scalaTestVersion = "2.2.2"
+  private val scalaTestVersion = "2.2.6"
   private val scalaTestPlusVersion = "1.2.0"
-  private val jSoupVersion = "1.7.3"
+  private val jSoupVersion = "1.9.2"
   private val mockitoVersion = "1.10.19"
-  private val hmrcTestVersion = "1.4.0"
-  private val pegDownVersion = "1.4.2"
+  private val hmrcTestVersion = "1.8.0"
+  private val pegDownVersion = "1.6.0"
   private val playWhitelistFilterVersion = "1.1.0"
-  private val playMetrics = "2.3.0_0.2.1"
-  private val metricsGraphite = "3.0.2"
 
   val compile = Seq(
     ws,
@@ -61,8 +61,8 @@ private object AppDependencies {
     "uk.gov.hmrc" %% "http-caching-client" % httpCachingClientVersion,
     "uk.gov.hmrc" %% "secure" % "7.0.0",
     "uk.gov.hmrc" %% "play-whitelist-filter" % playWhitelistFilterVersion,
-    "com.kenshoo" %% "metrics-play" % playMetrics,
-    "com.codahale.metrics" % "metrics-graphite" % metricsGraphite
+    "com.kenshoo" %% "metrics-play" % metricsPlayVersion,
+    "com.codahale.metrics" % "metrics-graphite" % metricsGraphiteVersion
   )
 
   trait TestDependencies {
