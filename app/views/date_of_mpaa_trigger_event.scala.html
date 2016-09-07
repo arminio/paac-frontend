@@ -1,4 +1,4 @@
-@(paacForm : Form[form.DateOfMPAATriggerEventPageModel],model : form.DateOfMPAATriggerEventPageModel)(implicit request:Request[_], context: config.PaacContext)
+@(paacForm : Form[form.DateOfMPAATriggerEventPageModel], isEdit: Boolean)(implicit request:Request[_], context: config.PaacContext)
 
 @import play.api.i18n._
 @import uk.gov.hmrc.play.views.html.helpers._
@@ -41,13 +41,11 @@ backLink = Some((controllers.routes.DateOfMPAATriggerEventController.onBack.url,
     @form(
         action = controllers.routes.DateOfMPAATriggerEventController.onSubmit,
         args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
-
         <p class="lede text">@Messages("paac.mpaa.ta.date.page.description")</p>
-
-        <input type="hidden" name="@(service.KeystoreService.P1_TRIGGER_DC_KEY)" value="@(model.p1dctrigger)"/>
-        <input type="hidden" name="@(service.KeystoreService.P2_TRIGGER_DC_KEY)" value="@(model.p2dctrigger)"/>
-        <input type="hidden" name="originalDate" value="@(model.originalDate)"/>
-        <input type="hidden" name="@(service.KeystoreService.IS_EDIT_KEY)" value="@(model.isEdit)"/>
+        <input type="hidden" name="@(service.KeystoreService.P1_TRIGGER_DC_KEY)" value="@(paacForm(service.KeystoreService.P1_TRIGGER_DC_KEY).value.getOrElse(0L))"/>
+        <input type="hidden" name="@(service.KeystoreService.P2_TRIGGER_DC_KEY)" value="@(paacForm(service.KeystoreService.P2_TRIGGER_DC_KEY).value.getOrElse(0L))"/>
+        <input type="hidden" name="@(service.KeystoreService.TRIGGER_DC_KEY)" value="@(paacForm(service.KeystoreService.TRIGGER_DC_KEY).value.getOrElse(0L))"/>
+        <input type="hidden" name="originalDate" value="@(paacForm("originalDate").value.getOrElse(""))"/>
 
         @* 'dateOfBirth' class name is misleading. However, it's coming from Assets_Frontend App. *@
         @dateFieldsFree(
@@ -62,6 +60,6 @@ backLink = Some((controllers.routes.DateOfMPAATriggerEventController.onBack.url,
             '_labelHighlight -> true
         )
 
-        <button id="submit" type="submit" class="button" value="Continue">@if(model.isEdit){@Messages("paac.calculator.button.save")}else{@Messages("paac.calculator.button.continue")}</button>
+        <button id="submit" type="submit" class="button" value="Continue">@if(isEdit){@Messages("paac.calculator.button.save")}else{@Messages("paac.calculator.button.continue")}</button>
     } @* End of Form *@
 } @* End of paacMain *@

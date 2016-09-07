@@ -99,6 +99,7 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
                                     ("dateOfMPAATriggerEvent.year" -> "2015"),
                                     (P1_TRIGGER_DC_KEY -> "0"),
                                     (P2_TRIGGER_DC_KEY -> "0"),
+                                    (TRIGGER_DC_KEY -> "0"),
                                     (TRIGGER_DATE_KEY -> "2015-7-4"),
                                     ("originalDate" -> "2013-7-1"))
 
@@ -125,6 +126,7 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
                                     ("dateOfMPAATriggerEvent.year" -> "2015"),
                                     (P1_TRIGGER_DC_KEY -> "0"),
                                     (P2_TRIGGER_DC_KEY -> "0"),
+                                    (TRIGGER_DC_KEY -> "0"),
                                     (TRIGGER_DATE_KEY -> "2015-7-4"),
                                     ("originalDate" -> "2013-7-1"))
 
@@ -149,6 +151,7 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
                                     ("dateOfMPAATriggerEvent.year" -> "2015"),
                                     (P1_TRIGGER_DC_KEY -> "0"),
                                     (P2_TRIGGER_DC_KEY -> "0"),
+                                    (TRIGGER_DC_KEY -> "0"),
                                     (TRIGGER_DATE_KEY -> "2015-4-5"),
                                     (IS_EDIT_KEY -> "false"),
                                     ("originalDate" -> "2013-7-1"))
@@ -175,6 +178,7 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
                                     ("dateOfMPAATriggerEvent.year" -> ""),
                                     (P1_TRIGGER_DC_KEY -> "0"),
                                     (P2_TRIGGER_DC_KEY -> "0"),
+                                    (TRIGGER_DC_KEY -> "0"),
                                     (TRIGGER_DATE_KEY -> ""),
                                     (IS_EDIT_KEY -> "false"),
                                     ("originalDate" -> "2013-7-1"))
@@ -201,6 +205,7 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
                                     ("dateOfMPAATriggerEvent.year" -> "-1"),
                                     (P1_TRIGGER_DC_KEY -> "0"),
                                     (P2_TRIGGER_DC_KEY -> "0"),
+                                    (TRIGGER_DC_KEY -> "0"),
                                     (TRIGGER_DATE_KEY -> ""),
                                     (IS_EDIT_KEY -> "false"),
                                     ("originalDate" -> "2013-7-1"))
@@ -227,6 +232,7 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
                                     ("dateOfMPAATriggerEvent.year" -> "2015"),
                                     (P1_TRIGGER_DC_KEY -> "0"),
                                     (P2_TRIGGER_DC_KEY -> "0"),
+                                    (TRIGGER_DC_KEY -> "0"),
                                     (TRIGGER_DATE_KEY -> "2013-7-1"),
                                     ("originalDate" -> "2013-7-1"))
 
@@ -251,6 +257,7 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
                                     ("dateOfMPAATriggerEvent.year" -> "2013"),
                                     (P1_TRIGGER_DC_KEY -> "0"),
                                     (P2_TRIGGER_DC_KEY -> "0"),
+                                    (TRIGGER_DC_KEY -> "0"),
                                     (TRIGGER_DATE_KEY -> "2013-7-1"),
                                     (IS_EDIT_KEY -> "false"),
                                     ("originalDate" -> "2013-7-1"))
@@ -283,6 +290,7 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
                                                                 ("dateOfMPAATriggerEvent.year" -> "2016"),
                                                                 (P1_TRIGGER_DC_KEY -> "0"),
                                                                 (P2_TRIGGER_DC_KEY -> "0"),
+                                                                (TRIGGER_DC_KEY -> "0"),
                                                                 (TRIGGER_DATE_KEY -> ""),
                                                                 (IS_EDIT_KEY -> "false"),
                                                                 ("originalDate" -> "2015-7-1"))
@@ -311,6 +319,7 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
                                                                 ("dateOfMPAATriggerEvent.year" -> "2016"),
                                                                 (P1_TRIGGER_DC_KEY -> "0"),
                                                                 (P2_TRIGGER_DC_KEY -> "0"),
+                                                                (TRIGGER_DC_KEY -> "0"),
                                                                 (TRIGGER_DATE_KEY -> ""),
                                                                 (IS_EDIT_KEY -> "false"),
                                                                 ("originalDate" -> "2015-7-1"))
@@ -339,6 +348,7 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
                                                                 ("dateOfMPAATriggerEvent.year" -> "2017"),
                                                                 (P1_TRIGGER_DC_KEY -> "0"),
                                                                 (P2_TRIGGER_DC_KEY -> "0"),
+                                                                (TRIGGER_DC_KEY -> "0"),
                                                                 (TRIGGER_DATE_KEY -> ""),
                                                                 (IS_EDIT_KEY -> "false"),
                                                                 ("originalDate" -> "2015-7-1"))
@@ -367,6 +377,7 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
                                                                 ("dateOfMPAATriggerEvent.year" -> "2016"),
                                                                 (P1_TRIGGER_DC_KEY -> "0"),
                                                                 (P2_TRIGGER_DC_KEY -> "0"),
+                                                                (TRIGGER_DC_KEY -> "0"),
                                                                 (TRIGGER_DATE_KEY -> ""),
                                                                 (IS_EDIT_KEY -> "false"),
                                                                 ("originalDate" -> "2015-7-1"))
@@ -396,6 +407,7 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
                                                                 ("dateOfMPAATriggerEvent.year" -> "2015"),
                                                                 (P1_TRIGGER_DC_KEY -> "0"),
                                                                 (P2_TRIGGER_DC_KEY -> "0"),
+                                                                (TRIGGER_DC_KEY -> "0"),
                                                                 (TRIGGER_DATE_KEY -> ""),
                                                                 (IS_EDIT_KEY -> "false"),
                                                                 ("originalDate" -> "2015-7-1"))
@@ -424,6 +436,7 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
                                                                 ("dateOfMPAATriggerEvent.year" -> "2015"),
                                                                 (P1_TRIGGER_DC_KEY -> "0"),
                                                                 (P2_TRIGGER_DC_KEY -> "0"),
+                                                                (TRIGGER_DC_KEY -> "0"),
                                                                 (TRIGGER_DATE_KEY -> ""),
                                                                 (IS_EDIT_KEY -> "false"),
                                                                 ("originalDate" -> "2015-7-1"))
@@ -452,6 +465,7 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
                                                                 ("dateOfMPAATriggerEvent.year" -> "2016"),
                                                                 (P1_TRIGGER_DC_KEY -> "0"),
                                                                 (P2_TRIGGER_DC_KEY -> "0"),
+                                                                (TRIGGER_DC_KEY -> "0"),
                                                                 (TRIGGER_DATE_KEY -> ""),
                                                                 (IS_EDIT_KEY -> "false"),
                                                                 ("originalDate" -> "2015-7-1"))
@@ -480,6 +494,7 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
                                                                 ("dateOfMPAATriggerEvent.year" -> "2016"),
                                                                 (P1_TRIGGER_DC_KEY -> "0"),
                                                                 (P2_TRIGGER_DC_KEY -> "0"),
+                                                                (TRIGGER_DC_KEY -> "0"),
                                                                 (TRIGGER_DATE_KEY -> ""),
                                                                 (IS_EDIT_KEY -> "false"),
                                                                 ("originalDate" -> "2015-7-1"))
@@ -510,6 +525,7 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
                                                                 ("dateOfMPAATriggerEvent.year" -> "2016"),
                                                                 (P1_TRIGGER_DC_KEY -> "0"),
                                                                 (P2_TRIGGER_DC_KEY -> "0"),
+                                                                (TRIGGER_DC_KEY -> "0"),
                                                                 (TRIGGER_DATE_KEY -> ""),
                                                                 (IS_EDIT_KEY -> "false"),
                                                                 ("originalDate" -> "2015-5-4"))
@@ -538,6 +554,7 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
                                                                 ("dateOfMPAATriggerEvent.year" -> "2015"),
                                                                 (P1_TRIGGER_DC_KEY -> "0"),
                                                                 (P2_TRIGGER_DC_KEY -> "0"),
+                                                                (TRIGGER_DC_KEY -> "0"),
                                                                 (TRIGGER_DATE_KEY -> ""),
                                                                 (IS_EDIT_KEY -> "false"),
                                                                 ("originalDate" -> "2015-7-1"))
@@ -633,11 +650,11 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
           def originalDate: String = "2015-04-12"
           def p1dctrigger: String = "100"
           def p2dctrigger: String = "0"
-          def isEdit: Boolean = true
+          def dctrigger: String = "0"
         }
 
         // test
-        val result = model.toSessionData()
+        val result = model.toSessionData(true)
 
         // check
         result(0) shouldBe (("100","triggerDefinedContribution_2015_p2"))
@@ -651,11 +668,11 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
           def originalDate: String = "2015-07-12"
           def p1dctrigger: String = "0"
           def p2dctrigger: String = "100"
-          def isEdit: Boolean = true
+          def dctrigger: String = "100"
         }
 
         // test
-        val result = model.toSessionData()
+        val result = model.toSessionData(true)
 
         // check
         result(0) shouldBe (("100","triggerDefinedContribution_2015_p1"))
@@ -669,16 +686,16 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
           def originalDate: String = "2015-04-12"
           def p1dctrigger: String = "100"
           def p2dctrigger: String = "0"
-          def isEdit: Boolean = true
+          def dctrigger: String = "0"
         }
 
         // test
-        val result = model.toSessionData()
+        val result = model.toSessionData(true)
 
         // check
         result(0) shouldBe (("0","triggerDefinedContribution_2015_p1"))
         result(1) shouldBe (("0","triggerDefinedContribution_2015_p2"))
-        result(2) shouldBe (("0","triggerDefinedContribution"))
+        result(2) shouldBe (("100","triggerDefinedContribution"))
         result(3) shouldBe (("2016-07-11","dateOfMPAATriggerEvent"))
       }
       "in edit mode return trigger date when new and old date is in 2016" in {
@@ -688,17 +705,14 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
           def originalDate: String = "2016-04-12"
           def p1dctrigger: String = "0"
           def p2dctrigger: String = "0"
-          def isEdit: Boolean = true
+          def dctrigger: String = "200"
         }
 
         // test
-        val result = model.toSessionData()
+        val result = model.toSessionData(true)
 
         // check
-        result(0) shouldBe (("0","triggerDefinedContribution_2015_p1"))
-        result(1) shouldBe (("0","triggerDefinedContribution_2015_p2"))
-        result(2) shouldBe (("0","triggerDefinedContribution"))
-        result(3) shouldBe (("2016-07-11","dateOfMPAATriggerEvent"))
+        result(0) shouldBe (("2016-07-11","dateOfMPAATriggerEvent"))
       }
       "not editing return trigger date" in {
         // set up
@@ -707,11 +721,11 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
           def originalDate: String = "2016-04-12"
           def p1dctrigger: String = "0"
           def p2dctrigger: String = "0"
-          def isEdit: Boolean = false
+          def dctrigger: String = "0"
         }
 
         // test
-        val result = model.toSessionData()
+        val result = model.toSessionData(false)
 
         // check
         result(0) shouldBe (("2016-07-11","dateOfMPAATriggerEvent"))
@@ -723,11 +737,11 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
           def originalDate: String = "2016-04-12"
           def p1dctrigger: String = "0"
           def p2dctrigger: String = "0"
-          def isEdit: Boolean = false
+          def dctrigger: String = "0"
         }
 
         // test
-        val result = model.toSessionData()
+        val result = model.toSessionData(false)
 
         // check
         result.size shouldBe 0
