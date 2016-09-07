@@ -27,7 +27,7 @@ import service.KeystoreService._
 trait Pre2015Fields {
   def data(year: Int): Map[String,String] = toMap(this).map{
     (entry)=>
-    (s"${entry._1}_${year}", (entry._2.toString.toDouble*100).floor.toInt.toString)
+    (s"${entry._1}_${year}", (entry._2.toString.toDouble*100).floor.toLong.toString)
   }
 }
 
@@ -37,8 +37,8 @@ trait Pre2015FormFactory extends Settings {
   def apply(year: Int): Form[_ <: Pre2015Fields]
 
   protected def isPoundsAndPence(): Boolean = settings.POUNDS_AND_PENCE
-  protected def poundsDB(year: Int): (String, Mapping[Int])= (DB_PREFIX+year) -> poundsField(true)
-  protected def penceDB(year: Int): (String, Mapping[BigDecimal])= (DB_PREFIX+year) -> poundsAndPenceField(true)
+  protected def poundsDB(year: Long): (String, Mapping[Long])= (DB_PREFIX+year) -> poundsLongField(true)
+  protected def penceDB(year: Long): (String, Mapping[BigDecimal])= (DB_PREFIX+year) -> poundsAndPenceField(true)
 }
 
 trait Pre2015Form {

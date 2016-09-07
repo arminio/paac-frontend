@@ -1,4 +1,4 @@
-@(paacForm : Form[form.SelectSchemeModel],year: Int)(implicit request:Request[_])
+@(paacForm : Form[form.SelectSchemeModel],year: Int)(implicit request:Request[_], context: config.PaacContext)
 
 @import uk.gov.hmrc.play.views.html.helpers._
 
@@ -26,7 +26,7 @@ backLink = Some((controllers.routes.SelectSchemeController.onBack(year).url,Mess
         <ul class="error-summary-list">
           @for(error <- paacForm.errors) {
             @defining(error.args) { args =>
-              <li><a href="#" style="color:#b10e1e;font-weight: bold;">@Messages(error.message, args:_*)</a></li>
+              <li><a href="#selectScheme" data-focuses="selectScheme" style="color:#b10e1e;font-weight: bold;">@Messages(error.message, args:_*)</a></li>
             }
           }
         </ul>
@@ -39,7 +39,7 @@ backLink = Some((controllers.routes.SelectSchemeController.onBack(year).url,Mess
         args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
     <input type="hidden" name="year" value='@(year)'/>
     <input type="hidden" name="firstDCYear" value='@(paacForm.data("firstDCYear"))'/>
-    <div class="form-field-group @if(paacForm.hasErrors) {form-field--error}">
+    <div id="selectScheme" class="form-field-group @if(paacForm.hasErrors) {form-field--error}">
         @if(paacForm.hasErrors) {
         <ul class="error-summary-list">
             @for(error <- paacForm.errors) {

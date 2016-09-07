@@ -31,7 +31,7 @@ trait Year2015DefinedBenefitForm extends Year2015FormFactory {
       Form[Year2015DefinedBenefitModel](mapping(poundsP1DB, poundsP2DB)(toModel)(Year2015DefinedBenefitModel.unapply))
   }
 
-  protected val toModel: (Int, Int) => Year2015DefinedBenefitModel = (i: Int, j: Int) =>
+  protected val toModel: (Long, Long) => Year2015DefinedBenefitModel = (i: Long, j: Long) =>
     Year2015DefinedBenefitModel(BigDecimal(i),BigDecimal(j))
 }
 

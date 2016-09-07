@@ -2,7 +2,7 @@
   isDefinedBenefit: Boolean= false,
   isDefinedContribution: Boolean= false,
   isEdit: Boolean,
-  year: Int)(implicit request:Request[_])
+  year: Int)(implicit request:Request[_], context: config.PaacContext)
 
 @import uk.gov.hmrc.play.views.html.helpers._
 @import service.KeystoreService._
@@ -17,14 +17,11 @@
 
 @common.paacMain(
 pageTitle = Messages("paac.201617.pension.inputs.pagetitle"),
-heading = Messages("paac.201617.pension.inputs.heading", (if(isDefinedBenefit && isDefinedContribution) "pension" else if(isDefinedBenefit) "defined benefit" else if (isDefinedContribution) "defined contribution"  else "")),
+heading = Messages("paac.201617.pension.inputs.heading", year.toString, (year+1).toString),
 articleClasses=Some("full-width"),
 backLink = Some((controllers.routes.PensionInputs201617Controller.onBack(year).url,Messages("paac.link.text.back"))),
 analyticsAdditionalJs = Some(analyticsAdditionalJs)
 ) {
-
-<p class="lede text">@Messages("paac.201617.pension.inputs.description")</p>
-<p class="lede text">@Messages("paac.201617.pension.inputs.description2")</p>
 
     @if(paacForm.hasErrors) {
     <div class="error-summary" role="group" aria-labelledby="error-summary-heading" tabindex="-1" style="border: 5px solid #b10e1e;padding: 20px;padding-top: 0px;margin-bottom: 30px;">
@@ -44,11 +41,15 @@ analyticsAdditionalJs = Some(analyticsAdditionalJs)
         <ul class="error-summary-list">
           @for(error <- paacForm.errors) {
           @defining(error.args) { args =>
-            @defining(if(error.key.contains("definedBenefit")) "benefit" else "contribution"){ args =>
+            @defining(if(error.key.contains("definedBenefit")) Messages("paac.benefit") else Messages("paac.contribution")){ args =>
                 @if(error.message == "error.required"){
-                   <li><a href="#@error.key" style="color:#b10e1e;font-weight: bold;">@Messages("post2015.error.required", args)</a></li>
+                   <li><a href="#@error.key" data-focuses="@error.key" style="color:#b10e1e;font-weight: bold;">
+                       @Messages("post2015.error.required", args)
+                   </a></li>
                 } else {
-                   <li><a href="#@error.key" style="color:#b10e1e;font-weight: bold;">@Messages(error.message)</a></li>
+                   <li><a href="#@error.key" data-focuses="@error.key" style="color:#b10e1e;font-weight: bold;">
+                       @Messages(error.message)
+                   </a></li>
                 }
             }
           }
@@ -57,19 +58,22 @@ analyticsAdditionalJs = Some(analyticsAdditionalJs)
     </div>
     }
 
+<p class="lede text">@Messages("paac.201617.pension.inputs.description")</p>
+<p class="lede text">@Messages("paac.201617.pension.inputs.description2")</p>
+
 @form(
 action = controllers.routes.PensionInputs201617Controller.onSubmit,
 args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
 
 <fieldset id="input_2016" style="margin: 0" class="form-field-group">
-  @for(id <- if (isDefinedBenefit && isDefinedContribution) List(DB_PREFIX+year, DC_PREFIX+year) else if (isDefinedBenefit) List(DB_PREFIX+year) else List(DC_PREFIX+year)) {
+  @for(id <- if (isDefinedBenefit && isDefinedContribution) List(DC_PREFIX+year, DB_PREFIX+year) else if (isDefinedBenefit) List(DB_PREFIX+year) else List(DC_PREFIX+year)) {
     <label class="label--full-length numeric @if(paacForm.errors.find(_.key == id)) {form-field--error}" for="@id" style="width:150%;display: inline-block;">
         <span>@if(id.contains("Benefit")){@Messages("paac.common.pension.inputs.db")}else{@Messages("paac.common.pension.inputs.dc")}</span>
         <span class="form-hint">@Messages("paac.common.inputfield.example.message")</span>
         @defining(paacForm.errors.find(_.key.contains(id))){ maybeError =>
           @if(maybeError.isDefined) {
             @defining(maybeError.get) { error =>
-              @defining(if(error.key.contains("definedBenefit")) "benefit" else "contribution"){ args =>
+              @defining(if(error.key.contains("definedBenefit")) Messages("paac.benefit") else Messages("paac.contribution")){ args =>
                 @if(error.message == "error.required"){
                     <span style="color:#b10e1e;font-weight: bold; ">@Messages("post2015.error.required", args)</span>
                 } else {
@@ -83,8 +87,6 @@ args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
     </label>
   } @* End of for id *@
 </fieldset>
-
-<br/>
 
 <button id="submit" type="submit" class="button" value="Continue">@if(isEdit){@Messages("paac.calculator.button.save")}else{@Messages("paac.calculator.button.continue")}</button>
 } @* End of Form *@

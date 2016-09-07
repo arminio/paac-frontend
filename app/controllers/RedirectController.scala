@@ -18,15 +18,17 @@ package controllers
 
 import scala.concurrent.Future
 import play.api.mvc._
-
 import service._
 import service.KeystoreService._
 import play.api.Logger
 import controllers.action._
-import config.Settings
+import config.{PaacContextImpl, Settings}
 
 trait RedirectController extends BaseFrontendController with Settings {
   settings: Settings =>
+
+  implicit val context: config.PaacContext = PaacContextImpl
+
   implicit class RichPageLocation(location:PageLocation) {
     def go(e:Event)(implicit request: Request[Any]): Future[Result] = {
       implicit val newSessionData = request.session.data

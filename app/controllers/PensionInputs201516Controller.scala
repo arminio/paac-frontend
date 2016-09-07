@@ -32,17 +32,19 @@ object PensionInputs201516Controller extends PensionInputs201516Controller with 
 trait PensionInputs201516Controller extends RedirectController {
 
   val onPageLoad = withReadSession { implicit request =>
+    val isEdit = request.data bool IS_EDIT_KEY
     val isDB = request.data bool s"${DB_FLAG_PREFIX}2015"
     val isDC = request.data bool s"${DC_FLAG_PREFIX}2015"
-    showPage(Year2015Form.form(isDB, isDC).bind(convert(request.data)).discardingErrors, isDB, isDC, request.data bool IS_EDIT_KEY)
+    showPage(Year2015Form.form(isDB, isDC).bind(convert(request.data)).discardingErrors, isDB, isDC, isEdit)
   }
 
   val onSubmit = withWriteSession { implicit request =>
+    val isEdit = request.data bool IS_EDIT_KEY
     val isDB = request.data bool s"${DB_FLAG_PREFIX}2015"
     val isDC = request.data bool s"${DC_FLAG_PREFIX}2015"
     val form = Year2015Form.form(isDB, isDC).bindFromRequest()
     form.fold(
-      formWithErrors => showPage(formWithErrors, isDB, isDC, request.data bool "isEdit"),
+      formWithErrors => showPage(formWithErrors, isDB, isDC, isEdit),
       input => PensionInput() go Forward.using(request.data ++ input.data)
     )
   }

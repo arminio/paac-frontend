@@ -1,4 +1,5 @@
-@(paacForm : Form[_ <: form.TriggerDCFields], teDate: PensionPeriod, triggeredTaxYear:Int, isEdit: Boolean)(implicit request:Request[_])
+@(paacForm : Form[_ <: form.TriggerDCFields], teDate: PensionPeriod,
+           triggeredTaxYear:Int, isEdit: Boolean)(implicit request:Request[_], context: config.PaacContext)
 
 @import uk.gov.hmrc.play.views.html.helpers._
 @import models._
@@ -16,17 +17,6 @@ heading = if(teDate.isPeriod1())
 backLink = Some((controllers.routes.PostTriggerPensionInputsController.onBack.url,Messages("paac.link.text.back")))
 ) {
 
-    <p class="lede text">
-        @if(teDate.isPeriod1()) {
-          @Messages("paac.post.trigger.value.description.p1", Messages("paac.review-amounts.value."+ teDate.month, teDate.day, teDate.year.toString))
-        } else {
-          @if(teDate.isPeriod2()) {
-            @Messages("paac.post.trigger.value.description.p2", Messages("paac.review-amounts.value."+ teDate.month, teDate.day, teDate.year.toString))
-          } else {
-            @Messages("paac.post.trigger.value.description.other", Messages("paac.review-amounts.value."+ teDate.month, teDate.day, triggeredTaxYear.toString), (triggeredTaxYear+1).toString)
-          }
-        }
-    </p>
     @if(paacForm.hasErrors) {
       <div class="error-summary" role="group" aria-labelledby="error-summary-heading" tabindex="-1" style="border: 5px solid #b10e1e;padding: 20px;padding-top: 0px;margin-bottom: 30px;">
 
@@ -46,15 +36,31 @@ backLink = Some((controllers.routes.PostTriggerPensionInputsController.onBack.ur
           @for(error <- paacForm.errors) {
             @defining(if(error.key.contains("p1")){ Messages("paac.error.p1label") }else{if(error.key.contains("p2")){ Messages("paac.error.p2label") } else{ Messages("paac.error.taxyearlabel",triggeredTaxYear.toString,(triggeredTaxYear+1).toString) } }) { args =>
                 @if(error.message == "error.required"){
-                    <li><a href="#triggerAmountFieldset" style="color:#b10e1e;font-weight: bold;">@Html(Messages("te.amount.error.required", args))</a></li>
+                    <li><a href="#triggerAmountFieldset" data-focuses="triggerAmountFieldset" style="color:#b10e1e;font-weight: bold;">
+                        @Html(Messages("te.amount.error.required", args))
+                    </a></li>
                 } else {
-                    <li><a href="#triggerAmountFieldset" style="color:#b10e1e;font-weight: bold;">@Html(Messages(error.message))</a></li>
+                    <li><a href="#triggerAmountFieldset" data-focuses="triggerAmountFieldset" style="color:#b10e1e;font-weight: bold;">
+                        @Html(Messages(error.message))
+                    </a></li>
                 }
             }
           }
         </ul>
       </div>
     }
+
+    <p class="lede text">
+        @if(teDate.isPeriod1()) {
+        @Messages("paac.post.trigger.value.description.p1", Messages("paac.review-amounts.value."+ teDate.month, teDate.day, teDate.year.toString))
+        } else {
+        @if(teDate.isPeriod2()) {
+        @Messages("paac.post.trigger.value.description.p2", Messages("paac.review-amounts.value."+ teDate.month, teDate.day, teDate.year.toString))
+        } else {
+        @Messages("paac.post.trigger.value.description.other", Messages("paac.review-amounts.value."+ teDate.month, teDate.day, triggeredTaxYear.toString), (triggeredTaxYear+1).toString)
+        }
+        }
+    </p>
 
     @form(
         action = controllers.routes.PostTriggerPensionInputsController.onSubmit,
@@ -77,9 +83,9 @@ backLink = Some((controllers.routes.PostTriggerPensionInputsController.onBack.ur
                     }
                     <span class="form-hint">@Messages("paac.common.inputfield.example.message")</span>
                       @if(paacForm.data.get("triggerDefinedContribution_2015_p1") != None) {
-                            £&nbsp;<input type="text" name="@id" id="@id" class="input--no-spinner" value='@paacForm.data.get("triggerDefinedContribution_2015_p1")' size="7" style="width:9em;@if(paacForm.errors.find(_.key == id)) {border: 4px solid #b10e1e;}"/>
+                            £&nbsp;<input type="text" name="@id" id="@id" class="input--no-spinner" value='@paacForm.data.get("triggerDefinedContribution_2015_p1")' maxlength="10" size="7" style="width:9em;@if(paacForm.errors.find(_.key == id)) {border: 4px solid #b10e1e;}"/>
                       } else {
-                            £&nbsp;<input type="text" name="@id" id="@id" class="input--no-spinner" value='' size="7" style="width:9em;@if(paacForm.errors.find(_.key == id)) {border: 4px solid #b10e1e;}"/>
+                            £&nbsp;<input type="text" name="@id" id="@id" class="input--no-spinner" value='' maxlength="10" size="7" style="width:9em;@if(paacForm.errors.find(_.key == id)) {border: 4px solid #b10e1e;}"/>
                       }
                 </label>
                 }
@@ -102,9 +108,9 @@ backLink = Some((controllers.routes.PostTriggerPensionInputsController.onBack.ur
                         }
                     }
                     @if(paacForm.data.get("triggerDefinedContribution_2015_p2") != None) {
-                    £&nbsp;<input type="text" name="@id" id="@id" class="input--no-spinner" value='@paacForm.data.get("triggerDefinedContribution_2015_p2")' size="7" style="width:9em;@if(paacForm.errors.find(_.key == id)) {border: 4px solid #b10e1e;}"/>
+                    £&nbsp;<input type="text" name="@id" id="@id" class="input--no-spinner" value='@paacForm.data.get("triggerDefinedContribution_2015_p2")' maxlength="10" size="7" style="width:9em;@if(paacForm.errors.find(_.key == id)) {border: 4px solid #b10e1e;}"/>
                     } else {
-                    £&nbsp;<input type="text" name="@id" id="@id" class="input--no-spinner" value='' size="7" style="width:9em;@if(paacForm.errors.find(_.key == id)) {border: 4px solid #b10e1e;}"/>
+                    £&nbsp;<input type="text" name="@id" id="@id" class="input--no-spinner" value='' maxlength="10" size="7" style="width:9em;@if(paacForm.errors.find(_.key == id)) {border: 4px solid #b10e1e;}"/>
                     }
                 </label>
                 }
@@ -130,9 +136,9 @@ backLink = Some((controllers.routes.PostTriggerPensionInputsController.onBack.ur
                     <span class="form-hint">@Messages("paac.common.inputfield.example.message")</span>
 
                       @if(paacForm.data.get("triggerDefinedContribution") != None) {
-                          £&nbsp;<input type="text" name="@id" id="@id" class="input--no-spinner" value='@paacForm.data.get("triggerDefinedContribution")' size="7" style="width:9em;@if(paacForm.errors.find(_.key == id)) {border: 4px solid #b10e1e;}"/>
+                          £&nbsp;<input type="text" name="@id" id="@id" class="input--no-spinner" value='@paacForm.data.get("triggerDefinedContribution")' maxlength="10" size="7" style="width:9em;@if(paacForm.errors.find(_.key == id)) {border: 4px solid #b10e1e;}"/>
                       } else {
-                          &pound;&nbsp;<input type="text" name="@id" id="@id" class="input--no-spinner" value='' size="7" style="width:9em;@if(paacForm.errors.find(_.key == id)) {border: 4px solid #b10e1e;}"/>
+                          &pound;&nbsp;<input type="text" name="@id" id="@id" class="input--no-spinner" value='' maxlength="10" size="7" style="width:9em;@if(paacForm.errors.find(_.key == id)) {border: 4px solid #b10e1e;}"/>
                       }
                     </label>
                 }

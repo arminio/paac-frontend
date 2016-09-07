@@ -1,4 +1,4 @@
-@(paacForm : Form[String])(implicit request:Request[_])
+@(paacForm : Form[String])(implicit request:Request[_], context: config.PaacContext)
 
 @import uk.gov.hmrc.play.views.html.helpers._
 
@@ -14,25 +14,20 @@ backLink = Some((controllers.routes.YesNoMPAATriggerEventAmountController.onBack
 
     <p class="lede text">@Messages("paac.mpaa.te.yesno.description")</p>
     <div class='form-group'>
-
-        <div class='form-group'>
-            <fieldset class="inline">
-                @inputRadioGroup(
-                    paacForm("yesNo"), Seq(
-                        ("Yes", Messages("paac.yesno.yes")),
-                        ("No", Messages("paac.yesno.no"))
-                        ),
-                        '_legend -> "",
-                        '_legendClass -> "hidden",
-                        '_labelAfter -> true,
-                        '_labelClass -> "block-label",
-                        '_groupClass -> "inline-block"
-                )
-            </fieldset>
-        </div>
-
+        <fieldset class="inline">
+            @inputRadioGroup(
+                paacForm("yesNo"), Seq(
+                    ("Yes", Messages("paac.yesno.yes")),
+                    ("No", Messages("paac.yesno.no"))
+                    ),
+                    '_legend -> "",
+                    '_legendClass -> "hidden",
+                    '_labelAfter -> true,
+                    '_labelClass -> "block-label",
+                    '_groupClass -> "inline-block"
+            )
+        </fieldset>
     </div>
-    <br/>
     <button id="submit" type="submit" class="button" value="Continue">@Messages("paac.calculator.button.continue")</button>
     }
 }
