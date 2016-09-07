@@ -186,6 +186,76 @@ class PensionResultSpec extends ModelSpec {
         }
       }
 
+      trait TestRounding {
+        object Test {
+          def taxBucket(value: Int): Int = SummaryResult(value*100).taxBucket
+          def aaBucket(value: Int): Int = SummaryResult(availableAAWithCF=value*100).aaBucket
+          def aaaBucket(value: Int): Int = SummaryResult(availableAAAWithCF=value*100).aaaBucket
+          def unusedAABucket(value: Int): Int = SummaryResult(availableAAWithCCF=value*100).unusedAABucket
+          def unusedAAABucket(value: Int): Int = SummaryResult(availableAAAWithCCF=value*100).unusedAAABucket
+        }
+      }
+
+      "round tax" in new TestRounding {
+        // set up
+        val values = Map(323 -> 300, 126 -> 100, 21 -> 0, 51 -> 100, 89 -> 100, 49 -> 0, 678 -> 700)
+
+        // test
+        values.foreach {
+          (pair) =>
+          val (v, expected) = pair
+          withClue(s"Expected ${v} to be ${expected}, ") { Test.taxBucket(v) shouldBe expected }
+        }
+      }
+
+      "round aa" in new TestRounding {
+        // set up
+        val values = Map(323 -> 300, 126 -> 100, 21 -> 0, 51 -> 100, 89 -> 100, 49 -> 0, 678 -> 700)
+
+        // test
+        values.foreach {
+          (pair) =>
+          val (v, expected) = pair
+          withClue(s"Expected ${v} to be ${expected}, ") { Test.aaBucket(v) shouldBe expected }
+        }
+      }
+
+      "round aaa" in new TestRounding {
+        // set up
+        val values = Map(323 -> 300, 126 -> 100, 21 -> 0, 51 -> 100, 89 -> 100, 49 -> 0, 678 -> 700)
+
+        // test
+        values.foreach {
+          (pair) =>
+          val (v, expected) = pair
+          withClue(s"Expected ${v} to be ${expected}, ") { Test.aaaBucket(v) shouldBe expected }
+        }
+      }
+
+      "round unused aa" in new TestRounding {
+        // set up
+        val values = Map(323 -> 300, 126 -> 100, 21 -> 0, 51 -> 100, 89 -> 100, 49 -> 0, 678 -> 700)
+
+        // test
+        values.foreach {
+          (pair) =>
+          val (v, expected) = pair
+          withClue(s"Expected ${v} to be ${expected}, ") { Test.unusedAABucket(v) shouldBe expected }
+        }
+      }
+
+      "round unused aaa" in new TestRounding {
+        // set up
+        val values = Map(323 -> 300, 126 -> 100, 21 -> 0, 51 -> 100, 89 -> 100, 49 -> 0, 678 -> 700)
+
+        // test
+        values.foreach {
+          (pair) =>
+          val (v, expected) = pair
+          withClue(s"Expected ${v} to be ${expected}, ") { Test.unusedAAABucket(v) shouldBe expected }
+        }
+      }
+
       "round to nearest hundred when value < 1000" in new TestResult {
         // set up
         val values = Map(323 -> 300, 126 -> 100, 21 -> 0, 51 -> 100, 89 -> 100, 49 -> 0, 678 -> 700)
@@ -320,6 +390,77 @@ class PensionResultSpec extends ModelSpec {
       taxYearResultsOption.get.summaryResult.alternativeAA shouldBe 15
       taxYearResultsOption.get.summaryResult.availableAAAWithCF shouldBe 123
       taxYearResultsOption.get.summaryResult.availableAAAWithCCF shouldBe 345
+    }
+  }
+
+  "toTuple" should {
+    "convert summary to tuple" in {
+      // set up
+      val summary = SummaryResult(1,2,3,4,5,6,7,8,9,10,true,12,13,true,15,16)
+
+      // test
+      val tuple = Summary.toTuple(summary)
+
+      // check
+      tuple._1 shouldBe 1
+      tuple._2 shouldBe 2
+      tuple._3 shouldBe 3
+      tuple._4 shouldBe 4
+      tuple._5 shouldBe 5
+      tuple._6 shouldBe 6
+      tuple._7 shouldBe 7
+      tuple._8 shouldBe 8
+      tuple._9 shouldBe 9
+      tuple._10 shouldBe 10
+      tuple._11 shouldBe true
+      tuple._12 shouldBe 12
+      tuple._13 shouldBe 13
+      tuple._14 shouldBe true
+      tuple._15 shouldBe 15
+      tuple._16 shouldBe 16
+    }
+  }
+
+  "toSummary" should {
+    "convert create summary instance" in {
+      // set up
+      val chargableAmount = 1
+      val exceedingAAAmount = 2
+      val availableAllowance = 3
+      val unusedAllowance = 4
+      val availableAAWithCF = 5
+      val availableAAWithCCF = 6
+      val unusedAAA = 7
+      val unusedMPAA = 8
+      val exceedingMPAA = 9
+      val exceedingAAA = 10
+      val isMPA = true
+      val moneyPurchaseAA = 12
+      val alternativeAA = 13
+      val isACA = true
+      val availableAAAWithCF = 15
+      val availableAAAWithCCF = 16
+
+      // test
+      val summaryResult = Summary.toSummary(chargableAmount,exceedingAAAmount,availableAllowance,unusedAllowance,availableAAWithCF,availableAAWithCCF,unusedAAA,unusedMPAA,exceedingMPAA,exceedingAAA,isMPA,moneyPurchaseAA,alternativeAA,isACA,availableAAAWithCF,availableAAAWithCCF)
+
+      // check
+      summaryResult.chargableAmount shouldBe 1
+      summaryResult.exceedingAAAmount shouldBe 2
+      summaryResult.availableAllowance shouldBe 3
+      summaryResult.unusedAllowance shouldBe 4
+      summaryResult.availableAAWithCF shouldBe 5
+      summaryResult.availableAAWithCCF shouldBe 6
+      summaryResult.unusedAAA shouldBe 7
+      summaryResult.unusedMPAA shouldBe 8
+      summaryResult.exceedingMPAA shouldBe 9
+      summaryResult.exceedingAAA shouldBe 10
+      summaryResult.isMPA shouldBe true
+      summaryResult.moneyPurchaseAA shouldBe 12
+      summaryResult.alternativeAA shouldBe 13
+      summaryResult.isACA shouldBe true
+      summaryResult.availableAAAWithCF shouldBe 15
+      summaryResult.availableAAAWithCCF shouldBe 16
     }
   }
 }

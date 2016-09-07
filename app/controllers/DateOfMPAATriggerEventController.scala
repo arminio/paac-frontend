@@ -33,16 +33,18 @@ trait DateOfMPAATriggerEventController extends RedirectController {
 
   val onPageLoad = withReadSession { implicit request =>
     val model: DateOfMPAATriggerEventPageModel = request.data
-    showPage(DateOfMPAATriggerEventForm.form.fill(model), model)
+    val isEdit = request.data.get(IS_EDIT_KEY).map(_.toBoolean).getOrElse(false)
+    showPage(DateOfMPAATriggerEventForm.form.fill(model), isEdit)
   }
 
   val onSubmit = withWriteSession { implicit request =>
     val form = DateOfMPAATriggerEventForm.form.bindFromRequest()
     val reqData = request.data
+    val isEdit = reqData.get(IS_EDIT_KEY).map(_.toBoolean).getOrElse(false)
     form.fold (
       formWithErrors => {
         val model: DateOfMPAATriggerEventPageModel = reqData
-        showPage(formWithErrors, model.copy(dateOfMPAATriggerEvent=None, originalDate=request.form("originalDate")))
+        showPage(formWithErrors, isEdit)
       },
       input => {
         input.dateOfMPAATriggerEvent.map {
@@ -54,14 +56,14 @@ trait DateOfMPAATriggerEventController extends RedirectController {
             val args = List(selectedDCTaxYears.head.toString, (selectedDCTaxYears.last + 1).toString)
             if (!isValidDate(date,selectedDCTaxYears)) {
               val newForm = form.withError("dateOfMPAATriggerEvent", "paac.mpaa.ta.date.page.invalid.date", args:_*)
-              showPage(newForm, input)
+              showPage(newForm, isEdit)
             } else {
-              val sessionData = reqData ++ input.toSessionData.map(_.swap).toMap
+              val sessionData = reqData ++ input.toSessionData(isEdit).map(_.swap).toMap
               TriggerDate() go Forward.using(sessionData)
           }
         } getOrElse {
           val newForm = form.withError("dateOfMPAATriggerEvent", "error.invalid.date.format")
-          showPage(newForm, input)
+          showPage(newForm, isEdit)
         }
       }
     )
@@ -71,8 +73,8 @@ trait DateOfMPAATriggerEventController extends RedirectController {
     TriggerDate() go Backward
   }
 
-  protected def showPage(form: Form[DateOfMPAATriggerEventPageModel], model: DateOfMPAATriggerEventPageModel)(implicit request: Request[_]) = {
-    Future.successful(Ok(views.html.date_of_mpaa_trigger_event(form,model)))
+  protected def showPage(form: Form[DateOfMPAATriggerEventPageModel], isEdit: Boolean)(implicit request: Request[_]) = {
+    Future.successful(Ok(views.html.date_of_mpaa_trigger_event(form, isEdit)))
   }
 
   private def isValidDate(date: LocalDate, selectedTaxYears: Seq[Int]): Boolean  = {
