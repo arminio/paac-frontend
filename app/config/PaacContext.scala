@@ -21,13 +21,9 @@ import uk.gov.hmrc.play.http.HeaderCarrier
 import scala.concurrent.Future
 
 trait PaacContext {
-
   def getPageHelpPartial()(implicit hc: HeaderCarrier): Future[String]
-
 }
 
 case object PaacContextImpl extends PaacContext {
-
   override def getPageHelpPartial()(implicit hc: HeaderCarrier): Future[String] = ContactFrontendConnector.getHelpPartial
-
 }
