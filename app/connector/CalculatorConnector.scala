@@ -47,7 +47,7 @@ trait CalculatorConnector extends Metrics {
     val calculationRequest = CalculationRequest(contributions, Some(earliestYear), Some(false))
     val endpoint = Play.current.configuration.getString("microservice.services.paac.endpoints.calculate").getOrElse("/paac/calculate")
     val body = Json.toJson(calculationRequest)
-    Logger.info(s"""Making calculation request:\n${contributions.mkString("\n")}\nEarliest year =${earliestYear}""")
+    Logger.info(s"""[CalculatorConnector]: Making calculation request:\n${contributions.mkString("\n")}\nEarliest year =${earliestYear}""")
     httpPostRequest.POST[JsValue, HttpResponse](s"${serviceUrl}${endpoint}",body).map {
       (response)=>
       calculatorStatusCode(response.status)
@@ -57,10 +57,10 @@ trait CalculatorConnector extends Metrics {
       Logger.debug(s"""${received.mkString("\n")}""")
       received
     } andThen {
-        case Failure(t) => {
+        case Failure(e) => {
           failedCalculation
-          Logger.error(s"Backend failed to calculate: ${t.getMessage()}")
-          throw t
+          Logger.error(s"[CalculatorConnector]: Backend failed to calculate: ${e.getMessage()}", e)
+          throw e
         }
         case Success(results) => {
           successfulCalculation

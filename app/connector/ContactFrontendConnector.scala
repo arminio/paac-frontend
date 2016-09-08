@@ -38,11 +38,10 @@ trait ContactFrontendConnector extends ServicesConfig {
       r.body
     } recover {
       case e: BadGatewayException =>
-        Logger.error(s"[ContactFrontendConnector] ${e.message}", e)
+        Logger.error(s"[ContactFrontendConnector]: Failed to connect Get Help: ${e.message}", e)
         ""
     }
   }
-
 }
 
 object ContactFrontendConnector extends ContactFrontendConnector {}

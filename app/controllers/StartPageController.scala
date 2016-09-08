@@ -18,10 +18,13 @@ package controllers
 
 import connector.CalculatorConnector
 import play.api.mvc._
+
 import scala.concurrent.Future
 import service._
 import service.KeystoreService._
 import config.AppSettings
+import play.api.Logger
+import uk.gov.hmrc.play.http.BadGatewayException
 
 object StartPageController extends StartPageController with AppSettings {
   def keystore: KeystoreService = KeystoreService
@@ -37,6 +40,10 @@ trait StartPageController extends RedirectController {
     keystore.clear.map {
       (_)=>
       Redirect(routes.StartPageController.startPage()).withNewSession
+    } recover {
+      case e: BadGatewayException =>
+        Logger.error(s"[StartPageController] ${e.message}", e)
+        throw e
     }
   }
 }
