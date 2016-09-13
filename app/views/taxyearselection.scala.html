@@ -36,7 +36,7 @@ args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
     }
   @defining(config.PaacConfiguration.year()) { thisYear =>
     @for(i <- List.range(thisYear-numberOfYears, thisYear+1).reverse) {
-    <label class="block-label" style="@if(isError) {border: 4px solid #b10e1e;}">@(i) to @(i+1) <input id="TaxYear@(i)" type="checkbox" name="TaxYear@(i)" @if(selectedYears.contains(i.toString())){checked}></label>
+    <label class="block-label" style="@if(isError) {border: 4px solid #b10e1e;}">@(i) @Messages("paac.year.range.to") @(i+1) <input id="TaxYear@(i)" type="checkbox" name="TaxYear@(i)" @if(selectedYears.contains(i.toString())){checked}></label>
     }
   }
 </fieldset>
