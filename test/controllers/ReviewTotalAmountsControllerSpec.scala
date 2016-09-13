@@ -21,18 +21,28 @@ import models._
 import play.api.mvc.Result
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import service.KeystoreService._
 import service._
 import uk.gov.hmrc.play.http.SessionKeys
 
 import scala.concurrent.Future
 
 class ReviewTotalAmountsControllerSpec extends test.BaseSpec {
+
+  val endPointURL = "/paac/review"
+
   val contribution0 = Contribution(2008, 500000)
   val contribution1 = Contribution(2009, 600000)
   val contribution2 = Contribution(2010, 700000)
   val contribution3 = Contribution(2011, 800000)
   val contribution4 = Contribution(2012, 900000)
   val contribution5 = Contribution(2013, 1000000)
+
+  val IS_DB_2015 = s"${DB_FLAG_PREFIX}2015"
+  val IS_DC_2015 = s"${DC_FLAG_PREFIX}2015"
+  val IS_DB_2016 = s"${DB_FLAG_PREFIX}2016"
+  val IS_DC_2016 = s"${DC_FLAG_PREFIX}2016"
+  val DC_KEY_2016 = s"${DC_PREFIX}2016"
 
   trait MockCalculatorConnectorFixture {
     object MockCalculatorConnector extends CalculatorConnector with AppTestSettings with test.NullMetrics {
@@ -87,11 +97,10 @@ class ReviewTotalAmountsControllerSpec extends test.BaseSpec {
     "onSubmit" can {
       "display list of amounts previously provided by user" in new MockControllerFixture {
         // set up
-        val endpoint = "/paac/review"
         MockKeystore.map = MockKeystore.map + (KeystoreService.SELECTED_INPUT_YEARS_KEY-> "2012,2014")
 
         // test
-        val result : Future[Result] = ControllerWithMocks.onSubmit()(FakeRequest(GET, endpoint).withSession {(SessionKeys.sessionId,SESSION_ID)})
+        val result : Future[Result] = ControllerWithMocks.onSubmit()(FakeRequest(GET, endPointURL).withSession {(SessionKeys.sessionId,SESSION_ID)})
 
         // check
         status(result) shouldBe 200
@@ -108,6 +117,55 @@ class ReviewTotalAmountsControllerSpec extends test.BaseSpec {
         // check
         val htmlSummaryPage = contentAsString(await(result))
         htmlSummaryPage should include ("Results")
+      }
+
+      "with 2015 DC = true and DB=false should move to results page" in new Mock2016ControllerFixture {
+        // set up
+        val sessionData = List((IS_EDIT_KEY -> "false"),
+                                (IS_DB_2015 -> "false"),
+                                (IS_DC_2015 -> "true"),
+                                (SELECTED_INPUT_YEARS_KEY -> "2015"),
+                                (CURRENT_INPUT_YEAR_KEY -> "2015"),
+                                (SessionKeys.sessionId -> SESSION_ID))
+        MockKeystore.map = MockKeystore.map + (KeystoreService.SELECTED_INPUT_YEARS_KEY-> "2015")
+
+
+        implicit val request = FakeRequest(POST, endPointURL).withSession(sessionData: _*)
+                                                             .withFormUrlEncodedBody((P1_DC_KEY -> "10"),
+                                                                                     (P2_DC_KEY -> "10"),
+                                                                                     (SELECTED_INPUT_YEARS_KEY -> "2015"))
+
+        // test
+        val result: Future[Result] = ControllerWithMocks.onSubmit()(request)
+
+        // check
+        val htmlSummaryPage = contentAsString(await(result))
+        dumpHtml("review", htmlSummaryPage)
+        htmlSummaryPage should include ("Based on your answers you have")
+      }
+
+      "with 2016 DC = true and DB=false should move to results page" in new Mock2016ControllerFixture {
+        // set up
+        val sessionData = List((IS_EDIT_KEY -> "false"),
+                                (IS_DB_2016 -> "false"),
+                                (IS_DC_2016 -> "true"),
+                                (SELECTED_INPUT_YEARS_KEY -> "2016"),
+                                (CURRENT_INPUT_YEAR_KEY -> "2016"),
+                                (SessionKeys.sessionId -> SESSION_ID))
+        MockKeystore.map = MockKeystore.map + (KeystoreService.SELECTED_INPUT_YEARS_KEY-> "2015")
+
+
+        implicit val request = FakeRequest(POST, endPointURL).withSession(sessionData: _*)
+                                                             .withFormUrlEncodedBody((DC_KEY_2016 -> "10"),
+                                                                                     (SELECTED_INPUT_YEARS_KEY -> "2016"))
+
+        // test
+        val result: Future[Result] = ControllerWithMocks.onSubmit()(request)
+
+        // check
+        val htmlSummaryPage = contentAsString(await(result))
+        dumpHtml("review", htmlSummaryPage)
+        htmlSummaryPage should include ("Based on your answers you have")
       }
     }
 
