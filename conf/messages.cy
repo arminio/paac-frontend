@@ -80,7 +80,7 @@ paac.contribution= contribution
 
 ## Tax Year Selection
 paac.taxyear.selection.pagetitle = Choose tax years
-paac.taxyear.selection.heading = Choose tax years
+paac.taxyear.selection.heading = Dewiswch blynyddoedd treth
 paac.taxyear.selection.p1 = Select which tax years you want to check if you owe any tax on your pension savings or if you can carry over any unused annual allowance.
 paac.taxyear.selection.p2 = You can also check for years when you were member of a registered pension scheme or a qualifying overseas pension scheme but made no contributions.
 paac.taxyear.selection.p3 = A tax year is 6 April to 5 April.
@@ -117,7 +117,7 @@ paac.mpaa.ta.date.page.heading = When did you first flexibly access your pension
 paac.mpaa.ta.date.page.description = This will also be on your flexible access statement.
 paac.mpaa.ta.date.page.datehint = For example, 21 6 2015
 paac.mpaa.ta.date.page.datevalidation = Check all date of MPAA Trigger Event fields are complete and only contain numbers
-paac.date.fields.year = Day
+paac.date.fields.day = Day
 paac.date.fields.month = Month
 paac.date.fields.year = Year
 

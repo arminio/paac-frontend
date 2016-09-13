@@ -117,7 +117,7 @@ paac.mpaa.ta.date.page.heading = When did you first flexibly access your pension
 paac.mpaa.ta.date.page.description = This will also be on your flexible access statement.
 paac.mpaa.ta.date.page.datehint = For example, 21 6 2015
 paac.mpaa.ta.date.page.datevalidation = Check all date of MPAA Trigger Event fields are complete and only contain numbers
-paac.date.fields.year = Day
+paac.date.fields.day = Day
 paac.date.fields.month = Month
 paac.date.fields.year = Year
 
