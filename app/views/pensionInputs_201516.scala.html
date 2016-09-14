@@ -1,5 +1,7 @@
-@(paacForm : Form[_ <: form.Year2015Fields],isDefinedBenefit: Boolean= false,
-          isDefinedContribution: Boolean= false, isEdit: Boolean)(implicit request:Request[_], context: config.PaacContext)
+@(paacForm : Form[_ <: form.Year2015Fields],
+  isDefinedBenefit: Boolean= false,
+  isDefinedContribution: Boolean= false,
+  isEdit: Boolean)(implicit request:Request[_], context: config.PaacContext, lang: Lang)
 
 @import uk.gov.hmrc.play.views.html.helpers._
 
