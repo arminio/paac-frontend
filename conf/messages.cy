@@ -8,29 +8,11 @@ paac.common.pension.inputs.dc = Defined contribution
 ## Calculator Home Page
 paac.nav.title = Pension Annual Allowance Calculator
 paac.nav.title2 = GOV.UK
-paac.calculator.homepage.heading = PAAC
-paac.calculator.results.heading = PAAC Results
-paac.error.title = Check your information, you need to:
-paac.1415.aa.limit.text = AA Limit for 2014/15 Tax Year is £40000.00.
 paac.calculator.back.url = http://www.gov.uk
 paac.calculator.button.continue = Continue
 paac.calculator.button.save = Save
 paac.calculator.button.calculate = Calculate
 paac.calculator.button.back = Back
-paac.calculator.results.pagetitle = Tax Year Results
-
-## Start Page
-paac.startpage.pagetitle = Pension Annual Allowance Calculator
-paac.startpage.button = Start now
-paac.startpage.heading = Check your pension annual allowance
-paac.startpage.p1 = Use this service to check whether:
-paac.startpage.list.item1 = You have to pay tax on your pension contributions.
-paac.startpage.list.item2 = You have any unused annual allowances that you can carry forward.
-paac.startpage.beforeInfo.h2 = Before You Start
-paac.startpage.beforeInfo.p1 = You will need to know the <a href="https://www.gov.uk/pension-types">type of pensions schemes</a> you have and how much you have paid in to them.
-paac.startpage.beforeInfo.p2 = The best way to get this information is to ask your pension scheme administrator to supply it. If you have savings in more than one scheme you'll need to get this information from each pension provider or scheme administrator.
-paac.startpage.beforeInfo.p3 = If you have a total income of £110,000 or more, you will need to work out your <a href="https://www.gov.uk/guidance/adjusted-net-income">adjusted net income</a>.
-paac.startpage.beforeInfo.p4 = Find out more about <a href="https://www.gov.uk/tax-on-your-private-pension">tax on your private pension contributions and your annual allowance</a>.
 
 ## Scheme Selection Page
 paac.scheme.selection.pagetitle = Pension schemes in {0} to {1}
