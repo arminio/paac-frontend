@@ -17,7 +17,7 @@ paac.calculator.button.back = Back
 ## Scheme Selection Page
 paac.scheme.selection.pagetitle = Pension schemes in {0} to {1}
 paac.scheme.selection.heading = What types of pension schemes did you have in the tax year {0} to {1}?
-paac.scheme.selection.p1 = Select all that apply.
+paac.scheme.selection.p1 = Dewiswch bob un sy’n berthnasol.
 paac.scheme.selection.dc.label = <b>Defined contribution</b><br>A pension based on how much is paid in to it. These are usually personal or stakeholder pensions.
 paac.scheme.selection.db.label = <b>Defined benefit</b><br>A pension based on your salary and how long you have worked for your employer. These are always workplace pensions.
 
@@ -43,7 +43,7 @@ error.max= Enter an amount that is £5,000,000 or less.
 error.bounds= Enter an amount that is £5,000,000 or less.
 error.unknown=Enter an amount that is £5,000,000 or less.
 error.real.precision={0} amount must not be empty. (Amount must have no more than {1} numbers, including {2} decimal places, and should be £0 or larger and under £5,000,000.)
-paac.error.generic = There is a problem
+paac.error.generic = Mae yna broblem
 paac.scheme.selection.error = Choose at least 1 type of pension scheme.
 paac.taxyear.selection.error = Choose at least 1 tax year.
 paac.mpaa.ta.date.page.invalid.date = Enter a date between 6 4 {0} and 5 4 {1} inclusive

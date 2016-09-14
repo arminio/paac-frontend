@@ -1,4 +1,5 @@
-@(paacForm : Form[form.SelectSchemeModel],year: Int)(implicit request:Request[_], context: config.PaacContext)
+@(paacForm : Form[form.SelectSchemeModel],
+  year: Int)(implicit request:Request[_], context: config.PaacContext, lang: Lang)
 
 @import uk.gov.hmrc.play.views.html.helpers._
 

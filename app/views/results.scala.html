@@ -1,5 +1,7 @@
-@(results: List[models.TaxYearResults], selectedYears: Array[Int], triggerDate: Option[PensionPeriod],
-         triggerAmount: Long = 0L)(implicit request:Request[_], context: config.PaacContext)
+@(results: List[models.TaxYearResults],
+  selectedYears: Array[Int],
+  triggerDate: Option[PensionPeriod],
+  triggerAmount: Long = 0L)(implicit request:Request[_], context: config.PaacContext, lang: Lang)
 
 @analyticsAdditionalJs = {
   ga('set', {
