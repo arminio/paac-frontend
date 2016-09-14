@@ -6,7 +6,7 @@
   contentHeader: Option[Html] = None,
   mainContent: Html = HtmlFormat.empty,
   supportLinkEnabled: Boolean = true,
-  serviceInfoContent: Html = HtmlFormat.empty,
+  serviceInfoContent: Option[Html] = None,
   linkElement: Option[Html] = None,
   scriptElement: Option[Html] = None,
   analyticsAdditionalJs: Option[Html] = None,
@@ -40,7 +40,7 @@
 @uiLayouts.serviceInfo(
 betaBanner = HtmlFormat.empty,
 includeGridWrapper = false,
-serviceInfoContent = None)
+serviceInfoContent)
 }
 @footerTop = {}
 

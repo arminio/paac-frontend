@@ -1,4 +1,5 @@
-@(selectedYears : Array[String], isError: Boolean, numberOfYears: Int)(implicit request:Request[_], context: config.PaacContext)
+@(selectedYears : Array[String], isError: Boolean, numberOfYears: Int,
+showLanguage:Boolean = false)(implicit request:Request[_], context: config.PaacContext, lang: Lang)
 
 @import uk.gov.hmrc.play.views.html.helpers._
 

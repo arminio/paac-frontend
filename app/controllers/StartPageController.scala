@@ -16,14 +16,14 @@
 
 package controllers
 
-import connector.CalculatorConnector
 import play.api.mvc._
-
+import play.api.Play.current
 import scala.concurrent.Future
 import service._
 import service.KeystoreService._
 import config.AppSettings
 import play.api.Logger
+import play.api.i18n.Lang
 import uk.gov.hmrc.play.http.BadGatewayException
 
 object StartPageController extends StartPageController with AppSettings {
@@ -45,5 +45,13 @@ trait StartPageController extends RedirectController {
         Logger.error(s"[StartPageController] ${e.message}", e)
         throw e
     }
+  }
+
+  def setLanguage:Action[AnyContent] = withSession { implicit request =>
+        val lang = request.getQueryString("lang").getOrElse("en")
+        Logger.info("Language from request query is " + lang)
+        implicit val newLang = Lang(lang)
+        Logger.info("New language set to " + newLang.code)
+        Future.successful(Redirect(routes.StartPageController.startPage).withLang(newLang))
   }
 }
