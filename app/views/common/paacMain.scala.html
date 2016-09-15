@@ -3,8 +3,8 @@
   mainClass : String = "main",
   articleClasses: Option[String] = None,
   analyticsAdditionalJs: Option[Html] = None,
-  backLink: Option[(String,String)] = None,
-  showLanguage:Boolean = true)(mainContent: Html)(implicit request:Request[_], context: config.PaacContext, lang: Lang)
+  serviceInfoContent: Option[Html] = None,
+  backLink: Option[(String,String)] = None)(mainContent: Html)(implicit request:Request[_], context: config.PaacContext, lang: Lang)
 
 @import uk.gov.hmrc.play.views.html.layouts
 
@@ -27,18 +27,6 @@
     @Html(pageTitle) - @Messages("paac.nav.title2")
 }
 
-@serviceInfo = {
-    @if(showLanguage){
-      <div class="toggle-lang">
-        @if(lang.language.toLowerCase == "cy") {
-          <a href="@routes.StartPageController.setLanguage?lang=en" onclick="gaEvent('Set language to English')">English</a><span> | Cymraeg</span>
-        } else {
-          <span>English | </span><a href="@routes.StartPageController.setLanguage?lang=cy" onclick="gaEvent('Set language to Welsh')">Cymraeg</a>
-        }
-      </div>
-    }
-}
-
 @main(
     title = title.toString,
     mainClass = Some(mainClass),
@@ -46,7 +34,7 @@
     mainContent = layouts.article(mainContent, None, articleClasses),
     linkElement = Some(linkElement),
     scriptElement = Some(scriptElement),
-    serviceInfoContent = Some(serviceInfo),
+    serviceInfoContent = serviceInfoContent,
     backLink = backLink,
     analyticsAdditionalJs = analyticsAdditionalJs
 )
