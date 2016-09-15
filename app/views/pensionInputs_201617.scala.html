@@ -2,7 +2,7 @@
   isDefinedBenefit: Boolean= false,
   isDefinedContribution: Boolean= false,
   isEdit: Boolean,
-  year: Int)(implicit request:Request[_], context: config.PaacContext)
+  year: Int)(implicit request:Request[_], context: config.PaacContext, lang: Lang)
 
 @import uk.gov.hmrc.play.views.html.helpers._
 @import service.KeystoreService._

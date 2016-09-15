@@ -1,4 +1,6 @@
-@(paacForm : Form[_ <: form.Pre2015Fields], currentYear: String, isEdit: Boolean)(implicit request:Request[_], context: config.PaacContext)
+@(paacForm : Form[_ <: form.Pre2015Fields],
+  currentYear: String,
+  isEdit: Boolean)(implicit request:Request[_], context: config.PaacContext, lang: Lang)
 
 @import uk.gov.hmrc.play.views.html.helpers._
 
