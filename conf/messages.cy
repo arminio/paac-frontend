@@ -77,16 +77,16 @@ paac.1516.pension.inputs.pages.heading = What were your pension savings for the 
 paac.201516.pension.inputs.pagetitle = Pension savings 2015 to 2016
 paac.201516.pension.inputs.description = The tax year 2015 to 2016 was split into two to align pension input periods (PIPs) with tax years.
 paac.201516.pension.inputs.description2 = Include pension savings for the PIPs that ended in this tax year. Use only numbers and round to the nearest pound.
-paac.201516.pension.inputs.period1 = Period 1
+paac.201516.pension.inputs.period1 = cyfnod 1
 paac.201516.pension.inputs.period1.description = Include all pension savings made in the PIPs ending between 6 April 2015 to 8 July 2015 inclusive.
-paac.201516.pension.inputs.period2 = Period 2
+paac.201516.pension.inputs.period2 = cyfnod 2
 paac.201516.pension.inputs.period2.description = Include all pension savings made between 9 July 2015 to 5 April 2016 inclusive.
 
 ## Pension Inputs Page
 paac.pension.inputs.pagetitle = Pension savings {0} to {1}
 paac.pension.inputs.heading = What were your pension savings in the tax year {1} to {2}?
 paac.pension.inputs.description = Include all pension savings where pension input periods ended in the tax year 6 April {0} to 5 April {1}. Use only numbers and round to the nearest pound.
-paac.pension.inputs.totalamount = Total amount
+paac.pension.inputs.totalamount = Cyfanswm
 
 ## MPAA Trigger Event Yes/No Page
 paac.mpaa.te.yesno.pagetitle = Flexible access since 2015
@@ -99,14 +99,14 @@ paac.mpaa.ta.date.page.heading = When did you first flexibly access your pension
 paac.mpaa.ta.date.page.description = This will also be on your flexible access statement.
 paac.mpaa.ta.date.page.datehint = For example, 21 6 2015
 paac.mpaa.ta.date.page.datevalidation = Check all date of MPAA Trigger Event fields are complete and only contain numbers
-paac.date.fields.day = Day
-paac.date.fields.month = Month
-paac.date.fields.year = Year
+paac.date.fields.day = diwrnod
+paac.date.fields.month = mis
+paac.date.fields.year = blwyddyn
 
 
 ## Review Amounts Page
 paac.review-amounts.page.heading = Check your answers
-paac.review-amounts.page.title = Check your answers
+paac.review-amounts.page.title = Gwiriwch eich atebion
 paac.review-amounts.button.continue = Calculate
 paac.review-amounts.heading = Tax year {0} to {1}
 paac.review-amounts.heading.period = Tax year {0} to {1} period {2}
@@ -144,7 +144,7 @@ paac.results.taxyearlabel = {0} to {1}
 paac.results.taxyearlabel.p1 = 2015 to 2016 period 1
 paac.results.taxyearlabel.p2 = 2015 to 2016 period 2
 paac.results.link.new = Start again
-paac.results.page.heading = Results
+paac.results.page.heading = canlyniadau
 paac.results.page.title = Pension annual allowance calculator results
 paac.results.p1 = Based on your answers, you have exceeded your annual allowance by &pound;{0}. You will have to pay tax on this.
 paac.results.p2 = Based on your answers you have &pound;{0} of unused annual allowance and no tax to pay.
@@ -160,7 +160,7 @@ paac.post.trigger.value.description.p2 = Include all pension savings after you f
 paac.post.trigger.value.description.other = Include all pension savings after you first flexibly accessed your defined contribution scheme on {0} to 5 April {1}. Use only numbers and round to the nearest pound.
 paac.post.trigger.value.error = The amount entered is larger than the total contribution savings of {0} for this input period.
 
-paac.post.trigger.amount.input.label = Total amount
+paac.post.trigger.amount.input.label = Cyfanswm
 paac.post.trigger.value.error.real.precision = The amount must not be empty or negative. (Amount must have no more than {1} numbers, including {2} decimal places, and should be £0 or larger and smaller than £5,000,000.)
 paac.post.trigger.value.error.min = Enter an amount that is £5,000,000 or less.
 paac.post.trigger.value.error.max = Enter an amount that is £{1} or less.
