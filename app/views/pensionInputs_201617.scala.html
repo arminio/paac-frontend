@@ -65,9 +65,9 @@ analyticsAdditionalJs = Some(analyticsAdditionalJs)
 action = controllers.routes.PensionInputs201617Controller.onSubmit,
 args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
 
-<fieldset id="input_2016" style="margin: 0" class="form-field-group">
+<fieldset id="input_2016" class="form-field-group">
   @for(id <- if (isDefinedBenefit && isDefinedContribution) List(DC_PREFIX+year, DB_PREFIX+year) else if (isDefinedBenefit) List(DB_PREFIX+year) else List(DC_PREFIX+year)) {
-    <label class="label--full-length numeric @if(paacForm.errors.find(_.key == id)) {form-field--error}" for="@id" style="width:150%;display: inline-block;">
+    <label class="label--full-length numeric @if(paacForm.errors.find(_.key == id)) {form-field--error}" for="@id">
         <span>@if(id.contains("Benefit")){@Messages("paac.common.pension.inputs.db")}else{@Messages("paac.common.pension.inputs.dc")}</span>
         <span class="form-hint">@Messages("paac.common.inputfield.example.message")</span>
         @defining(paacForm.errors.find(_.key.contains(id))){ maybeError =>
