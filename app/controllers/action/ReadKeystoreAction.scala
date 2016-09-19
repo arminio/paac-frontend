@@ -16,18 +16,15 @@
 
 package controllers.action
 
-import scala.concurrent.Future
-import play.api.mvc._
-
-import service._
-import service.KeystoreService._
-import uk.gov.hmrc.play.http.{HeaderCarrier, SessionKeys}
-import scala.util.{Try, Success, Failure, Either}
-import play.api.libs.json._
-import play.api.libs.concurrent.Execution.Implicits._
-import play.api.Logger
 import metrics._
-import uk.gov.hmrc.play.http._
+import play.api.Logger
+import play.api.libs.concurrent.Execution.Implicits._
+import play.api.mvc._
+import service._
+import uk.gov.hmrc.play.http.{HeaderCarrier, _}
+
+import scala.concurrent.Future
+import scala.util.{Failure, Success}
 
 trait ReadKeystore extends ActionBuilder[DataRequest] with Metrics {
   def keystore: KeystoreService
@@ -41,8 +38,10 @@ trait ReadKeystore extends ActionBuilder[DataRequest] with Metrics {
       new DataRequest[T](data, request)
     }.andThen {
       case Failure(t) => {
+        // $COVERAGE-OFF$Disabling
         log(t)
         throw t
+        // $COVERAGE-ON
       }
       case Success(results) => results
     }
@@ -61,6 +60,7 @@ trait ReadKeystore extends ActionBuilder[DataRequest] with Metrics {
   }
 
   protected def log(t: Throwable): Unit = {
+    // $COVERAGE-OFF$Disabling
     Logger.error(s"Keystore error: ${t.getMessage()}")
     t match {
       case _: BadRequestException => keystoreStatusCode(400)
@@ -73,6 +73,7 @@ trait ReadKeystore extends ActionBuilder[DataRequest] with Metrics {
         val msg = t.getMessage
         if (msg.contains(" failed with status ")) {
           keystoreStatusCode(msg.split("\\.")(0).split(" ").reverse(0).toInt)
+          // $COVERAGE-ON
         }
       }
     }

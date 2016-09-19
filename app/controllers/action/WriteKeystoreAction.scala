@@ -44,9 +44,11 @@ trait WriteKeystore extends ActionBuilder[DataRequest] with Metrics {
         (_)=>
         r
       }.andThen {
+        // $COVERAGE-OFF$Disabling
         case Failure(t) => {
           log(t)
           throw t
+          // $COVERAGE-ON
         }
         case Success(results) => results
       }
@@ -54,6 +56,7 @@ trait WriteKeystore extends ActionBuilder[DataRequest] with Metrics {
   }
 
   protected def log(t: Throwable): Unit = {
+    // $COVERAGE-OFF$Disabling
     Logger.error(s"Keystore error: ${t.getMessage()}")
     t match {
       case _: BadRequestException => keystoreStatusCode(400)
@@ -66,6 +69,7 @@ trait WriteKeystore extends ActionBuilder[DataRequest] with Metrics {
         val msg = t.getMessage
         if (msg.contains(" failed with status ")) {
           keystoreStatusCode(msg.split("\\.")(0).split(" ").reverse(0).toInt)
+          // $COVERAGE-ON
         }
       }
     }
