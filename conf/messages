@@ -104,7 +104,7 @@ paac.date.fields.year = Year
 ## Review Amounts Page
 paac.review-amounts.page.heading = Check your answers
 paac.review-amounts.page.title = Check your answers
-paac.review-amounts.button.continue = Calculate
+paac.review-amounts.button.calculate = Calculate
 paac.review-amounts.heading = Tax year {0} to {1}
 paac.review-amounts.heading.period = Tax year {0} to {1} period {2}
 paac.review-amounts.heading.total = Total amount
