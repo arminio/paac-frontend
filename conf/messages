@@ -1,6 +1,6 @@
 ## Calculator Common
 paac.link.text.back=Back
-paac.common.continue.button = Continue
+paac.calculator.button.continue = Continue
 paac.common.inputfield.example.message = Example, 62300
 paac.common.pension.inputs.db = Defined benefit
 paac.common.pension.inputs.dc = Defined contribution
@@ -9,10 +9,7 @@ paac.common.pension.inputs.dc = Defined contribution
 paac.nav.title = Pension Annual Allowance Calculator
 paac.nav.title2 = GOV.UK
 paac.calculator.back.url = http://www.gov.uk
-paac.calculator.button.continue = Continue
 paac.calculator.button.save = Save
-paac.calculator.button.calculate = Calculate
-paac.calculator.button.back = Back
 
 ## Scheme Selection Page
 paac.scheme.selection.pagetitle = Pension schemes in {0} to {1}

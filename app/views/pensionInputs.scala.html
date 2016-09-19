@@ -60,8 +60,8 @@ analyticsAdditionalJs = Some(analyticsAdditionalJs)
         args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
         <input type="hidden" name="year" value="@(currentYear)"/>
         <input type="hidden" name="isEdit" value="@(isEdit)"/>
-        <fieldset id="input_@currentYear" style="margin:0" class="form-field-group @if(paacForm.hasErrors) {form-field--error}">
-            <label class="label--full-length numeric" for="definedBenefit_@currentYear" style="width:150%;display: inline-block;">
+        <fieldset id="input_@currentYear" class="form-field-group @if(paacForm.hasErrors) {form-field--error}">
+            <label class="label--full-length numeric" for="definedBenefit_@currentYear">
             <span>@Messages("paac.pension.inputs.totalamount")</span>
             <span class="form-hint">@Messages("paac.common.inputfield.example.message")</span>
             @if(paacForm.hasErrors) {
