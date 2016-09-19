@@ -1,6 +1,6 @@
 ## Calculator Common
-paac.link.text.back=Back
-paac.common.continue.button = Continue
+paac.link.text.back = Yn ôl
+paac.calculator.button.continue = parhau
 paac.common.inputfield.example.message = Example, 62300
 paac.common.pension.inputs.db = Defined benefit
 paac.common.pension.inputs.dc = Defined contribution
@@ -9,10 +9,7 @@ paac.common.pension.inputs.dc = Defined contribution
 paac.nav.title = Pension Annual Allowance Calculator
 paac.nav.title2 = GOV.UK
 paac.calculator.back.url = http://www.gov.uk
-paac.calculator.button.continue = Continue
 paac.calculator.button.save = Save
-paac.calculator.button.calculate = Calculate
-paac.calculator.button.back = Back
 
 ## Scheme Selection Page
 paac.scheme.selection.pagetitle = Pension schemes in {0} to {1}
@@ -107,7 +104,7 @@ paac.date.fields.year = blwyddyn
 ## Review Amounts Page
 paac.review-amounts.page.heading = Check your answers
 paac.review-amounts.page.title = Gwiriwch eich atebion
-paac.review-amounts.button.continue = Calculate
+paac.review-amounts.button.calculate = Cyfrifwch
 paac.review-amounts.heading = Tax year {0} to {1}
 paac.review-amounts.heading.period = Tax year {0} to {1} period {2}
 paac.review-amounts.heading.total = Total amount
@@ -143,7 +140,7 @@ paac.results.table.col.6 = Unused<br> annual<br> allowance<br> <span style="font
 paac.results.taxyearlabel = {0} to {1}
 paac.results.taxyearlabel.p1 = 2015 to 2016 period 1
 paac.results.taxyearlabel.p2 = 2015 to 2016 period 2
-paac.results.link.new = Start again
+paac.results.link.new = Dechrau eto
 paac.results.page.heading = canlyniadau
 paac.results.page.title = Pension annual allowance calculator results
 paac.results.p1 = Based on your answers, you have exceeded your annual allowance by &pound;{0}. You will have to pay tax on this.
