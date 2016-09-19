@@ -42,8 +42,10 @@ trait StartPageController extends RedirectController {
       Redirect(routes.StartPageController.startPage()).withNewSession
     } recover {
       case e: BadGatewayException =>
+        // $COVERAGE-OFF$Disabling
         Logger.error(s"[StartPageController] ${e.message}", e)
         throw e
+        // $COVERAGE-ON
     }
   }
 
