@@ -415,6 +415,28 @@ class PensionInputs201516ControllerSpec extends test.BaseSpec {
         htmlPage should include ("Enter your total defined benefit pension savings for period 2 even if it is 0.")
         htmlPage should include ("Enter your total defined contribution pension savings for period 2 even if it is 0.")
       }
+
+
+      "with P1 and P2 dc= true with characters amount, redisplay page with errors" in new ControllerWithMockKeystore {
+        val sessionData = List((CURRENT_INPUT_YEAR_KEY -> "2015"),
+          (SELECTED_INPUT_YEARS_KEY -> "2015"),
+          (IS_EDIT_KEY -> "false"),
+          (IS_DB -> "true"),
+          (IS_DC -> "true"),
+          (SessionKeys.sessionId,SESSION_ID))
+        implicit val request = FakeRequest(POST, endPointURL).withSession(sessionData: _*)
+          .withFormUrlEncodedBody((P1_DC_KEY -> "a"),(P1_DB_KEY -> "b"),
+            (P2_DC_KEY -> "c"),(P2_DB_KEY -> "d"))
+
+        // test
+        val result: Future[Result] = ControllerWithMockKeystore.onSubmit()(request)
+
+        // check
+        status(result) shouldBe 200
+        val htmlPage = contentAsString(await(result))
+
+        htmlPage should include ("Enter an amount that contains only numbers.")
+      }
     }
   }
 
