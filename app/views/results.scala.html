@@ -11,6 +11,26 @@
   @results.reverse.map { result =>
     @if(result.summaryResult.chargableAmount > 0) {
       @helpers.gaEvent("Tax", result.input.taxYearLabel, result.summaryResult.taxBucket)
+      @if(result.summaryResult.chargableAmount <= 2000000) {
+        @helpers.gaEvent(s"Tax under 20k", result.input.taxYearLabel, 1)
+      }
+      @if(result.summaryResult.chargableAmount > 2000000 && result.summaryResult.chargableAmount <= 4000000) {
+        @helpers.gaEvent(s"Tax 20k - 40k", result.input.taxYearLabel, 1)
+      }
+      @if(result.summaryResult.chargableAmount > 4000000 && result.summaryResult.chargableAmount <= 6000000) {
+        @helpers.gaEvent(s"Tax 40k - 60k", result.input.taxYearLabel, 1)
+      }
+      @if(result.summaryResult.chargableAmount > 6000000 && result.summaryResult.chargableAmount <= 8000000) {
+        @helpers.gaEvent(s"Tax 60k - 80k", result.input.taxYearLabel, 1)
+      }
+      @if(result.summaryResult.chargableAmount > 8000000 && result.summaryResult.chargableAmount <= 10000000) {
+        @helpers.gaEvent(s"Tax 80k - 100k", result.input.taxYearLabel, 1)
+      }
+      @if(result.summaryResult.chargableAmount >= 10000000) {
+        @helpers.gaEvent(s"Tax over 100k", result.input.taxYearLabel, 1)
+      }
+    } else {
+      @helpers.gaEvent(s"Tax 0k", result.input.taxYearLabel, 1)
     }
     @if(result.summaryResult.isACA) {
       @helpers.gaEvent("ACA", result.input.taxYearLabel, 1)
