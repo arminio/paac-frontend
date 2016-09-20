@@ -809,6 +809,7 @@ class ContributionSpec extends ModelSpec {
         jsonTaxYear.as[Int] shouldBe 2010
         val v = json \ "amounts"
         v.as[Option[InputAmounts]] shouldBe Some(InputAmounts(None,None))
+        v.as[Option[InputAmounts]].get.incomeBucket() shouldBe 0
       }
 
       "unmarshall from JSON" in new ContributionFixture {
@@ -829,6 +830,8 @@ class ContributionSpec extends ModelSpec {
         val contributionOption : Option[Contribution] = json.validate[Contribution].fold(invalid = { _ => None }, valid = { contribution => Some(contribution)})
 
         contributionOption shouldBe Some(Contribution(PensionPeriod(2008, 2, 11), PensionPeriod(2008, 8, 12), Some(InputAmounts(12345, 67890))))
+
+        contributionOption.get.amounts.get.incomeBucket() shouldBe 0
       }
 
       "unmashall from JSON ensuring tax year must not be less than 2006" in {
