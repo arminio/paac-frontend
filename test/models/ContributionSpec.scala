@@ -774,6 +774,14 @@ class ContributionSpec extends ModelSpec {
         // check
         c3 shouldBe Contribution(PensionPeriod(2008, 2, 11), PensionPeriod(2008, 8, 12), Some(InputAmounts(None, None, Some(579L))))
       }
+
+      "check PensionPeriod mkstring" in {
+        // set up
+        val p1 = PensionPeriod(2015, 2, 11)
+
+        // check
+        p1.mkString shouldBe "2015-2-11"
+      }
     }
 
     "JSON" can {

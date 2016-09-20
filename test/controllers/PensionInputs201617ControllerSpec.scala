@@ -201,6 +201,25 @@ class PensionInputs201617ControllerSpec extends test.BaseSpec {
         dumpHtml("error_pensionInputsPost2015", htmlPage)
       }
 
+      "with isEdit = false, DB = true and DC = true with Characters Input should display the same page with errors" in new ControllerWithMockKeystore {
+        implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID),
+                                                                          (IS_EDIT_KEY -> "false"),
+                                                                          (DB_FLAG_PREFIX+2016 -> "true"),
+                                                                          (DC_FLAG_PREFIX+2016 -> "true"),
+                                                                          (CURRENT_INPUT_YEAR_KEY -> "2016"),
+                                                                          (SELECTED_INPUT_YEARS_KEY -> "2016"))
+                                                             .withFormUrlEncodedBody(DC_PREFIX+"2016" -> "A",DB_PREFIX+"2016" -> "B")
+
+        // test
+        val result: Future[Result] = ControllerWithMockKeystore.onSubmit()(request)
+
+        // check
+        status(result) shouldBe 200
+        val htmlPage = contentAsString(await(result))
+        htmlPage should include ("Enter an amount that contains only numbers.")
+        dumpHtml("error_pensionInputsPost2015", htmlPage)
+      }
+
       "with isEdit = false, DB = true and DC = false with empty DB Input should display the same page with errors" in new ControllerWithMockKeystore {
         implicit val request = FakeRequest(POST, endPointURL).withSession((SessionKeys.sessionId,SESSION_ID),
                                                                           (IS_EDIT_KEY -> "false"),

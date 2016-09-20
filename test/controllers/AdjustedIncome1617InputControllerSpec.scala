@@ -146,7 +146,7 @@ class AdjustedIncome1617InputControllerSpec extends test.BaseSpec {
         redirectLocation(result) shouldBe Some("/paac/scheme/2015")
       }
 
-      "with Current Year flag = 2016 and AI field does NOT have value should go to same page with some error message" in new ControllerWithMockKeystore {
+      "with Current Year = 2016 and AI field does NOT have value should go to same page with some error message" in new ControllerWithMockKeystore {
         // set up
         var sessionData = List(("isEdit" -> "false"),
                               (SELECTED_INPUT_YEARS_KEY -> "2016,2015"),
@@ -168,7 +168,29 @@ class AdjustedIncome1617InputControllerSpec extends test.BaseSpec {
         htmlPage should include ("Enter your Adjusted Income for this year even if it is 0.")
       }
 
-      "with Current Year flag = 2016 and AI field have invalid value should go to same page with some error message" in new ControllerWithMockKeystore {
+      "with Current Year = 2016 and AI field has characters, should go to same page with some error message" in new ControllerWithMockKeystore {
+        // set up
+        var sessionData = List(("isEdit" -> "false"),
+                              (SELECTED_INPUT_YEARS_KEY -> "2016,2015"),
+                              (CURRENT_INPUT_YEAR_KEY -> "2016"),
+                              (TI_YES_NO_KEY_PREFIX -> "true"),
+                              (SessionKeys.sessionId,SESSION_ID))
+        implicit val request = FakeRequest(POST, endPointURL).withSession(sessionData: _*)
+                                                             .withFormUrlEncodedBody(AI_KEY -> "abc",
+                                                                                     "year" -> "2016",
+                                                                                     "isEdit" -> "false")
+
+        // test
+        val result: Future[Result] = ControllerWithMockKeystore.onSubmit()(request)
+
+        // check
+        status(result) shouldBe 200
+        redirectLocation(result) shouldBe None
+        val htmlPage = contentAsString(await(result))
+        htmlPage should include ("Enter an amount that contains only numbers.")
+      }
+
+      "with Current Year = 2016 and AI field have invalid value should go to same page with some error message" in new ControllerWithMockKeystore {
         // set up
         var sessionData = List(("isEdit" -> "false"),
                               (SELECTED_INPUT_YEARS_KEY -> "2016,2015"),
