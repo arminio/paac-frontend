@@ -19,8 +19,8 @@ paac.startpage.list.item1=you have to pay tax on your pension savings
 paac.startpage.list.item2=you have any unused pension annual allowances that you can carry forward and offset any tax you owe
 paac.startpage.beforeInfo.h2=Before you start
 paac.startpage.beforeInfo.p1=You can check for the last four years as any unused allowance can’t be carried over for longer than that.
-paac.startpage.beforeInfo.p2=You can’t use this calculator if: <ul class="list-bullet"><li>You are a member of a hybrid scheme</li><li>You’ve had a valid declaration for flexible drawdown accepted by your pension scheme's administrator.</li></ul>
-paac.startpage.beforeInfo.p3=Before you start you need to know: <ul class="list-bullet"><li>The types of pension schemes you’ve had and how much has been saved in them for the dates you want to check.</li><li>If you have ever flexibly accessed your pension savings and when this happened first. You can check on your flexible access statement for this. You will also need to know the total amount of Defined Benefit pension savings made after the date you first flexibly accessed your pension statement.</li><li>If your threshold income is more than £110,000 and if your adjusted income is more than £150,000 when checking tax years from 2016/2017.</li></ul>
+paac.startpage.beforeInfo.p2=You can’t use this calculator if you are a member of a hybrid scheme, or you’ve had a valid declaration for flexible drawdown accepted by your pension scheme's administrator
+paac.startpage.beforeInfo.p3=Before you start you need to know: <ul class="list-bullet"><li>the types of pension schemes you’ve had and how much has been saved in them for the dates you want to check</li><li>if you have ever flexibly accessed your pension savings, when you first did this, and the amount of Defined Benefit pension savings for rest of the pension input period after this date</li><li>if your threshold income is more than £110,000 and if your adjusted income is more than £150,000 when checking tax years from 2016/2017</li></ul>
 paac.startpage.beforeInfo.p4=
 paac.startpage.button=Start
 
@@ -145,11 +145,11 @@ paac.review-amounts.error.negative-trigger=The flexible access amount provided n
 
 ## Results Page
 paac.results.table.col.1 = Year
-paac.results.table.col.2 = Available<br> annual<br> allowance<br> <span style="font-size:smaller">(Inc. Carry Forwards)</span>
+paac.results.table.col.2 = Available<br> annual<br> allowance
 paac.results.table.col.3 = Available money<br> purchase annual<br> allowance
 paac.results.table.col.4 = Pension<br> savings
 paac.results.table.col.5 = Amount<br> on which<br> tax is due
-paac.results.table.col.6 = Unused<br> annual<br> allowance<br> <span style="font-size:smaller">(Inc. Carry Forwards)</span>
+paac.results.table.col.6 = Unused<br> annual<br> allowance
 paac.results.taxyearlabel = {0} to {1}
 paac.results.taxyearlabel.p1 = 2015 to 2016 period 1
 paac.results.taxyearlabel.p2 = 2015 to 2016 period 2
