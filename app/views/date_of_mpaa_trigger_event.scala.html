@@ -1,5 +1,6 @@
 @(paacForm : Form[form.DateOfMPAATriggerEventPageModel],
-  isEdit: Boolean)(implicit request:Request[_], context: config.PaacContext, lang: Lang)
+  isEdit: Boolean,
+  currentYear: Int)(implicit request:Request[_], context: config.PaacContext, lang: Lang)
 
 @import play.api.i18n._
 @import uk.gov.hmrc.play.views.html.helpers._
@@ -56,7 +57,7 @@ backLink = Some((controllers.routes.DateOfMPAATriggerEventController.onBack.url,
             isNested = false,
             '_groupClass -> "form-date form-group dateOfBirth",
             '_idName -> "dateOfMPAATriggerEvent",
-            '_hintText -> Messages("paac.mpaa.ta.date.page.datehint"),
+            '_hintText -> Messages("paac.mpaa.ta.date.page.datehint", ""+currentYear),
             '_hintId -> "dateOfBirth-hint",
             '_labelHighlight -> true
         )
