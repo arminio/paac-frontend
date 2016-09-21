@@ -31,8 +31,12 @@ object StartPageController extends StartPageController with AppSettings {
 }
 
 trait StartPageController extends RedirectController {
-  val startPage = withWriteSession { implicit request =>
-    val sessionData = request.data ++ Map((IS_EDIT_KEY, "false"))
+  val startPage = withReadSession { implicit request =>
+    Future.successful(Ok(views.html.startPage()))
+  }
+
+  def onSubmit = withWriteSession { implicit request =>
+    val sessionData = request.data ++ Map(IS_EDIT_KEY -> "false", CURRENT_INPUT_YEAR_KEY -> "", SELECTED_INPUT_YEARS_KEY -> "")
     Start() go Forward.using(sessionData)
   }
 
