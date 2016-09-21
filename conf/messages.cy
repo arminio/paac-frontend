@@ -145,7 +145,7 @@ paac.results.page.heading = canlyniadau
 paac.results.page.title = Pension annual allowance calculator results
 paac.results.p1 = Based on your answers, you have exceeded your annual allowance by &pound;{0}. You will have to pay tax on this.
 paac.results.p2 = Based on your answers you have &pound;{0} of unused annual allowance and no tax to pay.
-paac.results.p3 = You can use these figures to complete your Self Assessment tax return online.
+paac.results.p3 = Annual allowances include any unused amounts that you may have available to carry forward from a maximum of three previous tax years.
 
 ## Post Trigger Pension Inputs Page
 paac.post.trigger.value.page.question = What were your defined contribution savings for the rest of  the tax year {0} to {1}?
