@@ -38,9 +38,9 @@ backLink = None
   </div>
 }
 
-<p class="lede">@Messages("paac.taxyear.selection.p1")</p>
-<p class="">@Messages("paac.taxyear.selection.p2")</p>
-<p style="margin-bottom:30px">@Messages("paac.taxyear.selection.p3")</p>
+<p class="lede">@Html(Messages("paac.taxyear.selection.p1"))</p>
+<p class="">@Html(Messages("paac.taxyear.selection.p2"))</p>
+<p style="margin-bottom:30px">@Html(Messages("paac.taxyear.selection.p3"))</p>
 @form(action = controllers.routes.TaxYearSelectionController.onYearSelected,
 args = 'class -> "form", 'autocomplete -> "off", 'novalidate -> "") {
 
