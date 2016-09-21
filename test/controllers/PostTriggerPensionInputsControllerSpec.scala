@@ -229,7 +229,7 @@ class PostTriggerPensionInputsControllerSpec extends test.BaseSpec {
       // check
       status(result) shouldBe 200
       val htmlPage = contentAsString(await(result))
-      htmlPage should include ("The amount entered is larger than the total contribution savings of 39,999 for this input period.")
+      htmlPage should include ("Enter an amount less than your total pension savings of £39,999")
     }
 
     "displays error if P2 amount is greater than total savings for the pension input period" in new ControllerWithMockKeystore {
@@ -248,7 +248,7 @@ class PostTriggerPensionInputsControllerSpec extends test.BaseSpec {
       // check
       status(result) shouldBe 200
       val htmlPage = contentAsString(await(result))
-      htmlPage should include ("The amount entered is larger than the total contribution savings of 39,999 for this input period.")
+      htmlPage should include ("Enter an amount less than your total pension savings of £39,999")
     }
 
      "displays error if 2016 amount is greater than total savings for the pension input period" in new ControllerWithMockKeystore {
@@ -270,7 +270,7 @@ class PostTriggerPensionInputsControllerSpec extends test.BaseSpec {
       // check
       status(result) shouldBe 200
       val htmlPage = contentAsString(await(result))
-      htmlPage should include ("The amount entered is larger than the total contribution savings of 0 for this input period.")
+      htmlPage should include ("Enter an amount less than your total pension savings of £0")
     }
 
     "move to next page if 2016 amount is equal to total savings for the pension input period" in new ControllerWithMockKeystore {
