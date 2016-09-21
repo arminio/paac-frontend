@@ -60,8 +60,8 @@ paac.contribution= contribution
 ## Tax Year Selection
 paac.taxyear.selection.pagetitle = Choose tax years
 paac.taxyear.selection.heading = Dewiswch blynyddoedd treth
-paac.taxyear.selection.p1 = Select which tax years you want to check if you owe any tax on your pension savings or if you can carry over any unused annual allowance.
-paac.taxyear.selection.p2 = You can also check for years when you were member of a registered pension scheme or a qualifying overseas pension scheme but made no contributions.
+paac.taxyear.selection.p1 = Choose which tax years you want to check if you owe tax on your pension savings or if you have any unused allowance.
+paac.taxyear.selection.p2 = If you want to carry forward all available unused allowances to offset any tax you may owe, select every year you were a member of a registered pension scheme or a qualifying overseas pension scheme even though you made no contributions.
 paac.taxyear.selection.p3 = A tax year is 6 April to 5 April.
 paac.year.range.to = to
 
