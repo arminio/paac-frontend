@@ -68,12 +68,12 @@
         @if(triggerContribution.get.isPeriod1 && contribution.isPeriod1 ||
             triggerContribution.get.isPeriod2 && contribution.isPeriod2 ||
             triggerContribution.get.taxPeriodStart == contribution.taxPeriodEnd) {
+        @defining(triggerContribution.map(_.taxPeriodStart).getOrElse(PensionPeriod(0,0,0))) { triggerDate =>
+        @defining(Messages("paac.review-amounts.value."+triggerDate.month, triggerDate.day.toString, triggerDate.year.toString)) { flexiAccessDate =>
         <tr>
             <td class="col1">@Messages("paac.review-amounts.heading.trigger.date")</td>
             <td class="col2 numeric">
-            @defining(triggerContribution.map(_.taxPeriodStart).getOrElse(PensionPeriod(0,0,0))) { triggerDate =>
-            @Messages("paac.review-amounts.value."+triggerDate.month, triggerDate.day.toString, triggerDate.year.toString)
-            }
+            @flexiAccessDate
             </td>
             <td class="col3 edit_action">
                 <a href="edit/@(controllers.ReviewTotalAmountsController.EDIT_TRIGGER_DATE)" data-journey-click="paac:click:edit_trigger_date">
@@ -82,7 +82,7 @@
             </td>
         </tr>
         <tr @if(contribution.moneyPurchase < 0) {class="form-field--error"}>
-            <td class="col1 @if(contribution.moneyPurchase < 0) {error_color}">@if(triggerContribution.get.isPeriod1){@Messages("paac.review-amounts.heading.trigger.savings.p1","")}else{@if(triggerContribution.get.isPeriod2){@Messages("paac.review-amounts.heading.trigger.savings.p2","")}else{@Messages("paac.review-amounts.heading.trigger.savings.other",""+triggerContribution.get.taxPeriodStart.taxYear)}}</td>
+            <td class="col1 @if(contribution.moneyPurchase < 0) {error_color}">@if(triggerContribution.get.isPeriod1){@Messages("paac.review-amounts.heading.trigger.savings.p1",flexiAccessDate)}else{@if(triggerContribution.get.isPeriod2){@Messages("paac.review-amounts.heading.trigger.savings.p2",flexiAccessDate)}else{@Messages("paac.review-amounts.heading.trigger.savings.other",flexiAccessDate)}}</td>
             <td class="col2 numeric @if(contribution.moneyPurchase < 0) {error_color}">&pound;@(currencyFormatter.format(triggerContribution.get.amounts.getOrElse(InputAmounts()).moneyPurchase.get/100D))</td>
             <td class="col3 edit_action">
                 <a href="edit/@(controllers.ReviewTotalAmountsController.EDIT_TRIGGER_AMOUNT)" data-journey-click="paac:click:edit_trigger_amount">
@@ -90,6 +90,8 @@
                 </a>
             </td>
         </tr>
+        }
+        }
         }
         } @* End of money purchase trigger rows *@
 
