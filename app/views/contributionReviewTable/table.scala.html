@@ -26,7 +26,17 @@
             <td class="col2 numeric error_color">&pound;@(currencyFormatter.format(amounts.moneyPurchase.get/100D))</td>
             } else {
             <td class="col1">@Messages("paac.review-amounts.heading.mp")</td>
-            <td class="col2 numeric">&pound;@(currencyFormatter.format(amounts.moneyPurchase.get/100D))</td>
+            <td class="col2 numeric">
+            @if(triggerContribution.isDefined) {
+                @if(triggerContribution.get.isPeriod1 && contribution.isPeriod1 ||
+                    triggerContribution.get.isPeriod2 && contribution.isPeriod2 ||
+                    triggerContribution.get.taxPeriodStart == contribution.taxPeriodEnd) {
+                    &pound;@(currencyFormatter.format((amounts.moneyPurchase.get+triggerContribution.get.amounts.getOrElse(InputAmounts()).moneyPurchase.get)/100D))
+                }else {
+                    &pound;@(currencyFormatter.format(amounts.moneyPurchase.get/100D))
+                }
+            }
+            </td>
             }
             <td class="col3 edit_action">
                 @if(contribution.taxPeriodStart.year < 2015 || contribution.taxPeriodStart.year > 2015) {<a href="edit/@contribution.taxPeriodStart.year" data-journey-click="paac:click:edit_money_purchase_@contribution.taxPeriodStart.year">}
