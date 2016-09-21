@@ -6,10 +6,23 @@ paac.common.pension.inputs.db = Defined benefit
 paac.common.pension.inputs.dc = Defined contribution
 
 ## Calculator Home Page
-paac.nav.title = Pension Annual Allowance Calculator
+paac.nav.title = Pension annual allowance calculator
 paac.nav.title2 = GOV.UK
 paac.calculator.back.url = http://www.gov.uk
 paac.calculator.button.save = Save
+
+## Start Page
+paac.startpage.pagetitle=Check your pension annual allowance
+paac.startpage.heading=Check your pension annual allowance
+paac.startpage.p1=Use this service to check if:
+paac.startpage.list.item1=you have to pay tax on your pension savings
+paac.startpage.list.item2=you have any unused pension annual allowances that you can carry forward and offset any tax you owe
+paac.startpage.beforeInfo.h2=Before you start
+paac.startpage.beforeInfo.p1=You can check for the last four years as any unused allowance can’t be carried over for longer than that.
+paac.startpage.beforeInfo.p2=You can’t use this calculator if: <ul class="list-bullet"><li>You are a member of a hybrid scheme</li><li>You’ve had a valid declaration for flexible drawdown accepted by your pension scheme's administrator.</li></ul>
+paac.startpage.beforeInfo.p3=Before you start you need to know: <ul class="list-bullet"><li>The types of pension schemes you’ve had and how much has been saved in them for the dates you want to check.</li><li>If you have ever flexibly accessed your pension savings and when this happened first. You can check on your flexible access statement for this. You will also need to know the total amount of Defined Benefit pension savings made after the date you first flexibly accessed your pension statement.</li><li>If your threshold income is more than £110,000 and if your adjusted income is more than £150,000 when checking tax years from 2016/2017.</li></ul>
+paac.startpage.beforeInfo.p4=
+paac.startpage.button=Start
 
 ## Scheme Selection Page
 paac.scheme.selection.pagetitle = Pension schemes in {0} to {1}

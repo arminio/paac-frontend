@@ -22,7 +22,7 @@
 pageTitle = Messages("paac.taxyear.selection.pagetitle"),
 heading = Messages("paac.taxyear.selection.heading"),
 serviceInfoContent = Some(serviceInfo),
-backLink = None
+backLink = Some((controllers.routes.TaxYearSelectionController.onBack().url,Messages("paac.link.text.back")))
 ) {
 
 @if(isError) {

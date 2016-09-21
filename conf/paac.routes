@@ -7,6 +7,7 @@ GET         /assets/*file                               controllers.DevAssets.at
 ## PAAC Start Page
 GET         /                                           controllers.StartPageController.startPage
 GET         /start                                      controllers.StartPageController.newSession
+POST        /start                                      controllers.StartPageController.onSubmit
 GET         /setLanguage                                controllers.StartPageController.setLanguage
 
 ## 2016/17 Threshold Income Yes/No Page
@@ -28,6 +29,7 @@ GET         /scheme/:year/back                          controllers.SelectScheme
 # Tax year selection
 GET         /taxyearselection                           controllers.TaxYearSelectionController.onPageLoad
 POST        /taxyearselection                           controllers.TaxYearSelectionController.onYearSelected
+GET         /taxyearselection/back                      controllers.TaxYearSelectionController.onBack
 
 ## 2015/16 Period-1 and Period 2 Pension Input Page
 GET         /pensionInputs201516                        controllers.PensionInputs201516Controller.onPageLoad

@@ -44,6 +44,10 @@ trait TaxYearSelectionController extends RedirectController {
     Future.successful(Ok(views.html.taxyearselection(request.data.getOrElse(SELECTED_INPUT_YEARS_KEY, "").split(","), false, settings.NUMBER_OF_YEARS)))
   }
 
+  def onBack() = withWriteSession { implicit request =>
+    TaxYearSelection() go Backward
+  }
+
   protected def sessionData(kkey: String, previous: String): Map[String,String] = {
     val m = if (!previous.isEmpty) {
       val deletedYears = previous.split(",").diff(kkey.split(","))
