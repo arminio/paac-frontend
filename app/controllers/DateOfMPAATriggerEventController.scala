@@ -34,17 +34,19 @@ trait DateOfMPAATriggerEventController extends RedirectController {
   val onPageLoad = withReadSession { implicit request =>
     val model: DateOfMPAATriggerEventPageModel = request.data
     val isEdit = request.data.get(IS_EDIT_KEY).map(_.toBoolean).getOrElse(false)
-    showPage(DateOfMPAATriggerEventForm.form.fill(model), isEdit)
+    val currentYear = request.data.get(CURRENT_INPUT_YEAR_KEY).map(_.toInt).getOrElse(2015)
+    showPage(DateOfMPAATriggerEventForm.form.fill(model), isEdit, currentYear)
   }
 
   val onSubmit = withWriteSession { implicit request =>
     val form = DateOfMPAATriggerEventForm.form.bindFromRequest()
     val reqData = request.data
     val isEdit = reqData.get(IS_EDIT_KEY).map(_.toBoolean).getOrElse(false)
+    val currentYear = request.data.get(CURRENT_INPUT_YEAR_KEY).map(_.toInt).getOrElse(2015)
     form.fold (
       formWithErrors => {
         val model: DateOfMPAATriggerEventPageModel = reqData
-        showPage(formWithErrors, isEdit)
+        showPage(formWithErrors, isEdit, currentYear)
       },
       input => {
         input.dateOfMPAATriggerEvent.map {
@@ -56,14 +58,14 @@ trait DateOfMPAATriggerEventController extends RedirectController {
             val args = List(selectedDCTaxYears.head.toString, (selectedDCTaxYears.last + 1).toString)
             if (!isValidDate(date,selectedDCTaxYears)) {
               val newForm = form.withError("dateOfMPAATriggerEvent", "paac.mpaa.ta.date.page.invalid.date", args:_*)
-              showPage(newForm, isEdit)
+              showPage(newForm, isEdit, currentYear)
             } else {
               val sessionData = reqData ++ input.toSessionData(isEdit).map(_.swap).toMap
               TriggerDate() go Forward.using(sessionData)
           }
         } getOrElse {
           val newForm = form.withError("dateOfMPAATriggerEvent", "error.invalid.date.format")
-          showPage(newForm, isEdit)
+          showPage(newForm, isEdit, currentYear)
         }
       }
     )
@@ -73,8 +75,8 @@ trait DateOfMPAATriggerEventController extends RedirectController {
     TriggerDate() go Backward
   }
 
-  protected def showPage(form: Form[DateOfMPAATriggerEventPageModel], isEdit: Boolean)(implicit request: Request[_]) = {
-    Future.successful(Ok(views.html.date_of_mpaa_trigger_event(form, isEdit)))
+  protected def showPage(form: Form[DateOfMPAATriggerEventPageModel], isEdit: Boolean, currentYear: Int)(implicit request: Request[_]) = {
+    Future.successful(Ok(views.html.date_of_mpaa_trigger_event(form, isEdit, currentYear)))
   }
 
   private def isValidDate(date: LocalDate, selectedTaxYears: Seq[Int]): Boolean  = {
