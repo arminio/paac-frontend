@@ -64,13 +64,18 @@ analyticsAdditionalJs = Some(analyticsAdditionalJs)
   @defining(sortedResults.take(2).map(_.summaryResult.chargableAmount).foldLeft(0L)(_+_)) { year2015Tax =>
     @defining(sortedResults.headOption.getOrElse(TaxYearResults()).summaryResult.chargableAmount) { tax =>
       @if(year1516 && year2015Tax > 0){
-      <p class="govuk-box-highlight lede">@Html(Messages("paac.results.p1", currencyFormatter.format(year2015Tax/100)))</p>
+      <p class="govuk-box-highlight lede">@Html(Messages("paac.results.p1",
+                  Messages("paac.results.taxyearlabel",selectedYears(0).toString, (selectedYears(0)+1).toString),
+                  currencyFormatter.format(year2015Tax/100)))</p>
       } else {
           @if(!year1516 && tax > 0) {
-             <p class="govuk-box-highlight lede">@Html(Messages("paac.results.p1", currencyFormatter.format(tax/100)))</p>
+             <p class="govuk-box-highlight lede">@Html(Messages("paac.results.p1",
+                 Messages("paac.results.taxyearlabel",selectedYears(0).toString, (selectedYears(0)+1).toString),
+                 currencyFormatter.format(tax/100)))</p>
           } else {
              <p class="govuk-box-highlight lede">@Html(Messages("paac.results.p2",
-                currencyFormatter.format(sortedResults.headOption.getOrElse(TaxYearResults()).summaryResult.availableAAWithCCF/100)))</p>
+                 Messages("paac.results.taxyearlabel",selectedYears(0).toString, (selectedYears(0)+1).toString),
+                 currencyFormatter.format(sortedResults.headOption.getOrElse(TaxYearResults()).summaryResult.availableAAWithCCF/100)))</p>
           }
       }
 

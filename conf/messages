@@ -20,8 +20,7 @@ paac.startpage.list.item2=you have any unused pension annual allowances that you
 paac.startpage.beforeInfo.h2=Before you start
 paac.startpage.beforeInfo.p1=You can check for the last four years as any unused allowance can’t be carried over for longer than that.
 paac.startpage.beforeInfo.p2=You can’t use this calculator if you are a member of a hybrid scheme, or you’ve had a valid declaration for flexible drawdown accepted by your pension scheme's administrator
-paac.startpage.beforeInfo.p3=Before you start you need to know: <ul class="list-bullet"><li>the types of pension schemes you’ve had and how much has been saved in them for the dates you want to check</li><li>if you have ever flexibly accessed your pension savings, when you first did this, and the amount of Defined Benefit pension savings for rest of the pension input period after this date</li><li>if your threshold income is more than £110,000 and if your adjusted income is more than £150,000 when checking tax years from 2016/2017</li></ul>
-paac.startpage.beforeInfo.p4=
+paac.startpage.beforeInfo.p3=Before you start you need to know: <ul class="list-bullet"><li>the types of pension schemes you’ve had and how much has been saved in them for the dates you want to check</li><li>if you have ever flexibly accessed your pension savings, when you first did this, and the amount of Defined Benefit pension savings for rest of the pension input period after this date</li><li>if your <a href="https://www.gov.uk/guidance/pension-schemes-work-out-your-tapered-annual-allowance">threshold income is more than £110,000 and if your adjusted income is more than £150,000</a> when checking tax years from 2016/2017</li></ul>
 paac.startpage.button=Start
 
 ## Scheme Selection Page
@@ -74,7 +73,7 @@ paac.contribution= contribution
 paac.taxyear.selection.pagetitle = Choose tax years
 paac.taxyear.selection.heading = Choose tax years
 paac.taxyear.selection.p1 = Choose which tax years you want to check if you owe tax on your pension savings or if you have any unused allowance.
-paac.taxyear.selection.p2 = If you want to carry forward all available unused allowances to offset any tax you may owe, select every year you were a member of a registered pension scheme or a qualifying overseas pension scheme even though you made no contributions.
+paac.taxyear.selection.p2 = If you want to carry forward all available unused allowances to offset any tax you may owe, select every year you were a member of a registered pension scheme or a qualifying overseas pension scheme even if you made no contributions.
 paac.taxyear.selection.p3 = A tax year is 6 April to 5 April.
 paac.year.range.to = to
 
@@ -96,7 +95,7 @@ paac.201516.pension.inputs.period2.description = Include all pension savings mad
 paac.pension.inputs.pagetitle = Pension savings {0} to {1}
 paac.pension.inputs.heading = What were your pension savings in the tax year {1} to {2}?
 paac.pension.inputs.description = Include all pension savings where pension input periods ended in the tax year 6 April {0} to 5 April {1}. Use only numbers and round to the nearest pound.
-paac.pension.inputs.totalamount = Total amount
+paac.pension.inputs.totalamount = Enter amount
 
 ## MPAA Trigger Event Yes/No Page
 paac.mpaa.te.yesno.pagetitle = Flexible access since 2015
@@ -156,8 +155,8 @@ paac.results.taxyearlabel.p2 = 2015 to 2016 period 2
 paac.results.link.new = Start again
 paac.results.page.heading = Results
 paac.results.page.title = Pension annual allowance calculator results
-paac.results.p1 = Based on your answers, you have exceeded your annual allowance by &pound;{0}. You will have to pay tax on this.
-paac.results.p2 = Based on your answers you have &pound;{0} of unused annual allowance and no tax to pay.
+paac.results.p1 = Based on your answers, in the tax year {0} you have exceeded your annual allowance by &pound;{1}. You will have to pay tax on this.
+paac.results.p2 = Based on your answers, in the tax year {0} you have &pound;{1} of unused annual allowance and no tax to pay.
 paac.results.p3 = Annual allowances include any unused amounts that you may have available to carry forward from a maximum of three previous tax years.
 
 ## Post Trigger Pension Inputs Page
@@ -170,7 +169,7 @@ paac.post.trigger.value.description.p2 = Include all pension savings after you f
 paac.post.trigger.value.description.other = Include all pension savings after you first flexibly accessed your defined contribution scheme on {0} to 5 April {1}. Use only numbers and round to the nearest pound.
 paac.post.trigger.value.error = Enter an amount less than your total pension savings of £{0}
 
-paac.post.trigger.amount.input.label = Total amount
+paac.post.trigger.amount.input.label = Enter amount
 paac.post.trigger.value.error.real.precision = The amount must not be empty or negative. (Amount must have no more than {1} numbers, including {2} decimal places, and should be £0 or larger and smaller than £5,000,000.)
 paac.post.trigger.value.error.min = Enter an amount that is £5,000,000 or less.
 paac.post.trigger.value.error.max = Enter an amount that is £{1} or less.
