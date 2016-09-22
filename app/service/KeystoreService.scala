@@ -105,7 +105,6 @@ object KeystoreService extends KeystoreService {
   val P1_TRIGGER_DC_KEY = "triggerDefinedContribution_2015_p1"
   val P2_TRIGGER_DC_KEY= "triggerDefinedContribution_2015_p2"
   val TRIGGER_DC_KEY= "triggerDefinedContribution"
-  val SCHEME_TYPE_KEY = "schemeType"
   val CURRENT_INPUT_YEAR_KEY = "Current"
   val SELECTED_INPUT_YEARS_KEY = "SelectedYears"
   val FIRST_DC_YEAR_KEY = "FirstDCYear"
