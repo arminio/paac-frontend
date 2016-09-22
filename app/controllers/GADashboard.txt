@@ -1,0 +1,64 @@
+https://jira.tools.tax.service.gov.uk/secure/CreateIssue!default.jspa
+
+JIRA TICKET
+
+Title: Propogate Goals, Calculated Metrics, Segments, Dashboard from Testing QA to Prod
+Type: Tooling Support Request
+Components: Google Analytics
+Labels: googleanalytics
+
+Description:
+
+# Goals
+
+1. Calculate AA or AAA
+a) Goal Setup -> Template -> Engagement -> Use calculator
+b) Goal Description ->
+i) Name -> Calculate AA or AAA
+ii) Type -> Event
+c) Goal Details (event conditions) ->
+i) Category -> Equals To -> paac
+ii) Action -> Regular Expression -> (A)+ Unused
+iii) Value -> greaters than -> 0
+iv) Please leave the label blank
+v) Use the Event value as the Goal Value for the conversion No
+
+
+2. Calculate Tax
+a) Goal Setup -> Template -> Engagement -> Use calculator
+b) Goal Description ->
+i) Name -> Calculate Tax
+ii) Type -> Event
+c) Goal Details (event conditions) ->
+i) Category -> Equals To -> paac
+ii) Action -> Equals To -> Tax
+iii) Value -> greaters than -> 0
+iv) Please leave the label blank
+v) Use the Event value as the Goal Value for the conversion Yes
+
+3. Use calculator
+a) Goal Setup -> Template -> Engagement -> Use calculator
+b) Goal Description ->
+i) Name -> Use calculator
+ii) Type -> Destination
+c) Goal Details (Destination) ->
+a) Destination -> Equals To -> /calculate
+
+# Calculated Metrics (beta)
+New calculated metrics
+1. Avg Tax
+Name -> Avg Tax
+Formatting Type -> Float
+Formula -> {{Calculate Tax (Goal 2 Value)}} + {{Sessions with Event}}
+
+# Segments
+1. Calculated Tax
+Advanced -> Conditions -> Event Action -> contains -> Tax
+
+2. PAAC Really Engaged Traffic
+Advanced -> Conditions -> Page Depth -> > -> 2 AND Session Duration -> > -> 15
+
+Dashboard
+
+Import PAAC Overview Dashboard from Testing environment using: https://analytics.google.com/analytics/web/template?uid=K1nm-mDHR-WqaK7NEDkDiA
+And then Share Object
