@@ -142,7 +142,7 @@ class ReviewTotalAmountsControllerSpec extends test.BaseSpec {
         // check
         val htmlSummaryPage = contentAsString(await(result))
         dumpHtml("review", htmlSummaryPage)
-        htmlSummaryPage should include ("Based on your answers you have")
+        htmlSummaryPage should include ("Based on your answers")
       }
 
       "with 2015 DC = true and DB=true should move to results page" in new Mock2016ControllerFixture {
@@ -167,7 +167,7 @@ class ReviewTotalAmountsControllerSpec extends test.BaseSpec {
         // check
         val htmlSummaryPage = contentAsString(await(result))
         dumpHtml("review", htmlSummaryPage)
-        htmlSummaryPage should include ("Based on your answers you have")
+        htmlSummaryPage should include ("Based on your answers")
       }
 
       "with 2016 DC = true and DB=false should move to results page" in new Mock2016ControllerFixture {
@@ -191,7 +191,7 @@ class ReviewTotalAmountsControllerSpec extends test.BaseSpec {
         // check
         val htmlSummaryPage = contentAsString(await(result))
         dumpHtml("review", htmlSummaryPage)
-        htmlSummaryPage should include ("Based on your answers you have")
+        htmlSummaryPage should include ("Based on your answers")
       }
 
       "with 2016 DC = true and DB=true should move to results page" in new Mock2016ControllerFixture {
@@ -215,7 +215,7 @@ class ReviewTotalAmountsControllerSpec extends test.BaseSpec {
         // check
         val htmlSummaryPage = contentAsString(await(result))
         dumpHtml("review", htmlSummaryPage)
-        htmlSummaryPage should include ("Based on your answers you have")
+        htmlSummaryPage should include ("Based on your answers")
       }
     }
 
