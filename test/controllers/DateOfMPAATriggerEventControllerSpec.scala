@@ -53,7 +53,8 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
         MockKeystore.map = MockKeystore.map + (P1_TRIGGER_DC_KEY -> "0")
         MockKeystore.map = MockKeystore.map + (P2_TRIGGER_DC_KEY -> "0")
         MockKeystore.map = MockKeystore.map + (IS_EDIT_KEY -> "false")
-
+        MockKeystore.map = MockKeystore.map + (SELECTED_INPUT_YEARS_KEY -> "2016")
+        MockKeystore.map = MockKeystore.map + (DC_FLAG_PREFIX_2016 -> "true")
 
         // do it
         val result : Future[Result] = ControllerWithMockKeystore.onPageLoad()(request)
@@ -72,7 +73,8 @@ class DateOfMPAATriggerEventControllerSpec extends test.BaseSpec {
         MockKeystore.map = MockKeystore.map + (P1_TRIGGER_DC_KEY -> "0")
         MockKeystore.map = MockKeystore.map + (P2_TRIGGER_DC_KEY -> "0")
         MockKeystore.map = MockKeystore.map + (IS_EDIT_KEY -> "false")
-
+        MockKeystore.map = MockKeystore.map + (SELECTED_INPUT_YEARS_KEY -> "2016")
+        MockKeystore.map = MockKeystore.map + (DC_FLAG_PREFIX_2016 -> "true")
         // do it
         val result : Future[Result] = ControllerWithMockKeystore.onPageLoad()(request)
 
