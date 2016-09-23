@@ -1,27 +1,13 @@
 @(selectedYears : Array[String],
   isError: Boolean,
-  numberOfYears: Int,
-  showLanguage:Boolean = true)(implicit request:Request[_], context: config.PaacContext, lang: Lang)
+  numberOfYears: Int)(implicit request:Request[_], context: config.PaacContext, lang: Lang)
 
 @import uk.gov.hmrc.play.views.html.helpers._
 
 
-@serviceInfo = {
-@if(showLanguage){
-<div class="toggle-lang">
-  @if(lang.language.toLowerCase == "cy") {
-  <a href="@routes.StartPageController.setLanguage?lang=en" onclick="gaEvent('Set language to English')">English</a><span> | Cymraeg</span>
-  } else {
-  <span>English | </span><a href="@routes.StartPageController.setLanguage?lang=cy" onclick="gaEvent('Set language to Welsh')">Cymraeg</a>
-  }
-</div>
-}
-}
-
 @common.paacMain(
 pageTitle = Messages("paac.taxyear.selection.pagetitle"),
 heading = Messages("paac.taxyear.selection.heading"),
-serviceInfoContent = Some(serviceInfo),
 backLink = Some((controllers.routes.TaxYearSelectionController.onBack().url,Messages("paac.link.text.back")))
 ) {
 
