@@ -32,9 +32,14 @@ object DateOfMPAATriggerEventController extends DateOfMPAATriggerEventController
 trait DateOfMPAATriggerEventController extends RedirectController {
 
   val onPageLoad = withReadSession { implicit request =>
-    val model: DateOfMPAATriggerEventPageModel = request.data
-    val isEdit = request.data.get(IS_EDIT_KEY).map(_.toBoolean).getOrElse(false)
-    val currentYear = request.data.get(CURRENT_INPUT_YEAR_KEY).map(_.toInt).getOrElse(2015)
+    val reqData = request.data
+    val model: DateOfMPAATriggerEventPageModel = reqData
+    val isEdit = reqData.get(IS_EDIT_KEY).map(_.toBoolean).getOrElse(false)
+    // Get all selected tax years >= 2015 whose DC flag is true
+    val selectedDCTaxYears:Seq[Int] = reqData.getOrElse(SELECTED_INPUT_YEARS_KEY,"2014").split(",").map(_.toInt).filter(_ >= 2015)
+      .filter( year => reqData.getOrElse(DC_FLAG_PREFIX + year,"false").toBoolean).sorted
+
+    val currentYear = selectedDCTaxYears.head
     showPage(DateOfMPAATriggerEventForm.form.fill(model), isEdit, currentYear)
   }
 
@@ -42,7 +47,12 @@ trait DateOfMPAATriggerEventController extends RedirectController {
     val form = DateOfMPAATriggerEventForm.form.bindFromRequest()
     val reqData = request.data
     val isEdit = reqData.get(IS_EDIT_KEY).map(_.toBoolean).getOrElse(false)
-    val currentYear = request.data.get(CURRENT_INPUT_YEAR_KEY).map(_.toInt).getOrElse(2015)
+
+    // Get all selected tax years >= 2015 whose DC flag is true
+    val selectedDCTaxYears:Seq[Int] = reqData.getOrElse(SELECTED_INPUT_YEARS_KEY,"2014").split(",").map(_.toInt).filter(_ >= 2015)
+      .filter( year => reqData.getOrElse(DC_FLAG_PREFIX + year,"false").toBoolean).sorted
+    val currentYear = selectedDCTaxYears.head
+
     form.fold (
       formWithErrors => {
         val model: DateOfMPAATriggerEventPageModel = reqData
@@ -51,10 +61,6 @@ trait DateOfMPAATriggerEventController extends RedirectController {
       input => {
         input.dateOfMPAATriggerEvent.map {
           (date)=>
-            // Get all selected tax years >= 2015 whose DC flag is true
-            val selectedDCTaxYears:Seq[Int] = reqData.getOrElse(SELECTED_INPUT_YEARS_KEY,"2014").split(",").map(_.toInt).filter(_ >= 2015)
-                                                      .filter( year => reqData.getOrElse(DC_FLAG_PREFIX + year,"false").toBoolean).sorted
-
             val args = List(selectedDCTaxYears.head.toString, (selectedDCTaxYears.last + 1).toString)
             if (!isValidDate(date,selectedDCTaxYears)) {
               val newForm = form.withError("dateOfMPAATriggerEvent", "paac.mpaa.ta.date.page.invalid.date", args:_*)

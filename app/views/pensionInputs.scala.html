@@ -62,8 +62,8 @@ analyticsAdditionalJs = Some(analyticsAdditionalJs)
         <input type="hidden" name="isEdit" value="@(isEdit)"/>
         <fieldset id="input_@currentYear" class="form-field-group @if(paacForm.hasErrors) {form-field--error}">
             <label class="label--full-length numeric" for="definedBenefit_@currentYear">
-            <span>@Messages("paac.pension.inputs.totalamount")</span>
-            <span class="form-hint">@Messages("paac.common.inputfield.example.message")</span>
+            <div>@Messages("paac.pension.inputs.totalamount")</div>
+            <div class="form-hint">@Messages("paac.common.inputfield.example.message")</div>
             @if(paacForm.hasErrors) {
                 @for(error <- paacForm.errors) {
                 @defining(currentYear) { year =>
