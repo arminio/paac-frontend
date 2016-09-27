@@ -1,6 +1,6 @@
 ## Calculator Common
-paac.link.text.back = Yn ôl
-paac.calculator.button.continue = parhau
+paac.link.text.back=Back
+paac.calculator.button.continue = Continue
 paac.common.inputfield.example.message = Example, 62300
 paac.common.pension.inputs.db = Defined benefit
 paac.common.pension.inputs.dc = Defined contribution
@@ -26,7 +26,7 @@ paac.startpage.button=Start
 ## Scheme Selection Page
 paac.scheme.selection.pagetitle = Pension schemes in {0} to {1}
 paac.scheme.selection.heading = What types of pension schemes did you have in the tax year {0} to {1}?
-paac.scheme.selection.p1 = Dewiswch bob un sy’n berthnasol.
+paac.scheme.selection.p1 = Select all that apply.
 paac.scheme.selection.dc.label = <b>Defined contribution</b><br>A pension based on how much is paid in to it. These are usually personal or stakeholder pensions.
 paac.scheme.selection.db.label = <b>Defined benefit</b><br>A pension based on your salary and how long you have worked for your employer. These are always workplace pensions.
 
@@ -52,7 +52,7 @@ error.max= Enter an amount that is £5,000,000 or less.
 error.bounds= Enter an amount that is £5,000,000 or less.
 error.unknown=Enter an amount that is £5,000,000 or less.
 error.real.precision={0} amount must not be empty. (Amount must have no more than {1} numbers, including {2} decimal places, and should be £0 or larger and under £5,000,000.)
-paac.error.generic = Mae yna broblem
+paac.error.generic = There is a problem
 paac.scheme.selection.error = Choose at least 1 type of pension scheme.
 paac.taxyear.selection.error = Choose at least 1 tax year.
 paac.mpaa.ta.date.page.invalid.date = Enter a date between 6 4 {0} and 5 4 {1} inclusive
@@ -71,7 +71,7 @@ paac.contribution= contribution
 
 ## Tax Year Selection
 paac.taxyear.selection.pagetitle = Choose tax years
-paac.taxyear.selection.heading = Dewiswch blynyddoedd treth
+paac.taxyear.selection.heading = Choose tax years
 paac.taxyear.selection.p1 = Choose which tax years you want to check if you owe tax on your pension savings or if you have any unused allowance.
 paac.taxyear.selection.p2 = If you want to carry forward all available unused allowances to offset any tax you may owe, select every year you were a member of a registered pension scheme or a qualifying overseas pension scheme even if you made no contributions.
 paac.taxyear.selection.p3 = A tax year is 6 April to 5 April.
@@ -86,9 +86,9 @@ paac.1516.pension.inputs.pages.heading = What were your pension savings for the 
 paac.201516.pension.inputs.pagetitle = Pension savings 2015 to 2016
 paac.201516.pension.inputs.description = The tax year 2015 to 2016 was split into two to align pension input periods (PIPs) with tax years.
 paac.201516.pension.inputs.description2 = Include pension savings for the PIPs that ended in this tax year. Use only numbers and round to the nearest pound.
-paac.201516.pension.inputs.period1 = cyfnod 1
+paac.201516.pension.inputs.period1 = Period 1
 paac.201516.pension.inputs.period1.description = Include all pension savings made in the PIPs ending between 6 April 2015 to 8 July 2015 inclusive.
-paac.201516.pension.inputs.period2 = cyfnod 2
+paac.201516.pension.inputs.period2 = Period 2
 paac.201516.pension.inputs.period2.description = Include all pension savings made between 9 July 2015 to 5 April 2016 inclusive.
 
 ## Pension Inputs Page
@@ -108,15 +108,15 @@ paac.mpaa.ta.date.page.heading = When did you first flexibly access your pension
 paac.mpaa.ta.date.page.description = This will also be on your flexible access statement.
 paac.mpaa.ta.date.page.datehint = For example, 21 6 {0}
 paac.mpaa.ta.date.page.datevalidation = Check all date of MPAA Trigger Event fields are complete and only contain numbers
-paac.date.fields.day = diwrnod
-paac.date.fields.month = mis
-paac.date.fields.year = blwyddyn
+paac.date.fields.day = Day
+paac.date.fields.month = Month
+paac.date.fields.year = Year
 
 
 ## Review Amounts Page
 paac.review-amounts.page.heading = Check your answers
-paac.review-amounts.page.title = Gwiriwch eich atebion
-paac.review-amounts.button.calculate = Cyfrifwch
+paac.review-amounts.page.title = Check your answers
+paac.review-amounts.button.calculate = Calculate
 paac.review-amounts.heading = Tax year {0} to {1}
 paac.review-amounts.heading.period = Tax year {0} to {1} period {2}
 paac.review-amounts.heading.total = Total amount
@@ -152,8 +152,8 @@ paac.results.table.col.6 = Unused<br> annual<br> allowance
 paac.results.taxyearlabel = {0} to {1}
 paac.results.taxyearlabel.p1 = 2015 to 2016 period 1
 paac.results.taxyearlabel.p2 = 2015 to 2016 period 2
-paac.results.link.new = Dechrau eto
-paac.results.page.heading = canlyniadau
+paac.results.link.new = Start again
+paac.results.page.heading = Results
 paac.results.page.title = Pension annual allowance calculator results
 paac.results.p1 = Based on your answers, in the tax year {0} you have exceeded your annual allowance by &pound;{1}. You will have to pay tax on this.
 paac.results.p2 = Based on your answers, in the tax year {0} you have &pound;{1} of unused annual allowance and no tax to pay.
