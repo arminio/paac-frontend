@@ -970,6 +970,18 @@ class ContributionSpec extends ModelSpec {
         // check
         result shouldBe "DB £20k - 40k"
       }
+
+      "when value is less than 60K and greater than 40K return the 40-60K label" in {
+        // set up
+        val contribution = Contribution(2015, 4000001L)
+
+        // test
+        val result = contribution.dbBandingLabel()
+
+        // check
+        result shouldBe "DB £40k - 60k"
+
+      }
     }
   }
 

@@ -93,6 +93,7 @@ case class Contribution(taxPeriodStart: PensionPeriod, taxPeriodEnd: PensionPeri
     db match {
       case _ if db < 2000000 => "DB £0k - 20k"
       case _ if db < 4000000 && db >= 2000000 => "DB £20k - 40k"
+      case _ if db < 6000000 && db >= 4000000 => "DB £40k - 60k"
       case _ => ""
     }
   }
