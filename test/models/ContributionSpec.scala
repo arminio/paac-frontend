@@ -25,8 +25,11 @@ import org.scalatest._
 import org.scalatest.Matchers._
 import org.scalatest.OptionValues._
 import org.joda.time.LocalDate
+import org.scalatest.prop._
+import org.scalacheck.Gen
+import scala.concurrent.ExecutionContext.Implicits.global
 
-class ContributionSpec extends ModelSpec {
+class ContributionSpec extends ModelSpec with GeneratorDrivenPropertyChecks {
   trait TaxPeriodFixture {
     val year : Int = 2016
     val month : Int = 7
@@ -951,46 +954,54 @@ class ContributionSpec extends ModelSpec {
     "with Defined Benefit banding label" should {
       "when value is less than 20k return the 0-20k label" in {
         // set up
-        val contribution = Contribution(2015, 1234500L)
+        val contributions = for {taxYear <- 2015
+                                 dbAmountInPence <- Gen.choose(0,1999999L)}
+                            yield Contribution(taxYear, dbAmountInPence)
 
         // test
-        val result = contribution.dbBandingLabel()
-
-        // check
-        result shouldBe "DB £0k - 20k"
+        forAll(contributions) { (contribution: Contribution) =>
+          val result = contribution.dbBandingLabel()
+          result shouldBe "DB £0k - 20k"
+        }
       }
 
       "when value is less than 40k and greater than 20k return the 20-40k label" in {
         // set up
-        val contribution = Contribution(2015, 2234500L)
+        val contributions = for {taxYear <- 2015
+                                 dbAmountInPence <- Gen.choose(2000000L,3999999L)}
+                            yield Contribution(taxYear, dbAmountInPence)
 
         // test
-        val result = contribution.dbBandingLabel()
-
-        // check
-        result shouldBe "DB £20k - 40k"
+        forAll(contributions) { (contribution: Contribution) =>
+          val result = contribution.dbBandingLabel()
+          result shouldBe "DB £20k - 40k"
+        }
       }
 
       "when value is less than 60K and greater than 40K return the 40-70K label" in {
         // set up
-        val contribution = Contribution(2015, 4000001L)
+        val contributions = for {taxYear <- 2015
+                                 dbAmountInPence <- Gen.choose(4000000L,6999999L)}
+                            yield Contribution(taxYear, dbAmountInPence)
 
         // test
-        val result = contribution.dbBandingLabel()
-
-        // check
-        result shouldBe "DB £40k - 70k"
+        forAll(contributions) { (contribution: Contribution) =>
+          val result = contribution.dbBandingLabel()
+          result shouldBe "DB £40k - 70k"
+        }
       }
 
       "when value is less than 100k and greater than 70k return the 70-100k label" in {
         // set up
-        val contribution = Contribution(2015, 8000001L)
+        val contributions = for {taxYear <- 2015
+                                 dbAmountInPence <- Gen.choose(7000000L,9999999L)}
+                            yield Contribution(taxYear, dbAmountInPence)
 
         // test
-        val result = contribution.dbBandingLabel()
-
-        // check
-        result shouldBe "DB £70k - 100k"
+        forAll(contributions) { (contribution: Contribution) =>
+          val result = contribution.dbBandingLabel()
+          result shouldBe "DB £70k - 100k"
+        }
       }
     }
   }

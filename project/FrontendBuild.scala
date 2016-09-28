@@ -47,6 +47,7 @@ private object AppDependencies {
   private val hmrcTestVersion = "1.8.0"
   private val pegDownVersion = "1.6.0"
   private val playWhitelistFilterVersion = "1.1.0"
+  private val scalacheckVersion = "1.12.5"
 
   val compile = Seq(
     ws,
@@ -79,7 +80,8 @@ private object AppDependencies {
         "com.typesafe.play" %% "play-test" % PlayVersion.current % scope,
         "org.mockito" % "mockito-all" % mockitoVersion % scope,
         "org.jsoup" % "jsoup" % jSoupVersion % scope,
-        "org.pegdown" % "pegdown" % pegDownVersion % scope
+        "org.pegdown" % "pegdown" % pegDownVersion % scope,
+        "org.scalacheck" %% "scalacheck" % scalacheckVersion % scope
       )
     }.test
   }
