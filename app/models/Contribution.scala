@@ -87,6 +87,16 @@ case class PensionPeriod(year: Int, month: Int, day: Int) {
 }
 
 case class Contribution(taxPeriodStart: PensionPeriod, taxPeriodEnd: PensionPeriod, amounts: Option[InputAmounts]) extends CalculationParam {
+
+  def dbBandingLabel(): String = {
+    val db = definedBenefit()
+    db match {
+      case _ if db < 2000000 => "DB £0k - 20k"
+      case _ if db < 4000000 && db >= 2000000 => "DB £20k - 40k"
+      case _ => ""
+    }
+  }
+
   def taxYearLabel() : String = {
     if (taxPeriodStart.year == 2015 && taxPeriodStart.month == 7 ||
         taxPeriodEnd.year == 2016 && taxPeriodEnd.month == 4) {

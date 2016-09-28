@@ -947,6 +947,30 @@ class ContributionSpec extends ModelSpec {
         }
       }
     }
+
+    "with Defined Benefit banding label" should {
+      "when value is less than 20k return the 0-20k label" in {
+        // set up
+        val contribution = Contribution(2015, 1234500L)
+
+        // test
+        val result = contribution.dbBandingLabel()
+
+        // check
+        result shouldBe "DB £0k - 20k"
+      }
+
+      "when value is less than 40k and greater than 20k return the 20-40k label" in {
+        // set up
+        val contribution = Contribution(2015, 2234500L)
+
+        // test
+        val result = contribution.dbBandingLabel()
+
+        // check
+        result shouldBe "DB £20k - 40k"
+      }
+    }
   }
 
   "Array of contributions" can {
